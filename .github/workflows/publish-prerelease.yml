@@ -1,0 +1,47 @@
+name: Publish Eclipse prerelease
+
+on:
+  push:
+    tags:
+      - "v*-rc*"
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate installable theme
+        shell: pwsh
+        run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
+
+      - name: Build release archive and checksum
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $archive = "eclipse-$version.zip"
+          Compress-Archive -Path ./eclipse -DestinationPath $archive -CompressionLevel Optimal
+          (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash + "  " + $archive | Set-Content -Encoding ascii "$archive.sha256"
+
+      - name: Publish GitHub prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" \
+            "eclipse-$version.zip" \
+            "eclipse-$version.zip.sha256" \
+            --title "Eclipse $version — testing release" \
+            --notes-file RELEASE-NOTES.md \
+            --prerelease \
+            --verify-tag

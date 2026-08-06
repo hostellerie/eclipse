@@ -1,0 +1,54 @@
+{doctype}
+<html lang="<?php echo eclipse_html_language(); ?>">
+<head>
+<meta charset="{charset}"{xhtml}>
+<meta name="viewport" content="width=device-width, initial-scale=1"{xhtml}>
+<title>{page_title_and_site_name}</title>
+<link rel="icon" href="{layout_url}/images/logo-mark.svg" type="image/svg+xml"{xhtml}>
+<link rel="start contents" href="{site_url}"{xhtml}>
+<?php echo eclipse_sitemap_header_link(); ?>
+{feed_url}
+{rel_links}
+{plg_headercode}
+<?php if (!eclipse_is_admin_request()) { ?>{jsonld}<?php } ?>
+<?php echo eclipse_adsense_header_script(); ?>
+<style><?php echo eclipse_theme_css_variables(); ?></style>
+</head>
+<body dir="{direction}" class="{layout_columns} <?php echo eclipse_theme_classes(); ?>">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div id="container">
+  <header id="header" role="banner">
+    <div id="header-content"<?php $eclipseHeader = eclipse_theme_asset('header_image'); if ($eclipseHeader !== '') { ?> style="--eclipse-header-image:url('{layout_url}/<?php echo $eclipseHeader; ?>')"<?php } ?>>
+      <div class="site-identity">
+<?php $eclipseLogo = eclipse_theme_asset('logo'); if ($eclipseLogo !== '') { ?>
+        <a class="site-logo" href="{site_url}"><img src="{layout_url}/<?php echo $eclipseLogo; ?>" alt="{site_name}"{xhtml}></a>
+<?php } ?>
+        <div><p class="site_name"><a href="{site_url}">{site_name}</a></p><p class="site_slogan">{site_slogan}</p></div>
+      </div>
+    </div>
+  </header>
+<?php if (eclipse_menu_plugin_active()) { ?>
+  <div id="navigation" class="navigation_bg eclipse-plugin-menu" role="navigation" aria-label="Main navigation">
+    <div class="navigation_content">
+<?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="eclipse-menu-panel"><span aria-hidden="true">&#9776;</span><span>Menu</span></button>
+<?php } ?>
+      <div id="eclipse-menu-panel"><?php echo eclipse_menu_navigation(); ?></div>
+    </div>
+  </div>
+<?php } else { ?>
+  <nav id="navigation" aria-label="Main navigation">
+    <div class="navigation_content">
+<?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation_ul"><span aria-hidden="true">☰</span><span>Menu</span></button>
+<?php } ?>
+      <ul id="navigation_ul">{menu_elements}</ul>
+    </div>
+  </nav>
+<?php } ?>
+  <div id="wrapper">
+    <div id="centerblocks">
+      <main id="main-content" tabindex="-1">
+        <p class="welcome_msg">{welcome_msg}&nbsp;{datetime}</p>
+        {breadcrumb_trail}
+        <?php echo eclipse_topic_heading(); ?>

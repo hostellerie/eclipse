@@ -1,0 +1,15 @@
+* text=auto
+*.php text eol=lf
+*.thtml text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+# Preserve the exact bytes covered by eclipse/MANIFEST.json on every checkout.
+eclipse/** -text

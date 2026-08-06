@@ -1,0 +1,16 @@
+      </main>
+    </div>
+    {left_blocks}
+    {right_blocks}
+  </div>
+  <footer id="footer" role="contentinfo">
+    <?php echo eclipse_render_footer_links(); ?>
+    <div id="footer-content">
+      <p class="copyright">{copyright_notice}</p>
+      <p class="site_info"><span class="powered_by">{powered_by}&nbsp;<a href="https://www.geeklog.net/">Geeklog</a></span><br{xhtml}><span class="execution_textandtime">{execution_textandtime}</span></p>
+    </div>
+  </footer>
+</div>
+{plg_footercode}
+</body>
+</html>

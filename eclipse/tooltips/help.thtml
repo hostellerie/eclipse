@@ -1,0 +1,3 @@
+{# begin {templatelocation} #}
+<span class="{class}" tabindex="0">{hoverover}<span class="custom help">{text}</span></span>
+{# end {templatelocation} #}

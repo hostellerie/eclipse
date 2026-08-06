@@ -1,0 +1,10 @@
+{# begin {templatelocation} #}
+<section class="eclipse-command-page" id="eclipse-dashboard-start">
+<a class="eclipse-studio-launch" href="#eclipse-theme-studio"><span>Theme Studio</span><small>Customize design, preview and updates</small><b aria-hidden="true">&#8595;</b></a>
+{cc_groups}
+<!-- BEGIN ccgroup --><h2>{lang_group}</h2><ul class="admin-commandcontrol clearfix">{cc_rows}</ul><!-- END ccgroup -->
+<!-- BEGIN ccrow -->{cc_main_options}<!-- END ccrow -->
+<!-- BEGIN ccitem --><li><a href="{page_url}"{target}><img src="{page_image}" alt=""{xhtml}><span>{option_label}</span></a></li><!-- END ccitem -->
+<?php echo eclipse_render_customizer(); ?>
+</section>
+{# end {templatelocation} #}
