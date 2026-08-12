@@ -14,7 +14,7 @@
 <?php echo eclipse_adsense_header_script(); ?>
 <style><?php echo eclipse_theme_css_variables(); ?></style>
 </head>
-<body dir="{direction}" class="{layout_columns} <?php echo eclipse_theme_classes(); ?>">
+<body dir="{direction}" class="{layout_columns} <?php echo eclipse_theme_classes(); ?> <?php echo eclipse_context_classes(); ?>">
 <a class="skip-link" href="#main-content">Skip to content</a>
 <div id="container">
   <header id="header" role="banner">
@@ -40,13 +40,14 @@
   <nav id="navigation" aria-label="Main navigation">
     <div class="navigation_content">
 <?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation_ul"><span aria-hidden="true">☰</span><span>Menu</span></button>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation_ul"><span aria-hidden="true">â˜°</span><span>Menu</span></button>
 <?php } ?>
       <ul id="navigation_ul">{menu_elements}</ul>
     </div>
   </nav>
 <?php } ?>
   <div id="wrapper">
+    <div id="eclipse-admin-native-source" hidden><?php if (eclipse_is_admin_request() && function_exists('COM_adminMenu')) echo COM_adminMenu(); ?><?php echo eclipse_admin_studio_source(); ?></div>
     <div id="centerblocks">
       <main id="main-content" tabindex="-1">
         <p class="welcome_msg">{welcome_msg}&nbsp;{datetime}</p>

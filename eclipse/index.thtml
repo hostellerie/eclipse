@@ -1,0 +1,76 @@
+{doctype}
+<html lang="<?php echo eclipse_html_language(); ?>"{xmlns}>
+<head>
+<meta charset="{charset}"{xhtml}>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"{xhtml}>
+<title>{page_title_and_site_name}</title>
+<link rel="icon" href="{layout_url}/images/logo-mark.svg" type="image/svg+xml"{xhtml}>
+<link rel="start contents" href="{site_url}"{xhtml}>
+<?php echo eclipse_sitemap_header_link(); ?>
+{feed_url}
+{rel_links}
+{plg_headercode}
+<?php if (!eclipse_is_admin_request()) { ?>{jsonld}<?php } ?>
+<?php echo eclipse_adsense_header_script(); ?>
+<style><?php echo eclipse_theme_css_variables(); ?></style>
+</head>
+<body dir="{direction}" class="{layout_columns} <?php echo eclipse_theme_classes(); ?> <?php echo eclipse_context_classes(); ?>" itemscope="itemscope" itemtype="https://schema.org/WebPage">
+{# start {templatelocation} #}
+<a class="skip-link" href="#main-content">Skip to content</a>
+<div id="container">
+  <header id="header" role="banner" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+    <div id="header-content"<?php $eclipseHeader = eclipse_theme_asset('header_image'); if ($eclipseHeader !== '') { ?> style="--eclipse-header-image:url('{layout_url}/<?php echo $eclipseHeader; ?>')"<?php } ?>>
+      <div class="site-identity">
+<?php $eclipseLogo = eclipse_theme_asset('logo'); if ($eclipseLogo !== '') { ?>
+        <a class="site-logo" href="{site_url}" itemprop="url"><img src="{layout_url}/<?php echo $eclipseLogo; ?>" alt="{site_name}"{xhtml}></a>
+<?php } ?>
+        <div><p class="site_name" itemprop="name"><a href="{site_url}" itemprop="url">{site_name}</a></p><p class="site_slogan">{site_slogan}</p></div>
+      </div>
+    </div>
+  </header>
+<?php if (eclipse_menu_plugin_active()) { ?>
+  <div id="navigation" class="navigation_bg eclipse-plugin-menu" role="navigation" aria-label="Main navigation" itemscope="itemscope" itemtype="https://schema.org/SiteNavigationElement">
+    <div class="navigation_content">
+<?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="eclipse-menu-panel"><span aria-hidden="true">&#9776;</span><span>Menu</span></button>
+<?php } ?>
+      <div id="eclipse-menu-panel"><?php echo eclipse_menu_navigation(); ?></div>
+    </div>
+  </div>
+<?php } else { ?>
+  <nav id="navigation" aria-label="Main navigation" itemscope="itemscope" itemtype="https://schema.org/SiteNavigationElement">
+    <div class="navigation_content">
+<?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation_ul"><span aria-hidden="true">&#9776;</span><span>Menu</span></button>
+<?php } ?>
+      <ul id="navigation_ul">{menu_elements}</ul>
+    </div>
+  </nav>
+<?php } ?>
+  <div id="wrapper">
+    <div id="eclipse-admin-native-source" hidden><?php if (eclipse_is_admin_request() && function_exists('COM_adminMenu')) echo COM_adminMenu(); ?><?php echo eclipse_admin_studio_source(); ?></div>
+    <div id="centerblocks">
+      <main id="main-content" tabindex="-1" itemscope="itemscope" itemprop="mainContentOfPage" itemtype="https://schema.org/WebPageElement">
+        <p class="welcome_msg">{welcome_msg}&nbsp;{datetime}</p>
+        {breadcrumb_trail}
+        {system_messsages}
+        <?php echo eclipse_topic_heading(); ?>
+        {content}
+      </main>
+    </div>
+    {left_blocks}
+    {right_blocks}
+  </div>
+  <footer id="footer" role="contentinfo" itemscope="itemscope" itemtype="https://schema.org/WPFooter">
+    <?php echo eclipse_render_footer_links(); ?>
+    <div id="footer-content">
+      <p class="copyright" itemprop="copyrightHolder">{copyright_msg}</p>
+      <p id="trademark">{trademark_msg}</p>
+      <p class="site_info"><span class="powered_by">{powered_by}&nbsp;<a href="https://www.geeklog.net/">Geeklog</a></span><br{xhtml}><span class="execution_textandtime">{execution_textandtime}</span></p>
+    </div>
+  </footer>
+</div>
+{plg_footercode}
+{# end {templatelocation} #}
+</body>
+</html>

@@ -22,6 +22,8 @@ return array(
     'header_style'       => 'gradient',
     'footer_style'       => 'dark',
     'color_scheme'       => 'light',
+    'admin_ui_mode'      => 'modern',
+    'admin_navigation_source' => 'both',
     'mobile_menu'        => true,
     'editor_hide_sidebars' => true,
     'share_facebook'     => false,

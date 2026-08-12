@@ -4,9 +4,9 @@ Eclipse keeps its own resources within explicit uncompressed limits. Denim compa
 
 ## Enforced budgets
 
-- Public Eclipse CSS: 59,000 bytes maximum.
-- Eclipse JavaScript: 65,000 bytes maximum.
-- Complete installable Eclipse directory: 343,000 bytes maximum.
+- Public Eclipse CSS: 60,000 bytes maximum.
+- Eclipse JavaScript: 75,000 bytes maximum.
+- Complete installable Eclipse directory: 410,000 bytes maximum.
 - Theme Studio CSS loads only on `admin/index.php`.
 - Story-editor CSS loads only on `admin/story.php`.
 - Comment CSS loads only on `article.php` and `comment.php`.

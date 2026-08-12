@@ -81,7 +81,8 @@ body.theme-eclipse.eclipse-admin-page #centerblocks .block-center-content>.eclip
 
 /* Limit action icons only; content previews and uploaded images remain untouched. */
 body.theme-eclipse.eclipse-admin-page #main-content a>img[src*="/layout/eclipse/images/"],body.theme-eclipse.eclipse-admin-page #main-content button>img,body.theme-eclipse.eclipse-admin-page #main-content input[type=image],body.theme-eclipse.eclipse-admin-page #main-content .navi img,body.theme-eclipse.eclipse-admin-page #main-content td img[src*="/images/admin/"],body.theme-eclipse.eclipse-admin-page #main-content td img[src*="/images/icons/"]{display:inline-block!important;width:1.35rem!important;height:1.35rem!important;max-width:1.35rem!important;max-height:1.35rem!important;margin:.1rem .25rem!important;padding:0!important;object-fit:contain!important;vertical-align:middle!important;border:0!important;box-shadow:none!important}
-body.theme-eclipse.eclipse-admin-page #main-content .admin-commandcontrol li a>img{display:none!important;width:0!important;height:0!important;max-width:0!important;max-height:0!important;margin:0!important}
+body.theme-eclipse.eclipse-admin-page.admin-ui-mode-modern #main-content .admin-commandcontrol li a>img{display:none!important;width:0!important;height:0!important;max-width:0!important;max-height:0!important;margin:0!important}
+body.theme-eclipse.eclipse-admin-page.admin-ui-mode-classic #main-content .admin-commandcontrol li a>img{display:block;width:2.6rem;height:2.6rem;max-width:2.6rem;max-height:2.6rem;margin:.25rem auto .7rem;object-fit:contain}
 body.theme-eclipse.eclipse-admin-page #main-content input[type=image]{min-width:1.35rem!important;min-height:1.35rem!important;background:transparent!important}
 
 /* Sort/order/action images can sit directly inside table cells. */
@@ -92,6 +93,9 @@ body.theme-eclipse .story-edit-link:empty{display:none}.story-edit-link a{displa
 
 /* Public action icons must not inherit unrestricted content-image dimensions. */
 body.theme-eclipse .editlink>img,body.theme-eclipse a.editlink img,body.theme-eclipse .story_icon img{display:inline-block;width:1.2rem;height:1.2rem;min-width:0;min-height:0;max-width:1.2rem;max-height:1.2rem;margin:.1rem .2rem;padding:0;object-fit:contain;vertical-align:middle;background:transparent;border:0;box-shadow:none}
-body.theme-eclipse .story_status>li:empty{display:none}
+body.theme-eclipse .story_status>li:empty,body.theme-eclipse .story_status>li[hidden]{display:none!important}
+body.theme-eclipse th.admin-list-headerfield img,body.theme-eclipse th.admin-list-headerfield a>img{display:inline-block;width:.9rem;height:.9rem;min-width:0;min-height:0;max-width:.9rem;max-height:.9rem;margin:0 .15rem;padding:0;object-fit:contain;vertical-align:middle;background:transparent;border:0;box-shadow:none}
+body.theme-eclipse .block-left-content .uk-align-left>a>img[src*="/layout/eclipse/images/"],body.theme-eclipse .block-left-content .uk-align-right>a>img[src*="/layout/eclipse/images/"],body.theme-eclipse .block-right-content .uk-align-left>a>img[src*="/layout/eclipse/images/"],body.theme-eclipse .block-right-content .uk-align-right>a>img[src*="/layout/eclipse/images/"]{display:inline-block;width:1.2rem;height:1.2rem;min-width:0;min-height:0;max-width:1.2rem;max-height:1.2rem;margin:.1rem .2rem;padding:0;object-fit:contain;vertical-align:middle;background:transparent;border:0;border-radius:0;box-shadow:none}
+body.theme-eclipse img[src*="/layout/eclipse/images/edit.svg"],body.theme-eclipse img[src*="/layout/eclipse/images/copy.svg"],body.theme-eclipse img[src*="/layout/eclipse/images/deleteitem.svg"]{display:inline-block;width:1.2rem;height:1.2rem;min-width:0;min-height:0;max-width:1.2rem;max-height:1.2rem;margin:.1rem .2rem;padding:0;object-fit:contain;vertical-align:middle;background:transparent;border:0;border-radius:0;box-shadow:none}
 
 .eclipse-topic-heading{margin:clamp(1rem,2vw,1.5rem) 0 .8rem;font-size:clamp(1.7rem,3vw,2.4rem)}

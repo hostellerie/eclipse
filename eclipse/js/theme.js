@@ -3,12 +3,12 @@
     var translations = {
         en: {
             deleteConfirm: 'Delete this?', sendConfirm: 'Send this?', articleDetails: 'Article details', articleTitle: 'Article title', articleContent: 'Article content',
-            identity: 'Title and classification', publish: 'Publishing', seo: 'Search and identifiers', more: 'Additional options', access: 'Access and permissions',
+            identity: 'Title and classification', publish: 'Publishing', seo: 'Search and identifiers', seoOverview: 'SEO overview', more: 'Additional options', access: 'Access and permissions',
             draftFound: 'A newer local draft is available in this browser.', restoreDraft: 'Restore draft', discardDraft: 'Discard', autosaved: 'Local draft saved', focusMode: 'Focus mode', exitFocus: 'Exit focus mode', shareArticle: 'Share this article', shareOn: 'Share on'
         },
         fr: {
             deleteConfirm: 'Supprimer cet élément ?', sendConfirm: 'Envoyer cet élément ?', articleDetails: 'Détails de l’article', articleTitle: 'Titre de l’article', articleContent: 'Contenu de l’article',
-            identity: 'Titre et classement', publish: 'Publication', seo: 'Référencement et identifiants', more: 'Options complémentaires', access: 'Accès et permissions',
+            identity: 'Titre et classement', publish: 'Publication', seo: 'Référencement et identifiants', seoOverview: 'Vue d’ensemble SEO', more: 'Options complémentaires', access: 'Accès et permissions',
             draftFound: 'Un brouillon local plus recent est disponible dans ce navigateur.', restoreDraft: 'Restaurer', discardDraft: 'Ignorer', autosaved: 'Brouillon local enregistre', focusMode: 'Mode redaction', exitFocus: 'Quitter le mode redaction', shareArticle: 'Partager cet article', shareOn: 'Partager sur'
         }
     };
@@ -27,8 +27,6 @@
     if (/(?:^|\/)admin\/configuration\.php$/.test(window.location.pathname)) {
         document.body.classList.add('eclipse-configuration-page');
     }
-    function protectConfigurationTabs(){var api=window.geeklog&&geeklog.admin&&geeklog.admin.configuration;if(!document.body.classList.contains('eclipse-configuration-page')||!api||api.eclipseProtected)return;var add=api.addTab;api.eclipseProtected=true;api.removeTab=function(){};api.addTab=function(tabs,url,text,index){if(url==='#tab-dropdown')return;return add.call(api,tabs,url,text,index);};}
-    protectConfigurationTabs();setTimeout(protectConfigurationTabs,0);
     var toggle = document.querySelector('.menu-toggle');
     var menu = document.getElementById('navigation_ul') || document.getElementById('eclipse-menu-panel');
     if (menu && menu.id === 'eclipse-menu-panel') {
@@ -209,9 +207,9 @@
         });
         var footerEditor = form.querySelector('.eclipse-footer-editor');
         var initialFooterHtml = footerEditor ? footerEditor.innerHTML : '';
+        function footerTemplate(id) { var node = document.getElementById(id); return node ? node.innerHTML : ''; }
         if (footerEditor) {
             var footerSequence = Date.now();
-            function footerTemplate(id) { var node = document.getElementById(id); return node ? node.innerHTML : ''; }
             footerEditor.addEventListener('click', function (event) {
                 var button = event.target.closest('button');
                 if (!button || !footerEditor.contains(button)) return;
@@ -239,7 +237,7 @@
         var defaults = {
             palette: { color_primary:'#3157d5',color_secondary:'#6750a4',color_link:'#2448bd',color_background:'#f4f6fb',color_surface:'#ffffff',color_text:'#202431' },
             layout: { site_max_width:'1200px',reading_width:'72ch',font_size:'16px',font_family:'humanist',spacing:'normal',radius:'medium' },
-            appearance: { color_scheme:'light',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark',sidebar_position:'right' },
+            appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark',sidebar_position:'right' },
             brand: { logo:'images/logo-mark.svg',header_image:'',show_left_sidebar:false,show_right_sidebar:true,mobile_menu:true,editor_hide_sidebars:true },
             social: { share_facebook:false,share_linkedin:false,share_x:false },
             integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',sitemap_path:'' }
@@ -263,6 +261,77 @@
             });
             return settings;
         }
+        function collectFooter() {
+            var footer = { groups: [], copyright: '', legal_notice: '' };
+            if (!footerEditor) return footer;
+            footerEditor.querySelectorAll('.eclipse-footer-group').forEach(function (group) {
+                var links = [];
+                group.querySelectorAll('.eclipse-footer-link-row').forEach(function (row) {
+                    function field(suffix) { return row.querySelector('[name$="[' + suffix + ']"]'); }
+                    links.push({
+                        label: field('label') ? field('label').value : '', url: field('url') ? field('url').value : '',
+                        enabled: !!(field('enabled') && field('enabled').checked), emphasis: !!(field('emphasis') && field('emphasis').checked),
+                        new_window: !!(field('new_window') && field('new_window').checked), nofollow: !!(field('nofollow') && field('nofollow').checked)
+                    });
+                });
+                footer.groups.push({ links: links });
+            });
+            var copyright = footerEditor.querySelector('[name="eclipse_footer[copyright]"]');
+            var legal = footerEditor.querySelector('[name="eclipse_footer[legal_notice]"]');
+            footer.copyright = copyright ? copyright.value : ''; footer.legal_notice = legal ? legal.value : '';
+            return footer;
+        }
+        function collectPalettes() {
+            var result = {};
+            selector.querySelectorAll('option[data-palette-name][data-colors]').forEach(function (option) {
+                var colors = option.getAttribute('data-colors').split(',');
+                if (colors.length !== 6) return;
+                result[option.getAttribute('data-palette-name')] = {
+                    color_primary:colors[0],color_secondary:colors[1],color_link:colors[2],
+                    color_background:colors[3],color_surface:colors[4],color_text:colors[5]
+                };
+            });
+            return result;
+        }
+        function applyFooter(footer) {
+            if (!footerEditor || !footer || typeof footer !== 'object' || !Array.isArray(footer.groups)) return false;
+            var groupsNode = footerEditor.querySelector('.eclipse-footer-groups'); if (!groupsNode) return false;
+            groupsNode.innerHTML = '';
+            footer.groups.slice(0, 8).forEach(function (groupData, groupIndex) {
+                var groupId = 'import-' + groupIndex;
+                var groupHtml = footerTemplate('eclipse-footer-group-template').replace(/__G__/g, groupId).replace(/__L__/g, groupId + '-0');
+                groupsNode.insertAdjacentHTML('beforeend', groupHtml);
+                var groupNode = groupsNode.lastElementChild; var list = groupNode.querySelector('.eclipse-footer-group-links'); list.innerHTML = '';
+                var links = groupData && Array.isArray(groupData.links) ? groupData.links.slice(0, 12) : [];
+                links.forEach(function (linkData, linkIndex) {
+                    list.insertAdjacentHTML('beforeend', footerTemplate('eclipse-footer-link-template').replace(/__G__/g, groupId).replace(/__L__/g, groupId + '-' + linkIndex));
+                    var row = list.lastElementChild;
+                    Object.keys(linkData || {}).forEach(function (key) {
+                        var control = row.querySelector('[name$="[' + key + ']"]'); if (!control) return;
+                        if (control.type === 'checkbox') control.checked = !!linkData[key]; else control.value = String(linkData[key]);
+                    });
+                });
+            });
+            var copyright = footerEditor.querySelector('[name="eclipse_footer[copyright]"]');
+            var legal = footerEditor.querySelector('[name="eclipse_footer[legal_notice]"]');
+            if (copyright) copyright.value = typeof footer.copyright === 'string' ? footer.copyright : '';
+            if (legal) legal.value = typeof footer.legal_notice === 'string' ? footer.legal_notice : '';
+            return true;
+        }
+        function applyPalettes(imported) {
+            if (!imported || typeof imported !== 'object' || Array.isArray(imported)) return false;
+            var hidden = document.getElementById('eclipse-portable-palettes');
+            if (hidden) hidden.value = JSON.stringify(imported);
+            selector.querySelectorAll('option[data-imported="true"]').forEach(function (option) { option.remove(); });
+            Object.keys(imported).slice(0, 50).forEach(function (name) {
+                var palette = imported[name] || {}; var colors = names.map(function (key) { return palette[key] || ''; });
+                if (!colors.every(function (color) { return /^#[0-9a-fA-F]{6}$/.test(color); })) return;
+                var option = document.createElement('option'); option.value = 'imported-' + name; option.textContent = name;
+                option.setAttribute('data-imported', 'true'); option.setAttribute('data-palette-name', name); option.setAttribute('data-colors', colors.join(','));
+                selector.appendChild(option); palettes[option.value] = colors.map(function (color) { return color.toLowerCase(); });
+            });
+            return true;
+        }
         function applySettings(settings) {
             if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return false;
             var changed = false;
@@ -277,16 +346,32 @@
         }
         var exportButton = document.getElementById('eclipse-settings-export');
         if (exportButton) exportButton.addEventListener('click', function () {
-            var blob = new Blob([JSON.stringify(collectSettings(), null, 2) + '\n'], { type:'application/json' });
+            var portable = { schema:'eclipse-studio-state', schema_version:1, eclipse_version:form.getAttribute('data-eclipse-version') || '', exported_at:new Date().toISOString(), settings:collectSettings(), footer:collectFooter(), palettes:collectPalettes() };
+            var blob = new Blob([JSON.stringify(portable, null, 2) + '\n'], { type:'application/json' });
             var url = URL.createObjectURL(blob); var link = document.createElement('a');
-            link.href = url; link.download = 'eclipse-settings.json'; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+            link.href = url; link.download = 'eclipse-studio-state.json'; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
         });
         var importInput = document.getElementById('eclipse-settings-import');
         if (importInput) importInput.addEventListener('change', function () {
-            var file = importInput.files && importInput.files[0]; if (!file || file.size > 262144) return;
-            var reader = new FileReader(); reader.onload = function () { try { applySettings(JSON.parse(reader.result)); } catch (error) { window.alert('Invalid Eclipse settings JSON.'); } }; reader.readAsText(file);
+            var file = importInput.files && importInput.files[0];
+            if (!file) return; if (file.size > 5242880) { window.alert('The Eclipse JSON file exceeds 5 MiB.'); importInput.value = ''; return; }
+            var reader = new FileReader(); reader.onload = function () { try {
+                var data = JSON.parse(reader.result); var legacy = !data.schema && !data.settings;
+                if (!legacy && (data.schema !== 'eclipse-studio-state' || data.schema_version !== 1 || !data.settings)) throw new Error('schema');
+                var changed = applySettings(legacy ? data : data.settings);
+                if (!legacy && data.footer) changed = applyFooter(data.footer) || changed;
+                if (!legacy && data.palettes) changed = applyPalettes(data.palettes) || changed;
+                if (!changed) throw new Error('empty'); setDirty(true);
+            } catch (error) { window.alert('Invalid or unsupported Eclipse state JSON.'); importInput.value = ''; } }; reader.readAsText(file);
         });
-        if (cancel) cancel.addEventListener('click', function () { form.reset(); if (footerEditor) footerEditor.innerHTML = initialFooterHtml; inputs.forEach(function (input, index) { if (input) input.value = initialColors[index]; }); previewColors(initialColors); identifyPalette(); setDirty(false); });
+        var historySelect = document.getElementById('eclipse-history-select'); var historyRestore = document.getElementById('eclipse-history-restore');
+        if (historySelect && historyRestore) historySelect.addEventListener('change', function () { historyRestore.disabled = !historySelect.value; });
+        if (cancel) cancel.addEventListener('click', function () {
+            form.reset(); if (footerEditor) footerEditor.innerHTML = initialFooterHtml;
+            var portablePalettes = document.getElementById('eclipse-portable-palettes'); if (portablePalettes) portablePalettes.value = '';
+            selector.querySelectorAll('option[data-imported="true"]').forEach(function (option) { option.remove(); });
+            inputs.forEach(function (input, index) { if (input) input.value = initialColors[index]; }); previewColors(initialColors); identifyPalette(); setDirty(false);
+        });
         form.addEventListener('submit', function () { setDirty(false); });
         window.addEventListener('beforeunload', function (event) { if (!dirty) return; event.preventDefault(); event.returnValue = ''; });
         var frame = document.getElementById('eclipse-preview-frame');
@@ -323,7 +408,7 @@
         var key = /block/.test(value) ? 'block' : /stor|content|submission/.test(value) ? 'story' : /user|group|mail/.test(value) ? 'user' : /config|environment/.test(value) ? 'config' : /topic|syndicat|feed/.test(value) ? 'topic' : /plugin|spam/.test(value) ? 'plugin' : /database|backup/.test(value) ? 'database' : /doc|log|file/.test(value) ? 'document' : /security|clear|version/.test(value) ? 'security' : /track|tool/.test(value) ? 'tool' : 'default';
         return '<svg class="eclipse-command-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + iconPaths[key] + '</svg>';
     }
-    document.querySelectorAll('.admin-commandcontrol li a').forEach(function (link) {
+    document.querySelectorAll('body.admin-ui-mode-modern .admin-commandcontrol li a').forEach(function (link) {
         if (!link.querySelector('.eclipse-command-icon')) link.insertAdjacentHTML('afterbegin', commandIcon(link.getAttribute('href') || '', link.textContent || ''));
     });
 
@@ -550,6 +635,28 @@
                     form.insertBefore(advancedIdentity, form.firstChild);
                 }
             }
+            if (advancedBasic && !form.querySelector('.eclipse-advanced-seo-overview')) {
+                var advancedSource = advancedBasic.querySelector(':scope > dl.form_block');
+                var advancedSeo = document.createElement('section'); advancedSeo.className = 'eclipse-editor-panel eclipse-panel-seo eclipse-advanced-seo-overview';
+                var advancedSeoHeading = document.createElement('h2'); advancedSeoHeading.textContent = labels.seo; advancedSeo.appendChild(advancedSeoHeading);
+                var advancedSeoList = document.createElement('dl'); advancedSeoList.className = 'form_block'; advancedSeo.appendChild(advancedSeoList);
+                var movedSeoFields = 0;
+                function moveAdvancedSeoField(selector) {
+                    if (!advancedSource) return; var control = advancedSource.querySelector(selector); if (!control) return;
+                    var definition = control.closest('dd'); if (!definition) return; var term = definition.previousElementSibling;
+                    while (term && term.tagName !== 'DT') term = term.previousElementSibling;
+                    if (term) advancedSeoList.appendChild(term); advancedSeoList.appendChild(definition); movedSeoFields++;
+                }
+                ['#admin-storyeditor_advanced-sid','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(moveAdvancedSeoField);
+                if (movedSeoFields) {
+                    var seoAssistant = document.createElement('div'); seoAssistant.className = 'eclipse-seo-assistant'; seoAssistant.setAttribute('data-eclipse-seo-assistant','true');
+                    seoAssistant.innerHTML = '<h3></h3><div class="eclipse-search-preview"><strong data-seo-preview-title></strong><span data-seo-preview-url></span><p data-seo-preview-description></p></div><ul><li data-seo-check="title"></li><li data-seo-check="description"></li><li data-seo-check="slug"></li><li data-seo-check="content"></li></ul>';
+                    seoAssistant.querySelector('h3').textContent = labels.seoOverview; advancedSeo.appendChild(seoAssistant);
+                    var identityPanel = form.querySelector(':scope > .eclipse-editor-identity');
+                    if (identityPanel) identityPanel.insertAdjacentElement('afterend', advancedSeo); else form.insertBefore(advancedSeo, advancedBasic);
+                    setupSeoAssistant(form);
+                }
+            }
             var editorCanvases = Array.prototype.slice.call(form.querySelectorAll('.story_editor'));
             editorCanvases.forEach(function (editor) {
                 editor.classList.add('eclipse-editor-canvas');
@@ -690,30 +797,14 @@
         palette.addEventListener('keydown',function(event){if(event.key!=='Tab')return;var focusable=Array.prototype.slice.call(dialog.querySelectorAll('input,a[href],button:not([disabled])'));if(!focusable.length)return;var first=focusable[0];var last=focusable[focusable.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}});
         document.addEventListener('keydown',function(event){if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();if(palette.hidden)openPalette();else closePalette();}else if(event.key==='Escape'&&!palette.hidden){closePalette();}});
     }
-    function setupConfigurationWorkspace() {
-        if (!document.body.classList.contains('eclipse-configuration-page')) return;
-        var editor=document.getElementById('geeklog_config_editor');
-        var menu=document.getElementById('config_menu');
-        if (!editor||!menu||editor.querySelector('.eclipse-config-toolbar')) return;
-        var toolbar=document.createElement('nav');
-        toolbar.className='eclipse-config-toolbar';
-        toolbar.setAttribute('aria-label','Configuration workspace');
-        var adminUrl=(window.geeklog&&geeklog.site_admin_url)||'/admin';
-        var back=document.createElement('a');
-        back.className='eclipse-config-back';
-        back.href=adminUrl.replace(/\/$/,'')+'/index.php';
-        back.textContent='\u2190 Command & Control';
-        var button=document.createElement('button');
-        button.type='button';
-        button.className='eclipse-config-menu-toggle';
-        button.setAttribute('aria-controls','config_menu');
-        button.setAttribute('aria-expanded','true');
-        button.textContent='Hide configuration menu';
-        button.addEventListener('click',function(){var collapsed=editor.classList.toggle('eclipse-config-menu-collapsed');menu.hidden=collapsed;button.setAttribute('aria-expanded',String(!collapsed));button.textContent=collapsed?'Show configuration menu':'Hide configuration menu';});
-        toolbar.appendChild(back);toolbar.appendChild(button);editor.insertBefore(toolbar,editor.firstChild);
-        protectConfigurationTabs();
+    function setupEditorialAdministration() {
+        setupAccessibility(); setupArticleSharing();
+        document.querySelectorAll('.story_status>li').forEach(function (item) {
+            if (!item.textContent.trim() && !item.querySelector('img,svg,[aria-label]')) item.hidden = true;
+        });
+        if (document.body.classList.contains('eclipse-admin-page') && !document.body.classList.contains('admin-ui-mode-modern')) return;
+        setupAdminDashboard(); setupAdminCommandPalette(); setupAdminLists(); enhanceStoryEditor();
     }
-    function setupEditorialAdministration() { setupAccessibility(); setupArticleSharing(); setupAdminDashboard(); setupAdminCommandPalette(); setupAdminLists(); enhanceStoryEditor(); setupConfigurationWorkspace(); }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupEditorialAdministration, { once: true });
     else setupEditorialAdministration();
 }());

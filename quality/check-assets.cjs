@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('fs'),path=require('path');
+const root=path.resolve(process.argv[2]||path.join(__dirname,'..','eclipse'));
+const required=['images/admin/disk.svg','images/bg.svg','images/install.svg','images/logo.svg','images/smallcamera.svg','images/success.svg','images/error.svg','images/update.svg','images/icons/comment.svg','images/icons/language.svg','images/icons/router.svg','images/tooltips/tooltip.svg'];
+const declared=['css/variables.css','css/base.css','css/layout.css','css/components.css','css/forms.css','css/plugins.css','css/responsive.css','css/modern.css','css/studio.css','css/ui-fixes.css','css/v3.css','css/footer-links.css','css/story-editor.css','css/configuration.css','css/comments.css','css/menu.css','css/menu-refinements.css','css/admin/admin.css','js/theme.js','js/admin.js'];
+const files=[];function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);e.isDirectory()?walk(p):files.push(p)}}walk(root);
+const refs=new Set(),manual=new Set(['images/header.jpg']);for(const file of files){if(!/\.(?:php|thtml|css|js)$/i.test(file))continue;const text=fs.readFileSync(file,'utf8');for(const m of text.matchAll(/(?:images\/|url\(["']?)([A-Za-z0-9_./-]+\.(?:svg|png|jpe?g|gif|webp|ico))/gi)){let r=m[0].startsWith('images/')?'images/'+m[1]:m[1];r=r.replace(/^\.\.\//,'');if(r.startsWith('images/')&&!manual.has(r))refs.add(r)}}
+const expected=[...required,...declared,...refs];const missing=[];for(const rel of new Set(expected)){const parts=rel.split('/');let dir=root,ok=true;for(const part of parts){const names=fs.readdirSync(dir);if(!names.includes(part)){ok=false;break}dir=path.join(dir,part)}if(!ok||!fs.statSync(dir).isFile())missing.push(rel)}
+if(missing.length){console.error('Missing or case-mismatched Eclipse assets:\n'+missing.map(x=>'  '+x).join('\n'));process.exit(1)}console.log(`Eclipse asset contract passed (${new Set(expected).size} paths).`);

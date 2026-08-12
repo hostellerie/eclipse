@@ -1,6 +1,6 @@
 # Eclipse release QA checklist
 
-This checklist must be completed on a Geeklog 2.1.1 staging installation before a release is considered production-ready.
+This checklist must be completed on both Geeklog 2.1.1 / PHP 5.6 and Geeklog 2.2.2 / PHP 8.1 staging installations before a release is considered production-ready.
 
 ## Critical smoke tests
 
@@ -8,7 +8,10 @@ This checklist must be completed on a Geeklog 2.1.1 staging installation before 
 - Full article page renders header, article content, related blocks and footer.
 - Anonymous and authenticated navigation both contain their expected links.
 - Command and Control renders its cards, icons and administration sidebar.
-- Theme Studio retains its layout and can save settings to `data/eclipse-settings.json`.
+- Theme Studio retains its layout and saves settings persistently under `{path_data}-eclipse/`.
+- Theme Studio survives `admin/clearctl.php` and migrates RC56-RC58 `ecl.*` records or legacy JSON without deleting either source.
+- Global cache clearing is never invoked after a Theme Studio save or update; only Eclipse entries in layout caches are targeted.
+- Verify all four column modes after cache clearing: none, left, right, and left plus right.
 - Installing a versioned ZIP creates a backup and keeps Denim inheritance active.
 
 ## Editorial workflow
@@ -30,6 +33,32 @@ This checklist must be completed on a Geeklog 2.1.1 staging installation before 
 
 ## Administration pages
 
+- The page has its server-rendered `eclipse-admin-page` class before JavaScript runs.
+- Modern workspace does not flash the classic header while loading and reveals the original interface after the fallback delay if enhancement cannot run.
+- Modern workspace shows a dark sidebar, compact top bar and full-width work area on dashboard, list, editor, configuration and plugin administration pages.
+- Classic Eclipse retains the public header, navigation and original side blocks and does not create the modern sidebar.
+- Switching either administration mode in Studio, saving and reloading applies the selected shell on both Geeklog targets.
+- Each Geeklog User Functions, Admins Only, Core and plugin block appears as its own folded navigation group.
+- Left blocks, Right blocks and Left plus right Studio choices include only links from the selected server-rendered block regions.
+- The full-width administration bar remains above both the navigation rail and main content.
+- The control below the blocks reduces the desktop column to a narrow rail; its visible icon restores it after navigation or reload.
+- Folded block links appear on pointer hover and keyboard focus and can also be pinned open with the block heading.
+- Desktop fly-outs begin at the sidebar edge and do not move later block headings.
+- Every group has a semantic SVG badge that remains visible and opens an unclipped fly-out in the collapsed rail.
+- Geeklog's Core, Plugins and Tools group headings appear as separate navigation groups with only their original links.
+- Ordinary User Functions blocks never enter the Modern workspace administration rail.
+- A pinned fly-out closes on focus loss and immediately when one of its links is activated.
+- A sidebar that fits remains fixed beneath the global bar and reaches the viewport bottom; a taller sidebar remains page-scrollable.
+- A restricted administrator never receives a cloned link that Geeklog omitted from the original blocks.
+- Relative Geeklog 2.1.1 links and permitted 2.2.2 User Functions links remain available when their source block is selected.
+- Configuration Manager retains its native Denim menu, tabs, fields and JavaScript behavior in both administration modes.
+- Geeklog 2.2.2 `/admin/article.php?mode=edit` keeps the Modern workspace sidebar at its configured width and renders the editor in the content column.
+- At mobile width the modern sidebar opens and closes from the Menu button without trapping or losing keyboard focus.
+- The mobile administration toggle exposes only links already emitted by Geeklog and remains keyboard operable.
+- With JavaScript disabled, the original Geeklog administration block remains visible and usable.
+- Geeklog 2.1.1 resolves `_admin_block` without requesting an `_admin_list` template.
+- Geeklog 2.2.2 resolves `_admin_list` through Denim's child-block fallback.
+- Geeklog 2.2.2 loads its native `admin/article/articleeditor*.thtml` templates; no legacy `admin/story` template is forced.
 - Saved filters persist per administration page and reapply without submitting automatically.
 - Geeklog's native filters remain visible; Eclipse saved-filter, density and column tools are collapsed on first visit and their visibility then persists.
 - Column visibility and table density persist per table and can be reversed.
@@ -69,7 +98,7 @@ This checklist must be completed on a Geeklog 2.1.1 staging installation before 
 - Saving removes the unsaved-change warning and persists site-wide.
 - Contrast badges update for presets and individual color changes.
 - Restore defaults removes the saved data configuration.
-- Named palettes survive a theme update in `data/eclipse-palettes.json` and can be deleted by name.
+- Named palettes survive theme updates and global cache cleaning in protected sibling JSON storage and can be deleted by name.
 - Resetting one section leaves every other section unchanged.
 - Section-reset buttons retain an opaque background and visible hover/focus state.
 - Exported JSON imports as a draft and is not applied site-wide until Save is pressed.
@@ -77,3 +106,11 @@ This checklist must be completed on a Geeklog 2.1.1 staging installation before 
 - The Updates tab lists installer backups and creates a new safety backup before rollback.
 
 Record the tested Geeklog version, PHP version, browser versions and any third-party plugins below before release.
+# Modern dashboard
+
+- [ ] Needs attention contains only non-zero moderation/submission links visible to the current account.
+- [ ] Quick actions contains only actions already authorized by Geeklog.
+- [ ] Recent stories and drafts respect topic/story permissions and never exceed their fixed limits.
+- [ ] Recent comments is hidden without `comment.moderate`.
+- [ ] Recent Static Pages is hidden when the plugin is inactive or the user lacks `staticpages.edit`.
+- [ ] Classic Eclipse retains the native Command & Control page.

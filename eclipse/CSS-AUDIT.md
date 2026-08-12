@@ -21,4 +21,4 @@ This audit records why the remaining `!important` declarations exist. They are c
 - Focus mode uses seven scoped overrides to neutralize Denim's fixed region visibility and width declarations while the body opt-in class is active.
 - The paired advanced-editor checkbox cells need one padding reset to neutralize Denim's label offset.
 - The Eclipse table-tools expanded state needs one display override because its collapsed state is declared after the base flex layout.
-- The validator fixes the current compatibility ceiling at 275 `!important` declarations; an increase fails validation until this audit and the ceiling are deliberately reviewed.
+- The validator fixes the current compatibility ceiling at 300 `!important` declarations. The RC77 allowance covers the scoped Geeklog 2.2.2 advanced-editor definition-list overrides; a further increase fails validation until this audit and the ceiling are deliberately reviewed.

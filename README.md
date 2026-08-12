@@ -2,7 +2,7 @@
 
 Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focuses on readable public pages, a more comfortable editorial workflow, accessible navigation and a built-in Theme Studio.
 
-> **Testing release:** `1.0.0-rc53` is a release candidate intended for staging and community feedback. Back up the site before installation and do not treat it as the final stable release yet.
+> **Stable release:** `1.0.0` supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. Back up the site before installation or update.
 
 ## Highlights
 
@@ -12,20 +12,20 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 - Refined Geeklog administration pages, forms, tables and story editor.
 - Theme Studio with live preview, palettes, update upload, history and rollback.
 - SEO and editorial helpers, local draft recovery and configurable social sharing.
-- Settings stored under Geeklog `path_data`, outside the theme directory.
+- Settings, footer links, palettes and history stored as protected JSON in `{path_data}-eclipse/`.
 - Local ZIP updates with integrity validation, safety backup and automatic Geeklog template-cache clearing.
 
 ## Requirements
 
 - Geeklog 2.1.1 or later.
 - The `denim` theme must remain installed because Eclipse inherits compatibility templates from it.
-- PHP 5.3 is the parsing baseline; a currently maintained PHP version is strongly recommended.
-- A writable Geeklog `path_data` directory.
+- PHP 5.6 is the supported parsing baseline; a currently maintained PHP version is strongly recommended.
+- Permission to create the protected sibling `{path_data}-eclipse/`; writable temporary storage is also required for ZIP updates.
 - PHP `ZipArchive` only when using Theme Studio's local update installer.
 
 See [COMPATIBILITY.md](eclipse/COMPATIBILITY.md) for the detailed compatibility status.
 
-## Install the test release
+## Install Eclipse
 
 1. Download the versioned ZIP from the GitHub **Releases** page, not GitHub's automatic source archive.
 2. Back up the site files and database.
@@ -34,7 +34,7 @@ See [COMPATIBILITY.md](eclipse/COMPATIBILITY.md) for the detailed compatibility 
 5. Select Eclipse in Geeklog and clear the template cache once.
 6. Test the home page, a full article, login/password recovery and Command and Control.
 
-Existing Eclipse installations can upload the release ZIP from **Command and Control → Theme Studio → Updates**.
+Existing Eclipse installations can upload the release ZIP from **Command and Control â†’ Theme Studio â†’ Updates**.
 
 ## Testing and feedback
 
@@ -51,9 +51,9 @@ Use the [release QA checklist](eclipse/QA-CHECKLIST.md) and report reproducible 
 
 ## Repository layout
 
-- `eclipse/` — exact installable theme tree and integrity manifest.
-- `quality/` — development-only manifest and contract validation tools.
-- `RELEASE-NOTES.md` — notes for the current test release.
+- `eclipse/` â€” exact installable theme tree and integrity manifest.
+- `quality/` â€” development-only manifest and contract validation tools.
+- `RELEASE-NOTES.md` â€” release notes and release-candidate history.
 
 Development tools are deliberately excluded from the installable theme archive.
 

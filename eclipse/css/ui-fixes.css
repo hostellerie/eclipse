@@ -42,24 +42,5 @@ body.theme-eclipse .ui-autocomplete .ui-menu-item{display:block;margin:0;padding
 body.theme-eclipse .ui-autocomplete .ui-menu-item a,body.theme-eclipse .ui-autocomplete .ui-menu-item-wrapper{display:block;padding:.48rem .6rem;color:var(--eclipse-text);background:transparent;border:0;border-radius:.35rem;font-size:.78rem;line-height:1.35;text-decoration:none;white-space:normal;cursor:pointer}
 body.theme-eclipse .ui-autocomplete .ui-menu-item a.ui-state-focus,body.theme-eclipse .ui-autocomplete .ui-menu-item a.ui-state-active,body.theme-eclipse .ui-autocomplete .ui-menu-item-wrapper.ui-state-focus,body.theme-eclipse .ui-autocomplete .ui-menu-item-wrapper.ui-state-active{color:#fff;background:var(--eclipse-primary)}
 body.theme-eclipse .ui-helper-hidden-accessible{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;border:0;clip:rect(0 0 0 0)}
-body.theme-eclipse.eclipse-configuration-page #rightblocks{display:none}
-body.theme-eclipse.eclipse-configuration-page #wrapper{grid-template-columns:minmax(0,1fr)}
-body.theme-eclipse.eclipse-configuration-page #centerblocks{grid-column:1;width:100%}
-body.theme-eclipse.eclipse-configuration-page #geeklog_config_editor{display:grid;grid-template-columns:minmax(13rem,16rem) minmax(0,1fr);gap:1.25rem;align-items:start}
-body.theme-eclipse.eclipse-configuration-page #geeklog_config_editor>form[name=group]{display:none}
-body.theme-eclipse.eclipse-configuration-page #config_menu,body.theme-eclipse.eclipse-configuration-page #config_content{float:none;width:auto;min-width:0;margin:0;padding:0}
-body.theme-eclipse.eclipse-configuration-page #config_menu{padding-right:.25rem}
-body.theme-eclipse.eclipse-configuration-page #config_menu .block-title{margin:0 0 .45rem;padding:0 0 .45rem;color:var(--eclipse-text);background:transparent;border:0;border-bottom:1px solid var(--eclipse-border);font-size:.88rem;line-height:1.2;text-shadow:none}
-body.theme-eclipse.eclipse-configuration-page #config_menu .block-config{margin:0 0 1rem;padding:.35rem 0}
-body.theme-eclipse.eclipse-configuration-page #config_menu .block-config-content{padding-left:.35rem}
-body.theme-eclipse.eclipse-configuration-page #config_menu .configoption,body.theme-eclipse.eclipse-configuration-page #config_menu .configoption_off{height:auto;min-height:1.9rem;overflow:visible;line-height:1.35;white-space:normal}
-body.theme-eclipse.eclipse-configuration-page #config_menu .configoption a{height:auto;min-height:1.9rem;padding:.3rem .45rem;overflow:visible;line-height:1.35;white-space:normal}
-body.theme-eclipse.eclipse-configuration-page .eclipse-config-toolbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .25rem;padding:.55rem .7rem;background:color-mix(in srgb,var(--eclipse-primary) 5%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-radius:.6rem}
-body.theme-eclipse.eclipse-configuration-page .eclipse-config-back{font-size:.76rem;font-weight:750;text-decoration:none}
-body.theme-eclipse.eclipse-configuration-page .eclipse-config-menu-toggle{min-height:2rem;padding:.3rem .55rem;color:var(--eclipse-primary);background:var(--eclipse-surface);border-color:var(--eclipse-border);box-shadow:none;font-size:.72rem}
-body.theme-eclipse.eclipse-configuration-page #geeklog_config_editor.eclipse-config-menu-collapsed{grid-template-columns:minmax(0,1fr)}
-body.theme-eclipse.eclipse-configuration-page #geeklog_config_editor.eclipse-config-menu-collapsed #config_content{grid-column:1}
-body.theme-eclipse.eclipse-configuration-page #config_main .config_name{margin:.25rem 0;padding:.6rem .35rem}
-@media(max-width:52rem){body.theme-eclipse.eclipse-configuration-page #geeklog_config_editor{grid-template-columns:1fr}body.theme-eclipse.eclipse-configuration-page #config_menu,body.theme-eclipse.eclipse-configuration-page #config_content{grid-column:1}body.theme-eclipse.eclipse-configuration-page .eclipse-config-toolbar{position:sticky;z-index:20;top:3.75rem}}
 body.theme-eclipse #tabs-dropdown,body.theme-eclipse #tabs-dropdown ul,body.theme-eclipse #tabs-dropdown li{margin:0;padding:0;list-style:none}body.theme-eclipse #tabs-dropdown{z-index:30;min-width:10rem;padding:.3rem;background:var(--eclipse-surface);border:1px solid var(--eclipse-border);border-radius:.45rem;box-shadow:var(--eclipse-shadow)}body.theme-eclipse #tabs-dropdown a{display:block;padding:.45rem .6rem;border-radius:.3rem;text-decoration:none}body.theme-eclipse #tabs-dropdown a:hover,body.theme-eclipse #tabs-dropdown a:focus-visible{color:#fff;background:var(--eclipse-primary)}
 @media(max-width:52rem){#config_content select{box-sizing:border-box;height:3rem;min-height:3rem;padding:.55rem 2rem .55rem .7rem;font-size:1rem;line-height:1.4;vertical-align:middle}}

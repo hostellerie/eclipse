@@ -18,6 +18,7 @@ Get-ChildItem -LiteralPath $theme -Recurse -File |
     }
 
 $manifest = [ordered]@{ version = $match.Groups[1].Value; algorithm = 'sha256'; files = $files }
-$json = $manifest | ConvertTo-Json -Depth 4
-[System.IO.File]::WriteAllText((Join-Path $theme 'MANIFEST.json'), $json + [Environment]::NewLine, [System.Text.UTF8Encoding]::new($false))
+$json = (($manifest | ConvertTo-Json -Depth 4) -replace '(?m)[ \t]+(?=\r?$)', '') -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText((Join-Path $theme 'MANIFEST.json'), $json + "`n", [System.Text.UTF8Encoding]::new($false))
 Write-Host "Built MANIFEST.json for Eclipse $($match.Groups[1].Value) with $($files.Count) files."
+
