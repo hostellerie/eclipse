@@ -71,14 +71,17 @@ eclipse_test_assert(strpos($html, 'target="_blank"') !== false, 'target not pres
 eclipse_test_assert(strpos($html, 'rel="noopener noreferrer"') !== false, 'noopener not added');
 eclipse_test_assert(strpos($html, 'legacy-menu') === false, 'resolved tree unexpectedly used legacy renderer');
 
-$tree = MENU_getResolvedTree('navigation');
-$tree[1]['resolved'] = false;
-
 function eclipse_test_unresolved_tree()
 {
     return array(array('resolved' => false, 'children' => array()));
 }
 
 eclipse_test_assert(eclipse_menu_tree_is_resolved(eclipse_test_unresolved_tree()) === false, 'unresolved tree detection failed');
+
+// Geeklog 2.1.x compiles .thtml files into path_data/layout_cache. __DIR__ in a
+// compiled template therefore points at the cache rather than layout/eclipse.
+$header = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
+eclipse_test_assert(strpos($header, "require_once __DIR__") === false, 'header.thtml must not require theme files through __DIR__');
+eclipse_test_assert(strpos($header, "\$_CONF['path_layout']") !== false, 'header.thtml must use Geeklog path_layout for theme includes');
 
 echo "Eclipse resolved Menu navigation tests passed" . PHP_EOL;
