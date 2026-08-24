@@ -8,4 +8,7 @@ return array(
     'menu' => array(
         'navigation',
     ),
+    'preview' => array(
+        'menu' => 'includes/plugin-presentation-preview.php',
+    ),
 );
