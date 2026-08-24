@@ -28,7 +28,7 @@
     </div>
   </header>
 <?php if (eclipse_menu_plugin_active()) { ?>
-<?php require_once __DIR__ . '/includes/menu-navigation.php'; ?>
+<?php require_once rtrim($_CONF['path_layout'], '/\\') . '/includes/menu-navigation.php'; ?>
   <div id="navigation" class="navigation_bg eclipse-plugin-menu" role="navigation" aria-label="Main navigation">
     <div class="navigation_content">
 <?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
