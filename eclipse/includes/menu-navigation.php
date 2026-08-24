@@ -61,6 +61,34 @@ function eclipse_menu_tree_is_resolved($nodes)
 }
 
 /**
+ * Tell whether a node contains the currently selected page below it.
+ *
+ * This is deliberately distinct from node['selected']: only the actual link
+ * receives aria-current="page", while ancestors receive an active-trail CSS
+ * class for visual context.
+ *
+ * @param array $node
+ * @return bool
+ */
+function eclipse_menu_node_has_selected_descendant($node)
+{
+    if (empty($node['children']) || !is_array($node['children'])) {
+        return false;
+    }
+
+    foreach ($node['children'] as $child) {
+        if (!is_array($child)) {
+            continue;
+        }
+        if (!empty($child['selected']) || eclipse_menu_node_has_selected_descendant($child)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Render a resolved Menu tree using Eclipse-owned markup.
  *
  * Menu remains responsible for labels, hierarchy, permissions, ordering,
@@ -90,6 +118,7 @@ function eclipse_menu_render_tree($nodes, $root = false)
             ? $node['children'] : array();
         $hasChildren = !empty($children);
         $selected = !empty($node['selected']);
+        $activeTrail = !$selected && eclipse_menu_node_has_selected_descendant($node);
         $type = isset($node['type']) ? (int) $node['type'] : 0;
 
         $classes = array('eclipse-menu-item');
@@ -98,6 +127,9 @@ function eclipse_menu_render_tree($nodes, $root = false)
         }
         if ($selected) {
             $classes[] = 'eclipse-menu-current';
+        }
+        if ($activeTrail) {
+            $classes[] = 'eclipse-menu-active-trail';
         }
         if ($index === $count) {
             $classes[] = 'eclipse-menu-last';
