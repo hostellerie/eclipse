@@ -28,12 +28,13 @@
     </div>
   </header>
 <?php if (eclipse_menu_plugin_active()) { ?>
+<?php require_once __DIR__ . '/includes/menu-navigation.php'; ?>
   <div id="navigation" class="navigation_bg eclipse-plugin-menu" role="navigation" aria-label="Main navigation">
     <div class="navigation_content">
 <?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="eclipse-menu-panel"><span aria-hidden="true">&#9776;</span><span>Menu</span></button>
 <?php } ?>
-      <div id="eclipse-menu-panel"><?php echo eclipse_menu_navigation(); ?></div>
+      <div id="eclipse-menu-panel"><?php echo eclipse_menu_navigation_resolved(); ?></div>
     </div>
   </div>
 <?php } else { ?>
