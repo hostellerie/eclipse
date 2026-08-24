@@ -16,7 +16,7 @@ function MENU_getResolvedTree($name)
             'type' => 2,
             'url' => 'https://example.test/',
             'target' => '',
-            'selected' => true,
+            'selected' => false,
             'resolved' => true,
             'children' => array(),
         ),
@@ -35,7 +35,7 @@ function MENU_getResolvedTree($name)
                     'type' => 6,
                     'url' => 'https://external.test/',
                     'target' => '_blank',
-                    'selected' => false,
+                    'selected' => true,
                     'resolved' => true,
                     'children' => array(),
                 ),
@@ -64,7 +64,9 @@ $html = eclipse_menu_navigation_resolved();
 eclipse_test_assert(strpos($html, 'class="eclipse-menu"') !== false, 'Eclipse wrapper missing');
 eclipse_test_assert(strpos($html, 'class="eclipse-menu-root"') !== false, 'Root list class missing');
 eclipse_test_assert(strpos($html, 'eclipse-menu-current') !== false, 'Current item class missing');
+eclipse_test_assert(strpos($html, 'eclipse-menu-active-trail') !== false, 'Active ancestor trail class missing');
 eclipse_test_assert(strpos($html, 'aria-current="page"') !== false, 'aria-current missing');
+eclipse_test_assert(substr_count($html, 'aria-current="page"') === 1, 'aria-current must only mark the actual current link');
 eclipse_test_assert(strpos($html, 'eclipse-has-submenu') !== false, 'submenu class missing');
 eclipse_test_assert(strpos($html, 'eclipse-menu-parent') !== false, 'submenu link class missing');
 eclipse_test_assert(strpos($html, 'target="_blank"') !== false, 'target not preserved');
