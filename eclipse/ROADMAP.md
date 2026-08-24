@@ -34,6 +34,18 @@ Implementation status: complete in 0.8.11. Production sign-off requires the Them
 
 Implementation status: feature-complete in 0.9.15. Production sign-off requires the editorial and administration checks in `QA-CHECKLIST.md`.
 
+## Menu plugin integration
+
+- Use the Menu plugin `navigation` menu as the authoritative source for Eclipse primary navigation.
+- Prefer the structured `MENU_getResolvedTree('navigation')` API when available.
+- Preserve Menu-owned hierarchy, ordering, permissions, activation, item types and resolved destinations.
+- Keep Eclipse responsible only for navigation HTML, CSS, responsive behaviour, mobile toggles, dropdown presentation and current-item styling.
+- Fall back to legacy `MENU_getMenu()` for older Menu versions and for unresolved legacy PHP callback items.
+- Do not duplicate Menu permission checks or URL-resolution rules in Eclipse.
+- Validate a reference menu containing Home as Geeklog Action type 2, standard links, a static page, external URL and nested submenu.
+
+Implementation status: structured renderer introduced on `main`; staging validation with Menu 1.3.0 remains required before declaring the integration stable.
+
 ## 1.0 — stable release
 
 - WCAG AA review, keyboard and 200% zoom validation.
