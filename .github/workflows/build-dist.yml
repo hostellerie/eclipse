@@ -1,0 +1,44 @@
+name: Build installable Eclipse archive
+
+on:
+  push:
+    branches:
+      - develop-2.0.1
+    paths-ignore:
+      - 'dist/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          ref: develop-2.0.1
+
+      - name: Build installable archive
+        shell: bash
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          zip -r -9 dist/eclipse.zip eclipse \
+            -x '*/.DS_Store' '*/Thumbs.db'
+
+      - name: Commit updated archive
+        shell: bash
+        run: |
+          if git diff --quiet -- dist/eclipse.zip; then
+            echo "Archive is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f dist/eclipse.zip
+          git commit -m "Build installable Eclipse theme archive"
+          git push
