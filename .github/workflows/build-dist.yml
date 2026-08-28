@@ -32,6 +32,29 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
+      - name: Synchronize packaged version metadata
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          version = os.environ['ECLIPSE_VERSION']
+          manifest_path = Path('eclipse/MANIFEST.json')
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          manifest['version'] = version
+          manifest_path.write_text(json.dumps(manifest, indent=4, ensure_ascii=False) + '\n', encoding='utf-8')
+
+          functions_path = Path('eclipse/functions.php')
+          functions = functions_path.read_text(encoding='utf-8')
+          functions = functions.replace("$version = '?v=1.0.0';", "$version = '?v=" + version + "';")
+          functions_path.write_text(functions, encoding='utf-8')
+          PY
+        env:
+          ECLIPSE_VERSION: ${{ steps.version.outputs.version }}
+
       - name: Build installable archives
         shell: bash
         run: |
