@@ -32,25 +32,43 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Synchronize packaged version metadata
+      - name: Synchronize version and package integrity manifest
         shell: bash
         run: |
-          version="${{ steps.version.outputs.version }}"
           python - <<'PY'
+          import hashlib
           import json
           import os
           from pathlib import Path
 
           version = os.environ['ECLIPSE_VERSION']
-          manifest_path = Path('eclipse/MANIFEST.json')
-          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-          manifest['version'] = version
-          manifest_path.write_text(json.dumps(manifest, indent=4, ensure_ascii=False) + '\n', encoding='utf-8')
+          root = Path('eclipse')
 
-          functions_path = Path('eclipse/functions.php')
+          # Keep runtime cache-busting aligned with the package version.
+          functions_path = root / 'functions.php'
           functions = functions_path.read_text(encoding='utf-8')
           functions = functions.replace("$version = '?v=1.0.0';", "$version = '?v=" + version + "';")
           functions_path.write_text(functions, encoding='utf-8')
+
+          # Rebuild the manifest only after every packaged file has its final content.
+          files = {}
+          for path in sorted(root.rglob('*')):
+              if not path.is_file() or path.name == 'MANIFEST.json':
+                  continue
+              relative = path.relative_to(root).as_posix()
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              files[relative] = digest
+
+          manifest = {
+              'version': version,
+              'algorithm': 'sha256',
+              'files': files,
+          }
+          (root / 'MANIFEST.json').write_text(
+              json.dumps(manifest, indent=4, ensure_ascii=False) + '\n',
+              encoding='utf-8'
+          )
+          print('Manifest rebuilt for', len(files), 'files, version', version)
           PY
         env:
           ECLIPSE_VERSION: ${{ steps.version.outputs.version }}
