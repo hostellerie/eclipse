@@ -3,7 +3,7 @@ name: Build installable Eclipse archive
 on:
   push:
     branches:
-      - develop-2.0.1
+      - develop-1.1.0
     paths-ignore:
       - 'dist/**'
   workflow_dispatch:
@@ -19,26 +19,41 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
         with:
-          ref: develop-2.0.1
+          ref: develop-1.1.0
 
-      - name: Build installable archive
+      - name: Read Eclipse version
+        id: version
         shell: bash
         run: |
+          version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
+          if [ -z "$version" ]; then
+            echo "Unable to read Eclipse version from eclipse/theme.ini" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build installable archives
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
           rm -rf dist
           mkdir -p dist
-          zip -r -9 dist/eclipse.zip eclipse \
+          zip -r -9 "dist/eclipse-$version.zip" eclipse \
             -x '*/.DS_Store' '*/Thumbs.db'
+          cp "dist/eclipse-$version.zip" dist/eclipse.zip
 
-      - name: Commit updated archive
+      - name: Commit updated archives
         shell: bash
         run: |
-          if [ -z "$(git status --porcelain -- dist/eclipse.zip)" ]; then
-            echo "Archive is already up to date."
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f dist/*.zip
+
+          if git diff --cached --quiet -- dist; then
+            echo "Archives are already up to date."
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -f dist/eclipse.zip
-          git commit -m "Build installable Eclipse theme archive"
+          version="${{ steps.version.outputs.version }}"
+          git commit -m "Build Eclipse $version installable archives"
           git push
