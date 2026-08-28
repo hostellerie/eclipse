@@ -32,7 +32,7 @@ jobs:
       - name: Commit updated archive
         shell: bash
         run: |
-          if git diff --quiet -- dist/eclipse.zip; then
+          if [ -z "$(git status --porcelain -- dist/eclipse.zip)" ]; then
             echo "Archive is already up to date."
             exit 0
           fi
