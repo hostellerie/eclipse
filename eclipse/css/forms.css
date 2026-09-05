@@ -4,6 +4,6 @@ button,input,select,textarea{max-width:100%;font:inherit}input[type=text],input[
 #commentform .submit p,#commentform_advanced .submit p{display:flex;align-items:center;gap:.55rem;margin:.9rem 0 0}#commentform .submit p input[type=checkbox],#commentform_advanced .submit p input[type=checkbox]{flex:0 0 auto;margin:0}
 body.theme-eclipse .eclipse-danger-action{background:var(--eclipse-danger)!important;color:#fff!important;border-color:var(--eclipse-danger)!important;box-shadow:0 8px 20px rgba(180,35,24,.22)!important}body.theme-eclipse .eclipse-danger-action:hover,body.theme-eclipse .eclipse-danger-action:focus{background:var(--eclipse-danger-hover)!important;border-color:var(--eclipse-danger-hover)!important}body.theme-eclipse input[type=image].eclipse-danger-action{box-sizing:content-box;padding:.55rem!important;border-radius:.5rem!important}
 
-/* Keep native single-choice selectors readable even inside compact admin toolbars. */
-body.theme-eclipse select:not([multiple]){box-sizing:border-box;min-height:2.5rem!important;height:auto!important;padding:.45rem 2rem .45rem .65rem!important;font-size:.875rem!important;line-height:1.35!important;vertical-align:middle}
-@media(max-width:52rem){body.theme-eclipse select:not([multiple]){min-height:3rem!important;padding:.55rem 2rem .55rem .7rem!important;font-size:1rem!important;line-height:1.4!important}}
+/* Keep native dropdowns readable even inside compact admin toolbars. */
+body.theme-eclipse select:not([multiple]):not([size]){box-sizing:border-box;min-height:2.5rem!important;height:auto!important;padding:.45rem 2rem .45rem .65rem!important;font-size:.875rem!important;line-height:1.35!important;vertical-align:middle}
+@media(max-width:52rem){body.theme-eclipse select:not([multiple]):not([size]){min-height:3rem!important;padding:.55rem 2rem .55rem .7rem!important;font-size:1rem!important;line-height:1.4!important}}
