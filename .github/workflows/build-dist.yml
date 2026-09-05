@@ -32,25 +32,48 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Synchronize version and package integrity manifest
+      - name: Prepare archive assets and integrity manifest
         shell: bash
         run: |
           python - <<'PY'
           import hashlib
           import json
           import os
+          import re
           from pathlib import Path
 
           version = os.environ['ECLIPSE_VERSION']
+          run_id = os.environ['GITHUB_RUN_ID']
+          asset_version = version + '-' + run_id
           root = Path('eclipse')
 
-          # Keep runtime cache-busting aligned with the package version.
+          # Every generated archive gets a unique browser cache key, even when
+          # several archives are built with the same Eclipse version number.
           functions_path = root / 'functions.php'
           functions = functions_path.read_text(encoding='utf-8')
-          functions = functions.replace("$version = '?v=1.0.0';", "$version = '?v=" + version + "';")
+          functions, count = re.subn(
+              r"\$version\s*=\s*'\?v=[^']*';",
+              "$version = '?v=" + asset_version + "';",
+              functions
+          )
+          if count < 2:
+              raise SystemExit('Unable to update all Eclipse asset cache keys')
           functions_path.write_text(functions, encoding='utf-8')
 
-          # Rebuild the manifest only after every packaged file has its final content.
+          # configuration.css is imported by forms.css, so it needs the same key.
+          forms_path = root / 'css' / 'forms.css'
+          forms = forms_path.read_text(encoding='utf-8')
+          forms, count = re.subn(
+              r'@import\s+url\(["\']configuration\.css(?:\?v=[^"\']*)?["\']\);',
+              '@import url("configuration.css?v=' + asset_version + '");',
+              forms,
+              count=1
+          )
+          if count != 1:
+              raise SystemExit('Unable to version configuration.css import')
+          forms_path.write_text(forms, encoding='utf-8')
+
+          # Rebuild the manifest after every packaged file has its final content.
           files = {}
           for path in sorted(root.rglob('*')):
               if not path.is_file() or path.name == 'MANIFEST.json':
@@ -61,6 +84,7 @@ jobs:
 
           manifest = {
               'version': version,
+              'asset_version': asset_version,
               'algorithm': 'sha256',
               'files': files,
           }
@@ -68,7 +92,7 @@ jobs:
               json.dumps(manifest, indent=4, ensure_ascii=False) + '\n',
               encoding='utf-8'
           )
-          print('Manifest rebuilt for', len(files), 'files, version', version)
+          print('Manifest rebuilt for', len(files), 'files; asset version', asset_version)
           PY
         env:
           ECLIPSE_VERSION: ${{ steps.version.outputs.version }}
