@@ -22,7 +22,7 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-editor{width:100%
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{
     display:grid;
     grid-template-columns:1fr;
-    gap:1.5rem;
+    gap:1.25rem;
     align-items:start;
     width:100%;
     max-width:none;
@@ -30,21 +30,22 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{
     position:static;
     min-width:0;
-    padding:1.1rem;
+    padding:1rem;
     background:var(--eclipse-surface);
     border:1px solid var(--eclipse-border);
     border-radius:var(--eclipse-radius);
     box-shadow:0 10px 28px rgba(15,23,42,.07);
 }
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-search{
-    margin:0 0 1.1rem;
-    padding:1rem;
-    background:color-mix(in srgb,var(--eclipse-primary) 4%,var(--eclipse-surface));
-    border:1px solid var(--eclipse-border);
-    border-radius:.65rem;
+    margin:0 0 .9rem;
+    padding:0;
+    background:transparent;
+    border:0;
+    border-radius:0;
 }
 body.theme-eclipse.eclipse-admin-configuration #search-configuration{
     box-sizing:border-box;
+    display:block;
     width:min(100%,42rem);
     min-height:2.8rem;
     margin:0;
