@@ -36,18 +36,59 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-p
     border-radius: 0;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel legend {
-    margin: 0 0 .55rem !important;
+    margin: 0 0 .65rem !important;
     padding: 0 !important;
     font-size: 1rem !important;
     line-height: 1.35 !important;
 }
+
+/* Geeklog 2.1.x can fall back to Denim's block layout. Keep the field geometry explicit here. */
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields {
-    gap: .55rem !important;
+    display: grid !important;
+    gap: .5rem !important;
+    min-width: 0;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+    display: grid !important;
+    grid-template-columns: minmax(13rem, 19rem) minmax(18rem, 42rem) auto !important;
+    align-items: center !important;
+    justify-content: start !important;
+    min-width: 0 !important;
     min-height: 0 !important;
-    padding: .75rem .9rem !important;
-    gap: .5rem .9rem !important;
+    margin: 0 !important;
+    padding: .7rem .85rem !important;
+    gap: .45rem .9rem !important;
+    background: var(--eclipse-surface) !important;
+    border: 1px solid color-mix(in srgb, var(--eclipse-border) 82%, transparent) !important;
+    border-radius: .55rem !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-label {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: .2rem .35rem !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4 !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-help {
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-help a.tooltip {
+    font-size: .72rem !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > .opt,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > textarea,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > select {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 42rem !important;
+    min-width: 0 !important;
+    margin: 0 !important;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="text"],
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="password"],
@@ -59,6 +100,22 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     height: auto !important;
     padding-top: .5rem !important;
     padding-bottom: .5rem !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-list-values,
+body.theme-eclipse.eclipse-admin-configuration #config_content .validation_error_block,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field-unset .restore {
+    grid-column: 2 / -1 !important;
+}
+
+@media (max-width: 64rem) {
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+        grid-template-columns: minmax(12rem, 32%) minmax(0, 1fr) auto !important;
+    }
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > .opt,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > textarea,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > select {
+        max-width: none !important;
+    }
 }
 
 @media (max-width: 46.25rem) {
@@ -75,6 +132,16 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     }
     body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel {
         padding: .75rem .8rem .85rem !important;
+    }
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+        grid-template-columns: 1fr !important;
+        gap: .4rem !important;
+        padding: .7rem .75rem !important;
+    }
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-list-values,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .validation_error_block,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field-unset .restore {
+        grid-column: 1 !important;
     }
 }
 </style>
