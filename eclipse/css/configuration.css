@@ -12,7 +12,6 @@ body.theme-eclipse.eclipse-admin-configuration .config_label{
     width:auto;
     max-width:none;
 }
-body.theme-eclipse.eclipse-admin-configuration #config_menu,
 body.theme-eclipse.eclipse-admin-configuration #config_content{padding:0}
 body.theme-eclipse.eclipse-admin-configuration .config_name input[type=text],
 body.theme-eclipse.eclipse-admin-configuration .config_name textarea,
