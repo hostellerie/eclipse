@@ -11,8 +11,7 @@
     <div class="eclipse-config-layout">
         <aside id="config_menu" class="eclipse-config-sidebar">
             <section id="search-configuration-container" class="uk-form eclipse-config-search" role="search">
-                <h2 class="block-title" id="desc-search-configuration">{search_configuration_label}</h2>
-                <input name="search-configuration" id="search-configuration" type="text" value="{search_configuration_value}" aria-describedby="desc-search-configuration"{xhtml}>
+                <input name="search-configuration" id="search-configuration" type="search" value="{search_configuration_value}" placeholder="{search_configuration_label}" aria-label="{search_configuration_label}" autocomplete="off"{xhtml}>
                 <input name="tab-id" id="tab-id" type="hidden" value="{tab_id_value}"{xhtml}>
             </section>
             <nav class="eclipse-config-navigation">
