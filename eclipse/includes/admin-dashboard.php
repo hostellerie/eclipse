@@ -2,6 +2,18 @@
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) die('This file can not be used on its own!');
 
+/*
+ * Geeklog 2.1.x decides between its legacy table-based configuration UI and
+ * the Geeklog 2.x div-based UI from min_theme_gl_version via
+ * supported_version_theme. Eclipse uses the modern markup, so make that
+ * capability explicit only on the supported 2.1.x branch. Geeklog 2.2.x is
+ * left untouched.
+ */
+if (defined('VERSION') && version_compare(VERSION, '2.1.1', '>=') && version_compare(VERSION, '2.2.0', '<')) {
+    global $_CONF;
+    $_CONF['min_theme_gl_version'] = '2.0.0';
+}
+
 function eclipse_admin_dashboard_h($value)
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
