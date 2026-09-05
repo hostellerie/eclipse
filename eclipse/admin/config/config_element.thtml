@@ -8,7 +8,7 @@
 
 <!-- BEGIN text-element -->
 <div{hide_row} class="config_name eclipse-config-field eclipse-config-field-text">
-    <div class="config_label eclipse-config-label">{display_name} {doc_link} {unset_link}</div>
+    <div class="config_label eclipse-config-label"><span class="eclipse-config-label-text">{display_name}</span><span class="eclipse-config-help">{doc_link}</span><span class="eclipse-config-unset">{unset_link}</span></div>
     <input type="hidden" value="true" name="{name}[nameholder]"{xhtml}>
     <input type="text" class="opt{error_class}" name="{name}" value="{value}"{readonly}{xhtml}>
     {delete}{error_block}
@@ -17,7 +17,7 @@
 
 <!-- BEGIN text-area -->
 <div class="config_name eclipse-config-field eclipse-config-field-textarea">
-    <div class="config_label eclipse-config-label">{display_name} {doc_link} {unset_link}</div>
+    <div class="config_label eclipse-config-label"><span class="eclipse-config-label-text">{display_name}</span><span class="eclipse-config-help">{doc_link}</span><span class="eclipse-config-unset">{unset_link}</span></div>
     <input type="hidden" value="true" name="{name}[nameholder]"{xhtml}>
     <textarea class="opt{error_class}" name="{name}" cols="3" rows="3">{value}</textarea>
     {delete}{error_block}
@@ -26,7 +26,7 @@
 
 <!-- BEGIN placeholder-element -->
 <div{hide_row} class="config_name eclipse-config-field eclipse-config-field-placeholder">
-    <div class="config_label eclipse-config-label">{display_name}</div>
+    <div class="config_label eclipse-config-label"><span class="eclipse-config-label-text">{display_name}</span></div>
     <input type="hidden" value="true" name="{name}[nameholder]"{xhtml}>
     <input type="hidden" class="opt{error_class}" name="{name}" value="{value}"{xhtml}>
     {delete}
@@ -35,7 +35,7 @@
 
 <!-- BEGIN select-element -->
 <div{hide_row} class="config_name eclipse-config-field eclipse-config-field-select">
-    <div class="config_label eclipse-config-label">{display_name} {doc_link} {unset_link}</div>
+    <div class="config_label eclipse-config-label"><span class="eclipse-config-label-text">{display_name}</span><span class="eclipse-config-help">{doc_link}</span><span class="eclipse-config-unset">{unset_link}</span></div>
     <input type="hidden" value="true" name="{name}[nameholder]"{xhtml}>
     <select name="{name}" class="opt{error_class}">
         <!-- BEGIN select-options -->
@@ -48,14 +48,14 @@
 
 <!-- BEGIN unset-param -->
 <div class="config_name eclipse-config-field eclipse-config-field-unset">
-    <div class="config_label eclipse-config-label">{display_name} {doc_link}</div>
+    <div class="config_label eclipse-config-label"><span class="eclipse-config-label-text">{display_name}</span><span class="eclipse-config-help">{doc_link}</span></div>
     <div class="restore"><a href="#{name}" class="restore_param">{lang_enable}</a></div>
 </div>
 <!-- END unset-param -->
 
 <!-- BEGIN list-element -->
 <div{hide_row} class="config_name eclipse-config-field eclipse-config-field-list">
-    <div class="config_label eclipse-config-label">{display_name} {doc_link} {unset_link}</div>
+    <div class="config_label eclipse-config-label"><span class="eclipse-config-label-text">{display_name}</span><span class="eclipse-config-help">{doc_link}</span><span class="eclipse-config-unset">{unset_link}</span></div>
     <div class="eclipse-config-list-actions">
         <input type="button" value="+" class="toggle_hidden" onclick="toggleHidden('arr_{id_name}', this);"{xhtml}>
         {delete}
