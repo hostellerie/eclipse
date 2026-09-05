@@ -1,4 +1,26 @@
 {noscript}
+<style>
+/* Final layout guardrails for Geeklog 2.1.x/Denim cascade differences. */
+body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-config-title {
+    margin-bottom: 1.25rem !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_menu {
+    padding-top: 1.5rem !important;
+}
+@media (max-width: 46.25rem) {
+    body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor {
+        box-sizing: border-box !important;
+        width: calc(100% - 2rem) !important;
+        max-width: calc(100% - 2rem) !important;
+        margin-left: 1rem !important;
+        margin-right: 1rem !important;
+    }
+    body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-config-layout {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+}
+</style>
 <div id="geeklog_config_editor" class="eclipse-config-editor" style="display:none;">
     <form method="post" action="{site_admin_url}/configuration.php" name="group" class="uk-form eclipse-config-group-form">
         <div>
