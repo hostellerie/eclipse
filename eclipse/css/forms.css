@@ -9,7 +9,9 @@ body.theme-eclipse select:not([multiple]):not([size]){box-sizing:border-box;min-
 @media(max-width:52rem){body.theme-eclipse select:not([multiple]):not([size]){min-height:3rem!important;padding:.55rem 2rem .55rem .7rem!important;font-size:1rem!important;line-height:1.4!important}}
 
 /* Configuration spacing guardrails: keep the page balanced independently of Denim breakpoints. */
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-title{margin-bottom:1rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-title{margin-bottom:1.25rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{padding-top:1.35rem}
 @media(max-width:46.25rem){
-    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{box-sizing:border-box;width:auto;margin-left:1rem;margin-right:1rem}
+    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-editor{box-sizing:border-box;width:100%;padding-left:1rem;padding-right:1rem}
+    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{width:100%;margin:0}
 }
