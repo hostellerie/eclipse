@@ -73,7 +73,7 @@ jobs:
         env:
           ECLIPSE_VERSION: ${{ steps.version.outputs.version }}
 
-      - name: Build installable archives
+      - name: Build installable archive
         shell: bash
         run: |
           version="${{ steps.version.outputs.version }}"
@@ -81,9 +81,8 @@ jobs:
           mkdir -p dist
           zip -r -9 "dist/eclipse-$version.zip" eclipse \
             -x '*/.DS_Store' '*/Thumbs.db'
-          cp "dist/eclipse-$version.zip" dist/eclipse.zip
 
-      - name: Commit updated archives
+      - name: Commit updated archive
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -91,10 +90,10 @@ jobs:
           git add -f dist/*.zip
 
           if git diff --cached --quiet -- dist; then
-            echo "Archives are already up to date."
+            echo "Archive is already up to date."
             exit 0
           fi
 
           version="${{ steps.version.outputs.version }}"
-          git commit -m "Build Eclipse $version installable archives"
+          git commit -m "Build Eclipse $version installable archive"
           git push
