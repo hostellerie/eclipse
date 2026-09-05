@@ -30,7 +30,7 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{
     position:static;
     min-width:0;
-    padding:1rem;
+    padding:1.1rem;
     background:var(--eclipse-surface);
     border:1px solid var(--eclipse-border);
     border-radius:var(--eclipse-radius);
@@ -172,7 +172,6 @@ body.theme-eclipse.eclipse-admin-configuration #tabs-dropdown a:hover,body.theme
     body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul{align-items:stretch;padding:.4rem}
     body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul>li{flex:1 1 9rem}
     body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul>li>a{height:100%;border-bottom-color:var(--eclipse-border);border-radius:.4rem;text-align:center}
-    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{padding:.85rem}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{grid-template-columns:1fr;gap:.5rem;padding:.9rem!important}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-list-values,body.theme-eclipse.eclipse-admin-configuration .validation_error_block,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field-unset .restore{grid-column:1}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions{position:static;justify-content:stretch}
