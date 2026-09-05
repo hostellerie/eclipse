@@ -24,21 +24,63 @@ jobs:
         shell: pwsh
         run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
-      - name: Prepare release asset cache keys
-        shell: pwsh
+      - name: Prepare release cache refresh
+        shell: bash
         run: |
-          $version = "${{ github.ref_name }}" -replace '^v', ''
-          $assetVersion = "$version-${{ github.run_id }}"
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
 
-          $functionsPath = './eclipse/functions.php'
-          $functions = Get-Content -LiteralPath $functionsPath -Raw
-          $functions = [regex]::Replace($functions, "\$version\s*=\s*'\?v=[^']*';", "`$version = '?v=$assetVersion';")
-          Set-Content -LiteralPath $functionsPath -Value $functions -Encoding utf8NoBOM
+          version = os.environ['GITHUB_REF_NAME'].lstrip('v')
+          asset_version = version + '-' + os.environ['GITHUB_RUN_ID']
+          root = Path('eclipse')
 
-          $formsPath = './eclipse/css/forms.css'
-          $forms = Get-Content -LiteralPath $formsPath -Raw
-          $forms = [regex]::Replace($forms, '@import\s+url\(["'']configuration\.css(?:\?v=[^"'']*)?["'']\);', "@import url(`"configuration.css?v=$assetVersion`");", 1)
-          Set-Content -LiteralPath $formsPath -Value $forms -Encoding utf8NoBOM
+          functions_path = root / 'functions.php'
+          functions = functions_path.read_text(encoding='utf-8')
+          functions, count = re.subn(
+              r"\$version\s*=\s*'\?v=[^']*';",
+              "$version = '?v=" + asset_version + "';",
+              functions
+          )
+          if count < 2:
+              raise SystemExit('Unable to update all Eclipse asset cache keys')
+
+          refresh_path = root / 'includes' / 'archive-refresh.php'
+          refresh_path.write_text(
+              "<?php\n"
+              "if (!isset($_CONF) || empty($_CONF['path_data'])) { return; }\n"
+              "$eclipseBuildId = '" + asset_version + "';\n"
+              "$eclipseMarker = rtrim($_CONF['path_data'], '/\\\\') . DIRECTORY_SEPARATOR . 'eclipse-build-id.txt';\n"
+              "$eclipsePrevious = @file_get_contents($eclipseMarker);\n"
+              "if (trim((string) $eclipsePrevious) !== $eclipseBuildId) {\n"
+              "    if (function_exists('CTL_clearCache')) { CTL_clearCache(); }\n"
+              "    @file_put_contents($eclipseMarker, $eclipseBuildId . PHP_EOL, LOCK_EX);\n"
+              "}\n",
+              encoding='utf-8'
+          )
+
+          include_line = "require_once __DIR__ . '/includes/archive-refresh.php';"
+          if include_line not in functions:
+              anchor = "require_once __DIR__ . '/includes/admin-dashboard.php';"
+              if anchor not in functions:
+                  raise SystemExit('Unable to inject Eclipse archive refresh helper')
+              functions = functions.replace(anchor, anchor + "\n" + include_line, 1)
+          functions_path.write_text(functions, encoding='utf-8')
+
+          forms_path = root / 'css' / 'forms.css'
+          forms = forms_path.read_text(encoding='utf-8')
+          forms, count = re.subn(
+              r'@import\s+url\(["\']configuration\.css(?:\?v=[^"\']*)?["\']\);',
+              '@import url("configuration.css?v=' + asset_version + '");',
+              forms,
+              count=1
+          )
+          if count != 1:
+              raise SystemExit('Unable to version configuration.css import')
+          forms_path.write_text(forms, encoding='utf-8')
+          print('Prepared Eclipse release asset version', asset_version)
+          PY
 
       - name: Build release archive and checksum
         shell: pwsh
