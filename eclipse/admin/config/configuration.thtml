@@ -15,12 +15,12 @@
                 <input name="search-configuration" id="search-configuration" type="text" value="{search_configuration_value}" aria-describedby="desc-search-configuration"{xhtml}>
                 <input name="tab-id" id="tab-id" type="hidden" value="{tab_id_value}"{xhtml}>
             </section>
-            <nav class="eclipse-config-navigation" aria-label="Configuration">
+            <nav class="eclipse-config-navigation">
                 {config_menu}
             </nav>
         </aside>
 
-        <main id="config_content" class="eclipse-config-content">
+        <div id="config_content" class="eclipse-config-content">
             <div class="saved_message{error_validation_class} eclipse-config-message" style="display:{show_changeblock}">
                 {lang_changes_made}
                 {lang_error_validation_occurs}
@@ -62,6 +62,6 @@
                     </div>
                 </form>
             </div>
-        </main>
+        </div>
     </div>
 </div>
