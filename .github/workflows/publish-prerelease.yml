@@ -24,6 +24,22 @@ jobs:
         shell: pwsh
         run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
+      - name: Prepare release asset cache keys
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $assetVersion = "$version-${{ github.run_id }}"
+
+          $functionsPath = './eclipse/functions.php'
+          $functions = Get-Content -LiteralPath $functionsPath -Raw
+          $functions = [regex]::Replace($functions, "\$version\s*=\s*'\?v=[^']*';", "`$version = '?v=$assetVersion';")
+          Set-Content -LiteralPath $functionsPath -Value $functions -Encoding utf8NoBOM
+
+          $formsPath = './eclipse/css/forms.css'
+          $forms = Get-Content -LiteralPath $formsPath -Raw
+          $forms = [regex]::Replace($forms, '@import\s+url\(["'']configuration\.css(?:\?v=[^"'']*)?["'']\);', "@import url(`"configuration.css?v=$assetVersion`");", 1)
+          Set-Content -LiteralPath $formsPath -Value $forms -Encoding utf8NoBOM
+
       - name: Build release archive and checksum
         shell: pwsh
         run: |
