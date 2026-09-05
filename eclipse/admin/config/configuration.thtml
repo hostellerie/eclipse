@@ -2,10 +2,10 @@
 <style>
 /* Small compatibility guardrails for Geeklog 2.1.x/Denim. */
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-config-title {
-    margin-bottom: .55rem !important;
+    margin-bottom: .85rem !important;
 }
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_menu {
-    padding-top: .8rem !important;
+    padding: 1.1rem !important;
 }
 @media (max-width: 46.25rem) {
     body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor {
@@ -15,15 +15,9 @@ body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_me
         margin-left: .4rem !important;
         margin-right: .4rem !important;
     }
-    body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-config-title {
-        margin-bottom: .85rem !important;
-    }
     body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-config-layout {
         width: 100% !important;
         margin: 0 !important;
-    }
-    body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_menu {
-        padding: 1.1rem !important;
     }
 }
 </style>
