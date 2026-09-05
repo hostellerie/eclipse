@@ -7,30 +7,60 @@ body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-c
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_menu {
     padding: 1.1rem !important;
 }
-/* Make the tab bar and its active configuration panel read as one component. */
+
+/* Keep tabs and the active panel visually connected and compact. */
 body.theme-eclipse.eclipse-admin-configuration #config_content #tabs > ul {
     margin-bottom: 0 !important;
+    padding: .4rem .45rem 0 !important;
+    gap: .35rem !important;
     border-bottom: 0 !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content #tabs > ul > li > a {
+    min-height: 2.35rem !important;
+    padding: .45rem .75rem !important;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel {
     box-sizing: border-box;
-    margin: 0 0 1rem;
-    padding: 1rem 1.1rem 1.1rem;
+    margin: 0 0 1rem !important;
+    padding: .8rem 1rem 1rem !important;
     background: var(--eclipse-surface);
     border: 1px solid var(--eclipse-border);
     border-top: 0;
     border-radius: 0 0 .7rem .7rem;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel fieldset {
-    margin: 0;
-    padding: .2rem 0 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
     border: 0 !important;
     border-radius: 0;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel legend {
-    margin: 0 0 .8rem;
-    padding: 0;
+    margin: 0 0 .55rem !important;
+    padding: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.35 !important;
 }
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields {
+    gap: .55rem !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+    min-height: 0 !important;
+    padding: .75rem .9rem !important;
+    gap: .5rem .9rem !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="text"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="password"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="email"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="url"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="number"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field select {
+    min-height: 2.55rem !important;
+    height: auto !important;
+    padding-top: .5rem !important;
+    padding-bottom: .5rem !important;
+}
+
 @media (max-width: 46.25rem) {
     body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor {
         box-sizing: border-box !important;
@@ -42,6 +72,9 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-p
     body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-config-layout {
         width: 100% !important;
         margin: 0 !important;
+    }
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel {
+        padding: .75rem .8rem .85rem !important;
     }
 }
 </style>
