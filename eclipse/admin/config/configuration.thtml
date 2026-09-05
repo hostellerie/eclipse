@@ -7,6 +7,30 @@ body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor .eclipse-c
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_menu {
     padding: 1.1rem !important;
 }
+/* Make the tab bar and its active configuration panel read as one component. */
+body.theme-eclipse.eclipse-admin-configuration #config_content #tabs > ul {
+    margin-bottom: 0 !important;
+    border-bottom: 0 !important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel {
+    box-sizing: border-box;
+    margin: 0 0 1rem;
+    padding: 1rem 1.1rem 1.1rem;
+    background: var(--eclipse-surface);
+    border: 1px solid var(--eclipse-border);
+    border-top: 0;
+    border-radius: 0 0 .7rem .7rem;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel fieldset {
+    margin: 0;
+    padding: .2rem 0 0;
+    border: 0 !important;
+    border-radius: 0;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel legend {
+    margin: 0 0 .8rem;
+    padding: 0;
+}
 @media (max-width: 46.25rem) {
     body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor {
         box-sizing: border-box !important;
