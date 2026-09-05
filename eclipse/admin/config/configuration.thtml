@@ -8,6 +8,8 @@
         </div>
     </form>
 
+    <h1 class="eclipse-config-title">Configuration</h1>
+
     <div class="eclipse-config-layout">
         <aside id="config_menu" class="eclipse-config-sidebar">
             <section id="search-configuration-container" class="uk-form eclipse-config-search" role="search">
