@@ -18,19 +18,18 @@ body.theme-eclipse.eclipse-admin-configuration .config_name input[type=text],
 body.theme-eclipse.eclipse-admin-configuration .config_name textarea,
 body.theme-eclipse.eclipse-admin-configuration .config_name select{width:100%;max-width:none}
 
-/* Page layout */
+/* Page layout: keep the clearer stacked configuration navigation at every width. */
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-editor{width:100%;max-width:none}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{
     display:grid;
-    grid-template-columns:minmax(14rem,16rem) minmax(0,1fr);
+    grid-template-columns:1fr;
     gap:1.5rem;
     align-items:start;
     width:100%;
-    max-width:96rem;
+    max-width:none;
 }
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{
-    position:sticky;
-    top:4.75rem;
+    position:static;
     min-width:0;
     padding:1rem;
     background:var(--eclipse-surface);
@@ -40,16 +39,45 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{
 }
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-search{margin:0 0 1rem;padding:0 0 1rem;border-bottom:1px solid var(--eclipse-border)}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-search .block-title{margin:0 0 .55rem;padding:0;color:var(--eclipse-text);background:none;border:0;font-size:.76rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
-body.theme-eclipse.eclipse-admin-configuration #search-configuration{box-sizing:border-box;width:100%;min-height:2.65rem;margin:0;padding:.55rem .7rem;font-size:.9rem}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-navigation ul{margin:0;padding:0;list-style:none}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group{margin:0 0 .35rem;padding:0;list-style:none}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group-link{display:block;padding:.55rem .65rem;color:var(--eclipse-text);border-radius:.45rem;font-size:.8rem;font-weight:800;text-decoration:none}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group-link:hover,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group-link:focus-visible{color:var(--eclipse-primary);background:color-mix(in srgb,var(--eclipse-primary) 8%,var(--eclipse-surface))}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroups{display:grid;gap:.1rem;margin:.15rem 0 .5rem!important;padding-left:.45rem!important;border-left:2px solid color-mix(in srgb,var(--eclipse-primary) 18%,var(--eclipse-border))}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link{display:block;padding:.42rem .6rem;color:var(--eclipse-muted);border-radius:.4rem;font-size:.78rem;line-height:1.3;text-decoration:none}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link:hover,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link:focus-visible,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link[id]{color:var(--eclipse-primary);background:color-mix(in srgb,var(--eclipse-primary) 7%,var(--eclipse-surface))}
+body.theme-eclipse.eclipse-admin-configuration #search-configuration{box-sizing:border-box;width:min(100%,40rem);min-height:2.65rem;margin:0;padding:.55rem .7rem;font-size:.9rem}
 
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-content{min-width:0;width:auto!important;max-width:none!important;padding:0}
+/* Normalize both Eclipse and legacy Geeklog configuration navigation. */
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-navigation>ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(20rem,1fr));gap:.8rem;margin:0;padding:0;list-style:none}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-navigation ul{margin:0;padding:0;list-style:none}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group{margin:0;padding:.75rem;background:color-mix(in srgb,var(--eclipse-primary) 2%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-radius:.65rem;list-style:none}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group-link{display:block;padding:.15rem .1rem .55rem;color:var(--eclipse-text);border-bottom:1px solid var(--eclipse-border);font-size:.85rem;font-weight:800;text-decoration:none}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group-link:hover,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-group-link:focus-visible{color:var(--eclipse-primary)}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroups{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 0!important;padding:0!important;border:0}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link{display:block;padding:.42rem .65rem;color:var(--eclipse-link);background:color-mix(in srgb,var(--eclipse-primary) 5%,var(--eclipse-surface));border:1px solid color-mix(in srgb,var(--eclipse-primary) 18%,var(--eclipse-border));border-radius:.4rem;font-size:.78rem;line-height:1.3;text-decoration:none}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link:hover,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link:focus-visible,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-subgroup-link[id]{color:var(--eclipse-primary);background:color-mix(in srgb,var(--eclipse-primary) 10%,var(--eclipse-surface));border-color:color-mix(in srgb,var(--eclipse-primary) 35%,var(--eclipse-border))}
+body.theme-eclipse.eclipse-admin-configuration #config_menu .block-config{margin:0 0 .9rem!important;padding:.7rem!important;background:color-mix(in srgb,var(--eclipse-primary) 2%,var(--eclipse-surface))!important;border:1px solid var(--eclipse-border)!important;border-radius:.65rem!important}
+body.theme-eclipse.eclipse-admin-configuration #config_menu .block-config-title,
+body.theme-eclipse.eclipse-admin-configuration #config_menu .block-title{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0 0 .55rem!important;
+    padding:0 0 .5rem!important;
+    color:var(--eclipse-text)!important;
+    background:transparent!important;
+    background-image:none!important;
+    border:0!important;
+    border-bottom:1px solid var(--eclipse-border)!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    font-size:.9rem!important;
+    font-weight:800!important;
+    line-height:1.3!important;
+    text-align:left!important;
+    text-indent:0!important;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption,
+body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption_off{display:inline-flex!important;width:auto!important;height:auto!important;min-height:2.1rem!important;margin:.18rem .3rem .18rem 0!important;padding:0!important;overflow:visible!important;color:var(--eclipse-link)!important;background:color-mix(in srgb,var(--eclipse-primary) 5%,var(--eclipse-surface))!important;border:1px solid color-mix(in srgb,var(--eclipse-primary) 18%,var(--eclipse-border))!important;border-radius:.4rem!important;line-height:1.3!important;white-space:normal!important}
+body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption a{display:flex!important;align-items:center!important;width:auto!important;height:auto!important;min-height:2.1rem!important;padding:.35rem .65rem!important;color:var(--eclipse-link)!important;background:transparent!important;line-height:1.3!important;white-space:normal!important;text-decoration:none!important}
+body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption a:hover,body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption a:focus-visible{color:var(--eclipse-primary)!important;background:color-mix(in srgb,var(--eclipse-primary) 8%,var(--eclipse-surface))!important}
+body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption_off{padding:.35rem .65rem!important;color:var(--eclipse-primary)!important;background:color-mix(in srgb,var(--eclipse-primary) 12%,var(--eclipse-surface))!important;border-color:color-mix(in srgb,var(--eclipse-primary) 35%,var(--eclipse-border))!important;font-weight:800!important}
+
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-content{min-width:0;width:100%!important;max-width:none!important;padding:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-main{min-width:0;width:100%;padding:0;background:transparent}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message{margin:0 0 1rem;padding:.8rem 1rem;background:color-mix(in srgb,var(--eclipse-primary) 6%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-left:4px solid var(--eclipse-primary);border-radius:.6rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-form{width:100%;margin:0}
@@ -69,33 +97,9 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes .warningsma
 
 /* Fields */
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-fields{display:grid;gap:.55rem}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{
-    position:relative;
-    display:grid;
-    grid-template-columns:minmax(16rem,20rem) minmax(18rem,42rem) auto;
-    justify-content:start;
-    gap:.65rem 1rem;
-    align-items:center;
-    min-width:0;
-    margin:0!important;
-    padding:.85rem 1rem!important;
-    background:var(--eclipse-surface);
-    border:1px solid color-mix(in srgb,var(--eclipse-border) 82%,transparent);
-    border-radius:.6rem;
-}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{position:relative;display:grid;grid-template-columns:minmax(16rem,20rem) minmax(18rem,42rem) auto;justify-content:start;gap:.65rem 1rem;align-items:center;min-width:0;margin:0!important;padding:.85rem 1rem!important;background:var(--eclipse-surface);border:1px solid color-mix(in srgb,var(--eclipse-border) 82%,transparent);border-radius:.6rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field:hover{border-color:color-mix(in srgb,var(--eclipse-primary) 28%,var(--eclipse-border));box-shadow:0 5px 16px rgba(15,23,42,.04)}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label{
-    display:flex;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:.25rem .4rem;
-    min-width:0;
-    padding:0;
-    color:var(--eclipse-text);
-    font-size:.86rem;
-    font-weight:700;
-    line-height:1.4;
-}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .4rem;min-width:0;padding:0;color:var(--eclipse-text);font-size:.86rem;font-weight:700;line-height:1.4}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label-text{min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help{display:inline-flex;align-items:center;font-size:0;line-height:1}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help:empty,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-unset:empty{display:none}
@@ -138,13 +142,11 @@ body.theme-eclipse.eclipse-admin-configuration #tabs-dropdown a{display:block;pa
 body.theme-eclipse.eclipse-admin-configuration #tabs-dropdown a:hover,body.theme-eclipse.eclipse-admin-configuration #tabs-dropdown a:focus-visible{color:#fff;background:var(--eclipse-primary)}
 
 @media(max-width:78rem){
-    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-layout{grid-template-columns:1fr;max-width:none}
-    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-sidebar{position:static}
-    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-navigation>ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{grid-template-columns:minmax(14rem,34%) minmax(0,1fr) auto}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>.opt,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>textarea,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>select{max-width:none}
 }
 @media(max-width:47.99rem){
+    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-navigation>ul{grid-template-columns:1fr}
     body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul{align-items:stretch;padding:.35rem}
     body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul>li{flex:1 1 9rem}
     body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul>li>a{height:100%;border-bottom-color:var(--eclipse-border);border-radius:.4rem;text-align:center}
@@ -154,7 +156,6 @@ body.theme-eclipse.eclipse-admin-configuration #tabs-dropdown a:hover,body.theme
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions input{flex:1 1 auto}
 }
 @media(max-width:32rem){
-    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-navigation>ul{grid-template-columns:1fr}
     body.theme-eclipse.eclipse-admin-configuration #tooltip-content{grid-template-columns:1fr}
     body.theme-eclipse.eclipse-admin-configuration #tooltip-content .tooltip-block:nth-of-type(3){grid-column:1}
     body.theme-eclipse.eclipse-admin-configuration #config_content .gl-tooltip>span{left:auto;right:0}
