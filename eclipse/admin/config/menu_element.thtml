@@ -1,0 +1,10 @@
+<li class="eclipse-config-group">
+    <a href="#" class="eclipse-config-group-link" onclick='open_group("{group_select_value}");return false;'>{group_display}</a>
+    <ul class="eclipse-config-subgroups">
+        <!-- BEGIN subgroup-selector -->
+        <li class="eclipse-config-subgroup">
+            <a href="#" class="eclipse-config-subgroup-link" {select_id} onclick='open_subgroup("{group_select_value}","{subgroup_name}");return false;'>{subgroup_display_name}</a>
+        </li>
+        <!-- END subgroup-selector -->
+    </ul>
+</li>
