@@ -58,6 +58,31 @@ jobs:
           )
           if count < 2:
               raise SystemExit('Unable to update all Eclipse asset cache keys')
+
+          # The packaged theme remembers its build outside the theme directory.
+          # When an archive is uploaded over an existing Eclipse installation,
+          # Geeklog 2.1.x may otherwise keep compiled templates/layout CSS from
+          # the previous package.  Include a tiny one-shot refresh helper.
+          refresh_path = root / 'includes' / 'archive-refresh.php'
+          refresh_path.write_text(
+              "<?php\n"
+              "if (!isset($_CONF) || empty($_CONF['path_data'])) { return; }\n"
+              "$eclipseBuildId = '" + asset_version + "';\n"
+              "$eclipseMarker = rtrim($_CONF['path_data'], '/\\\\') . DIRECTORY_SEPARATOR . 'eclipse-build-id.txt';\n"
+              "$eclipsePrevious = @file_get_contents($eclipseMarker);\n"
+              "if (trim((string) $eclipsePrevious) !== $eclipseBuildId) {\n"
+              "    if (function_exists('CTL_clearCache')) { CTL_clearCache(); }\n"
+              "    @file_put_contents($eclipseMarker, $eclipseBuildId . PHP_EOL, LOCK_EX);\n"
+              "}\n",
+              encoding='utf-8'
+          )
+
+          include_line = "require_once __DIR__ . '/includes/archive-refresh.php';"
+          if include_line not in functions:
+              anchor = "require_once __DIR__ . '/includes/admin-dashboard.php';"
+              if anchor not in functions:
+                  raise SystemExit('Unable to inject Eclipse archive refresh helper')
+              functions = functions.replace(anchor, anchor + "\n" + include_line, 1)
           functions_path.write_text(functions, encoding='utf-8')
 
           # configuration.css is imported by forms.css, so it needs the same key.
