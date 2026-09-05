@@ -57,7 +57,7 @@
 <div{hide_row} class="config_name eclipse-config-field eclipse-config-field-list">
     <div class="config_label eclipse-config-label">{display_name} {doc_link} {unset_link}</div>
     <div class="eclipse-config-list-actions">
-        <input type="button" value="+" class="toggle_hidden" onclick="toggleHidden('arr_{id_name}', this);" aria-label="Toggle list"{xhtml}>
+        <input type="button" value="+" class="toggle_hidden" onclick="toggleHidden('arr_{id_name}', this);"{xhtml}>
         {delete}
     </div>
     <input type="hidden" value="true" name="{name}[nameholder]"{xhtml}>
