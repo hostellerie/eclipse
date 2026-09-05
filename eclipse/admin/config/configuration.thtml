@@ -42,31 +42,42 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-p
     line-height: 1.35 !important;
 }
 
-/* Geeklog 2.1.x can fall back to Denim's block layout. Keep the field geometry explicit here. */
+/* Geeklog 2.1.x may use either Eclipse's config_element override or legacy Denim markup. */
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields {
     display: grid !important;
     gap: .5rem !important;
     min-width: 0;
 }
-body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name {
+    float: none !important;
+    clear: none !important;
     display: grid !important;
     grid-template-columns: minmax(13rem, 19rem) minmax(18rem, 42rem) auto !important;
     align-items: center !important;
     justify-content: start !important;
+    width: 100% !important;
+    max-width: none !important;
     min-width: 0 !important;
     min-height: 0 !important;
     margin: 0 !important;
     padding: .7rem .85rem !important;
     gap: .45rem .9rem !important;
+    box-sizing: border-box !important;
     background: var(--eclipse-surface) !important;
     border: 1px solid color-mix(in srgb, var(--eclipse-border) 82%, transparent) !important;
     border-radius: .55rem !important;
 }
-body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-label {
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-label,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > .config_label {
+    float: none !important;
+    clear: none !important;
     display: flex !important;
     align-items: center !important;
     flex-wrap: wrap !important;
     gap: .2rem .35rem !important;
+    width: auto !important;
+    max-width: none !important;
     min-width: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -83,7 +94,11 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-h
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > .opt,
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > textarea,
-body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > select {
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > select,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > input:not([type="hidden"]),
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > textarea,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > select {
+    float: none !important;
     box-sizing: border-box !important;
     width: 100% !important;
     max-width: 42rem !important;
@@ -95,7 +110,10 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="email"],
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="url"],
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field input[type="number"],
-body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field select {
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field select,
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > input[type="text"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > input[type="password"],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > select {
     min-height: 2.55rem !important;
     height: auto !important;
     padding-top: .5rem !important;
@@ -108,12 +126,16 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
 }
 
 @media (max-width: 64rem) {
-    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name {
         grid-template-columns: minmax(12rem, 32%) minmax(0, 1fr) auto !important;
     }
     body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > .opt,
     body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > textarea,
-    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > select {
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field > select,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > input:not([type="hidden"]),
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > textarea,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > select {
         max-width: none !important;
     }
 }
@@ -133,7 +155,8 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel {
         padding: .75rem .8rem .85rem !important;
     }
-    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field {
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field,
+    body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name {
         grid-template-columns: 1fr !important;
         gap: .4rem !important;
         padding: .7rem .75rem !important;
