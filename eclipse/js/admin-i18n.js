@@ -11,6 +11,10 @@
         'Review submissions': lang.review_submissions,
         'Manage comments': lang.manage_comments,
         '+ Write article': lang.write_article,
+        'Administration commands': lang.administration_commands,
+        'Search administration commands': lang.search_administration_commands,
+        'Close command palette': lang.close_command_palette,
+        'Search commands…': lang.search_commands,
         'Theme Studio': lang.theme_studio,
         'CMS overview': lang.cms_overview,
         'Needs attention': lang.needs_attention,
@@ -21,6 +25,7 @@
         'Close menu': lang.close_menu,
         '+ Add block': lang.add_block,
         '+ Add user': lang.add_user,
+        'Commands': lang.commands,
         'Menu': lang.menu
     };
     var sourceLabels = Object.keys(labels).sort(function (a, b) { return b.length - a.length; });
@@ -39,7 +44,8 @@
         var selectors = [
             '.eclipse-admin-bar', '.eclipse-admin-sidebar-shell',
             '.eclipse-admin-overview', '.eclipse-admin-brand',
-            '.eclipse-studio-launch', '.eclipse-admin-collapse-toggle'
+            '.eclipse-studio-launch', '.eclipse-admin-collapse-toggle',
+            '.eclipse-command-trigger', '.eclipse-command-palette'
         ];
         var nodes = [];
         selectors.forEach(function (selector) {
@@ -52,7 +58,7 @@
                 var value = translated(text);
                 if (value !== text) node.textContent = value;
             }
-            ['aria-label', 'title'].forEach(function (attribute) {
+            ['aria-label', 'title', 'placeholder'].forEach(function (attribute) {
                 if (!node.hasAttribute || !node.hasAttribute(attribute)) return;
                 var current = node.getAttribute(attribute);
                 var value = translated(current);
@@ -64,7 +70,7 @@
     function start() {
         translate(document);
         if (!window.MutationObserver) return;
-        var target = document.getElementById('wrapper') || document.body;
+        var target = document.body;
         var scheduled = false;
         var observer = new MutationObserver(function () {
             if (scheduled) return;
