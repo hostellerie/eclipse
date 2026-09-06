@@ -82,8 +82,14 @@ function eclipse_translate_theme_studio_html($html)
 
     $map = array(
         'Changes are stored as protected JSON outside Geeklog\'s cache directory.' => 'theme_studio_storage_note',
-        'Nothing currently requires your attention.' => 'nothing_needs_attention',
-        'No quick action is available for this account.' => 'no_quick_action',
+        'Choose the share links displayed on full article pages. No third-party script or request is loaded before a visitor clicks a link.' => 'social_sharing_intro',
+        'Select a versioned ZIP from your computer. A backup is created before files are replaced, then the Geeklog template and generated CSS caches are cleared automatically.' => 'update_archive_intro',
+        'Use this short guide to configure the theme safely and understand where your choices are stored.' => 'theme_studio_guide_intro',
+        'Start with a preset, then adjust individual colors. Check the contrast badges before saving.' => 'choose_palette_help',
+        'Choose the reading width, spacing and type family that suit your content.' => 'set_layout_typography_help',
+        'Configure navigation, cards, buttons, header, footer and sidebars.' => 'review_appearance_regions_help',
+        'Compare desktop, tablet and mobile without changing the live site.' => 'test_in_preview_help',
+        'Apply the settings, then check public and administration pages. Eclipse clears only its theme caches automatically.' => 'save_and_verify_help',
         'Display the Geeklog topic name as an H1 on topic index pages' => 'display_topic_h1',
         'Hide sidebars in story editor' => 'hide_sidebars_story_editor',
         'Left and right blocks' => 'left_and_right_blocks',
@@ -202,16 +208,14 @@ function eclipse_translate_theme_studio_html($html)
         'Settings' => 'settings'
     );
 
-    uksort($map, function ($a, $b) {
-        return strlen($b) - strlen($a);
-    });
-
-    $search = array();
-    $replace = array();
     foreach ($map as $english => $key) {
-        $search[] = $english;
-        $replace[] = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
+        $translation = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
+        $html = str_replace('>' . $english . '<', '>' . $translation . '<', $html);
+        $html = str_replace('="' . $english . '"', '="' . $translation . '"', $html);
     }
 
-    return str_replace($search, $replace, $html);
+    $guidePrefix = htmlspecialchars(eclipse_lang('guide_for_eclipse', 'Guide for Eclipse'), ENT_QUOTES, 'UTF-8');
+    $html = str_replace('>Guide for Eclipse ', '>' . $guidePrefix . ' ', $html);
+
+    return $html;
 }
