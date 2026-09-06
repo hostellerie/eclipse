@@ -7,3 +7,7 @@ body.theme-eclipse .eclipse-danger-action{background:var(--eclipse-danger)!impor
 /* Keep native dropdowns readable even inside compact admin toolbars. */
 body.theme-eclipse select:not([multiple]):not([size]){box-sizing:border-box;min-height:2.5rem!important;height:auto!important;padding:.45rem 2rem .45rem .65rem!important;font-size:.875rem!important;line-height:1.35!important;vertical-align:middle}
 @media(max-width:52rem){body.theme-eclipse select:not([multiple]):not([size]){min-height:3rem!important;padding:.55rem 2rem .55rem .7rem!important;font-size:1rem!important;line-height:1.4!important}}
+
+/* Configuration tabs: keep labels compact while preserving a comfortable target. */
+body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_content #tabs>ul>li>a{min-height:2.15rem!important;padding:.35rem .58rem!important;line-height:1.25!important}
+body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_content #tabs>ul{gap:.28rem!important;padding:.32rem .38rem 0!important}
