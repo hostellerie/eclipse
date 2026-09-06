@@ -52,6 +52,7 @@ $ECLIPSE_LANG_EXTRA = array(
     'show_native_footer' => 'Afficher le bloc standard du pied de page Geeklog',
     'footer_above_line' => 'Ligne au-dessus du bloc de pied de page',
     'footer_above_line_help' => 'Accepte les autotags Geeklog, par exemple [menu:footer].',
+    'footer_third_column' => 'Troisième colonne du pied de page',
     'footer_powered_line' => 'Ligne « Propulsé par »',
     'footer_execution_line' => 'Ligne du temps d’exécution',
     'footer_blank_keeps_default' => 'Laissez vide pour conserver la valeur par défaut de Geeklog.',
