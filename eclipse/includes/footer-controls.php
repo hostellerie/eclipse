@@ -10,6 +10,9 @@ function eclipse_footer_controls_defaults()
         'show_native' => true,
         'above_line' => '',
         'third_column' => '',
+        'use_default_copyright' => true,
+        'use_default_legal' => true,
+        'use_default_third' => true,
     );
 }
 
@@ -37,6 +40,9 @@ function eclipse_footer_controls_sanitize($input)
     $clean['show_native'] = !empty($input['show_native']);
     $clean['above_line'] = isset($input['above_line']) ? eclipse_footer_controls_text($input['above_line'], 500) : '';
     $clean['third_column'] = isset($input['third_column']) ? eclipse_footer_controls_text($input['third_column'], 500, true) : '';
+    foreach (array('use_default_copyright', 'use_default_legal', 'use_default_third') as $key) {
+        if (array_key_exists($key, $input)) $clean[$key] = !empty($input[$key]);
+    }
 
     // Migrate the short-lived 1.1.0 development fields without losing tester values.
     if ($clean['third_column'] === '') {
@@ -73,7 +79,22 @@ function eclipse_footer_controls_read()
     }
     if (!is_string($json) || strlen($json) > 65536) return eclipse_footer_controls_defaults();
     $decoded = json_decode($json, true);
-    return eclipse_footer_controls_sanitize(is_array($decoded) ? $decoded : array());
+    if (!is_array($decoded)) return eclipse_footer_controls_defaults();
+    $clean = eclipse_footer_controls_sanitize($decoded);
+
+    // Preserve pre-toggle 1.1.0 behaviour: an existing custom value remains custom,
+    // while an empty legacy value continues to use the Geeklog default.
+    $footer = function_exists('eclipse_footer_data') ? eclipse_footer_data() : array();
+    if (!array_key_exists('use_default_copyright', $decoded)) {
+        $clean['use_default_copyright'] = empty($footer['copyright']);
+    }
+    if (!array_key_exists('use_default_legal', $decoded)) {
+        $clean['use_default_legal'] = empty($footer['legal_notice']);
+    }
+    if (!array_key_exists('use_default_third', $decoded)) {
+        $clean['use_default_third'] = $clean['third_column'] === '';
+    }
+    return $clean;
 }
 
 function eclipse_footer_controls_write($value)
@@ -143,11 +164,6 @@ function eclipse_footer_clear_template_cache()
     return true;
 }
 
-/**
- * Detect a newly installed Eclipse archive even when the cached admin template
- * is still executing. The cached template already includes this file, so a new
- * footer-controls.php can invalidate old compiled templates automatically.
- */
 function eclipse_footer_refresh_cache_for_build()
 {
     static $checked = false;
@@ -175,6 +191,13 @@ function eclipse_footer_controls()
     return eclipse_footer_controls_read();
 }
 
+function eclipse_footer_uses_default($column)
+{
+    $controls = eclipse_footer_controls();
+    $keys = array(1 => 'use_default_copyright', 2 => 'use_default_legal', 3 => 'use_default_third');
+    return isset($keys[$column]) && !empty($controls[$keys[$column]]);
+}
+
 /**
  * Persist footer controls only after eclipse_render_customizer() has completed
  * the single Geeklog SEC_checkToken() used by Theme Studio.
@@ -195,6 +218,9 @@ function eclipse_footer_controls_handle_post($studioHtml)
 
     $submitted = isset($_POST['eclipse_footer_controls']) && is_array($_POST['eclipse_footer_controls']) ? $_POST['eclipse_footer_controls'] : array();
     if (!isset($submitted['show_native'])) $submitted['show_native'] = false;
+    foreach (array('use_default_copyright', 'use_default_legal', 'use_default_third') as $key) {
+        if (!isset($submitted[$key])) $submitted[$key] = false;
+    }
     if (eclipse_footer_controls_write($submitted)) eclipse_footer_clear_template_cache();
 }
 
@@ -229,11 +255,6 @@ function eclipse_footer_native_enabled()
     return !empty($controls['show_native']);
 }
 
-/**
- * Render only the configurable footer link rows. Copyright and legal text are
- * deliberately excluded because they belong to columns 1 and 2 of the native
- * footer block and must never be duplicated above it.
- */
 function eclipse_footer_render_links_only()
 {
     if (!function_exists('eclipse_footer_data')) return '';
@@ -273,8 +294,8 @@ function eclipse_footer_column_one()
     global $_CONF;
     if (!function_exists('eclipse_footer_data')) return '';
     $data = eclipse_footer_data();
-    if (empty($data['copyright'])) return '';
-    $value = strtr($data['copyright'], array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
+    $value = isset($data['copyright']) ? $data['copyright'] : '';
+    $value = strtr($value, array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
@@ -283,15 +304,32 @@ function eclipse_footer_column_two()
     global $_CONF;
     if (!function_exists('eclipse_footer_data')) return '';
     $data = eclipse_footer_data();
-    if (empty($data['legal_notice'])) return '';
-    $value = strtr($data['legal_notice'], array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
+    $value = isset($data['legal_notice']) ? $data['legal_notice'] : '';
+    $value = strtr($value, array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
 function eclipse_footer_column_three()
 {
     $controls = eclipse_footer_controls();
-    return $controls['third_column'] !== '' ? eclipse_footer_expand_line($controls['third_column'], true) : '';
+    return eclipse_footer_expand_line(isset($controls['third_column']) ? $controls['third_column'] : '', true);
+}
+
+function eclipse_footer_default_placeholder($column)
+{
+    global $_CONF, $LANG01;
+    if ($column === 1) {
+        $label = isset($LANG01[93]) ? $LANG01[93] : 'Copyright';
+        $site = isset($_CONF['site_name']) ? $_CONF['site_name'] : 'Geeklog';
+        return $label . ' © ' . date('Y') . ' ' . $site;
+    }
+    if ($column === 2) {
+        return isset($LANG01[94]) ? $LANG01[94] : 'All trademarks and copyrights on this page are owned by their respective owners.';
+    }
+    $powered = isset($LANG01[95]) ? $LANG01[95] : 'Powered by';
+    $created = isset($LANG01[91]) ? $LANG01[91] : 'Created this page in';
+    $seconds = isset($LANG01[92]) ? $LANG01[92] : 'seconds';
+    return $powered . ' Geeklog' . "\n" . $created . ' … ' . $seconds;
 }
 
 function eclipse_footer_controls_studio($html)
@@ -300,6 +338,7 @@ function eclipse_footer_controls_studio($html)
     if ($html === '') return $html;
     $controls = eclipse_footer_controls();
     $h = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); };
+    $defaultLabel = $h(eclipse_lang('footer_use_geeklog_default', 'Use Geeklog default content'));
 
     $controlsHtml = '<div class="eclipse-footer-native-controls">'
         . '<div class="eclipse-checks"><label><input type="checkbox" name="eclipse_footer_controls[show_native]" value="1"' . (!empty($controls['show_native']) ? ' checked' : '') . '> ' . $h(eclipse_lang('show_native_footer', 'Display the standard Geeklog footer block')) . '</label></div>'
@@ -311,24 +350,30 @@ function eclipse_footer_controls_studio($html)
         $html = str_replace($legalGrid, $controlsHtml . $legalGrid, $html);
     }
 
-    // Keep the three native footer columns visually and semantically identical.
+    $copyrightToggle = '<span class="eclipse-footer-default-toggle"><input type="checkbox" name="eclipse_footer_controls[use_default_copyright]" value="1"' . (!empty($controls['use_default_copyright']) ? ' checked' : '') . '> ' . $defaultLabel . '</span>';
+    $legalToggle = '<span class="eclipse-footer-default-toggle"><input type="checkbox" name="eclipse_footer_controls[use_default_legal]" value="1"' . (!empty($controls['use_default_legal']) ? ' checked' : '') . '> ' . $defaultLabel . '</span>';
+    $thirdToggle = '<span class="eclipse-footer-default-toggle"><input type="checkbox" name="eclipse_footer_controls[use_default_third]" value="1"' . (!empty($controls['use_default_third']) ? ' checked' : '') . '> ' . $defaultLabel . '</span>';
+
+    $copyrightPlaceholder = $h(eclipse_footer_default_placeholder(1));
+    $legalPlaceholder = $h(eclipse_footer_default_placeholder(2));
+    $thirdPlaceholder = $h(eclipse_footer_default_placeholder(3));
+
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[copyright\]" value="([^"]*)" placeholder="[^"]*">#',
-        function ($match) {
-            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="Copyright © {year} Geeklog">' . $match[1] . '</textarea>';
+        function ($match) use ($copyrightPlaceholder, $copyrightToggle) {
+            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="' . $copyrightPlaceholder . '">' . $match[1] . '</textarea>' . $copyrightToggle;
         },
         $html
     );
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[legal_notice\]" value="([^"]*)" placeholder="[^"]*">#',
-        function ($match) {
-            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="All trademarks and copyrights on this page are owned by their respective owners.">' . $match[1] . '</textarea>';
+        function ($match) use ($legalPlaceholder, $legalToggle) {
+            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="' . $legalPlaceholder . '">' . $match[1] . '</textarea>' . $legalToggle;
         },
         $html
     );
 
-    $thirdPlaceholder = "Powered by Geeklog\nCreated this page in 0.21 seconds";
-    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $h($thirdPlaceholder) . '">' . $h($controls['third_column']) . '</textarea><small>' . $h(eclipse_lang('footer_powered_by_help', 'Leave empty to keep the native Powered by Geeklog and page generation time.')) . '</small></label>';
+    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $thirdPlaceholder . '">' . $h($controls['third_column']) . '</textarea>' . $thirdToggle . '<small>' . $h(eclipse_lang('footer_custom_empty_help', 'Uncheck the default option and leave this field empty to display an empty column.')) . '</small></label>';
     $needle = '</div><template id="eclipse-footer-link-template">';
     if (strpos($html, $needle) !== false) {
         $html = str_replace($needle, $thirdField . '</div><template id="eclipse-footer-link-template">', $html);
