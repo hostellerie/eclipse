@@ -3,6 +3,7 @@
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) die('This file can not be used on its own!');
 
 require_once __DIR__ . '/language.php';
+require_once __DIR__ . '/zip-compat.php';
 
 /*
  * Theme PHP files are loaded from disk before Geeklog resolves cached .thtml
