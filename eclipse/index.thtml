@@ -56,6 +56,7 @@
         {system_messsages}
         <?php echo eclipse_topic_heading(); ?>
         {content}
+        <?php require_once $_CONF['path_layout'] . 'includes/content-bottom.php'; echo eclipse_content_bottom_render(); ?>
       </main>
     </div>
     {left_blocks}
