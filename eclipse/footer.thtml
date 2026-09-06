@@ -4,11 +4,22 @@
     {right_blocks}
   </div>
   <footer id="footer" role="contentinfo">
-    <?php echo eclipse_render_footer_links(); ?>
+    <?php
+    require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
+    echo eclipse_footer_render_links_only();
+    echo eclipse_footer_render_above_line();
+    ?>
+    <?php if (eclipse_footer_native_enabled()) { ?>
     <div id="footer-content">
+      <?php if (eclipse_footer_has_custom_legal()) { echo eclipse_footer_render_custom_legal(); } else { ?>
       <p class="copyright">{copyright_notice}</p>
-      <p class="site_info"><span class="powered_by">{powered_by}&nbsp;<a href="https://www.geeklog.net/">Geeklog</a></span><br{xhtml}><span class="execution_textandtime">{execution_textandtime}</span></p>
+      <?php } ?>
+      <p class="site_info">
+        <span class="powered_by"><?php $eclipsePowered = eclipse_footer_custom_powered_line(); if ($eclipsePowered !== '') { echo $eclipsePowered; } else { ?>{powered_by}&nbsp;<a href="https://www.geeklog.net/">Geeklog</a><?php } ?></span><br{xhtml}>
+        <span class="execution_textandtime"><?php $eclipseExecution = eclipse_footer_custom_execution_line(); if ($eclipseExecution !== '') { echo $eclipseExecution; } else { ?>{execution_textandtime}<?php } ?></span>
+      </p>
     </div>
+    <?php } ?>
   </footer>
 </div>
 {plg_footercode}
