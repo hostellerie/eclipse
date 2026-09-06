@@ -53,11 +53,11 @@
             Array.prototype.push.apply(nodes, scope.querySelectorAll(selector));
         });
         nodes.forEach(function (node) {
-            if (node.children.length === 0) {
-                var text = node.textContent || '';
-                var value = translated(text);
-                if (value !== text) node.textContent = value;
-            }
+            Array.prototype.forEach.call(node.childNodes || [], function (child) {
+                if (child.nodeType !== 3) return;
+                var value = translated(child.nodeValue || '');
+                if (value !== child.nodeValue) child.nodeValue = value;
+            });
             ['aria-label', 'title', 'placeholder'].forEach(function (attribute) {
                 if (!node.hasAttribute || !node.hasAttribute(attribute)) return;
                 var current = node.getAttribute(attribute);
