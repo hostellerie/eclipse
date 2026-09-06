@@ -3,29 +3,35 @@
 
     var lang = window.ECLIPSE_LANG || {};
     var labels = {
-        'Administration': lang.administration,
-        'Navigation': lang.navigation,
-        'View site': lang.view_site,
+        'Nothing currently requires your attention.': lang.nothing_needs_attention,
+        'No quick action is available for this account.': lang.no_quick_action,
+        'Collapse navigation': lang.collapse_navigation,
+        'Expand navigation': lang.expand_navigation,
+        '+ Create Static Page': lang.create_static_page,
+        'Review submissions': lang.review_submissions,
+        'Manage comments': lang.manage_comments,
+        '+ Write article': lang.write_article,
         'Theme Studio': lang.theme_studio,
         'CMS overview': lang.cms_overview,
         'Needs attention': lang.needs_attention,
-        'Nothing currently requires your attention.': lang.nothing_needs_attention,
         'Quick actions': lang.quick_actions,
-        'No quick action is available for this account.': lang.no_quick_action,
-        '+ Write article': lang.write_article,
-        '+ Create Static Page': lang.create_static_page,
-        'Manage comments': lang.manage_comments,
-        'Review submissions': lang.review_submissions,
+        'Administration': lang.administration,
+        'Navigation': lang.navigation,
+        'View site': lang.view_site,
+        'Close menu': lang.close_menu,
         '+ Add block': lang.add_block,
         '+ Add user': lang.add_user,
-        'Collapse navigation': lang.collapse_navigation,
-        'Expand navigation': lang.expand_navigation,
-        'Close menu': lang.close_menu,
         'Menu': lang.menu
     };
+    var sourceLabels = Object.keys(labels).sort(function (a, b) { return b.length - a.length; });
 
     function translated(value) {
-        return Object.prototype.hasOwnProperty.call(labels, value) && labels[value] ? labels[value] : value;
+        var result = value;
+        sourceLabels.forEach(function (source) {
+            if (!labels[source] || result.indexOf(source) === -1) return;
+            result = result.split(source).join(labels[source]);
+        });
+        return result;
     }
 
     function translate(root) {
@@ -42,7 +48,7 @@
         });
         nodes.forEach(function (node) {
             if (node.children.length === 0) {
-                var text = (node.textContent || '').trim();
+                var text = node.textContent || '';
                 var value = translated(text);
                 if (value !== text) node.textContent = value;
             }
