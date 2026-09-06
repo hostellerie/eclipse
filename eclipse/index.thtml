@@ -62,12 +62,27 @@
     {right_blocks}
   </div>
   <footer id="footer" role="contentinfo" itemscope="itemscope" itemtype="https://schema.org/WPFooter">
-    <?php echo eclipse_render_footer_links(); ?>
-    <div id="footer-content">
-      <p class="copyright" itemprop="copyrightHolder">{copyright_msg}</p>
-      <p id="trademark">{trademark_msg}</p>
-      <p class="site_info"><span class="powered_by">{powered_by}&nbsp;<a href="https://www.geeklog.net/">Geeklog</a></span><br{xhtml}><span class="execution_textandtime">{execution_textandtime}</span></p>
+    <?php
+    require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
+    echo eclipse_footer_render_links_only();
+    echo eclipse_footer_render_above_line();
+    ?>
+    <?php if (eclipse_footer_native_enabled()) { ?>
+    <div id="footer-content" class="eclipse-footer-native-grid">
+      <div class="eclipse-footer-column eclipse-footer-column-1">
+        <?php $eclipseColumnOne = eclipse_footer_column_one(); if ($eclipseColumnOne !== '') { echo $eclipseColumnOne; } elseif (defined('VERSION') && version_compare(VERSION, '2.1.3', '>=')) { ?>{copyright_msg}<?php } else { ?>{copyright_notice}<?php } ?>
+      </div>
+      <div class="eclipse-footer-column eclipse-footer-column-2">
+        <?php $eclipseColumnTwo = eclipse_footer_column_two(); if ($eclipseColumnTwo !== '') { echo $eclipseColumnTwo; } elseif (defined('VERSION') && version_compare(VERSION, '2.1.3', '>=')) { ?>{trademark_msg}<?php } ?>
+      </div>
+      <div class="eclipse-footer-column eclipse-footer-column-3">
+        <?php $eclipseColumnThree = eclipse_footer_column_three(); if ($eclipseColumnThree !== '') { echo $eclipseColumnThree; } else { ?>
+          <span class="powered_by">{powered_by}&nbsp;<a href="https://www.geeklog.net/">Geeklog</a></span><br{xhtml}>
+          <span class="execution_textandtime">{execution_textandtime}</span>
+        <?php } ?>
+      </div>
     </div>
+    <?php } ?>
   </footer>
 </div>
 {plg_footercode}
