@@ -39,6 +39,17 @@ function MENU_getResolvedTree($name)
                     'resolved' => true,
                     'children' => array(),
                 ),
+                array(
+                    'id' => 4,
+                    'label' => 'reCAPTCHA (N/A)',
+                    'status' => 'warning',
+                    'type' => 4,
+                    'url' => 'https://example.test/admin/plugins/recaptcha/',
+                    'target' => '',
+                    'selected' => false,
+                    'resolved' => true,
+                    'children' => array(),
+                ),
             ),
         ),
     );
@@ -71,6 +82,11 @@ eclipse_test_assert(strpos($html, 'eclipse-has-submenu') !== false, 'submenu cla
 eclipse_test_assert(strpos($html, 'eclipse-menu-parent') !== false, 'submenu link class missing');
 eclipse_test_assert(strpos($html, 'target="_blank"') !== false, 'target not preserved');
 eclipse_test_assert(strpos($html, 'rel="noopener noreferrer"') !== false, 'noopener not added');
+eclipse_test_assert(strpos($html, 'eclipse-menu-status-warning') !== false, 'semantic warning class missing');
+eclipse_test_assert(strpos($html, 'reCAPTCHA (N/A)') !== false, 'warning label missing');
+eclipse_test_assert(strpos($html, '&lt;span') === false, 'resolved warning label must not contain escaped presentation HTML');
+eclipse_test_assert(eclipse_menu_node_status(array('status' => 'warning')) === 'warning', 'warning status not accepted');
+eclipse_test_assert(eclipse_menu_node_status(array('status' => 'custom-class')) === '', 'unknown status must be ignored');
 eclipse_test_assert(strpos($html, 'legacy-menu') === false, 'resolved tree unexpectedly used legacy renderer');
 
 function eclipse_test_unresolved_tree()
