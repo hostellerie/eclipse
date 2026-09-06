@@ -71,5 +71,47 @@ function eclipse_lang_js()
             $output[$key] = $strings[$key];
         }
     }
-    return json_encode($output);
+    return json_encode($output, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+}
+
+function eclipse_translate_theme_studio_html($html)
+{
+    if (eclipse_language_file_name() === 'english' || $html === '') {
+        return $html;
+    }
+
+    $map = array(
+        'Theme studio' => 'theme_studio_title',
+        'Back to dashboard' => 'back_to_dashboard',
+        'Theme Studio sections' => 'theme_studio',
+        'Design' => 'design',
+        'Preview' => 'preview',
+        'Updates' => 'updates',
+        'Documentation' => 'documentation',
+        'Palette' => 'palette',
+        'Layout and type' => 'layout_and_type',
+        'Appearance' => 'appearance',
+        'Restore defaults' => 'restore_defaults',
+        'Save complete Eclipse state' => 'save_complete_state',
+        'Install an Eclipse archive' => 'install_archive',
+        'Install update' => 'install_update',
+        'Archive ZIP' => 'archive_zip',
+        'Local update' => 'local_update',
+        'Cancel preview' => 'cancel_preview',
+        'No unsaved changes' => 'no_unsaved_changes',
+        'Preview width' => 'preview_width',
+        'Desktop' => 'desktop',
+        'Tablet' => 'tablet',
+        'Mobile' => 'mobile',
+        'Discover Theme Studio' => 'discover_theme_studio'
+    );
+
+    $search = array();
+    $replace = array();
+    foreach ($map as $english => $key) {
+        $search[] = $english;
+        $replace[] = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
+    }
+
+    return str_replace($search, $replace, $html);
 }
