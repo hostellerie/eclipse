@@ -5,6 +5,26 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) d
 require_once __DIR__ . '/language.php';
 
 /*
+ * Theme PHP files are loaded from disk before Geeklog resolves cached .thtml
+ * templates.  Use that point to invalidate compiled templates after an Eclipse
+ * archive has changed, so the first request after an update already sees the
+ * new Theme Studio and layout without a manual Clear Cache.
+ */
+if (!empty($_CONF['path_data']) && function_exists('CTL_clearCache')) {
+    $eclipseManifest = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'MANIFEST.json';
+    $eclipseBuildFingerprint = is_file($eclipseManifest) ? @hash_file('sha256', $eclipseManifest) : '';
+    if (is_string($eclipseBuildFingerprint) && $eclipseBuildFingerprint !== '') {
+        $eclipseBuildMarker = rtrim($_CONF['path_data'], '/\\') . DIRECTORY_SEPARATOR . '.eclipse-theme-build';
+        $eclipsePreviousFingerprint = is_file($eclipseBuildMarker) ? trim((string) @file_get_contents($eclipseBuildMarker)) : '';
+        if ($eclipsePreviousFingerprint !== $eclipseBuildFingerprint) {
+            CTL_clearCache();
+            @file_put_contents($eclipseBuildMarker, $eclipseBuildFingerprint . "\n", LOCK_EX);
+            @chmod($eclipseBuildMarker, 0640);
+        }
+    }
+}
+
+/*
  * Geeklog 2.1.x decides between its legacy table-based configuration UI and
  * the Geeklog 2.x div-based UI from min_theme_gl_version via
  * supported_version_theme. Eclipse uses the modern markup, so make that
