@@ -13,6 +13,7 @@ $LANG_ECLIPSE = array(
     'collapse_navigation' => 'Réduire la navigation',
     'expand_navigation' => 'Développer la navigation',
     'theme_studio' => 'Studio du thème',
+    'theme_studio_launch_help' => 'Personnaliser le design, l’aperçu et les mises à jour',
     'studio' => 'Studio',
     'cms_overview' => 'Vue d’ensemble du CMS',
     'needs_attention' => 'À traiter',
