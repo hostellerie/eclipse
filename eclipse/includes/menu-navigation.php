@@ -155,6 +155,35 @@ function eclipse_menu_node_status($node)
 }
 
 /**
+ * Normalize a Menu label to plain text before Eclipse escapes it for output.
+ *
+ * Newer Menu versions already provide presentation-neutral labels. This
+ * defensive layer also handles older/current installations where a plugin
+ * control arrived as raw or HTML-encoded markup, including double-encoded
+ * wrappers. Semantic color remains driven exclusively by node['status'].
+ *
+ * @param mixed $label
+ * @return string
+ */
+function eclipse_menu_plain_label($label)
+{
+    $plain = (string) $label;
+
+    for ($i = 0; $i < 2; $i++) {
+        $decoded = html_entity_decode($plain, ENT_QUOTES, 'UTF-8');
+        if ($decoded === $plain) {
+            break;
+        }
+        $plain = $decoded;
+    }
+
+    $plain = strip_tags($plain);
+    $plain = preg_replace('/\s+/u', ' ', $plain);
+
+    return trim((string) $plain);
+}
+
+/**
  * Render a resolved Menu tree using Eclipse-owned markup.
  *
  * Menu remains responsible for labels, hierarchy, permissions, ordering,
@@ -206,7 +235,7 @@ function eclipse_menu_render_tree($nodes, $root = false)
             $classes[] = 'eclipse-menu-last';
         }
 
-        $label = isset($node['label']) ? (string) $node['label'] : '';
+        $label = eclipse_menu_plain_label(isset($node['label']) ? $node['label'] : '');
         $url = isset($node['url']) ? (string) $node['url'] : '';
         $target = isset($node['target']) ? (string) $node['target'] : '';
 
