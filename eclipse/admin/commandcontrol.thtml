@@ -8,13 +8,16 @@
 <!-- BEGIN ccitem --><li><a href="{page_url}"{target}><img src="{page_image}" alt=""{xhtml}><span>{option_label}</span></a></li><!-- END ccitem -->
 <?php
 require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
+require_once $_CONF['path_layout'] . 'includes/content-bottom.php';
 $eclipseStudioHtml = eclipse_render_customizer();
-// eclipse_render_customizer() owns SEC_checkToken(); footer controls persist only
-// when that secured save/reset has completed successfully.
+// eclipse_render_customizer() owns SEC_checkToken(); auxiliary Eclipse controls
+// persist only when that secured save/reset has completed successfully.
 eclipse_footer_controls_handle_post($eclipseStudioHtml);
+eclipse_content_bottom_handle_post($eclipseStudioHtml);
 $eclipseStudioHtml = eclipse_translate_theme_studio_html($eclipseStudioHtml);
 $eclipseStudioHtml = eclipse_translate_theme_studio_remaining_html($eclipseStudioHtml);
-echo eclipse_footer_controls_studio($eclipseStudioHtml);
+$eclipseStudioHtml = eclipse_footer_controls_studio($eclipseStudioHtml);
+echo eclipse_content_bottom_studio($eclipseStudioHtml);
 ?>
 </section>
 {# end {templatelocation} #}
