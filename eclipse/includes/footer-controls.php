@@ -311,7 +311,24 @@ function eclipse_footer_controls_studio($html)
         $html = str_replace($legalGrid, $controlsHtml . $legalGrid, $html);
     }
 
-    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="2" maxlength="500">' . $h($controls['third_column']) . '</textarea><small>' . $h(eclipse_lang('footer_powered_by_help', 'Leave empty to keep the native Powered by Geeklog and page generation time.')) . '</small></label>';
+    // Keep the three native footer columns visually and semantically identical.
+    $html = preg_replace_callback(
+        '#<input name="eclipse_footer\[copyright\]" value="([^"]*)" placeholder="[^"]*">#',
+        function ($match) {
+            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="Copyright © {year} Geeklog">' . $match[1] . '</textarea>';
+        },
+        $html
+    );
+    $html = preg_replace_callback(
+        '#<input name="eclipse_footer\[legal_notice\]" value="([^"]*)" placeholder="[^"]*">#',
+        function ($match) {
+            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="All trademarks and copyrights on this page are owned by their respective owners.">' . $match[1] . '</textarea>';
+        },
+        $html
+    );
+
+    $thirdPlaceholder = "Powered by Geeklog\nCreated this page in 0.21 seconds";
+    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $h($thirdPlaceholder) . '">' . $h($controls['third_column']) . '</textarea><small>' . $h(eclipse_lang('footer_powered_by_help', 'Leave empty to keep the native Powered by Geeklog and page generation time.')) . '</small></label>';
     $needle = '</div><template id="eclipse-footer-link-template">';
     if (strpos($html, $needle) !== false) {
         $html = str_replace($needle, $thirdField . '</div><template id="eclipse-footer-link-template">', $html);
