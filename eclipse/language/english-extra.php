@@ -41,6 +41,12 @@ $ECLIPSE_LANG_EXTRA = array(
     'troubleshooting_2' => 'If an archive is refused, verify that it contains a single eclipse/ directory and only supported file types.',
     'troubleshooting_3' => 'If settings cannot be saved, verify that PHP can write to the sibling {path_data}-eclipse/ directory.',
     'troubleshooting_4' => 'Use the backup browser to return to the previous theme files after a failed update.',
+    'zip_updates' => 'ZIP updates',
+    'available' => 'Available',
+    'ziparchive_missing' => 'ZipArchive missing',
+    'persistent_json' => 'Persistent JSON',
+    'writable_sibling_storage' => 'Writable sibling storage',
+    'not_writable' => 'Not writable',
     'commands' => 'Commands',
     'close_command_palette' => 'Close command palette',
     'administration_commands' => 'Administration commands',
@@ -58,6 +64,10 @@ if (!function_exists('eclipse_translate_theme_studio_remaining_html')) {
         $map = array(
             'Load the Google AdSense script' => 'load_adsense_script',
             'Display the Geeklog topic name as an H1 on topic index pages' => 'display_topic_h1',
+            'Hide sidebars in story editor' => 'hide_sidebars_story_editor',
+            'Left sidebar' => 'left_sidebar',
+            'Right sidebar' => 'right_sidebar',
+            'Mobile menu' => 'mobile_menu',
             'Copyright line' => 'copyright_line',
             'Legal notice' => 'legal_notice',
             'URL or path' => 'url_or_path',
@@ -66,13 +76,19 @@ if (!function_exists('eclipse_translate_theme_studio_remaining_html')) {
             'Enabled' => 'enabled',
             'Nofollow' => 'nofollow',
             'Label' => 'label',
-            'Remove' => 'remove'
+            'Remove' => 'remove',
+            'ZIP updates' => 'zip_updates',
+            'Available' => 'available',
+            'ZipArchive missing' => 'ziparchive_missing',
+            'Persistent JSON' => 'persistent_json',
+            'Writable sibling storage' => 'writable_sibling_storage',
+            'Not writable' => 'not_writable'
         );
 
         foreach ($map as $english => $key) {
             $translation = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
             $html = str_replace('>' . $english . '<', '>' . $translation . '<', $html);
-            $html = str_replace('> ' . $english . '</label>', '> ' . $translation . '</label>', $html);
+            $html = str_replace('> ' . $english . '<', '> ' . $translation . '<', $html);
         }
 
         return $html;
