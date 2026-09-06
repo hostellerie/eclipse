@@ -41,7 +41,7 @@ function MENU_getResolvedTree($name)
                 ),
                 array(
                     'id' => 4,
-                    'label' => 'reCAPTCHA (N/A)',
+                    'label' => '&lt;span class=&quot;uk-text-danger&quot;&gt;reCAPTCHA&lt;/span&gt; (N/A)',
                     'status' => 'warning',
                     'type' => 4,
                     'url' => 'https://example.test/admin/plugins/recaptcha/',
@@ -50,10 +50,21 @@ function MENU_getResolvedTree($name)
                     'resolved' => true,
                     'children' => array(),
                 ),
+                array(
+                    'id' => 5,
+                    'label' => '&lt;strong&gt;Hello&lt;/strong&gt; (N/A)',
+                    'status' => '',
+                    'type' => 4,
+                    'url' => 'https://example.test/admin/plugins/hello/',
+                    'target' => '',
+                    'selected' => false,
+                    'resolved' => true,
+                    'children' => array(),
+                ),
             ),
         ),
         array(
-            'id' => 5,
+            'id' => 6,
             'label' => 'Legacy callback',
             'type' => 7,
             'url' => '#',
@@ -94,7 +105,11 @@ eclipse_test_assert(strpos($html, 'target="_blank"') !== false, 'target not pres
 eclipse_test_assert(strpos($html, 'rel="noopener noreferrer"') !== false, 'noopener not added');
 eclipse_test_assert(strpos($html, 'eclipse-menu-status-warning') !== false, 'semantic warning class missing');
 eclipse_test_assert(strpos($html, 'reCAPTCHA (N/A)') !== false, 'warning label missing');
-eclipse_test_assert(strpos($html, '&lt;span') === false, 'resolved warning label must not contain escaped presentation HTML');
+eclipse_test_assert(strpos($html, 'Hello (N/A)') !== false, 'generic encoded plugin label missing');
+eclipse_test_assert(strpos($html, '&lt;span') === false, 'encoded warning markup must not be rendered as text');
+eclipse_test_assert(strpos($html, '&lt;strong') === false, 'generic encoded markup must not be rendered as text');
+eclipse_test_assert(strpos($html, 'uk-text-danger') === false, 'Geeklog presentation class must not leak into Eclipse output');
+eclipse_test_assert(eclipse_menu_plain_label('&lt;em&gt;Example&lt;/em&gt;') === 'Example', 'encoded markup normalization failed');
 eclipse_test_assert(eclipse_menu_node_status(array('status' => 'warning')) === 'warning', 'warning status not accepted');
 eclipse_test_assert(eclipse_menu_node_status(array('status' => 'custom-class')) === '', 'unknown status must be ignored');
 eclipse_test_assert(strpos($html, 'legacy-menu') === false, 'one unresolved callback must not force legacy rendering');
