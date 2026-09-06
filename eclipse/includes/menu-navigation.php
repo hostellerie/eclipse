@@ -89,10 +89,32 @@ function eclipse_menu_node_has_selected_descendant($node)
 }
 
 /**
+ * Return a presentation-safe semantic status supplied by Menu.
+ *
+ * Menu owns the meaning; Eclipse owns the visual representation. Unknown
+ * values are deliberately ignored so arbitrary data can never become a CSS
+ * class.
+ *
+ * @param array $node
+ * @return string
+ */
+function eclipse_menu_node_status($node)
+{
+    if (!is_array($node) || !isset($node['status'])) {
+        return '';
+    }
+
+    $status = strtolower(trim((string) $node['status']));
+    return in_array($status, array('info', 'success', 'warning', 'danger'), true)
+        ? $status : '';
+}
+
+/**
  * Render a resolved Menu tree using Eclipse-owned markup.
  *
  * Menu remains responsible for labels, hierarchy, permissions, ordering,
- * targets and resolved URLs. Eclipse owns only the HTML/CSS/JS presentation.
+ * targets, resolved URLs and semantic status. Eclipse owns only the
+ * HTML/CSS/JS presentation.
  *
  * @param array $nodes
  * @param bool  $root
@@ -120,6 +142,7 @@ function eclipse_menu_render_tree($nodes, $root = false)
         $selected = !empty($node['selected']);
         $activeTrail = !$selected && eclipse_menu_node_has_selected_descendant($node);
         $type = isset($node['type']) ? (int) $node['type'] : 0;
+        $status = eclipse_menu_node_status($node);
 
         $classes = array('eclipse-menu-item');
         if ($hasChildren) {
@@ -130,6 +153,9 @@ function eclipse_menu_render_tree($nodes, $root = false)
         }
         if ($activeTrail) {
             $classes[] = 'eclipse-menu-active-trail';
+        }
+        if ($status !== '') {
+            $classes[] = 'eclipse-menu-status-' . $status;
         }
         if ($index === $count) {
             $classes[] = 'eclipse-menu-last';
