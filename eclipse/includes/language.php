@@ -9,11 +9,38 @@ function eclipse_language_file_name()
     global $_CONF, $LANG_ISO639_1;
 
     $language = isset($_CONF['language']) ? strtolower((string) $_CONF['language']) : '';
+    $language = preg_replace('/\.php$/', '', $language);
+
     if (strpos($language, 'french') === 0 || (!empty($LANG_ISO639_1) && strtolower($LANG_ISO639_1) === 'fr')) {
         return 'french';
     }
 
     return 'english';
+}
+
+function eclipse_language_read($name)
+{
+    global $LANG_ECLIPSE, $ECLIPSE_LANG_EXTRA;
+
+    $directory = dirname(__DIR__) . '/language/';
+    $LANG_ECLIPSE = array();
+    $ECLIPSE_LANG_EXTRA = array();
+
+    $file = $directory . $name . '.php';
+    if (is_file($file)) {
+        include $file;
+    }
+    $strings = is_array($LANG_ECLIPSE) ? $LANG_ECLIPSE : array();
+
+    $extra = $directory . $name . '-extra.php';
+    if (is_file($extra)) {
+        include $extra;
+        if (is_array($ECLIPSE_LANG_EXTRA)) {
+            $strings = array_merge($strings, $ECLIPSE_LANG_EXTRA);
+        }
+    }
+
+    return $strings;
 }
 
 function eclipse_load_language()
@@ -25,19 +52,11 @@ function eclipse_load_language()
         return $LANG_ECLIPSE;
     }
 
-    $languageDir = dirname(__DIR__) . '/language/';
-    $LANG_ECLIPSE = array();
-    if (is_file($languageDir . 'english.php')) {
-        include $languageDir . 'english.php';
-    }
-    $english = is_array($LANG_ECLIPSE) ? $LANG_ECLIPSE : array();
-
+    $english = eclipse_language_read('english');
     $selected = eclipse_language_file_name();
-    if ($selected !== 'english' && is_file($languageDir . $selected . '.php')) {
-        $LANG_ECLIPSE = array();
-        include $languageDir . $selected . '.php';
-        $translated = is_array($LANG_ECLIPSE) ? $LANG_ECLIPSE : array();
-        $LANG_ECLIPSE = array_merge($english, $translated);
+
+    if ($selected !== 'english') {
+        $LANG_ECLIPSE = array_merge($english, eclipse_language_read($selected));
     } else {
         $LANG_ECLIPSE = $english;
     }
@@ -63,7 +82,9 @@ function eclipse_lang_js()
         'collapse_navigation', 'expand_navigation', 'theme_studio', 'studio',
         'cms_overview', 'needs_attention', 'nothing_needs_attention',
         'quick_actions', 'no_quick_action', 'write_article', 'create_static_page',
-        'manage_comments', 'review_submissions', 'add_block', 'add_user'
+        'manage_comments', 'review_submissions', 'add_block', 'add_user',
+        'commands', 'close_command_palette', 'administration_commands',
+        'search_commands', 'search_administration_commands'
     );
     $output = array();
     foreach ($keys as $key) {
@@ -90,6 +111,11 @@ function eclipse_translate_theme_studio_html($html)
         'Configure navigation, cards, buttons, header, footer and sidebars.' => 'review_appearance_regions_help',
         'Compare desktop, tablet and mobile without changing the live site.' => 'test_in_preview_help',
         'Apply the settings, then check public and administration pages. Eclipse clears only its theme caches automatically.' => 'save_and_verify_help',
+        'Create up to eight link rows. Data is stored as protected JSON outside Geeklog\'s cache directory and survives theme updates and cache cleaning.' => 'footer_links_intro',
+        'Import a complete versioned draft containing settings, footer links and palettes. Review it, then save.' => 'import_export_intro',
+        'The current theme is backed up again before restoration.' => 'restore_theme_backup_intro',
+        'Contrast badges report text and interface-color ratios. Prefer AA or AAA results. Warning and destructive-action colors remain protected from palette presets to avoid ambiguous buttons.' => 'palettes_accessibility_text',
+        'The Updates tab accepts a versioned Eclipse ZIP selected from your computer. The installer validates its contents, creates a backup and clears only Eclipse theme caches after replacement. Use Restore a theme backup if a deployment must be reversed.' => 'updates_rollback_text',
         'Display the Geeklog topic name as an H1 on topic index pages' => 'display_topic_h1',
         'Hide sidebars in story editor' => 'hide_sidebars_story_editor',
         'Left and right blocks' => 'left_and_right_blocks',
@@ -107,6 +133,23 @@ function eclipse_translate_theme_studio_html($html)
         'Discover Theme Studio' => 'discover_theme_studio',
         'Theme Studio sections' => 'theme_studio_sections',
         'Portability and history' => 'portability_and_history',
+        'Footer links' => 'footer_links',
+        'Link row' => 'link_row',
+        'Remove row' => 'remove_row',
+        'Add link' => 'add_link',
+        'Add link row' => 'add_link_row',
+        'Rollback' => 'rollback',
+        'Restore a theme backup' => 'restore_theme_backup',
+        'Available backup' => 'available_backup',
+        'Select a backup' => 'select_backup',
+        'Restore selected backup' => 'restore_selected_backup',
+        'Preview, drafts and saving' => 'preview_drafts_saving',
+        'Palettes and accessibility' => 'palettes_accessibility',
+        'Import, export and history' => 'import_export_history',
+        'Updates and rollback' => 'updates_rollback',
+        'Storage and permissions' => 'storage_permissions',
+        'Administration shortcuts' => 'administration_shortcuts',
+        'Troubleshooting' => 'troubleshooting',
         'Delete named palette' => 'delete_named_palette',
         'Save named palette' => 'save_named_palette',
         'Brand and regions' => 'brand_and_regions',
@@ -212,6 +255,22 @@ function eclipse_translate_theme_studio_html($html)
         $translation = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
         $html = str_replace('>' . $english . '<', '>' . $translation . '<', $html);
         $html = str_replace('="' . $english . '"', '="' . $translation . '"', $html);
+    }
+
+    $fragmentMap = array(
+        'Leave Sitemap path empty to use Geeklog <code>sitemap_file</code>. Use <code>auto</code> for the active Geeklog language. Public SEO metadata and advertising are omitted from administration pages.' => 'seo_integrations_intro',
+        'Color changes are previewed immediately. They are not applied site-wide until <b>Save Eclipse settings</b> is used. A successful save clears only Eclipse template and generated CSS cache entries. <b>Cancel preview</b> returns the form to its initial values.' => 'preview_drafts_saving_text',
+        'The versioned export contains settings, footer links and named palettes. Legacy flat settings exports remain accepted. An import is only a local draft until <b>Save complete Eclipse state</b> is pressed. Up to twenty complete snapshots are retained, and a safety snapshot is created before restoration.' => 'import_export_history_text',
+        'Settings, footer links, palettes and history are protected JSON documents in the multisite-safe sibling directory <code>{path_data}-eclipse/</code>, outside Geeklog\'s cache-cleaning scope. Historical <code>vars</code> records and legacy JSON under <code>path_data</code> are migration sources only.' => 'storage_permissions_text',
+        'Modern workspace provides a dark administration header and navigation groups that are folded by default. Expand a group heading to show its permission-filtered links. Press <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux or <kbd>Command</kbd>+<kbd>K</kbd> on macOS to open the command palette.' => 'administration_shortcuts_text',
+        'If styling appears unchanged after a manual upload, clear Geeklog\'s resource and template caches once, then force-reload the browser.' => 'troubleshooting_1',
+        'If an archive is refused, verify that it contains a single <code>eclipse/</code> directory and only supported file types.' => 'troubleshooting_2',
+        'If settings cannot be saved, verify that PHP can write to the sibling <code>{path_data}-eclipse/</code> directory.' => 'troubleshooting_3',
+        'Use the backup browser to return to the previous theme files after a failed update.' => 'troubleshooting_4'
+    );
+
+    foreach ($fragmentMap as $source => $key) {
+        $html = str_replace($source, htmlspecialchars(eclipse_lang($key, strip_tags($source)), ENT_QUOTES, 'UTF-8'), $html);
     }
 
     $guidePrefix = htmlspecialchars(eclipse_lang('guide_for_eclipse', 'Guide for Eclipse'), ENT_QUOTES, 'UTF-8');
