@@ -6,8 +6,8 @@ if (!defined('VERSION')) {
 
 /**
  * Render the Menu plugin navigation using its resolved-tree API when available.
- * Falls back to the historical MENU_getMenu() HTML renderer for older Menu
- * versions or trees containing an unresolved legacy callback.
+ * Unresolved legacy callback nodes are omitted from the structured rendering
+ * instead of forcing the entire navigation back through MENU_getMenu().
  *
  * @return string
  */
@@ -19,10 +19,13 @@ function eclipse_menu_navigation_resolved()
 
     if (function_exists('MENU_getResolvedTree')) {
         $tree = MENU_getResolvedTree('navigation');
-        if (is_array($tree) && !empty($tree) && eclipse_menu_tree_is_resolved($tree)) {
-            return '<div class="eclipse-menu">'
-                . eclipse_menu_render_tree($tree, true)
-                . '</div>';
+        if (is_array($tree) && !empty($tree)) {
+            $resolvedTree = eclipse_menu_filter_resolved_nodes($tree);
+            if (!empty($resolvedTree)) {
+                return '<div class="eclipse-menu">'
+                    . eclipse_menu_render_tree($resolvedTree, true)
+                    . '</div>';
+            }
         }
     }
 
@@ -37,8 +40,11 @@ function eclipse_menu_navigation_resolved()
 
 /**
  * Return false when a tree contains a node which Menu explicitly reports as
- * unresolved. This keeps legacy PHP callback elements working through the old
- * renderer until they have a structured provider.
+ * unresolved.
+ *
+ * Retained as a small public helper for compatibility/tests. The navigation
+ * renderer now filters unresolved legacy nodes instead of abandoning the whole
+ * structured tree.
  *
  * @param array $nodes
  * @return bool
@@ -58,6 +64,45 @@ function eclipse_menu_tree_is_resolved($nodes)
     }
 
     return true;
+}
+
+/**
+ * Keep only nodes that Menu can represent as structured navigation data.
+ *
+ * A legacy PHP callback may legitimately return arbitrary HTML and therefore
+ * be marked resolved=false by Menu. That one item must not force every other
+ * resolved node (including semantic admin warnings) through the legacy HTML
+ * renderer.
+ *
+ * @param array $nodes
+ * @return array
+ */
+function eclipse_menu_filter_resolved_nodes($nodes)
+{
+    $filtered = array();
+
+    if (!is_array($nodes)) {
+        return $filtered;
+    }
+
+    foreach ($nodes as $node) {
+        if (!is_array($node)) {
+            continue;
+        }
+        if (isset($node['resolved']) && !$node['resolved']) {
+            continue;
+        }
+
+        if (isset($node['children']) && is_array($node['children'])) {
+            $node['children'] = eclipse_menu_filter_resolved_nodes($node['children']);
+        } else {
+            $node['children'] = array();
+        }
+
+        $filtered[] = $node;
+    }
+
+    return $filtered;
 }
 
 /**
