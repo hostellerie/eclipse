@@ -9,7 +9,6 @@
 .eclipse-footer-legal p{margin:.12rem 0;color:inherit;font-size:.74rem;line-height:1.45;opacity:.76}
 .eclipse-footer-above{width:min(calc(100% - 2rem),var(--eclipse-max,1200px));margin:.15rem auto .9rem;text-align:center}
 .eclipse-footer-native-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem;width:min(calc(100% - 2rem),var(--eclipse-max,1200px));margin:0 auto;padding-top:.85rem}
-.eclipse-footer-native-grid.is-two-column{grid-template-columns:repeat(2,minmax(0,1fr))}
 .eclipse-footer-column{min-width:0;font-size:.78rem;line-height:1.5}
 .eclipse-footer-column-2{text-align:center}
 .eclipse-footer-column-3{text-align:right}
@@ -42,5 +41,5 @@
 .eclipse-footer-legal-fields textarea{box-sizing:border-box;width:100%!important;height:5.9rem!important;min-height:5.9rem!important;margin:0!important;padding:.7rem .8rem!important;align-self:start;resize:vertical;border-radius:.55rem!important}
 .eclipse-footer-legal-fields textarea::placeholder{opacity:.68}
 .eclipse-footer-legal-fields>label>small{display:block;min-height:1.05rem;margin:0!important}
-@media(max-width:900px){.eclipse-footer-link-row{grid-template-columns:1fr 1.35fr;grid-template-areas:"label url" "options options" "remove remove"}.eclipse-footer-link-row>.eclipse-footer-remove-link{justify-self:start}.eclipse-footer-native-grid,.eclipse-footer-native-grid.is-two-column{grid-template-columns:1fr;gap:.7rem}.eclipse-footer-column-2,.eclipse-footer-column-3{text-align:left}.eclipse-footer-legal-fields{grid-template-columns:1fr!important}.eclipse-footer-legal-fields>label{grid-template-rows:auto 5.9rem auto}}
+@media(max-width:900px){.eclipse-footer-link-row{grid-template-columns:1fr 1.35fr;grid-template-areas:"label url" "options options" "remove remove"}.eclipse-footer-link-row>.eclipse-footer-remove-link{justify-self:start}.eclipse-footer-native-grid{grid-template-columns:1fr;gap:.7rem}.eclipse-footer-column-2,.eclipse-footer-column-3{text-align:left}.eclipse-footer-legal-fields{grid-template-columns:1fr!important}.eclipse-footer-legal-fields>label{grid-template-rows:auto 5.9rem auto}}
 @media(max-width:600px){#footer{padding-block:1.15rem}.eclipse-footer-extras,.eclipse-footer-above,.eclipse-footer-native-grid{width:min(calc(100% - 1.25rem),var(--eclipse-max,1200px))}.eclipse-footer-extras{padding-top:.2rem}.eclipse-footer-links ul{gap:.3rem .9rem}.eclipse-footer-link-row{grid-template-columns:1fr;grid-template-areas:"label" "url" "options" "remove"}.eclipse-footer-link-options{align-items:stretch}}
