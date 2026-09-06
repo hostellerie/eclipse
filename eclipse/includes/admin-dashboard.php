@@ -2,6 +2,8 @@
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) die('This file can not be used on its own!');
 
+require_once __DIR__ . '/language.php';
+
 /*
  * Geeklog 2.1.x decides between its legacy table-based configuration UI and
  * the Geeklog 2.x div-based UI from min_theme_gl_version via
@@ -75,31 +77,31 @@ function eclipse_admin_dashboard_render()
     $comments = eclipse_admin_get_recent_comments(); $pages = eclipse_admin_get_recent_staticpages();
     $admin = rtrim($_CONF['site_admin_url'], '/'); $site = rtrim($_CONF['site_url'], '/');
     $articleScript = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=') ? 'article.php' : 'story.php';
-    $html = '<section class="eclipse-admin-dashboard-data" aria-label="Editorial overview">';
+    $html = '<section class="eclipse-admin-dashboard-data" aria-label="' . eclipse_admin_dashboard_h(eclipse_lang('editorial_overview')) . '">';
     if ($stories) {
-        $html .= '<article class="eclipse-dashboard-widget"><h2>Recent stories</h2><ul>';
+        $html .= '<article class="eclipse-dashboard-widget"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('recent_stories')) . '</h2><ul>';
         foreach ($stories as $row) {
-            $sid = rawurlencode($row['sid']); $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h(eclipse_admin_dashboard_date($row['date'])) . (!empty($row['username']) ? ' &middot; ' . eclipse_admin_dashboard_h($row['username']) : '') . '</small></div><span><a href="' . $site . '/article.php?story=' . $sid . '">View</a><a href="' . $admin . '/' . $articleScript . '?mode=edit&amp;sid=' . $sid . '">Edit</a></span></li>';
+            $sid = rawurlencode($row['sid']); $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h(eclipse_admin_dashboard_date($row['date'])) . (!empty($row['username']) ? ' &middot; ' . eclipse_admin_dashboard_h($row['username']) : '') . '</small></div><span><a href="' . $site . '/article.php?story=' . $sid . '">' . eclipse_admin_dashboard_h(eclipse_lang('view')) . '</a><a href="' . $admin . '/' . $articleScript . '?mode=edit&amp;sid=' . $sid . '">' . eclipse_admin_dashboard_h(eclipse_lang('edit')) . '</a></span></li>';
         }
         $html .= '</ul></article>';
     }
     if ($comments) {
-        $html .= '<article class="eclipse-dashboard-widget"><h2>Recent comments</h2><ul>';
+        $html .= '<article class="eclipse-dashboard-widget"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('recent_comments')) . '</h2><ul>';
         foreach ($comments as $row) {
             $plain = trim(preg_replace('/\s+/', ' ', strip_tags($row['comment']))); if (strlen($plain) > 100) $plain = substr($plain, 0, 97) . '...';
             $context = (!empty($row['type']) ? $row['type'] . ' ' : '') . (!empty($row['sid']) ? $row['sid'] . ' ' : '') . eclipse_admin_dashboard_date($row['date']);
-            $html .= '<li><div><strong>' . eclipse_admin_dashboard_h(!empty($row['username']) ? $row['username'] : 'Anonymous') . '</strong><small>' . eclipse_admin_dashboard_h($plain) . '</small><small>' . eclipse_admin_dashboard_h(trim($context)) . '</small></div><a href="' . $site . '/comment.php?mode=view&amp;cid=' . (int) $row['cid'] . '">View</a></li>';
+            $html .= '<li><div><strong>' . eclipse_admin_dashboard_h(!empty($row['username']) ? $row['username'] : eclipse_lang('anonymous')) . '</strong><small>' . eclipse_admin_dashboard_h($plain) . '</small><small>' . eclipse_admin_dashboard_h(trim($context)) . '</small></div><a href="' . $site . '/comment.php?mode=view&amp;cid=' . (int) $row['cid'] . '">' . eclipse_admin_dashboard_h(eclipse_lang('view')) . '</a></li>';
         }
         $html .= '</ul></article>';
     }
     if ($drafts) {
-        $html .= '<article class="eclipse-dashboard-widget eclipse-dashboard-widget-wide"><h2>Drafts</h2><ul>';
-        foreach ($drafts as $row) $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h(eclipse_admin_dashboard_date($row['date'])) . '</small></div><a href="' . $admin . '/' . $articleScript . '?mode=edit&amp;sid=' . rawurlencode($row['sid']) . '">Continue</a></li>';
+        $html .= '<article class="eclipse-dashboard-widget eclipse-dashboard-widget-wide"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('drafts')) . '</h2><ul>';
+        foreach ($drafts as $row) $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h(eclipse_admin_dashboard_date($row['date'])) . '</small></div><a href="' . $admin . '/' . $articleScript . '?mode=edit&amp;sid=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h(eclipse_lang('continue')) . '</a></li>';
         $html .= '</ul></article>';
     }
     if ($pages) {
-        $html .= '<article class="eclipse-dashboard-widget"><h2>Recent Static Pages</h2><ul>';
-        foreach ($pages as $row) $html .= '<li><strong>' . eclipse_admin_dashboard_h($row['sp_title']) . '</strong><a href="' . $admin . '/plugins/staticpages/index.php?mode=edit&amp;sp_id=' . rawurlencode($row['sp_id']) . '">Edit</a></li>';
+        $html .= '<article class="eclipse-dashboard-widget"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('recent_static_pages')) . '</h2><ul>';
+        foreach ($pages as $row) $html .= '<li><strong>' . eclipse_admin_dashboard_h($row['sp_title']) . '</strong><a href="' . $admin . '/plugins/staticpages/index.php?mode=edit&amp;sp_id=' . rawurlencode($row['sp_id']) . '">' . eclipse_admin_dashboard_h(eclipse_lang('edit')) . '</a></li>';
         $html .= '</ul></article>';
     }
     return $html . '</section>';
