@@ -6,6 +6,10 @@
 <!-- BEGIN ccgroup --><h2>{lang_group}</h2><ul class="admin-commandcontrol clearfix">{cc_rows}</ul><!-- END ccgroup -->
 <!-- BEGIN ccrow -->{cc_main_options}<!-- END ccrow -->
 <!-- BEGIN ccitem --><li><a href="{page_url}"{target}><img src="{page_image}" alt=""{xhtml}><span>{option_label}</span></a></li><!-- END ccitem -->
-<?php echo eclipse_translate_theme_studio_remaining_html(eclipse_translate_theme_studio_html(eclipse_render_customizer())); ?>
+<?php
+require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
+eclipse_footer_controls_handle_post();
+echo eclipse_footer_controls_studio(eclipse_translate_theme_studio_remaining_html(eclipse_translate_theme_studio_html(eclipse_render_customizer())));
+?>
 </section>
 {# end {templatelocation} #}
