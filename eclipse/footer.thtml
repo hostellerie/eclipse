@@ -1,3 +1,4 @@
+        <?php require_once $_CONF['path_layout'] . 'includes/content-bottom.php'; echo eclipse_content_bottom_render(); ?>
       </main>
     </div>
     {left_blocks}
