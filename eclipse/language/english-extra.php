@@ -47,3 +47,34 @@ $ECLIPSE_LANG_EXTRA = array(
     'search_commands' => 'Search commands…',
     'search_administration_commands' => 'Search administration commands'
 );
+
+if (!function_exists('eclipse_translate_theme_studio_remaining_html')) {
+    function eclipse_translate_theme_studio_remaining_html($html)
+    {
+        if (!function_exists('eclipse_language_file_name') || eclipse_language_file_name() === 'english' || $html === '') {
+            return $html;
+        }
+
+        $map = array(
+            'Load the Google AdSense script' => 'load_adsense_script',
+            'Display the Geeklog topic name as an H1 on topic index pages' => 'display_topic_h1',
+            'Copyright line' => 'copyright_line',
+            'Legal notice' => 'legal_notice',
+            'URL or path' => 'url_or_path',
+            'New window' => 'new_window',
+            'Emphasize' => 'emphasize',
+            'Enabled' => 'enabled',
+            'Nofollow' => 'nofollow',
+            'Label' => 'label',
+            'Remove' => 'remove'
+        );
+
+        foreach ($map as $english => $key) {
+            $translation = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
+            $html = str_replace('>' . $english . '<', '>' . $translation . '<', $html);
+            $html = str_replace('> ' . $english . '</label>', '> ' . $translation . '</label>', $html);
+        }
+
+        return $html;
+    }
+}
