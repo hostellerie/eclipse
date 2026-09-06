@@ -128,6 +128,48 @@ function eclipse_footer_controls_delete()
     return $ok;
 }
 
+/** Clear the complete Geeklog template/resource cache when Eclipse changes. */
+function eclipse_footer_clear_template_cache()
+{
+    global $_CONF;
+    if (function_exists('CTL_clearCache')) {
+        CTL_clearCache();
+        return true;
+    }
+    if (!function_exists('CTL_clearCacheDirectories') || empty($_CONF['path_data'])) return false;
+    $data = rtrim($_CONF['path_data'], '/\\') . DIRECTORY_SEPARATOR;
+    CTL_clearCacheDirectories($data . 'layout_cache');
+    CTL_clearCacheDirectories($data . 'layout_css');
+    return true;
+}
+
+/**
+ * Detect a newly installed Eclipse archive even when the cached admin template
+ * is still executing. The cached template already includes this file, so a new
+ * footer-controls.php can invalidate old compiled templates automatically.
+ */
+function eclipse_footer_refresh_cache_for_build()
+{
+    static $checked = false;
+    if ($checked) return false;
+    $checked = true;
+
+    if (!function_exists('eclipse_storage_root') || !function_exists('eclipse_storage_prepare') || !eclipse_storage_prepare()) return false;
+    $manifest = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'MANIFEST.json';
+    $fingerprintSource = is_file($manifest) ? $manifest : __FILE__;
+    $fingerprint = @hash_file('sha256', $fingerprintSource);
+    if (!is_string($fingerprint) || $fingerprint === '') return false;
+
+    $marker = eclipse_storage_root() . DIRECTORY_SEPARATOR . '.eclipse-build-cache';
+    $previous = is_file($marker) ? trim((string) @file_get_contents($marker)) : '';
+    if ($previous === $fingerprint) return false;
+
+    eclipse_footer_clear_template_cache();
+    @file_put_contents($marker, $fingerprint . "\n", LOCK_EX);
+    @chmod($marker, 0640);
+    return true;
+}
+
 function eclipse_footer_controls()
 {
     return eclipse_footer_controls_read();
@@ -147,13 +189,13 @@ function eclipse_footer_controls_handle_post($studioHtml)
     if (!$saveOk && !$resetOk) return;
 
     if (!empty($_POST['eclipse_reset'])) {
-        eclipse_footer_controls_delete();
+        if (eclipse_footer_controls_delete()) eclipse_footer_clear_template_cache();
         return;
     }
 
     $submitted = isset($_POST['eclipse_footer_controls']) && is_array($_POST['eclipse_footer_controls']) ? $_POST['eclipse_footer_controls'] : array();
     if (!isset($submitted['show_native'])) $submitted['show_native'] = false;
-    eclipse_footer_controls_write($submitted);
+    if (eclipse_footer_controls_write($submitted)) eclipse_footer_clear_template_cache();
 }
 
 function eclipse_footer_expand_line($value, $preserveLines = false)
@@ -254,6 +296,7 @@ function eclipse_footer_column_three()
 
 function eclipse_footer_controls_studio($html)
 {
+    eclipse_footer_refresh_cache_for_build();
     if ($html === '') return $html;
     $controls = eclipse_footer_controls();
     $h = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); };
