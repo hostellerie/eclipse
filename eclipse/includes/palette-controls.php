@@ -17,7 +17,9 @@ function eclipse_palette_builtin_extensions()
     return array(
         'vivid-red' => array(
             'label' => 'Vivid red',
-            'colors' => array('#0067ff', '#004ec2', '#005bbb', '#f4f6fb', '#ffffff', '#202431'),
+            // Red is the visual identity; blue remains reserved for links.
+            // #d71920 keeps white primary-button text above WCAG AA contrast.
+            'colors' => array('#d71920', '#a90d15', '#005bbb', '#f4f6fb', '#ffffff', '#202431'),
             'class' => 'palette-vivid-red',
         ),
     );
