@@ -20,6 +20,10 @@ function eclipse_palette_builtin_extensions()
             // Red is the visual identity; blue remains reserved for links.
             // #d71920 keeps white primary-button text above WCAG AA contrast.
             'colors' => array('#d71920', '#a90d15', '#005bbb', '#f4f6fb', '#ffffff', '#202431'),
+            // Early 1.0.1 builds accidentally shipped Vivid red with blue
+            // primary/secondary colors. Keep that exact combination as a
+            // migration alias so existing saved settings upgrade cleanly.
+            'legacy_colors' => array('#0067ff', '#004ec2', '#005bbb', '#f4f6fb', '#ffffff', '#202431'),
             'class' => 'palette-vivid-red',
         ),
     );
@@ -36,11 +40,20 @@ function eclipse_palette_current_colors()
     return $colors;
 }
 
+function eclipse_palette_matches($current, $palette)
+{
+    if ($current === array_map('strtolower', $palette['colors'])) {
+        return true;
+    }
+    return isset($palette['legacy_colors'])
+        && $current === array_map('strtolower', $palette['legacy_colors']);
+}
+
 function eclipse_palette_current_key()
 {
     $current = eclipse_palette_current_colors();
     foreach (eclipse_palette_builtin_extensions() as $key => $palette) {
-        if ($current === array_map('strtolower', $palette['colors'])) {
+        if (eclipse_palette_matches($current, $palette)) {
             return $key;
         }
     }
@@ -52,6 +65,33 @@ function eclipse_palette_body_class()
     $key = eclipse_palette_current_key();
     $palettes = eclipse_palette_builtin_extensions();
     return $key !== '' && isset($palettes[$key]['class']) ? $palettes[$key]['class'] : '';
+}
+
+/**
+ * Upgrade the Theme Studio form from an exact legacy built-in palette to its
+ * current colors. This changes only the rendered form; persistent JSON is
+ * updated normally when the administrator clicks Save.
+ */
+function eclipse_palette_upgrade_legacy_form($html)
+{
+    $current = eclipse_palette_current_colors();
+    $keys = array('color_primary', 'color_secondary', 'color_link', 'color_background', 'color_surface', 'color_text');
+
+    foreach (eclipse_palette_builtin_extensions() as $palette) {
+        if (!isset($palette['legacy_colors']) || $current !== array_map('strtolower', $palette['legacy_colors'])) {
+            continue;
+        }
+        foreach ($keys as $index => $key) {
+            $old = strtolower($palette['legacy_colors'][$index]);
+            $new = strtolower($palette['colors'][$index]);
+            $needle = 'name="eclipse[' . $key . ']" value="' . $old . '"';
+            $replacement = 'name="eclipse[' . $key . ']" value="' . $new . '"';
+            $html = str_replace($needle, $replacement, $html);
+        }
+        break;
+    }
+
+    return $html;
 }
 
 /**
@@ -67,6 +107,8 @@ function eclipse_palette_studio($html)
     if (!is_string($html) || strpos($html, 'id="eclipse-palette-preset"') === false) {
         return $html;
     }
+
+    $html = eclipse_palette_upgrade_legacy_form($html);
 
     $needle = '<option value="default">Eclipse default</option>';
     if (strpos($html, $needle) === false) {
