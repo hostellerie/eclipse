@@ -6,27 +6,6 @@ require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/zip-compat.php';
 
 /*
- * Theme Studio's built-in palette list is rendered inside functions.php.
- * Keep the Vivid red preset visible in the server-rendered HTML on both
- * Geeklog 2.1.x and 2.2.x, including installations where footer template
- * fallbacks prevent the temporary palette helper script from loading.
- *
- * The data-colors attribute is intentionally used because theme.js already
- * imports any preset option carrying six ordered colors into its palette map.
- */
-if (!defined('ECLIPSE_VIVID_PRESET_FILTER')) {
-    define('ECLIPSE_VIVID_PRESET_FILTER', 1);
-    ob_start(function ($buffer) {
-        if (!is_string($buffer) || strpos($buffer, 'id="eclipse-palette-preset"') === false || strpos($buffer, 'value="vivid-red"') !== false) {
-            return $buffer;
-        }
-        $needle = '<option value="default">Eclipse default</option>';
-        $vivid = '<option value="vivid-red" data-colors="#0067ff,#004ec2,#005bbb,#f4f6fb,#ffffff,#202431">Vivid red</option>';
-        return str_replace($needle, $needle . $vivid, $buffer);
-    });
-}
-
-/*
  * Theme PHP files are loaded from disk before Geeklog resolves cached .thtml
  * templates.  Use that point to invalidate compiled templates after an Eclipse
  * archive has changed, so the first request after an update already sees the
