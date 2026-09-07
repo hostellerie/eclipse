@@ -4,9 +4,22 @@
 <meta charset="{charset}"{xhtml}>
 <meta name="viewport" content="width=device-width, initial-scale=1"{xhtml}>
 <title>{page_title_and_site_name}</title>
-<?php $eclipseSiteFavicon = !empty($_CONF['path_images']) ? rtrim($_CONF['path_images'], '/\\') . '/favicon.png' : ''; ?>
-<?php if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) { ?>
-<link rel="icon" href="{site_url}/images/favicon.png" type="image/png"{xhtml}>
+<?php
+$eclipseSiteFavicon = !empty($_CONF['path_images']) ? rtrim($_CONF['path_images'], '/\\') . '/favicon.png' : '';
+$eclipseSiteFaviconUrl = '';
+if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
+    $eclipsePathImages = str_replace('\\', '/', rtrim((string) $_CONF['path_images'], '/\\'));
+    $eclipsePathHtml = !empty($_CONF['path_html']) ? str_replace('\\', '/', rtrim((string) $_CONF['path_html'], '/\\')) : '';
+    if ($eclipsePathHtml !== '' && strpos($eclipsePathImages . '/', $eclipsePathHtml . '/') === 0) {
+        $eclipseImagesRelative = ltrim(substr($eclipsePathImages, strlen($eclipsePathHtml)), '/');
+        $eclipseSiteFaviconUrl = rtrim((string) $_CONF['site_url'], '/') . '/' . ($eclipseImagesRelative !== '' ? $eclipseImagesRelative . '/' : '') . 'favicon.png';
+    } else {
+        $eclipseSiteFaviconUrl = rtrim((string) $_CONF['site_url'], '/') . '/images/favicon.png';
+    }
+}
+?>
+<?php if ($eclipseSiteFaviconUrl !== '') { ?>
+<link rel="icon" href="<?php echo htmlspecialchars($eclipseSiteFaviconUrl, ENT_QUOTES, 'UTF-8'); ?>" type="image/png"{xhtml}>
 <?php } else { ?>
 <link rel="icon" href="{layout_url}/images/logo-mark.svg" type="image/svg+xml"{xhtml}>
 <?php } ?>
