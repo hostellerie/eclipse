@@ -9,9 +9,7 @@
 <?php
 require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
 require_once $_CONF['path_layout'] . 'includes/content-bottom.php';
-require_once $_CONF['path_layout'] . 'includes/palette-controls.php';
 $eclipseStudioHtml = eclipse_render_customizer();
-$eclipseStudioHtml = eclipse_palette_studio($eclipseStudioHtml);
 // eclipse_render_customizer() owns SEC_checkToken(); auxiliary Eclipse controls
 // persist only when that secured save/reset has completed successfully.
 eclipse_footer_controls_handle_post($eclipseStudioHtml);
