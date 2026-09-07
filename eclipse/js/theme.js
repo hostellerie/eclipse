@@ -142,6 +142,7 @@
         if (!selector || !form) return;
         var palettes = {
             default: ['#3157d5', '#6750a4', '#2448bd', '#f4f6fb', '#ffffff', '#202431'],
+            'vivid-red': ['#ef1b23', '#c90012', '#005bbb', '#f4f6fb', '#ffffff', '#202431'],
             ocean: ['#087e8b', '#155eaa', '#075985', '#eef8fa', '#ffffff', '#16313a'],
             forest: ['#287a52', '#7a8f3a', '#17633f', '#f2f7f1', '#ffffff', '#203229'],
             sunset: ['#6d3f8c', '#e07a5f', '#58316f', '#fff5ee', '#ffffff', '#382522'],
@@ -183,8 +184,6 @@
             if (frame && frame.contentDocument) {
                 var previewVariables = ['--p', '--s', '--l', '--bg', '--surface', '--text'];
                 colors.forEach(function (color, index) { frame.contentDocument.documentElement.style.setProperty(previewVariables[index], color); });
-                var previewButton = frame.contentDocument.querySelector('.button');
-                if (previewButton) previewButton.style.background = colors[2];
             }
             updateContrast(colors);
         }
