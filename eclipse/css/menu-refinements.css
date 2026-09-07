@@ -11,7 +11,7 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
 body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul>li>a::before{background:#fff}
 body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul>li>a{font-size:.9rem;font-weight:600}
 body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul>li>a::before{background:linear-gradient(90deg,var(--eclipse-primary),var(--eclipse-secondary))}
-body.theme-eclipse.menu-style-contrast #navigation.eclipse-plugin-menu{position:relative;z-index:20;width:min(calc(100% - 2rem),var(--eclipse-max));margin:-2rem auto 1.2rem;padding:.35rem .45rem;background:linear-gradient(135deg,#111827,#182238);border:1px solid #2f3b55;border-radius:1rem;box-shadow:0 16px 38px rgba(15,23,42,.2)}
+body.theme-eclipse.menu-style-contrast #navigation.eclipse-plugin-menu{position:relative;z-index:20;width:min(calc(100% - 2rem),var(--eclipse-max));margin:-1.7rem auto 1.2rem;padding:.35rem .45rem;background:linear-gradient(135deg,#111827,#182238);border:1px solid #2f3b55;border-radius:1rem;box-shadow:0 16px 38px rgba(15,23,42,.2)}
 body.theme-eclipse.menu-style-contrast #navigation.eclipse-plugin-menu .navigation_content{min-height:0;padding:0;background:transparent;border:0;box-shadow:none}
 body.theme-eclipse.menu-style-contrast #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul{gap:clamp(.65rem,1.35vw,1.15rem)}
 body.theme-eclipse.menu-style-contrast #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul>li>a{color:#dbe4f3!important}
