@@ -39,6 +39,7 @@ body.theme-eclipse.menu-style-editorial #navigation_ul a:hover::after,body.theme
 
 /* 4. Contrast dock: dark application-like navigation using the shared hero seam. */
 body.theme-eclipse.menu-style-contrast #navigation{background:#111827;border:0;box-shadow:0 15px 35px rgba(15,23,42,.18)}
+@media(min-width:48rem){body.theme-eclipse.menu-style-contrast #navigation.eclipse-plugin-menu{margin:-2rem auto 1.2rem}}
 body.theme-eclipse.menu-style-contrast .navigation_content{min-height:4.25rem}
 body.theme-eclipse.menu-style-contrast #navigation_ul{gap:.5rem}
 body.theme-eclipse.menu-style-contrast #navigation_ul a,body.theme-eclipse.menu-style-contrast #navigation_ul a:link,body.theme-eclipse.menu-style-contrast #navigation_ul a:visited{padding:.7rem 1.1rem;color:#cbd5e1;border:1px solid transparent;border-radius:.65rem}
