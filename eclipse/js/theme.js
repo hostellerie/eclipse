@@ -175,7 +175,7 @@
         }
         function updateContrast(colors) {
             if (!contrastReport) return;
-            contrastReport.innerHTML = contrastBadge('Text / cards', colors[5], colors[4]) + contrastBadge('Links / cards', colors[2], colors[4]) + contrastBadge('White / buttons', '#ffffff', colors[0]);
+            contrastReport.innerHTML = contrastBadge('Text / cards', colors[5], colors[4]) + contrastBadge('Links / cards', colors[2], colors[4]) + contrastBadge('White / buttons', '#ffffff', colors[2]);
         }
         function previewColors(colors) {
             colors.forEach(function (color, index) { document.documentElement.style.setProperty(variables[index], color); });
@@ -183,6 +183,8 @@
             if (frame && frame.contentDocument) {
                 var previewVariables = ['--p', '--s', '--l', '--bg', '--surface', '--text'];
                 colors.forEach(function (color, index) { frame.contentDocument.documentElement.style.setProperty(previewVariables[index], color); });
+                var previewButton = frame.contentDocument.querySelector('.button');
+                if (previewButton) previewButton.style.background = colors[2];
             }
             updateContrast(colors);
         }
