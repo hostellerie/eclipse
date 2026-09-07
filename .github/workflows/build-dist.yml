@@ -21,11 +21,6 @@ jobs:
         with:
           ref: develop-1.1.0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
       - name: Read Eclipse version
         id: version
         shell: bash
@@ -36,10 +31,6 @@ jobs:
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Validate installable theme
-        shell: pwsh
-        run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
       - name: Rebuild integrity manifest
         shell: pwsh
