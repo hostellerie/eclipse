@@ -13,8 +13,19 @@ if (!defined('VERSION')) {
  */
 function eclipse_menu_navigation_resolved()
 {
+    global $_CONF;
+
     if (!eclipse_menu_plugin_active()) {
         return '';
+    }
+
+    // Menu 1.4 ships the structured resolved-tree API as a separate runtime
+    // file. Some Geeklog installations do not load it from functions.inc, so
+    // make it available explicitly before deciding to use legacy HTML.
+    if (!function_exists('MENU_getResolvedTree')
+        && isset($_CONF['path'])
+        && is_file($_CONF['path'] . 'plugins/menu/resolved_tree.php')) {
+        require_once $_CONF['path'] . 'plugins/menu/resolved_tree.php';
     }
 
     if (function_exists('MENU_getResolvedTree')) {
