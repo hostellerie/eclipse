@@ -21,13 +21,13 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Validate installable theme
-        shell: pwsh
-        run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
-
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
+
+      - name: Validate installable theme
+        shell: pwsh
+        run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
       - name: Build release archive and checksum
         shell: pwsh
