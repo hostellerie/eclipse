@@ -32,25 +32,43 @@
             });
         }
 
+        function applyHeaderForCurrentPreset() {
+            if (selector.value === presetValue || matchesPreset()) {
+                selector.value = presetValue;
+                document.documentElement.style.setProperty('--eclipse-header-primary', '#ef1b23');
+                document.documentElement.style.setProperty('--eclipse-header-secondary', '#c90012');
+            } else {
+                document.documentElement.style.removeProperty('--eclipse-header-primary');
+                document.documentElement.style.removeProperty('--eclipse-header-secondary');
+            }
+        }
+
         if (matchesPreset()) selector.value = presetValue;
+        applyHeaderForCurrentPreset();
 
         selector.addEventListener('change', function () {
-            if (selector.value !== presetValue) return;
+            if (selector.value === presetValue) {
+                inputs.forEach(function (input, index) {
+                    if (!input) return;
+                    input.value = colors[index];
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                });
 
-            inputs.forEach(function (input, index) {
-                if (!input) return;
-                input.value = colors[index];
-                input.dispatchEvent(new Event('input', { bubbles: true }));
+                // The main Theme Studio script only knows its built-in palettes.
+                // Restore the selected preset after its generic palette detector runs.
+                selector.value = presetValue;
+            }
+
+            // Run after the main Theme Studio change handler so every non-vivid
+            // preset falls back to its own primary/secondary header colors.
+            window.setTimeout(applyHeaderForCurrentPreset, 0);
+        });
+
+        inputs.forEach(function (input) {
+            if (!input) return;
+            input.addEventListener('input', function () {
+                window.setTimeout(applyHeaderForCurrentPreset, 0);
             });
-
-            // The main Theme Studio script only knows its built-in palettes.
-            // Restore the selected preset after its generic palette detector runs.
-            selector.value = presetValue;
-
-            // Header colors intentionally use dedicated variables and therefore
-            // remain independent from primary/secondary palette colors.
-            document.documentElement.style.setProperty('--eclipse-header-primary', '#ef1b23');
-            document.documentElement.style.setProperty('--eclipse-header-secondary', '#c90012');
         });
     }
 
