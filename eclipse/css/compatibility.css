@@ -6,8 +6,13 @@
  */
 
 /* UIkit legacy buttons used by historical site content. */
-.uk-button.uk-button-primary {
+a.uk-button.uk-button-primary,
+a.uk-button.uk-button-primary:link,
+a.uk-button.uk-button-primary:visited,
+a.uk-button.uk-button-primary:hover,
+a.uk-button.uk-button-primary:focus {
     background: var(--eclipse-primary);
     border-color: var(--eclipse-primary);
     color: #fff;
+    text-decoration: none;
 }
