@@ -12,8 +12,11 @@ body.theme-eclipse #leftblocks .sideoption a,body.theme-eclipse #rightblocks .si
 body.theme-eclipse #leftblocks .sideoption a::after,body.theme-eclipse #rightblocks .sideoption a::after{content:"›";position:absolute;right:.25rem;top:50%;color:var(--eclipse-muted);font-size:1.15rem;transform:translateY(-50%)}
 body.theme-eclipse #leftblocks .sideoption a:hover::after,body.theme-eclipse #rightblocks .sideoption a:hover::after{color:var(--eclipse-primary);transform:translate(.15rem,-50%)}
 
+/* Shared seam overlap for detached navigation styles. */
+body.theme-eclipse.menu-style-floating #navigation,body.theme-eclipse.menu-style-contrast #navigation{position:relative;z-index:20;margin-top:var(--eclipse-nav-overlap)}
+
 /* 1. Floating glass: detached navigation island overlapping the hero. */
-body.theme-eclipse.menu-style-floating #navigation{position:relative;z-index:20;width:min(calc(100% - 2rem),var(--eclipse-max));margin:-1.75rem auto 0;background:transparent;border:0;box-shadow:none;backdrop-filter:none}
+body.theme-eclipse.menu-style-floating #navigation{width:min(calc(100% - 2rem),var(--eclipse-max));margin-right:auto;margin-left:auto;background:transparent;border:0;box-shadow:none;backdrop-filter:none}
 body.theme-eclipse.menu-style-floating .navigation_content{width:max-content;max-width:100%;min-height:3.5rem;padding:.42rem;margin-inline:auto;background:color-mix(in srgb,var(--eclipse-surface) 86%,transparent);border:1px solid color-mix(in srgb,var(--eclipse-border) 72%,transparent);border-radius:1.15rem;box-shadow:0 18px 48px rgba(22,30,50,.15);backdrop-filter:blur(18px)}
 body.theme-eclipse.menu-style-floating #navigation_ul{gap:.2rem}
 body.theme-eclipse.menu-style-floating #navigation_ul a{padding:.72rem 1.2rem;border-radius:.75rem;background:transparent}
@@ -34,14 +37,14 @@ body.theme-eclipse.menu-style-editorial #navigation_ul a{position:relative;paddi
 body.theme-eclipse.menu-style-editorial #navigation_ul a::after{content:"";position:absolute;left:1.6rem;right:1.6rem;bottom:.7rem;height:3px;background:linear-gradient(90deg,var(--eclipse-primary),var(--eclipse-secondary));transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
 body.theme-eclipse.menu-style-editorial #navigation_ul a:hover::after,body.theme-eclipse.menu-style-editorial #navigation_ul .selected a::after{transform:scaleX(1)}
 
-/* 4. Contrast dock: dark application-like navigation, aligned to the same hero seam as Floating glass. */
-body.theme-eclipse.menu-style-contrast #navigation{position:relative;z-index:20;margin:-1.75rem 0 0;background:#111827;border:0;box-shadow:0 15px 35px rgba(15,23,42,.18)}
+/* 4. Contrast dock: dark application-like navigation using the shared hero seam. */
+body.theme-eclipse.menu-style-contrast #navigation{background:#111827;border:0;box-shadow:0 15px 35px rgba(15,23,42,.18)}
 body.theme-eclipse.menu-style-contrast .navigation_content{min-height:4.25rem}
 body.theme-eclipse.menu-style-contrast #navigation_ul{gap:.5rem}
 body.theme-eclipse.menu-style-contrast #navigation_ul a,body.theme-eclipse.menu-style-contrast #navigation_ul a:link,body.theme-eclipse.menu-style-contrast #navigation_ul a:visited{padding:.7rem 1.1rem;color:#cbd5e1;border:1px solid transparent;border-radius:.65rem}
 body.theme-eclipse.menu-style-contrast #navigation_ul a:hover,body.theme-eclipse.menu-style-contrast #navigation_ul .selected a{color:#fff;background:#263149;border-color:#3b4966}
 
-@media(max-width:47.99rem){body.theme-eclipse.menu-style-floating #navigation{width:calc(100% - 1rem);margin:-1rem auto 0}body.theme-eclipse.menu-style-contrast #navigation{margin-top:-1rem}body.theme-eclipse.menu-style-floating .navigation_content,body.theme-eclipse.menu-style-capsule .navigation_content{width:100%;max-width:100%;border-radius:.9rem}body.theme-eclipse.menu-style-editorial #navigation_ul li+li{border-left:0}body.theme-eclipse.menu-style-capsule #navigation{padding:.5rem}}
+@media(max-width:47.99rem){body.theme-eclipse.menu-style-floating #navigation,body.theme-eclipse.menu-style-contrast #navigation{margin-top:var(--eclipse-nav-overlap-mobile)}body.theme-eclipse.menu-style-floating #navigation{width:calc(100% - 1rem)}body.theme-eclipse.menu-style-floating .navigation_content,body.theme-eclipse.menu-style-capsule .navigation_content{width:100%;max-width:100%;border-radius:.9rem}body.theme-eclipse.menu-style-editorial #navigation_ul li+li{border-left:0}body.theme-eclipse.menu-style-capsule #navigation{padding:.5rem}}
 
 /* Local archive updater */
 .eclipse-updater{display:grid;grid-template-columns:minmax(0,1fr) minmax(18rem,.8fr);gap:1.5rem;align-items:center;margin-top:2rem;padding:1.4rem;border:1px solid #3b4761;border-radius:1rem;background:rgba(255,255,255,.045)}
