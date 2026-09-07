@@ -28,6 +28,8 @@ if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
 {feed_url}
 {rel_links}
 {plg_headercode}
+<?php $eclipseCompatibilityPath = rtrim($_CONF['path_layout'], '/\\') . '/css/compatibility.css'; $eclipseCompatibilityVersion = is_file($eclipseCompatibilityPath) ? (string) @filemtime($eclipseCompatibilityPath) : eclipse_theme_version(); ?>
+<link rel="stylesheet" href="{layout_url}/css/compatibility.css?v=<?php echo rawurlencode($eclipseCompatibilityVersion); ?>" media="all"{xhtml}>
 <?php if (!eclipse_is_admin_request()) { ?>{jsonld}<?php } ?>
 <?php echo eclipse_adsense_header_script(); ?>
 <style><?php echo eclipse_theme_css_variables(); ?></style>
