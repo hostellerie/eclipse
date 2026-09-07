@@ -21,6 +21,11 @@ jobs:
         with:
           ref: develop-1.1.0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Read Eclipse version
         id: version
         shell: bash
@@ -32,95 +37,13 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare archive assets and integrity manifest
-        shell: bash
-        run: |
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          import re
-          from pathlib import Path
+      - name: Validate installable theme
+        shell: pwsh
+        run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
-          version = os.environ['ECLIPSE_VERSION']
-          run_id = os.environ['GITHUB_RUN_ID']
-          asset_version = version + '-' + run_id
-          root = Path('eclipse')
-
-          # Every generated archive gets a unique browser cache key, even when
-          # several archives are built with the same Eclipse version number.
-          functions_path = root / 'functions.php'
-          functions = functions_path.read_text(encoding='utf-8')
-          functions, count = re.subn(
-              r"\$version\s*=\s*'\?v=[^']*';",
-              "$version = '?v=" + asset_version + "';",
-              functions
-          )
-          if count < 2:
-              raise SystemExit('Unable to update all Eclipse asset cache keys')
-
-          # The packaged theme remembers its build outside the theme directory.
-          # When an archive is uploaded over an existing Eclipse installation,
-          # Geeklog 2.1.x may otherwise keep compiled templates/layout CSS from
-          # the previous package.  Include a tiny one-shot refresh helper.
-          refresh_path = root / 'includes' / 'archive-refresh.php'
-          refresh_path.write_text(
-              "<?php\n"
-              "if (!isset($_CONF) || empty($_CONF['path_data'])) { return; }\n"
-              "$eclipseBuildId = '" + asset_version + "';\n"
-              "$eclipseMarker = rtrim($_CONF['path_data'], '/\\\\') . DIRECTORY_SEPARATOR . 'eclipse-build-id.txt';\n"
-              "$eclipsePrevious = @file_get_contents($eclipseMarker);\n"
-              "if (trim((string) $eclipsePrevious) !== $eclipseBuildId) {\n"
-              "    if (function_exists('CTL_clearCache')) { CTL_clearCache(); }\n"
-              "    @file_put_contents($eclipseMarker, $eclipseBuildId . PHP_EOL, LOCK_EX);\n"
-              "}\n",
-              encoding='utf-8'
-          )
-
-          include_line = "require_once __DIR__ . '/includes/archive-refresh.php';"
-          if include_line not in functions:
-              anchor = "require_once __DIR__ . '/includes/admin-dashboard.php';"
-              if anchor not in functions:
-                  raise SystemExit('Unable to inject Eclipse archive refresh helper')
-              functions = functions.replace(anchor, anchor + "\n" + include_line, 1)
-          functions_path.write_text(functions, encoding='utf-8')
-
-          # configuration.css is imported by forms.css, so it needs the same key.
-          forms_path = root / 'css' / 'forms.css'
-          forms = forms_path.read_text(encoding='utf-8')
-          forms, count = re.subn(
-              r'@import\s+url\(["\']configuration\.css(?:\?v=[^"\']*)?["\']\);',
-              '@import url("configuration.css?v=' + asset_version + '");',
-              forms,
-              count=1
-          )
-          if count != 1:
-              raise SystemExit('Unable to version configuration.css import')
-          forms_path.write_text(forms, encoding='utf-8')
-
-          # Rebuild the manifest after every packaged file has its final content.
-          files = {}
-          for path in sorted(root.rglob('*')):
-              if not path.is_file() or path.name == 'MANIFEST.json':
-                  continue
-              relative = path.relative_to(root).as_posix()
-              digest = hashlib.sha256(path.read_bytes()).hexdigest()
-              files[relative] = digest
-
-          manifest = {
-              'version': version,
-              'asset_version': asset_version,
-              'algorithm': 'sha256',
-              'files': files,
-          }
-          (root / 'MANIFEST.json').write_text(
-              json.dumps(manifest, indent=4, ensure_ascii=False) + '\n',
-              encoding='utf-8'
-          )
-          print('Manifest rebuilt for', len(files), 'files; asset version', asset_version)
-          PY
-        env:
-          ECLIPSE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Rebuild integrity manifest
+        shell: pwsh
+        run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
 
       - name: Build installable archive
         shell: bash
