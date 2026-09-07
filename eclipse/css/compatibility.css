@@ -1,0 +1,13 @@
+/* Eclipse legacy compatibility layer.
+ *
+ * Keep this file intentionally small and additive. It exists to preserve
+ * presentation for historical content when migrating older Geeklog themes
+ * to Eclipse without rewriting stored HTML.
+ */
+
+/* UIkit legacy buttons used by historical site content. */
+.uk-button.uk-button-primary {
+    background: var(--eclipse-primary);
+    border-color: var(--eclipse-primary);
+    color: #fff;
+}
