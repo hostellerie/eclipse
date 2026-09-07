@@ -4,7 +4,12 @@
 <meta charset="{charset}"{xhtml}>
 <meta name="viewport" content="width=device-width, initial-scale=1"{xhtml}>
 <title>{page_title_and_site_name}</title>
+<?php $eclipseSiteFavicon = !empty($_CONF['path_images']) ? rtrim($_CONF['path_images'], '/\\') . '/favicon.png' : ''; ?>
+<?php if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) { ?>
+<link rel="icon" href="{site_url}/images/favicon.png" type="image/png"{xhtml}>
+<?php } else { ?>
 <link rel="icon" href="{layout_url}/images/logo-mark.svg" type="image/svg+xml"{xhtml}>
+<?php } ?>
 <link rel="start contents" href="{site_url}"{xhtml}>
 <?php echo eclipse_sitemap_header_link(); ?>
 {feed_url}
