@@ -6,13 +6,19 @@
  */
 
 /* UIkit legacy buttons used by historical site content. */
-body.theme-eclipse #centerblocks a.uk-button.uk-button-primary,
-body.theme-eclipse #centerblocks a.uk-button.uk-button-primary:link,
-body.theme-eclipse #centerblocks a.uk-button.uk-button-primary:visited,
-body.theme-eclipse #centerblocks a.uk-button.uk-button-primary:hover,
-body.theme-eclipse #centerblocks a.uk-button.uk-button-primary:focus {
+#centerblocks a.uk-button.uk-button-primary,
+#centerblocks a.uk-button.uk-button-primary:link,
+#centerblocks a.uk-button.uk-button-primary:visited,
+#centerblocks a.uk-button.uk-button-primary:hover,
+#centerblocks a.uk-button.uk-button-primary:focus,
+a.uk-button.uk-button-primary,
+a.uk-button.uk-button-primary:link,
+a.uk-button.uk-button-primary:visited,
+a.uk-button.uk-button-primary:hover,
+a.uk-button.uk-button-primary:focus {
     background: var(--eclipse-primary) !important;
     border-color: var(--eclipse-primary) !important;
     color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
     text-decoration: none !important;
 }
