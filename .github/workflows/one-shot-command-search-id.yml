@@ -1,0 +1,50 @@
+name: One-shot command search id fix
+
+on:
+  push:
+    branches:
+      - develop-1.1.0
+    paths:
+      - .github/workflows/one-shot-command-search-id.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Apply source edit and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin develop-1.1.0
+          git reset --hard origin/develop-1.1.0
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('eclipse/js/theme.js')
+          text = path.read_text(encoding='utf-8')
+          old = "var input=document.createElement('input');input.type='search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');"
+          new = "var input=document.createElement('input');input.type='search';input.id='eclipse-command-search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');"
+          if old not in text:
+              raise SystemExit('Expected command search input source was not found')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+          git rm .github/workflows/one-shot-command-search-id.yml
+          git add eclipse/js/theme.js
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Give command palette search a stable id'
+          for attempt in 1 2 3; do
+            if git push origin HEAD:develop-1.1.0; then
+              exit 0
+            fi
+            git pull --rebase origin develop-1.1.0
+          done
+          exit 1
