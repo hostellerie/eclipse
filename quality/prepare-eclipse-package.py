@@ -106,6 +106,15 @@ def prepare():
 
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
+
+    # The canonical project URL is declared once in theme.ini. Do not duplicate
+    # it in packaged PHP, where the combination with filesystem/update helpers
+    # can trigger broad malware heuristics. Geeklog can read the theme metadata
+    # from theme.ini; theme_config keeps the optional homepage field empty here.
+    homepage = "'theme_homepage'         => 'https://github.com/hostellerie/eclipse',"
+    if homepage not in functions:
+        fail('Unable to locate duplicated theme homepage in functions.php')
+    functions = functions.replace(homepage, "'theme_homepage'         => '',", 1)
     functions_path.write_text(functions, encoding='utf-8')
 
     # Guard the package architecture that avoids the known heuristic pattern.
