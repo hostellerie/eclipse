@@ -1,0 +1,58 @@
+name: One-shot sync Denim PNG compatibility assets
+
+on:
+  push:
+    branches:
+      - develop-1.1.0
+    paths:
+      - '.github/workflows/one-shot-sync-denim-png.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Sync Geeklog Denim PNG compatibility assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          core_ref='dd44c01368afad32e16467fd5357af3299c11d3a'
+          api='https://api.github.com/repos/Geeklog-Core/geeklog/contents/public_html/layout/denim/images'
+
+          mkdir -p eclipse/images/icons
+
+          sync_dir() {
+            local source_url="$1"
+            local dest_dir="$2"
+            curl --fail --silent --show-error --location \
+              -H 'Accept: application/vnd.github+json' \
+              "${source_url}?ref=${core_ref}" \
+              | jq -r '.[] | select(.type == "file" and (.name | endswith(".png"))) | [.name, .download_url] | @tsv' \
+              | while IFS=$'\t' read -r name url; do
+                  curl --fail --silent --show-error --location "$url" --output "$dest_dir/$name"
+                done
+          }
+
+          sync_dir "$api" eclipse/images
+          sync_dir "$api/icons" eclipse/images/icons
+
+          file eclipse/images/sysmessage.png eclipse/images/icons/story.png eclipse/images/icons/configuration.png
+
+      - name: Commit compatibility assets and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/one-shot-sync-denim-png.yml
+          git add eclipse/images/*.png eclipse/images/icons/*.png
+          git commit -m 'Complete Geeklog PNG image compatibility set'
+          git pull --rebase origin develop-1.1.0
+          git push origin develop-1.1.0
