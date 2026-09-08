@@ -205,7 +205,10 @@ function theme_js_files_eclipse()
 
 function theme_init_eclipse()
 {
-    global $_BLOCK_TEMPLATE, $_CONF, $TEMPLATE_OPTIONS;
+    global $_BLOCK_TEMPLATE, $_CONF, $TEMPLATE_OPTIONS, $_IMAGE_TYPE;
+    // Geeklog admin helpers build their icon URLs from this global.
+    // Eclipse is SVG-native, so set the image type at theme initialization.
+    $_IMAGE_TYPE = 'svg';
     $_CONF['left_blocks_in_footer'] = 1;
     // Geeklog 2.2 resolves child-theme fallbacks through theme_default and
     // CTL_core_templatePath.  The legacy override would force Denim ahead of

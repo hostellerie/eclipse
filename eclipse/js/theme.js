@@ -413,21 +413,6 @@
         if (!link.querySelector('.eclipse-command-icon')) link.insertAdjacentHTML('afterbegin', commandIcon(link.getAttribute('href') || '', link.textContent || ''));
     });
 
-    document.querySelectorAll('img[src*="/layout/eclipse/images/"]').forEach(function (img) {
-        function fallbackToSvg() {
-            var src = img.getAttribute('src') || '';
-            img.removeEventListener('error', fallbackToSvg);
-            if (/\.png(?:\?.*)?$/i.test(src)) {
-                img.addEventListener('error', function () { img.hidden = true; }, { once: true });
-                img.setAttribute('src', src.replace(/\.png(?=\?|$)/i, '.svg'));
-            } else {
-                img.hidden = true;
-            }
-        }
-        img.addEventListener('error', fallbackToSvg);
-        if (img.complete && img.naturalWidth === 0) window.setTimeout(fallbackToSvg, 0);
-    });
-
     function setupSeoAssistant(form) {
         var assistant = form.querySelector('[data-eclipse-seo-assistant]'); if (!assistant) return;
         var title = form.querySelector('input[name="page_title"],input[name="title"]');
