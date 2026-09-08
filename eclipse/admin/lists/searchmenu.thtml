@@ -1,7 +1,7 @@
 {# start {templatelocation} #}
 
 <form action="{form_url}" method="post" class="uk-form eclipse-admin-list-search-form">
-  <section class="eclipse-admin-list-search" aria-label="{lang_search}">
+  <section class="admin-list-search eclipse-admin-list-search" aria-label="{lang_search}">
     <div class="eclipse-admin-list-search-main">
       <label for="eclipse-admin-list-query" class="eclipse-admin-list-search-label">{lang_search}</label>
       <div class="eclipse-admin-list-search-field">
