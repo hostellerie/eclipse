@@ -126,14 +126,59 @@ def prepare():
     updater_body = replace_once(updater_body, old_upload_check, new_upload_check, 'generic ZIP upload error handling')
 
     # The updater is extracted from functions.php (theme root) and moved into
-    # eclipse/includes/theme-update.php.  __DIR__ therefore changes meaning.
-    # Keep the installation destination anchored to the Eclipse theme root.
+    # eclipse/includes/theme-update.php. __DIR__ therefore changes meaning.
     updater_body = replace_once(
         updater_body,
         '$themeDir = __DIR__;',
         '$themeDir = dirname(__DIR__);',
         'packaged updater theme root'
     )
+
+    # Replace the old merge/copy update with an exact directory replacement.
+    # The new tree is first prepared beside /layout/eclipse so the final
+    # renames happen on the same filesystem. The previous tree is also copied
+    # to protected persistent backups before anything is switched.
+    old_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
+    if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
+    if (!eclipse_copy_tree($sourceTheme, $themeDir, 0755, 0644)) { eclipse_remove_tree($job); return $fail('The update copy failed. Restore the latest persistent Eclipse backup.'); }
+    eclipse_remove_tree($job);
+"""
+    new_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
+    if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
+
+    $themeParent = dirname($themeDir);
+    if (!is_dir($themeParent) || !is_writable($themeParent)) { eclipse_remove_tree($job); return $fail('The layout directory is not writable by PHP.'); }
+    $switchId = date('Ymd-His') . '-' . substr(sha1(uniqid('', true)), 0, 8);
+    $preparedTheme = $themeParent . DIRECTORY_SEPARATOR . '.eclipse-new-' . $switchId;
+    $retiredTheme = $themeParent . DIRECTORY_SEPARATOR . '.eclipse-old-' . $switchId;
+
+    if (file_exists($preparedTheme) || file_exists($retiredTheme)) { eclipse_remove_tree($job); return $fail('Unable to prepare a unique Eclipse replacement directory.'); }
+    if (!eclipse_copy_tree($sourceTheme, $preparedTheme, 0755, 0644)) {
+        eclipse_remove_tree($preparedTheme); eclipse_remove_tree($job);
+        return $fail('Unable to prepare the new Eclipse theme directory. The current theme was not changed.');
+    }
+    $preparedIntegrityError = eclipse_verify_package_manifest($preparedTheme, $newVersion);
+    if ($preparedIntegrityError !== '') {
+        eclipse_remove_tree($preparedTheme); eclipse_remove_tree($job);
+        return $fail('Prepared Eclipse directory failed integrity verification: ' . $preparedIntegrityError);
+    }
+
+    if (!@rename($themeDir, $retiredTheme)) {
+        eclipse_remove_tree($preparedTheme); eclipse_remove_tree($job);
+        return $fail('Unable to move the current Eclipse directory aside. The current theme was not changed.');
+    }
+    if (!@rename($preparedTheme, $themeDir)) {
+        $restored = @rename($retiredTheme, $themeDir);
+        eclipse_remove_tree($preparedTheme); eclipse_remove_tree($job);
+        return $fail($restored
+            ? 'Unable to activate the new Eclipse directory. The previous theme was restored automatically.'
+            : 'Unable to activate the new Eclipse directory and automatic restoration failed. Restore the latest persistent Eclipse backup.');
+    }
+
+    eclipse_remove_tree($retiredTheme);
+    eclipse_remove_tree($job);
+"""
+    updater_body = replace_once(updater_body, old_install, new_install, 'exact Eclipse directory replacement')
 
     updater_path = STAGE / 'includes' / 'theme-update.php'
     updater_path.parent.mkdir(parents=True, exist_ok=True)
@@ -147,6 +192,10 @@ def prepare():
     updater_text = updater_path.read_text(encoding='utf-8')
     if '$themeDir = dirname(__DIR__);' not in updater_text or '$themeDir = __DIR__;' in updater_text:
         fail('Packaged updater does not target the Eclipse theme root')
+    if 'if (!@rename($themeDir, $retiredTheme))' not in updater_text or 'if (!@rename($preparedTheme, $themeDir))' not in updater_text:
+        fail('Packaged updater does not perform an exact Eclipse directory replacement')
+    if 'eclipse_copy_tree($sourceTheme, $themeDir' in updater_text:
+        fail('Packaged updater still merges the new theme into the existing Eclipse directory')
 
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
