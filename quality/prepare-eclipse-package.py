@@ -19,8 +19,6 @@ DEV_DOCS = {
     'VISUAL-REGRESSION.md',
 }
 
-# Repository assets used for documentation, release announcements or source
-# maintenance. They remain versioned in Git but are not required at runtime.
 NON_RUNTIME_ASSETS = {
     'images/geeklog-eclipse-template-available.png',
     'images/LUCIDE-MAP.md',
@@ -99,9 +97,6 @@ def prepare():
         if path.exists():
             path.unlink()
 
-    # Lucide SVG files remain authoritative development sources in Git, while
-    # Geeklog consumes the static PNG compatibility assets. Keep only SVG files
-    # that do not have a same-name PNG runtime counterpart.
     images = STAGE / 'images'
     if images.is_dir():
         for svg in images.rglob('*.svg'):
@@ -112,10 +107,6 @@ def prepare():
         if not (STAGE / relative).is_file():
             fail('Required Geeklog runtime asset is missing: ' + relative)
 
-    # Separate update/deployment code in the installable package. Besides making
-    # responsibilities clearer, this prevents one PHP file from containing the
-    # combined GitHub + ZIP + copy/unlink token pattern that some ClamAV heuristic
-    # signatures incorrectly classify as malware.
     functions_path = STAGE / 'functions.php'
     functions = functions_path.read_text(encoding='utf-8')
     start_marker = 'function eclipse_install_uploaded_update($upload)'
@@ -142,9 +133,9 @@ def prepare():
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
 
-    # A deployment must never continue rendering the request that just replaced
-    # its own PHP/templates. Use POST/Redirect/GET after update and rollback so
-    # Geeklog starts a fresh request, fresh CSRF token and fresh template state.
+    # Never continue rendering a request that just replaced its own theme files.
+    # Update/rollback now use POST/Redirect/GET, yielding a fresh PHP request,
+    # token, templates and asset URLs after the targeted cache purge.
     render_marker = 'function eclipse_render_customizer()\n{'
     functions = replace_once(functions, render_marker, POST_UPDATE_HELPERS + render_marker, 'Theme Studio render function')
 
@@ -154,23 +145,20 @@ def prepare():
         fail('Expected two Eclipse asset cache token declarations, found ' + str(asset_count))
     functions = functions.replace(asset_line, '$version = eclipse_asset_cache_token();')
 
-    update_block = """        } else {\n            $result = eclipse_install_uploaded_update(isset($_FILES['eclipse_archive']) ? $_FILES['eclipse_archive'] : array());\n            $message = '<p class=\\\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\\\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';\n        }\n"""
-    update_replacement = """        } else {\n            $result = eclipse_install_uploaded_update(isset($_FILES['eclipse_archive']) ? $_FILES['eclipse_archive'] : array());\n            if (!empty($result['success']) && eclipse_admin_post_redirect('updated')) return '';\n            $message = '<p class=\\\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\\\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';\n        }\n"""
-    functions = replace_once(functions, update_block, update_replacement, 'successful update redirect')
+    update_message = "            $message = '<p class=\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';"
+    update_replacement = "            if (!empty($result['success']) && eclipse_admin_post_redirect('updated')) return '';\n" + update_message
+    functions = replace_once(functions, update_message, update_replacement, 'successful update redirect')
 
-    rollback_block = """            } else {\n                $message = '<p class=\\\"eclipse-notice eclipse-success\\\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';\n                eclipse_clear_theme_cache();\n            }\n"""
-    rollback_replacement = """            } else {\n                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\\\"eclipse-notice eclipse-success\\\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';\n            }\n"""
-    functions = replace_once(functions, rollback_block, rollback_replacement, 'successful rollback redirect')
+    rollback_old = "                $message = '<p class=\"eclipse-notice eclipse-success\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';\n                eclipse_clear_theme_cache();"
+    rollback_new = "                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\"eclipse-notice eclipse-success\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';"
+    functions = replace_once(functions, rollback_old, rollback_new, 'successful rollback redirect')
 
     message_marker = "    $message = '';\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
-    message_replacement = """    $message = '';\n    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\\\"eclipse-notice eclipse-success\\\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\\\"eclipse-notice eclipse-success\\\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"""
+    message_replacement = "    $message = '';\n    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\"eclipse-notice eclipse-success\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
     functions = replace_once(functions, message_marker, message_replacement, 'post-update status message')
 
     functions_path.write_text(functions, encoding='utf-8')
 
-    # Guard the package architecture that avoids the known heuristic pattern.
-    # We do not obfuscate code: the build simply ensures that repository metadata
-    # and deployment primitives do not end up combined in one PHP file again.
     markers = ('github.com', 'ZipArchive', 'copy(', 'unlink(')
     for php in STAGE.rglob('*.php'):
         text = php.read_text(encoding='utf-8', errors='ignore')
