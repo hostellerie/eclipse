@@ -1,4 +1,5 @@
 {# start {templatelocation} #}
+{# Eclipse semantic admin list search: search, filters, status and tools. #}
 
 <form action="{form_url}" method="post" class="uk-form eclipse-admin-list-search-form" role="search">
   <section class="admin-list-search eclipse-admin-list-search" aria-label="{lang_search}">
