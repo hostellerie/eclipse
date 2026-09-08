@@ -1,0 +1,86 @@
+name: One-shot semantic admin search layout
+
+on:
+  push:
+    branches:
+      - develop-1.1.0
+    paths:
+      - '.github/workflows/one-shot-admin-search-layout.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Replace legacy admin list search CSS
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('eclipse/css/admin/admin.css')
+          text = path.read_text()
+          start = text.index('/* Admin list filters respond to the width of the administration content, not the viewport. */')
+          end = text.index('body.eclipse-admin-page .eclipse-admin-bar', start)
+          replacement = '''/* Semantic administration search panel. Structure is defined by admin/lists/searchmenu.thtml. */
+body.eclipse-admin-page .admin-list-search{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"search search" "filters status";
+  align-items:end;
+  gap:1rem 1.5rem;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  margin:.75rem 0 1rem;
+  padding:1rem;
+  background:var(--eclipse-admin-surface);
+  border:1px solid var(--eclipse-admin-border);
+  border-radius:calc(var(--eclipse-admin-radius)*.75)
+}
+body.eclipse-admin-page .admin-list-search-main{grid-area:search;display:grid;gap:.4rem;min-width:0}
+body.eclipse-admin-page .admin-list-search-label{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:750}
+body.eclipse-admin-page .admin-list-search-field{display:flex;align-items:stretch;gap:.55rem;min-width:0;max-width:52rem}
+body.eclipse-admin-page .admin-list-search-field input[type=search]{flex:1 1 auto;min-width:0;width:100%;margin:0}
+body.eclipse-admin-page .admin-list-search-field button{flex:0 0 auto;margin:0}
+body.eclipse-admin-page .admin-list-search-filters{grid-area:filters;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1.25rem;min-width:0}
+body.eclipse-admin-page .admin-list-filter-primary{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem 1rem;min-width:0}
+body.eclipse-admin-page .admin-list-filter-primary label{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:0}
+body.eclipse-admin-page .admin-list-filter-primary input[type=checkbox]{margin:0}
+body.eclipse-admin-page .admin-list-filter-primary select{min-width:7rem;max-width:100%}
+body.eclipse-admin-page .admin-list-filter-limit{display:inline-flex;align-items:center;gap:.45rem;margin:0;white-space:nowrap}
+body.eclipse-admin-page .admin-list-filter-limit select{min-width:5rem;margin:0}
+body.eclipse-admin-page .admin-list-search-status{grid-area:status;display:flex;align-items:baseline;justify-content:flex-end;gap:.35rem;min-width:max-content;color:var(--eclipse-admin-muted);font-size:.78rem}
+body.eclipse-admin-page .admin-list-search-status strong{color:var(--eclipse-admin-text);font-size:.95rem;font-variant-numeric:tabular-nums}
+@container eclipse-admin-content (max-width:46rem){
+  body.eclipse-admin-page .admin-list-search{grid-template-columns:minmax(0,1fr);grid-template-areas:"search" "filters" "status";align-items:stretch;gap:.9rem}
+  body.eclipse-admin-page .admin-list-search-status{justify-content:flex-start;min-width:0;padding-top:.15rem}
+}
+@container eclipse-admin-content (max-width:30rem){
+  body.eclipse-admin-page .admin-list-search{padding:.85rem}
+  body.eclipse-admin-page .admin-list-search-field{display:grid;grid-template-columns:minmax(0,1fr)}
+  body.eclipse-admin-page .admin-list-search-field button{width:100%}
+  body.eclipse-admin-page .admin-list-search-filters{display:grid;grid-template-columns:minmax(0,1fr);align-items:stretch;gap:.75rem}
+  body.eclipse-admin-page .admin-list-filter-primary{display:grid;grid-template-columns:minmax(0,1fr);align-items:stretch}
+  body.eclipse-admin-page .admin-list-filter-primary label,body.eclipse-admin-page .admin-list-filter-limit{display:flex;justify-content:space-between;gap:.75rem;white-space:normal}
+  body.eclipse-admin-page .admin-list-filter-primary select,body.eclipse-admin-page .admin-list-filter-limit select{max-width:55%;min-width:7rem}
+}
+'''
+          path.write_text(text[:start] + replacement + text[end:])
+
+      - name: Commit refactor and remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-shot-admin-search-layout.yml
+          git add eclipse/css/admin/admin.css
+          git commit -m "Modernize admin list search layout"
+          git pull --rebase origin develop-1.1.0
+          git push origin develop-1.1.0
