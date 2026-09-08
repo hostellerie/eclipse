@@ -24,8 +24,6 @@ NON_RUNTIME_ASSETS = {
     'images/LUCIDE-MAP.md',
 }
 
-# Geeklog 2.2.x uses these arrows in the plugin administration list. Keep this
-# explicit so a future package optimization cannot silently drop them.
 REQUIRED_RUNTIME_ASSETS = {
     'images/admin/down.png',
     'images/admin/up.png',
@@ -49,7 +47,13 @@ UPLOAD_ERROR_HELPER = r'''function eclipse_update_upload_error_message($error)
 
 '''
 
-POST_UPDATE_HELPERS = r'''function eclipse_asset_cache_token()
+POST_UPDATE_HELPERS = r'''function eclipse_theme_homepage()
+{
+    $ini = @parse_ini_file(__DIR__ . '/theme.ini', true);
+    return isset($ini['theme']['url']) ? (string) $ini['theme']['url'] : '';
+}
+
+function eclipse_asset_cache_token()
 {
     $stamp = @filemtime(__DIR__ . '/theme.ini');
     $value = eclipse_theme_version() . ($stamp ? '-' . (string) $stamp : '');
@@ -133,11 +137,11 @@ def prepare():
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
 
-    # Never continue rendering a request that just replaced its own theme files.
-    # Update/rollback now use POST/Redirect/GET, yielding a fresh PHP request,
-    # token, templates and asset URLs after the targeted cache purge.
     render_marker = 'function eclipse_render_customizer()\n{'
     functions = replace_once(functions, render_marker, POST_UPDATE_HELPERS + render_marker, 'Theme Studio render function')
+
+    homepage_line = "        'theme_homepage'         => 'https://github.com/hostellerie/eclipse',"
+    functions = replace_once(functions, homepage_line, "        'theme_homepage'         => eclipse_theme_homepage(),", 'theme homepage metadata')
 
     asset_line = "$version = '?v=' . rawurlencode(eclipse_theme_version());"
     asset_count = functions.count(asset_line)
