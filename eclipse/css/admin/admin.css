@@ -23,8 +23,8 @@ body.eclipse-admin-page #centerblocks{min-width:0;container-type:inline-size;con
 
 /* Semantic administration search panel. Structure is defined by admin/lists/searchmenu.thtml. */
 body.eclipse-admin-page .eclipse-admin-list-search{display:grid;grid-template-columns:max-content max-content minmax(0,1fr);grid-template-rows:auto auto auto;align-items:center;justify-content:start;gap:.65rem 1.25rem;width:100%;max-width:100%;box-sizing:border-box;margin:.85rem 0 1rem;padding:.9rem 1rem;background:var(--eclipse-admin-surface);border:1px solid var(--eclipse-admin-border);border-radius:calc(var(--eclipse-admin-radius)*.65);box-shadow:0 5px 16px rgba(15,23,42,.035);font-size:.78rem;line-height:1.25}
-body.eclipse-admin-page .eclipse-admin-list-search-main{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:5.25rem minmax(0,1fr);align-items:center;gap:.65rem;min-width:0;width:100%}
-body.eclipse-admin-page .eclipse-admin-list-search-label,body.eclipse-admin-page .eclipse-admin-list-filter-primary label,body.eclipse-admin-page .eclipse-admin-list-filter-limit{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:700;line-height:1.25}
+body.eclipse-admin-page .eclipse-admin-list-search-main{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:max-content minmax(0,1fr);align-items:center;justify-self:stretch;gap:.7rem;min-width:0;width:100%;text-align:left}
+body.eclipse-admin-page .eclipse-admin-list-search-label{margin:0;color:var(--eclipse-admin-text);font-size:.9rem;font-weight:800;line-height:1.2;text-align:left}\nbody.eclipse-admin-page .eclipse-admin-list-filter-primary label,body.eclipse-admin-page .eclipse-admin-list-filter-limit{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:700;line-height:1.25}
 body.eclipse-admin-page .eclipse-admin-list-search-field{display:grid;grid-template-columns:minmax(12rem,1fr) auto;align-items:stretch;gap:.45rem;min-width:0;width:100%}
 body.eclipse-admin-page .eclipse-admin-list-search-field input[type=search]{box-sizing:border-box;width:100%;min-width:0;min-height:2.25rem;height:2.25rem;margin:0;padding:.35rem .6rem;border-radius:.4rem;font:inherit}
 body.eclipse-admin-page .eclipse-admin-list-search-field button{box-sizing:border-box;min-width:5.75rem;min-height:2.25rem;height:2.25rem;margin:0;padding:.35rem .75rem;border-radius:.4rem;font-size:.78rem;font-weight:750;line-height:1;white-space:nowrap}
@@ -43,7 +43,7 @@ body.eclipse-admin-page .eclipse-admin-list-search-tools:empty{display:none}
 body.eclipse-admin-page .eclipse-admin-list-search-tools .eclipse-filter-tools{margin:0;padding:0;background:transparent;border:0}
 @container eclipse-admin-content (max-width:46rem){
   body.eclipse-admin-page .eclipse-admin-list-search{grid-template-columns:max-content minmax(0,1fr);gap:.6rem .9rem}
-  body.eclipse-admin-page .eclipse-admin-list-search-main{grid-template-columns:4.75rem minmax(0,1fr)}
+  body.eclipse-admin-page .eclipse-admin-list-search-main{grid-template-columns:max-content minmax(0,1fr)}
   body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(select[name=tid]){grid-column:1;grid-row:2}
   body.eclipse-admin-page .eclipse-admin-list-filter-limit{grid-column:2;grid-row:2;justify-self:start}
   body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(input[name=editaccessonly]){grid-column:1;grid-row:3}
