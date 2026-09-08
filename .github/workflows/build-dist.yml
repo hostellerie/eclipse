@@ -11,8 +11,6 @@ on:
 permissions:
   contents: write
 
-# Keep one publisher active, but let that publisher follow the branch if a
-# bot-generated source commit lands while it is running.
 concurrency:
   group: eclipse-build-dist-develop-1.1.0
   cancel-in-progress: true
@@ -36,9 +34,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # A workflow commit made with GITHUB_TOKEN does not start another
-          # push workflow. Therefore this job must follow the branch itself
-          # instead of assuming that a newer run will always appear.
           for attempt in 1 2 3 4; do
             echo "Archive publication attempt $attempt"
 
@@ -52,13 +47,33 @@ jobs:
               exit 1
             fi
 
+            # Keep the source-tree integrity manifest current for development.
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
+
+            # Build a purpose-specific runtime package: development documentation
+            # and duplicate SVG icon masters stay in Git, not in the install ZIP.
+            python3 ./quality/prepare-eclipse-package.py
+            pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
 
             rm -rf dist
             mkdir -p dist
-            zip -r -9 "dist/eclipse-$version.zip" eclipse \
-              -x '*/.DS_Store' '*/Thumbs.db'
+            (
+              cd .package-stage
+              zip -r -9 "../dist/eclipse-$version.zip" eclipse \
+                -x '*/.DS_Store' '*/Thumbs.db'
+            )
 
+            archive="dist/eclipse-$version.zip"
+            archive_size=$(stat -c '%s' "$archive")
+            echo "Archive size: $archive_size bytes"
+            # Keep a useful margin below the common PHP upload_max_filesize=2M
+            # default (2,097,152 bytes).
+            if [ "$archive_size" -ge 1900000 ]; then
+              echo "Install archive is too large; expected < 1,900,000 bytes." >&2
+              exit 1
+            fi
+
+            rm -rf .package-stage
             git add eclipse/MANIFEST.json
             git add -A -f dist
 
@@ -69,9 +84,6 @@ jobs:
 
             git commit -m "Build Eclipse $version installable archive"
 
-            # Recheck immediately before publishing. If any source commit has
-            # appeared, discard this local archive commit and rebuild from the
-            # new branch head in the same workflow run.
             git fetch origin develop-1.1.0
             remote_head=$(git rev-parse origin/develop-1.1.0)
             if [ "$remote_head" != "$source_head" ]; then
