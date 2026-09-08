@@ -19,7 +19,28 @@ body.eclipse-admin-page.admin-ui-mode-modern .site-logo img{max-width:2.75rem;ma
 body.eclipse-admin-page.admin-ui-mode-modern .site_name{font-size:clamp(1.35rem,3vw,2rem);letter-spacing:-.025em}
 body.eclipse-admin-page.admin-ui-mode-modern .site_slogan{font-size:.82rem}
 body.eclipse-admin-page.admin-ui-mode-modern #wrapper{width:min(calc(100% - 1.5rem),96rem);max-width:96rem;padding-block:1rem;gap:1rem}
-body.eclipse-admin-page #centerblocks{min-width:0}
+body.eclipse-admin-page #centerblocks{min-width:0;container-type:inline-size;container-name:eclipse-admin-content}
+
+/* Admin list filters respond to the width of the administration content, not the viewport. */
+body.eclipse-admin-page .admin-list-search{display:grid;grid-template-columns:minmax(18rem,2fr) minmax(12rem,1.2fr) minmax(16rem,1.5fr) max-content;align-items:center;gap:.75rem 1rem;width:100%;max-width:100%;box-sizing:border-box}
+body.eclipse-admin-page .admin-list-search .search-part{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .55rem;min-width:0;max-width:100%}
+body.eclipse-admin-page .admin-list-search .search-part label{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.35rem;min-width:0;margin:0}
+body.eclipse-admin-page .admin-list-search input[type=text],body.eclipse-admin-page .admin-list-search input[type=search],body.eclipse-admin-page .admin-list-search select{min-width:0;max-width:100%}
+body.eclipse-admin-page .admin-list-search input[type=text],body.eclipse-admin-page .admin-list-search input[type=search]{flex:1 1 10rem;width:auto}
+body.eclipse-admin-page .admin-list-search select{flex:0 1 auto}
+@container eclipse-admin-content (max-width:58rem){
+  body.eclipse-admin-page .admin-list-search{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+  body.eclipse-admin-page .admin-list-search .search-part{width:100%}
+}
+@container eclipse-admin-content (max-width:38rem){
+  body.eclipse-admin-page .admin-list-search{grid-template-columns:minmax(0,1fr);align-items:stretch;gap:.65rem}
+}
+@container eclipse-admin-content (max-width:28rem){
+  body.eclipse-admin-page .admin-list-search .search-part,body.eclipse-admin-page .admin-list-search .search-part label{align-items:stretch}
+  body.eclipse-admin-page .admin-list-search .search-part{display:grid;grid-template-columns:minmax(0,1fr);gap:.45rem}
+  body.eclipse-admin-page .admin-list-search .search-part label{display:flex}
+  body.eclipse-admin-page .admin-list-search input[type=text],body.eclipse-admin-page .admin-list-search input[type=search],body.eclipse-admin-page .admin-list-search select,body.eclipse-admin-page .admin-list-search button{width:100%;max-width:100%}
+}
 body.eclipse-admin-page .eclipse-admin-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1.1rem;padding:.8rem 1rem;color:#f8fafc;background:linear-gradient(120deg,var(--eclipse-admin-sidebar),color-mix(in srgb,var(--eclipse-admin-primary) 70%,#172033));border:1px solid color-mix(in srgb,var(--eclipse-admin-primary) 45%,#172033);border-radius:calc(var(--eclipse-admin-radius)*.8);box-shadow:0 12px 30px rgba(15,23,42,.16)}
 body.eclipse-admin-page .eclipse-admin-bar>div{display:grid;gap:.1rem;min-width:0}
 body.eclipse-admin-page .eclipse-admin-eyebrow{color:#cbd5e1;font-size:.66rem;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
