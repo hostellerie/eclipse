@@ -11,8 +11,8 @@ on:
 permissions:
   contents: write
 
-# Only the newest source state should be allowed to publish an archive.
-# A newer push cancels an obsolete build before it can overwrite dist/.
+# Keep one publisher active, but let that publisher follow the branch if a
+# bot-generated source commit lands while it is running.
 concurrency:
   group: eclipse-build-dist-develop-1.1.0
   cancel-in-progress: true
@@ -26,32 +26,9 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: develop-1.1.0
+          fetch-depth: 0
 
-      - name: Read Eclipse version
-        id: version
-        shell: bash
-        run: |
-          version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
-          if [ -z "$version" ]; then
-            echo "Unable to read Eclipse version from eclipse/theme.ini" >&2
-            exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild integrity manifest
-        shell: pwsh
-        run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
-
-      - name: Build installable archive
-        shell: bash
-        run: |
-          version="${{ steps.version.outputs.version }}"
-          rm -rf dist
-          mkdir -p dist
-          zip -r -9 "dist/eclipse-$version.zip" eclipse \
-            -x '*/.DS_Store' '*/Thumbs.db'
-
-      - name: Commit updated archive
+      - name: Build and publish latest archive
         shell: bash
         run: |
           set -euo pipefail
@@ -59,35 +36,56 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Do not publish an archive built from a source revision that has
-          # already been superseded. The newer push starts its own build.
-          git fetch origin develop-1.1.0
-          remote_head=$(git rev-parse origin/develop-1.1.0)
-          source_head="${GITHUB_SHA}"
-          if [ "$remote_head" != "$source_head" ]; then
-            echo "Source branch advanced from $source_head to $remote_head; skipping obsolete archive."
-            exit 0
-          fi
+          # A workflow commit made with GITHUB_TOKEN does not start another
+          # push workflow. Therefore this job must follow the branch itself
+          # instead of assuming that a newer run will always appear.
+          for attempt in 1 2 3 4; do
+            echo "Archive publication attempt $attempt"
 
-          git add -A -f dist
+            git fetch origin develop-1.1.0
+            git reset --hard origin/develop-1.1.0
+            source_head=$(git rev-parse HEAD)
 
-          if git diff --cached --quiet -- dist; then
-            echo "Archive is already up to date."
-            exit 0
-          fi
+            version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
+            if [ -z "$version" ]; then
+              echo "Unable to read Eclipse version from eclipse/theme.ini" >&2
+              exit 1
+            fi
 
-          version="${{ steps.version.outputs.version }}"
-          git commit -m "Build Eclipse $version installable archive"
+            pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
 
-          # A push can still land in the very small window after the check
-          # above. Treat that as an obsolete build rather than a CI failure.
-          if ! git push origin HEAD:develop-1.1.0; then
+            rm -rf dist
+            mkdir -p dist
+            zip -r -9 "dist/eclipse-$version.zip" eclipse \
+              -x '*/.DS_Store' '*/Thumbs.db'
+
+            git add eclipse/MANIFEST.json
+            git add -A -f dist
+
+            if git diff --cached --quiet -- eclipse/MANIFEST.json dist; then
+              echo "Archive already matches source $source_head."
+              exit 0
+            fi
+
+            git commit -m "Build Eclipse $version installable archive"
+
+            # Recheck immediately before publishing. If any source commit has
+            # appeared, discard this local archive commit and rebuild from the
+            # new branch head in the same workflow run.
             git fetch origin develop-1.1.0
             remote_head=$(git rev-parse origin/develop-1.1.0)
             if [ "$remote_head" != "$source_head" ]; then
-              echo "Branch advanced during publication; newer build will publish the archive."
+              echo "Branch advanced from $source_head to $remote_head; rebuilding latest source."
+              continue
+            fi
+
+            if git push origin HEAD:develop-1.1.0; then
+              echo "Published Eclipse $version archive for $source_head."
               exit 0
             fi
-            echo "Archive push failed without a newer source revision." >&2
-            exit 1
-          fi
+
+            echo "Branch changed during push; rebuilding latest source."
+          done
+
+          echo "Unable to publish an archive after 4 attempts because the branch kept changing." >&2
+          exit 1
