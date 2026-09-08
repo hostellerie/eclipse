@@ -10,7 +10,7 @@ functions.write_text(text.replace(old, new, 1))
 
 theme_js = Path('eclipse/js/theme.js')
 text = theme_js.read_text()
-start_marker = "    document.querySelectorAll('img[src*=\\\"/layout/eclipse/images/\\\"]').forEach(function (img) {"
+start_marker = "    document.querySelectorAll('img[src*=\"/layout/eclipse/images/\"]').forEach(function (img) {"
 end_marker = "    function setupSeoAssistant"
 start = text.find(start_marker)
 if start < 0:
