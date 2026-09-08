@@ -26,6 +26,13 @@ NON_RUNTIME_ASSETS = {
     'images/LUCIDE-MAP.md',
 }
 
+# Geeklog 2.2.x uses these arrows in the plugin administration list. Keep this
+# explicit so a future package optimization cannot silently drop them.
+REQUIRED_RUNTIME_ASSETS = {
+    'images/admin/down.png',
+    'images/admin/up.png',
+}
+
 UPLOAD_ERROR_HELPER = r'''function eclipse_update_upload_error_message($error)
 {
     $error = (int) $error;
@@ -44,10 +51,36 @@ UPLOAD_ERROR_HELPER = r'''function eclipse_update_upload_error_message($error)
 
 '''
 
+POST_UPDATE_HELPERS = r'''function eclipse_asset_cache_token()
+{
+    $stamp = @filemtime(__DIR__ . '/theme.ini');
+    $value = eclipse_theme_version() . ($stamp ? '-' . (string) $stamp : '');
+    return '?v=' . rawurlencode($value);
+}
+
+function eclipse_admin_post_redirect($status)
+{
+    global $_CONF;
+    if (empty($_CONF['site_admin_url']) || headers_sent()) return false;
+    $allowed = array('updated', 'restored');
+    if (!in_array($status, $allowed, true)) return false;
+    $url = rtrim($_CONF['site_admin_url'], '/') . '/index.php?eclipse_update_status=' . rawurlencode($status) . '#eclipse-theme-studio';
+    header('Location: ' . $url, true, 303);
+    exit;
+}
+
+'''
+
 
 def fail(message):
     print(message, file=sys.stderr)
     raise SystemExit(1)
+
+
+def replace_once(text, old, new, label):
+    if old not in text:
+        fail('Unable to locate ' + label)
+    return text.replace(old, new, 1)
 
 
 def prepare():
@@ -75,6 +108,10 @@ def prepare():
             if svg.with_suffix('.png').is_file():
                 svg.unlink()
 
+    for relative in REQUIRED_RUNTIME_ASSETS:
+        if not (STAGE / relative).is_file():
+            fail('Required Geeklog runtime asset is missing: ' + relative)
+
     # Separate update/deployment code in the installable package. Besides making
     # responsibilities clearer, this prevents one PHP file from containing the
     # combined GitHub + ZIP + copy/unlink token pattern that some ClamAV heuristic
@@ -91,9 +128,7 @@ def prepare():
     updater_body = functions[start:end].rstrip() + '\n'
     old_upload_check = "if (!is_array($upload) || !isset($upload['error']) || $upload['error'] !== UPLOAD_ERR_OK) return $fail('The ZIP upload failed.');"
     new_upload_check = "if (!is_array($upload) || !isset($upload['error'])) return $fail('No ZIP upload was received.');\n    if ((int) $upload['error'] !== UPLOAD_ERR_OK) return $fail(eclipse_update_upload_error_message($upload['error']));"
-    if old_upload_check not in updater_body:
-        fail('Unable to locate generic ZIP upload error handling')
-    updater_body = updater_body.replace(old_upload_check, new_upload_check, 1)
+    updater_body = replace_once(updater_body, old_upload_check, new_upload_check, 'generic ZIP upload error handling')
 
     updater_path = STAGE / 'includes' / 'theme-update.php'
     updater_path.parent.mkdir(parents=True, exist_ok=True)
@@ -107,14 +142,30 @@ def prepare():
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
 
-    # The canonical project URL is declared once in theme.ini. Do not duplicate
-    # it in packaged PHP, where the combination with filesystem/update helpers
-    # can trigger broad malware heuristics. Geeklog can read the theme metadata
-    # from theme.ini; theme_config keeps the optional homepage field empty here.
-    homepage = "'theme_homepage'         => 'https://github.com/hostellerie/eclipse',"
-    if homepage not in functions:
-        fail('Unable to locate duplicated theme homepage in functions.php')
-    functions = functions.replace(homepage, "'theme_homepage'         => '',", 1)
+    # A deployment must never continue rendering the request that just replaced
+    # its own PHP/templates. Use POST/Redirect/GET after update and rollback so
+    # Geeklog starts a fresh request, fresh CSRF token and fresh template state.
+    render_marker = 'function eclipse_render_customizer()\n{'
+    functions = replace_once(functions, render_marker, POST_UPDATE_HELPERS + render_marker, 'Theme Studio render function')
+
+    asset_line = "$version = '?v=' . rawurlencode(eclipse_theme_version());"
+    asset_count = functions.count(asset_line)
+    if asset_count != 2:
+        fail('Expected two Eclipse asset cache token declarations, found ' + str(asset_count))
+    functions = functions.replace(asset_line, '$version = eclipse_asset_cache_token();')
+
+    update_block = """        } else {\n            $result = eclipse_install_uploaded_update(isset($_FILES['eclipse_archive']) ? $_FILES['eclipse_archive'] : array());\n            $message = '<p class=\\\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\\\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';\n        }\n"""
+    update_replacement = """        } else {\n            $result = eclipse_install_uploaded_update(isset($_FILES['eclipse_archive']) ? $_FILES['eclipse_archive'] : array());\n            if (!empty($result['success']) && eclipse_admin_post_redirect('updated')) return '';\n            $message = '<p class=\\\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\\\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';\n        }\n"""
+    functions = replace_once(functions, update_block, update_replacement, 'successful update redirect')
+
+    rollback_block = """            } else {\n                $message = '<p class=\\\"eclipse-notice eclipse-success\\\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';\n                eclipse_clear_theme_cache();\n            }\n"""
+    rollback_replacement = """            } else {\n                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\\\"eclipse-notice eclipse-success\\\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';\n            }\n"""
+    functions = replace_once(functions, rollback_block, rollback_replacement, 'successful rollback redirect')
+
+    message_marker = "    $message = '';\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
+    message_replacement = """    $message = '';\n    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\\\"eclipse-notice eclipse-success\\\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\\\"eclipse-notice eclipse-success\\\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"""
+    functions = replace_once(functions, message_marker, message_replacement, 'post-update status message')
+
     functions_path.write_text(functions, encoding='utf-8')
 
     # Guard the package architecture that avoids the known heuristic pattern.
