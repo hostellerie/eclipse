@@ -125,6 +125,16 @@ def prepare():
     new_upload_check = "if (!is_array($upload) || !isset($upload['error'])) return $fail('No ZIP upload was received.');\n    if ((int) $upload['error'] !== UPLOAD_ERR_OK) return $fail(eclipse_update_upload_error_message($upload['error']));"
     updater_body = replace_once(updater_body, old_upload_check, new_upload_check, 'generic ZIP upload error handling')
 
+    # The updater is extracted from functions.php (theme root) and moved into
+    # eclipse/includes/theme-update.php.  __DIR__ therefore changes meaning.
+    # Keep the installation destination anchored to the Eclipse theme root.
+    updater_body = replace_once(
+        updater_body,
+        '$themeDir = __DIR__;',
+        '$themeDir = dirname(__DIR__);',
+        'packaged updater theme root'
+    )
+
     updater_path = STAGE / 'includes' / 'theme-update.php'
     updater_path.parent.mkdir(parents=True, exist_ok=True)
     updater_path.write_text(
@@ -133,6 +143,10 @@ def prepare():
         + updater_body,
         encoding='utf-8'
     )
+
+    updater_text = updater_path.read_text(encoding='utf-8')
+    if '$themeDir = dirname(__DIR__);' not in updater_text or '$themeDir = __DIR__;' in updater_text:
+        fail('Packaged updater does not target the Eclipse theme root')
 
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
