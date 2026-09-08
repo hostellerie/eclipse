@@ -20,8 +20,9 @@ jobs:
           fetch-depth: 0
 
       - name: Replace legacy admin list search CSS
-        shell: python
+        shell: bash
         run: |
+          python3 <<'PY'
           from pathlib import Path
 
           path = Path('eclipse/css/admin/admin.css')
@@ -73,6 +74,7 @@ body.eclipse-admin-page .admin-list-search-status strong{color:var(--eclipse-adm
 }
 '''
           path.write_text(text[:start] + replacement + text[end:])
+          PY
 
       - name: Commit refactor and remove one-shot workflow
         shell: bash
