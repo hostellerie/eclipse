@@ -539,7 +539,7 @@
             save.addEventListener('click', function () { var name = window.prompt('Filter name'); if (!name) return; name = name.trim().slice(0,40); if (!name) return; saved[name] = values(); localStorage.setItem(key,JSON.stringify(saved)); render(); select.value = name; });
             remove.addEventListener('click', function () { if (!select.value) return; delete saved[select.value]; localStorage.setItem(key,JSON.stringify(saved)); render(); });
             select.addEventListener('change', function () { var data = saved[select.value]; if (!data) return; Object.keys(data).forEach(function (name) { var control = form.querySelector('[name="' + CSS.escape(name) + '"]'); if (!control) return; if (control.type === 'checkbox') control.checked = Boolean(data[name]); else control.value = data[name]; }); });
-            tools.appendChild(toggleFilters); tools.appendChild(select); tools.appendChild(save); tools.appendChild(remove); search.insertAdjacentElement('afterend',tools); render();
+            tools.appendChild(toggleFilters); tools.appendChild(select); tools.appendChild(save); tools.appendChild(remove); var toolsHost=search.querySelector('[data-eclipse-filter-tools]'); if(toolsHost) toolsHost.appendChild(tools); else search.insertAdjacentElement('afterend',tools); render();
             setFiltersVisible(localStorage.getItem(visibilityKey) === '1');
         });
         document.querySelectorAll('table.admin-list-table').forEach(function (table, tableIndex) {
