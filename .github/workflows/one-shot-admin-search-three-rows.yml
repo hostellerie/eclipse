@@ -1,0 +1,87 @@
+name: One-shot three-row admin search layout
+
+on:
+  push:
+    branches:
+      - develop-1.1.0
+    paths:
+      - '.github/workflows/one-shot-admin-search-three-rows.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Refine semantic admin search layout
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('eclipse/css/admin/admin.css')
+          text = path.read_text()
+          start_marker = '/* Semantic administration search panel. Structure is defined by admin/lists/searchmenu.thtml. */'
+          end_marker = 'body.eclipse-admin-page .eclipse-admin-bar'
+          start = text.index(start_marker)
+          end = text.index(end_marker, start)
+          replacement = '''/* Semantic administration search panel. Structure is defined by admin/lists/searchmenu.thtml. */
+body.eclipse-admin-page .eclipse-admin-list-search{display:grid;grid-template-columns:minmax(16rem,1fr) minmax(11rem,auto) auto;align-items:center;gap:.7rem 1.25rem;width:100%;max-width:100%;box-sizing:border-box;margin:.85rem 0 1rem;padding:1rem 1.1rem;background:var(--eclipse-admin-surface);border:1px solid var(--eclipse-admin-border);border-radius:calc(var(--eclipse-admin-radius)*.75);box-shadow:0 6px 18px rgba(15,23,42,.04)}
+body.eclipse-admin-page .eclipse-admin-list-search-main{grid-column:1/-1;display:grid;grid-template-columns:6.5rem minmax(0,1fr);align-items:center;gap:.75rem;min-width:0}
+body.eclipse-admin-page .eclipse-admin-list-search-label{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:750}
+body.eclipse-admin-page .eclipse-admin-list-search-field{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:.55rem;min-width:0;max-width:58rem}
+body.eclipse-admin-page .eclipse-admin-list-search-field input[type=search]{box-sizing:border-box;width:100%;min-width:0;min-height:2.45rem;margin:0;padding:.45rem .65rem}
+body.eclipse-admin-page .eclipse-admin-list-search-field button{min-width:6rem;min-height:2.45rem;margin:0;white-space:nowrap}
+body.eclipse-admin-page .eclipse-admin-list-search-filters,body.eclipse-admin-page .eclipse-admin-list-filter-primary,body.eclipse-admin-page .eclipse-admin-list-search-meta{display:contents}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary label{margin:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(select[name=tid]){grid-column:1;grid-row:2;display:grid;grid-template-columns:6.5rem minmax(9rem,18rem);align-items:center;gap:.75rem}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(input[name=editaccessonly]){grid-column:1;grid-row:3;display:inline-flex;align-items:center;gap:.45rem;min-width:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary input[type=checkbox]{margin:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary select{width:100%;min-width:0;max-width:18rem;margin:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-limit{grid-column:2;grid-row:2;display:grid;grid-template-columns:auto minmax(5rem,7rem);align-items:center;gap:.55rem;margin:0;white-space:nowrap}
+body.eclipse-admin-page .eclipse-admin-list-filter-limit select{width:100%;min-width:5rem;margin:0}
+body.eclipse-admin-page .eclipse-admin-list-search-status{grid-column:2;grid-row:3;display:flex;align-items:baseline;gap:.35rem;min-width:0;color:var(--eclipse-admin-muted);font-size:.78rem}
+body.eclipse-admin-page .eclipse-admin-list-search-status strong{color:var(--eclipse-admin-text);font-size:.95rem;font-variant-numeric:tabular-nums}
+body.eclipse-admin-page .eclipse-admin-list-search-tools{grid-column:3;grid-row:3;display:flex;justify-content:flex-end;min-width:0;margin-left:auto}
+body.eclipse-admin-page .eclipse-admin-list-search-tools:empty{display:none}
+body.eclipse-admin-page .eclipse-admin-list-search-tools .eclipse-filter-tools{margin:0;padding:0;background:transparent;border:0}
+@container eclipse-admin-content (max-width:52rem){
+  body.eclipse-admin-page .eclipse-admin-list-search{grid-template-columns:minmax(0,1fr) auto;gap:.7rem 1rem}
+  body.eclipse-admin-page .eclipse-admin-list-search-main{grid-template-columns:5.5rem minmax(0,1fr)}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(select[name=tid]){grid-column:1;grid-row:2;grid-template-columns:5.5rem minmax(8rem,1fr)}
+  body.eclipse-admin-page .eclipse-admin-list-filter-limit{grid-column:2;grid-row:2}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(input[name=editaccessonly]){grid-column:1;grid-row:3}
+  body.eclipse-admin-page .eclipse-admin-list-search-status{grid-column:2;grid-row:3;justify-self:end}
+  body.eclipse-admin-page .eclipse-admin-list-search-tools{grid-column:1/-1;grid-row:4;justify-self:end}
+}
+@container eclipse-admin-content (max-width:34rem){
+  body.eclipse-admin-page .eclipse-admin-list-search{grid-template-columns:minmax(0,1fr);align-items:stretch;padding:.85rem}
+  body.eclipse-admin-page .eclipse-admin-list-search-main{grid-column:1;grid-template-columns:minmax(0,1fr);gap:.35rem}
+  body.eclipse-admin-page .eclipse-admin-list-search-field{grid-template-columns:minmax(0,1fr) auto}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(select[name=tid]),body.eclipse-admin-page .eclipse-admin-list-filter-limit{grid-column:1;display:grid;grid-template-columns:6.5rem minmax(0,1fr);gap:.55rem}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(select[name=tid]){grid-row:2}
+  body.eclipse-admin-page .eclipse-admin-list-filter-limit{grid-row:3}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary label:has(input[name=editaccessonly]){grid-column:1;grid-row:4}
+  body.eclipse-admin-page .eclipse-admin-list-search-status{grid-column:1;grid-row:5;justify-self:start}
+  body.eclipse-admin-page .eclipse-admin-list-search-tools{grid-column:1;grid-row:6;justify-self:start;margin-left:0}
+}
+'''
+          path.write_text(text[:start] + replacement + text[end:])
+          PY
+
+      - name: Commit layout and remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-shot-admin-search-three-rows.yml
+          git add eclipse/css/admin/admin.css
+          git commit -m "Refine admin search into three functional rows"
+          git pull --rebase origin develop-1.1.0
+          git push origin develop-1.1.0
