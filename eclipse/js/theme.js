@@ -784,7 +784,7 @@
         var backdrop=document.createElement('button');backdrop.type='button';backdrop.className='eclipse-command-backdrop';backdrop.setAttribute('aria-label','Close command palette');
         var dialog=document.createElement('section');dialog.className='eclipse-command-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','eclipse-command-title');
         var title=document.createElement('h2');title.id='eclipse-command-title';title.textContent='Administration commands';
-        var input=document.createElement('input');input.type='search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');
+        var input=document.createElement('input');input.type='search';input.id='eclipse-command-search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');
         var results=document.createElement('ul');results.className='eclipse-command-results';results.setAttribute('role','listbox');
         var help=document.createElement('p');help.className='eclipse-command-help';help.textContent='↑ ↓ Navigate · Enter Open · Esc Close';
         dialog.appendChild(title);dialog.appendChild(input);dialog.appendChild(results);dialog.appendChild(help);palette.appendChild(backdrop);palette.appendChild(dialog);document.body.appendChild(palette);
