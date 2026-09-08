@@ -1,0 +1,97 @@
+name: One-shot admin search layout cleanup
+
+on:
+  push:
+    branches:
+      - develop-1.1.0
+    paths:
+      - '.github/workflows/one-shot-admin-search-cleanup.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Consolidate admin search layout
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          admin = Path('eclipse/css/admin/admin.css')
+          text = admin.read_text()
+          start_marker = '/* Admin list filters respond to the width of the administration content, not the viewport. */'
+          end_marker = 'body.eclipse-admin-page .eclipse-admin-bar'
+          start = text.index(start_marker)
+          end = text.index(end_marker, start)
+          replacement = '''/* Semantic administration search panel. Structure is defined by admin/lists/searchmenu.thtml. */
+body.eclipse-admin-page .eclipse-admin-list-search{display:grid;grid-template-columns:minmax(0,1fr);gap:.9rem;width:100%;max-width:100%;box-sizing:border-box;margin:.85rem 0 1rem;padding:1rem;background:var(--eclipse-admin-surface);border:1px solid var(--eclipse-admin-border);border-radius:calc(var(--eclipse-admin-radius)*.75);box-shadow:0 6px 18px rgba(15,23,42,.04)}
+body.eclipse-admin-page .eclipse-admin-list-search-main{display:grid;gap:.4rem;min-width:0}
+body.eclipse-admin-page .eclipse-admin-list-search-label{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:750}
+body.eclipse-admin-page .eclipse-admin-list-search-field{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:.55rem;min-width:0;max-width:56rem}
+body.eclipse-admin-page .eclipse-admin-list-search-field input[type=search]{box-sizing:border-box;width:100%;min-width:0;min-height:2.55rem;margin:0;padding:.5rem .7rem}
+body.eclipse-admin-page .eclipse-admin-list-search-field button{min-width:6.5rem;min-height:2.55rem;margin:0;white-space:nowrap}
+body.eclipse-admin-page .eclipse-admin-list-search-filters{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.75rem 1.25rem;padding-top:.85rem;border-top:1px solid color-mix(in srgb,var(--eclipse-admin-border) 75%,transparent)}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;min-width:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary label{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary input[type=checkbox]{margin:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary select{width:auto;min-width:9rem;max-width:100%;margin:0}
+body.eclipse-admin-page .eclipse-admin-list-filter-limit{display:inline-flex;align-items:center;gap:.5rem;margin:0;white-space:nowrap}
+body.eclipse-admin-page .eclipse-admin-list-filter-limit select{width:auto;min-width:5rem;margin:0}
+body.eclipse-admin-page .eclipse-admin-list-search-meta{display:flex;align-items:center;justify-content:space-between;gap:.75rem 1rem;min-width:0;padding-top:.15rem}
+body.eclipse-admin-page .eclipse-admin-list-search-status{display:flex;align-items:baseline;gap:.35rem;min-width:0;color:var(--eclipse-admin-muted);font-size:.78rem}
+body.eclipse-admin-page .eclipse-admin-list-search-status strong{color:var(--eclipse-admin-text);font-size:.95rem;font-variant-numeric:tabular-nums}
+body.eclipse-admin-page .eclipse-admin-list-search-tools{display:flex;justify-content:flex-end;min-width:0;margin-left:auto}
+body.eclipse-admin-page .eclipse-admin-list-search-tools:empty{display:none}
+body.eclipse-admin-page .eclipse-admin-list-search-tools .eclipse-filter-tools{margin:0}
+@container eclipse-admin-content (max-width:46rem){
+  body.eclipse-admin-page .eclipse-admin-list-search-filters{grid-template-columns:minmax(0,1fr);align-items:start}
+  body.eclipse-admin-page .eclipse-admin-list-filter-limit{justify-content:flex-start}
+  body.eclipse-admin-page .eclipse-admin-list-search-meta{align-items:flex-start;flex-wrap:wrap}
+  body.eclipse-admin-page .eclipse-admin-list-search-tools{width:100%;justify-content:flex-start;margin-left:0}
+}
+@container eclipse-admin-content (max-width:28rem){
+  body.eclipse-admin-page .eclipse-admin-list-search{padding:.8rem}
+  body.eclipse-admin-page .eclipse-admin-list-search-field{grid-template-columns:minmax(0,1fr) auto;gap:.4rem}
+  body.eclipse-admin-page .eclipse-admin-list-search-field button{min-width:auto;padding-inline:.7rem}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary{display:grid;grid-template-columns:minmax(0,1fr);align-items:stretch}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary label,body.eclipse-admin-page .eclipse-admin-list-filter-limit{display:flex;justify-content:space-between;gap:.75rem;white-space:normal}
+  body.eclipse-admin-page .eclipse-admin-list-filter-primary select,body.eclipse-admin-page .eclipse-admin-list-filter-limit select{max-width:58%;min-width:7rem}
+}
+'''
+          admin.write_text(text[:start] + replacement + text[end:])
+
+          fixes = Path('eclipse/css/ui-fixes.css')
+          text = fixes.read_text()
+          start_marker = 'body.theme-eclipse.eclipse-admin-page .admin-list-search{display:flex!important;'
+          end_marker = '.eclipse-filter-toggle{margin-right:auto}'
+          start = text.index(start_marker)
+          end = text.index(end_marker, start)
+          fixes.write_text(text[:start] + text[end:])
+
+          js = Path('eclipse/js/theme.js')
+          text = js.read_text()
+          old = "tools.appendChild(toggleFilters); tools.appendChild(select); tools.appendChild(save); tools.appendChild(remove); search.insertAdjacentElement('afterend',tools); render();"
+          new = "tools.appendChild(toggleFilters); tools.appendChild(select); tools.appendChild(save); tools.appendChild(remove); var toolsHost=search.querySelector('[data-eclipse-filter-tools]'); if(toolsHost) toolsHost.appendChild(tools); else search.insertAdjacentElement('afterend',tools); render();"
+          if old not in text:
+              raise SystemExit('Unable to locate admin filter tools insertion point')
+          js.write_text(text.replace(old, new, 1))
+          PY
+
+      - name: Commit cleanup and remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-shot-admin-search-cleanup.yml
+          git add eclipse/css/admin/admin.css eclipse/css/ui-fixes.css eclipse/js/theme.js
+          git commit -m "Consolidate admin search panel layout"
+          git pull --rebase origin develop-1.1.0
+          git push origin develop-1.1.0
