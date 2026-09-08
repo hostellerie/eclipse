@@ -5,12 +5,6 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) d
 require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/zip-compat.php';
 
-/*
- * Theme PHP files are loaded from disk before Geeklog resolves cached .thtml
- * templates.  Use that point to invalidate compiled templates after an Eclipse
- * archive has changed, so the first request after an update already sees the
- * new Theme Studio and layout without a manual Clear Cache.
- */
 if (!empty($_CONF['path_data']) && function_exists('CTL_clearCache')) {
     $eclipseManifest = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'MANIFEST.json';
     $eclipseBuildFingerprint = is_file($eclipseManifest) ? @hash_file('sha256', $eclipseManifest) : '';
@@ -25,13 +19,6 @@ if (!empty($_CONF['path_data']) && function_exists('CTL_clearCache')) {
     }
 }
 
-/*
- * Geeklog 2.1.x decides between its legacy table-based configuration UI and
- * the Geeklog 2.x div-based UI from min_theme_gl_version via
- * supported_version_theme. Eclipse uses the modern markup, so make that
- * capability explicit only on the supported 2.1.x branch. Geeklog 2.2.x is
- * left untouched.
- */
 if (defined('VERSION') && version_compare(VERSION, '2.1.1', '>=') && version_compare(VERSION, '2.2.0', '<')) {
     global $_CONF;
     $_CONF['min_theme_gl_version'] = '2.0.0';
@@ -84,6 +71,59 @@ function eclipse_admin_get_recent_staticpages()
     return eclipse_admin_dashboard_rows($sql . ' ORDER BY modified DESC', 4);
 }
 
+function eclipse_admin_discover_plugin_stats()
+{
+    $rows = array();
+    if (!function_exists('PLG_getPluginStats')) return $rows;
+    $all = PLG_getPluginStats(3);
+    if (!is_array($all)) return $rows;
+    foreach ($all as $plugin => $summary) {
+        if (!is_array($summary)) continue;
+        $items = isset($summary[0]) && is_array($summary[0]) ? $summary : array($summary);
+        foreach ($items as $item) {
+            if (!is_array($item) || !isset($item[0]) || !isset($item[1])) continue;
+            $rows[] = array('plugin' => (string) $plugin, 'label' => (string) $item[0], 'value' => (string) $item[1]);
+        }
+    }
+    return $rows;
+}
+
+function eclipse_admin_discover_plugin_whatsnew()
+{
+    $rows = array();
+    if (!function_exists('PLG_getWhatsNew')) return $rows;
+    $data = PLG_getWhatsNew();
+    if (!is_array($data) || count($data) < 3 || !is_array($data[0]) || !is_array($data[2])) return $rows;
+    $headlines = $data[0];
+    $content = $data[2];
+    foreach ($content as $index => $entries) {
+        $headline = isset($headlines[$index]) ? trim(strip_tags((string) $headlines[$index])) : '';
+        if ($headline === '') $headline = eclipse_lang('plugin_activity', 'Plugin activity');
+        if (!is_array($entries)) $entries = array($entries);
+        $count = 0;
+        foreach ($entries as $entry) {
+            if ($count >= 4) break;
+            $html = trim((string) $entry);
+            if ($html === '') continue;
+            $text = trim(preg_replace('/\s+/', ' ', strip_tags($html)));
+            if ($text === '') continue;
+            if (strlen($text) > 120) $text = substr($text, 0, 117) . '...';
+            $rows[] = array('headline' => $headline, 'html' => $html, 'text' => $text);
+            $count++;
+        }
+    }
+    return $rows;
+}
+
+function eclipse_admin_discover_feeds()
+{
+    global $_TABLES;
+    $rows = array();
+    if (!function_exists('SEC_hasRights') || !SEC_hasRights('syndication.edit') || empty($_TABLES['syndication'])) return $rows;
+    $sql = "SELECT fid,title,type,format,filename,updated FROM {$_TABLES['syndication']} WHERE is_enabled=1 ORDER BY title ASC";
+    return eclipse_admin_dashboard_rows($sql, 8);
+}
+
 function eclipse_admin_dashboard_date($value)
 {
     $time = strtotime((string) $value);
@@ -96,9 +136,37 @@ function eclipse_admin_dashboard_render()
     if (!eclipse_is_admin_request() || eclipse_admin_page() !== 'index') return '';
     $stories = eclipse_admin_get_recent_stories(false); $drafts = eclipse_admin_get_recent_stories(true);
     $comments = eclipse_admin_get_recent_comments(); $pages = eclipse_admin_get_recent_staticpages();
+    $pluginStats = eclipse_admin_discover_plugin_stats(); $pluginNews = eclipse_admin_discover_plugin_whatsnew(); $feeds = eclipse_admin_discover_feeds();
     $admin = rtrim($_CONF['site_admin_url'], '/'); $site = rtrim($_CONF['site_url'], '/');
     $articleScript = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=') ? 'article.php' : 'story.php';
     $html = '<section class="eclipse-admin-dashboard-data" aria-label="' . eclipse_admin_dashboard_h(eclipse_lang('editorial_overview')) . '">';
+
+    if ($pluginStats) {
+        $html .= '<article class="eclipse-dashboard-widget eclipse-dashboard-widget-stats"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('plugin_statistics', 'Plugin statistics')) . '</h2><ul>';
+        foreach ($pluginStats as $row) {
+            $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['label']) . '</strong><small>' . eclipse_admin_dashboard_h($row['plugin']) . '</small></div><span class="eclipse-dashboard-value">' . eclipse_admin_dashboard_h($row['value']) . '</span></li>';
+        }
+        $html .= '</ul></article>';
+    }
+
+    if ($feeds) {
+        $html .= '<article class="eclipse-dashboard-widget"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('syndication_feeds', 'Syndication feeds')) . '</h2><ul>';
+        foreach ($feeds as $row) {
+            $meta = trim((string) $row['type']);
+            if (!empty($row['format'])) $meta .= ($meta !== '' ? ' · ' : '') . $row['format'];
+            $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h($meta) . '</small></div><a href="' . $admin . '/syndication.php?mode=edit&amp;fid=' . (int) $row['fid'] . '">' . eclipse_admin_dashboard_h(eclipse_lang('manage', 'Manage')) . '</a></li>';
+        }
+        $html .= '</ul></article>';
+    }
+
+    if ($pluginNews) {
+        $html .= '<article class="eclipse-dashboard-widget eclipse-dashboard-widget-wide"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('plugin_activity', 'Plugin activity')) . '</h2><ul>';
+        foreach ($pluginNews as $row) {
+            $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['headline']) . '</strong><small>' . eclipse_admin_dashboard_h($row['text']) . '</small></div></li>';
+        }
+        $html .= '</ul></article>';
+    }
+
     if ($stories) {
         $html .= '<article class="eclipse-dashboard-widget"><h2>' . eclipse_admin_dashboard_h(eclipse_lang('recent_stories')) . '</h2><ul>';
         foreach ($stories as $row) {
