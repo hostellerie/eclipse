@@ -11,13 +11,19 @@ on:
 permissions:
   contents: write
 
+# Only the newest source state should be allowed to publish an archive.
+# A newer push cancels an obsolete build before it can overwrite dist/.
+concurrency:
+  group: eclipse-build-dist-develop-1.1.0
+  cancel-in-progress: true
+
 jobs:
   build-dist:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: develop-1.1.0
 
@@ -48,8 +54,21 @@ jobs:
       - name: Commit updated archive
         shell: bash
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Do not publish an archive built from a source revision that has
+          # already been superseded. The newer push starts its own build.
+          git fetch origin develop-1.1.0
+          remote_head=$(git rev-parse origin/develop-1.1.0)
+          source_head="${GITHUB_SHA}"
+          if [ "$remote_head" != "$source_head" ]; then
+            echo "Source branch advanced from $source_head to $remote_head; skipping obsolete archive."
+            exit 0
+          fi
+
           git add -A -f dist
 
           if git diff --cached --quiet -- dist; then
@@ -59,4 +78,16 @@ jobs:
 
           version="${{ steps.version.outputs.version }}"
           git commit -m "Build Eclipse $version installable archive"
-          git push
+
+          # A push can still land in the very small window after the check
+          # above. Treat that as an obsolete build rather than a CI failure.
+          if ! git push origin HEAD:develop-1.1.0; then
+            git fetch origin develop-1.1.0
+            remote_head=$(git rev-parse origin/develop-1.1.0)
+            if [ "$remote_head" != "$source_head" ]; then
+              echo "Branch advanced during publication; newer build will publish the archive."
+              exit 0
+            fi
+            echo "Archive push failed without a newer source revision." >&2
+            exit 1
+          fi
