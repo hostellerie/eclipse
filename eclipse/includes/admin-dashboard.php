@@ -1,6 +1,8 @@
 <?php
 
-if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) die('This file can not be used on its own!');
+if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) {
+    die('This file can not be used on its own!');
+}
 
 require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/zip-compat.php';
@@ -75,10 +77,17 @@ function eclipse_admin_get_draft_count()
     return isset($row['eclipse_count']) ? max(0, (int) $row['eclipse_count']) : 0;
 }
 
+function eclipse_admin_get_actual_comment_count()
+{
+    global $_TABLES;
+    return !empty($_TABLES['comments']) ? eclipse_admin_dashboard_count($_TABLES['comments'], '') : 0;
+}
+
 function eclipse_admin_get_recent_comments()
 {
     global $_TABLES;
     if (!function_exists('SEC_hasRights') || !SEC_hasRights('comment.moderate') || empty($_TABLES['comments'])) return array();
+    if (eclipse_admin_get_actual_comment_count() < 1) return array();
     $users = !empty($_TABLES['users']) ? $_TABLES['users'] : '';
     $join = $users !== '' ? " LEFT JOIN {$users} u ON u.uid=c.uid" : '';
     $username = $users !== '' ? ',u.username' : ",'' AS username";
@@ -94,17 +103,31 @@ function eclipse_admin_get_recent_staticpages()
     return eclipse_admin_dashboard_rows($sql . ' ORDER BY modified DESC', 5);
 }
 
-function eclipse_admin_get_top_stories($field, $limit)
+function eclipse_admin_get_top_viewed($limit)
 {
     global $_TABLES;
-    if (empty($_TABLES['stories']) || !in_array($field, array('hits', 'comments'), true)) return array();
-    $sql = "SELECT s.sid,s.title,s.{$field} AS metric FROM {$_TABLES['stories']} s";
+    if (empty($_TABLES['stories'])) return array();
+    $sql = "SELECT s.sid,s.title,s.hits AS metric FROM {$_TABLES['stories']} s";
     if (!empty($_TABLES['topic_assignments'])) $sql .= ", {$_TABLES['topic_assignments']} ta WHERE ta.type='article' AND ta.id=s.sid";
     else $sql .= ' WHERE 1=1';
-    $sql .= " AND s.draft_flag=0 AND s.date<=NOW() AND s.{$field}>0";
+    $sql .= ' AND s.draft_flag=0 AND s.date<=NOW() AND s.hits>0';
     if (function_exists('COM_getPermSQL')) $sql .= COM_getPermSQL('AND', 0, 3, 's');
     if (!empty($_TABLES['topic_assignments']) && function_exists('COM_getTopicSql')) $sql .= COM_getTopicSql('AND', 0, 'ta');
-    $sql .= " GROUP BY s.sid,s.title,s.{$field} ORDER BY s.{$field} DESC";
+    $sql .= ' GROUP BY s.sid,s.title,s.hits ORDER BY s.hits DESC';
+    return eclipse_admin_dashboard_rows($sql, $limit);
+}
+
+function eclipse_admin_get_top_commented($limit)
+{
+    global $_TABLES;
+    if (empty($_TABLES['stories']) || empty($_TABLES['comments']) || eclipse_admin_get_actual_comment_count() < 1) return array();
+    $sql = "SELECT s.sid,s.title,COUNT(DISTINCT c.cid) AS metric FROM {$_TABLES['stories']} s INNER JOIN {$_TABLES['comments']} c ON c.sid=s.sid AND c.type='article'";
+    if (!empty($_TABLES['topic_assignments'])) $sql .= ", {$_TABLES['topic_assignments']} ta WHERE ta.type='article' AND ta.id=s.sid";
+    else $sql .= ' WHERE 1=1';
+    $sql .= ' AND s.draft_flag=0 AND s.date<=NOW()';
+    if (function_exists('COM_getPermSQL')) $sql .= COM_getPermSQL('AND', 0, 3, 's');
+    if (!empty($_TABLES['topic_assignments']) && function_exists('COM_getTopicSql')) $sql .= COM_getTopicSql('AND', 0, 'ta');
+    $sql .= ' GROUP BY s.sid,s.title HAVING COUNT(DISTINCT c.cid)>0 ORDER BY metric DESC';
     return eclipse_admin_dashboard_rows($sql, $limit);
 }
 
@@ -114,7 +137,8 @@ function eclipse_admin_get_site_stats()
     $stats = array();
     if (!empty($_TABLES['vars']) && function_exists('DB_getItem')) $stats['hits'] = (int) DB_getItem($_TABLES['vars'], 'value', "name='totalhits'");
     if (!empty($_TABLES['stories'])) $stats['stories'] = eclipse_admin_dashboard_count($_TABLES['stories'], 'draft_flag=0 AND date<=NOW()');
-    if (!empty($_TABLES['comments'])) $stats['comments'] = eclipse_admin_dashboard_count($_TABLES['comments'], '');
+    $commentCount = eclipse_admin_get_actual_comment_count();
+    if ($commentCount > 0) $stats['comments'] = $commentCount;
     if (!empty($_TABLES['users'])) $stats['users'] = max(0, eclipse_admin_dashboard_count($_TABLES['users'], 'status=3') - 1);
     return $stats;
 }
@@ -197,12 +221,12 @@ function eclipse_admin_discover_feeds()
 function eclipse_admin_attention_data($draftCount)
 {
     global $_CONF, $_TABLES;
-    $data = array('drafts' => max(0, (int) $draftCount), 'comments' => 0, 'submissions' => 0, 'plugin_submissions' => 0);
-    if (function_exists('SEC_hasRights') && SEC_hasRights('comment.moderate') && !empty($_CONF['commentsubmission']) && !empty($_TABLES['commentsubmissions'])) $data['comments'] = eclipse_admin_dashboard_count($_TABLES['commentsubmissions'], '1=1');
-    if (function_exists('SEC_hasRights') && SEC_hasRights('story.moderate') && !empty($_TABLES['storysubmission'])) $data['submissions'] = eclipse_admin_dashboard_count($_TABLES['storysubmission'], '1=1');
-    if (function_exists('PLG_getSubmissionCount')) {
-        $pluginCount = PLG_getSubmissionCount();
-        if (is_numeric($pluginCount)) $data['plugin_submissions'] = max(0, (int) $pluginCount);
+    $data = array('drafts' => max(0, (int) $draftCount), 'comments' => 0, 'submissions' => 0);
+    if (function_exists('SEC_hasRights') && SEC_hasRights('comment.moderate') && !empty($_CONF['commentsubmission']) && !empty($_TABLES['commentsubmissions'])) {
+        $data['comments'] = eclipse_admin_dashboard_count($_TABLES['commentsubmissions'], '1=1');
+    }
+    if (function_exists('SEC_hasRights') && SEC_hasRights('story.moderate') && !empty($_TABLES['storysubmission'])) {
+        $data['submissions'] = eclipse_admin_dashboard_count($_TABLES['storysubmission'], '1=1');
     }
     return $data;
 }
@@ -253,27 +277,33 @@ function eclipse_admin_dashboard_module_end()
     return '</div></article>';
 }
 
-function eclipse_admin_dashboard_overview_enhancer($attention)
+function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
 {
     global $_CONF;
     $admin = rtrim($_CONF['site_admin_url'], '/');
     $payload = array(
-        'drafts' => (int) $attention['drafts'], 'comments' => (int) $attention['comments'],
-        'submissions' => (int) $attention['submissions'] + (int) $attention['plugin_submissions'],
-        'commentsUrl' => $admin . '/comment.php', 'moderationUrl' => $admin . '/moderation.php',
-        'draftsUrl' => '#eclipse-dashboard-drafts', 'labels' => eclipse_admin_dashboard_labels()
+        'drafts' => (int) $attention['drafts'],
+        'comments' => (int) $attention['comments'],
+        'submissions' => (int) $attention['submissions'],
+        'hasComments' => (bool) $hasComments,
+        'commentsUrl' => $admin . '/comment.php',
+        'moderationUrl' => $admin . '/moderation.php',
+        'draftsUrl' => '#eclipse-dashboard-drafts',
+        'labels' => eclipse_admin_dashboard_labels()
     );
     $json = json_encode($payload);
     if (!is_string($json)) return '';
+
     $style = '<style>'
-        . 'body.eclipse-admin-page .eclipse-dashboard-widget-stats .eclipse-dashboard-value{font-size:.72rem!important;font-weight:700!important;line-height:1.25!important;color:#64748b!important;font-variant-numeric:tabular-nums}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-count,body.eclipse-admin-page .eclipse-attention-count{display:inline-flex;align-items:center;justify-content:center;min-width:1.35rem;height:1.35rem;margin-left:.35rem;padding:0 .35rem;border-radius:999px;background:#b42318;color:#fff;font-size:.68rem;font-weight:850;line-height:1;font-variant-numeric:tabular-nums}'
-        . 'body.eclipse-admin-page .eclipse-overview-attention li a{display:flex;align-items:center;justify-content:space-between;gap:.6rem}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-widget-stats .eclipse-dashboard-value{font-size:.7rem!important;font-weight:650!important;line-height:1.25!important;color:#64748b!important;font-variant-numeric:tabular-nums}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-count,body.eclipse-admin-page .eclipse-attention-count{display:inline-flex;align-items:center;justify-content:center;min-width:1.15rem;height:1.15rem;margin-left:.28rem;padding:0 .28rem;border-radius:999px;background:#b42318;color:#fff;font-size:.62rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}'
+        . 'body.eclipse-admin-page .eclipse-overview-attention li a{display:inline-flex;align-items:center;justify-content:flex-start;gap:.25rem}'
         . 'body.eclipse-admin-page .eclipse-overview-attention li.is-draft .eclipse-attention-count,body.eclipse-admin-page .eclipse-dashboard-count{background:#9a6700}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-widget-header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .75rem}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-widget-header{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin:0 0 .65rem}'
         . 'body.eclipse-admin-page .eclipse-dashboard-widget-header h2{margin:0!important}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-toggle{display:inline-grid;place-items:center;flex:0 0 auto;width:1.8rem;height:1.8rem;margin:0;padding:0;border:1px solid #dce2ea;border-radius:.4rem;background:#fff;color:#64748b;font-size:1rem;font-weight:800;line-height:1;cursor:pointer}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-toggle:hover{color:#172033;background:#f8fafc}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-toggle{display:inline-grid;place-items:center;flex:0 0 auto;width:1.45rem;height:1.45rem;margin:0;padding:0;border:1px solid #e2e7ee;border-radius:.35rem;background:#fff;color:#718096;font-size:.78rem;font-weight:750;line-height:1;cursor:pointer;box-shadow:none}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-toggle:hover{color:#172033;background:#f8fafc;border-color:#d7dde6}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-widget.is-collapsed{padding-top:.85rem!important;padding-bottom:.85rem!important}'
         . 'body.eclipse-admin-page .eclipse-dashboard-widget.is-collapsed .eclipse-dashboard-widget-header{margin-bottom:0}'
         . 'body.eclipse-admin-page .eclipse-dashboard-widget.is-collapsed .eclipse-dashboard-body{display:none}'
         . 'body.eclipse-admin-page .eclipse-dashboard-stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}'
@@ -282,19 +312,21 @@ function eclipse_admin_dashboard_overview_enhancer($attention)
         . 'body.eclipse-admin-page .eclipse-dashboard-stat-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;margin:0;padding:0;list-style:none}'
         . 'body.eclipse-admin-page .eclipse-dashboard-stat-overview li{display:block;padding:.55rem .6rem;border:1px solid #edf0f4;border-radius:.45rem}'
         . 'body.eclipse-admin-page .eclipse-dashboard-stat-overview strong{font-size:.72rem}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-stat-overview span{display:block;margin-top:.2rem;color:#334155;font-size:.88rem;font-weight:750;font-variant-numeric:tabular-nums}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-stat-overview span{display:block;margin-top:.2rem;color:#334155;font-size:.84rem;font-weight:720;font-variant-numeric:tabular-nums}'
         . 'body.eclipse-admin-page .eclipse-dashboard-ranking{margin:0;padding:0;list-style:none}'
         . 'body.eclipse-admin-page .eclipse-dashboard-ranking li{padding:.42rem 0}'
         . 'body.eclipse-admin-page .eclipse-dashboard-ranking li a{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-ranking li span{font-size:.7rem;font-weight:700;color:#64748b;font-variant-numeric:tabular-nums}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-ranking li span{font-size:.68rem;font-weight:650;color:#64748b;font-variant-numeric:tabular-nums}'
         . 'body.eclipse-admin-page .eclipse-dashboard-more{display:inline-block;margin-top:.55rem;font-size:.7rem;font-weight:750}'
         . '@media(max-width:52rem){body.eclipse-admin-page .eclipse-dashboard-stats-grid{grid-template-columns:1fr}}'
         . '</style>';
+
     $script = '<script>(function(){var data=' . $json . ';'
         . 'function badge(n){var s=document.createElement("span");s.className="eclipse-attention-count";s.textContent=String(n);return s;}'
-        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions);return true;}'
+        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);return true;}'
         . 'function setupModules(){var key="eclipse-dashboard-collapsed-v1",saved=[];try{saved=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(saved))saved=[];}catch(e){saved=[];}function save(){try{localStorage.setItem(key,JSON.stringify(saved));}catch(e){}}Array.prototype.forEach.call(document.querySelectorAll("[data-eclipse-module]"),function(module){var id=module.getAttribute("data-eclipse-module");var button=module.querySelector(".eclipse-dashboard-toggle");if(!button)return;function apply(collapsed){module.classList.toggle("is-collapsed",collapsed);button.setAttribute("aria-expanded",collapsed?"false":"true");button.setAttribute("title",collapsed?data.labels.expand:data.labels.collapse);var icon=button.querySelector("span");if(icon)icon.textContent=collapsed?"+":"−";}apply(saved.indexOf(id)!==-1);button.addEventListener("click",function(){var collapsed=!module.classList.contains("is-collapsed");apply(collapsed);var index=saved.indexOf(id);if(collapsed&&index===-1)saved.push(id);if(!collapsed&&index!==-1)saved.splice(index,1);save();});});function revealHash(){if(!location.hash)return;var target=document.querySelector(location.hash);if(target&&target.hasAttribute("data-eclipse-module")&&target.classList.contains("is-collapsed")){var b=target.querySelector(".eclipse-dashboard-toggle");if(b)b.click();}}window.addEventListener("hashchange",revealHash);revealHash();}'
         . 'function boot(){setupModules();if(!enhanceOverview()){var observer=new MutationObserver(function(){if(enhanceOverview())observer.disconnect();});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect();enhanceOverview();},3000);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();}());</script>';
+
     return $style . $script;
 }
 
@@ -302,13 +334,15 @@ function eclipse_admin_dashboard_render()
 {
     global $_CONF;
     if (!eclipse_is_admin_request() || eclipse_admin_page() !== 'index') return '';
+
     $stories = eclipse_admin_get_recent_stories(false);
     $drafts = eclipse_admin_get_recent_stories(true);
     $draftCount = eclipse_admin_get_draft_count();
-    $comments = eclipse_admin_get_recent_comments();
+    $actualCommentCount = eclipse_admin_get_actual_comment_count();
+    $comments = $actualCommentCount > 0 ? eclipse_admin_get_recent_comments() : array();
     $pages = eclipse_admin_get_recent_staticpages();
-    $topStories = eclipse_admin_get_top_stories('hits', 5);
-    $topCommented = eclipse_admin_get_top_stories('comments', 5);
+    $topStories = eclipse_admin_get_top_viewed(5);
+    $topCommented = $actualCommentCount > 0 ? eclipse_admin_get_top_commented(5) : array();
     $siteStats = eclipse_admin_get_site_stats();
     $pluginStats = eclipse_admin_discover_plugin_stats();
     $pluginNews = eclipse_admin_discover_plugin_whatsnew();
@@ -322,7 +356,9 @@ function eclipse_admin_dashboard_render()
 
     if ($drafts) {
         $html .= eclipse_admin_dashboard_module_start('eclipse-dashboard-drafts', eclipse_admin_dashboard_h(eclipse_lang('drafts')) . ' <span class="eclipse-dashboard-count">' . (int) $draftCount . '</span>', true) . '<ul>';
-        foreach ($drafts as $row) $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h(eclipse_admin_dashboard_date($row['date'])) . '</small></div><a href="' . $admin . '/' . $articleScript . '?mode=edit&amp;sid=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h(eclipse_lang('continue')) . '</a></li>';
+        foreach ($drafts as $row) {
+            $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h(eclipse_admin_dashboard_date($row['date'])) . '</small></div><a href="' . $admin . '/' . $articleScript . '?mode=edit&amp;sid=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h(eclipse_lang('continue')) . '</a></li>';
+        }
         $html .= '</ul>' . eclipse_admin_dashboard_module_end();
     }
 
@@ -338,7 +374,8 @@ function eclipse_admin_dashboard_render()
     if ($comments) {
         $html .= eclipse_admin_dashboard_module_start('eclipse-dashboard-comments', eclipse_admin_dashboard_h(eclipse_lang('recent_comments')), false) . '<ul>';
         foreach ($comments as $row) {
-            $plain = trim(preg_replace('/\s+/', ' ', strip_tags($row['comment']))); if (strlen($plain) > 100) $plain = substr($plain, 0, 97) . '...';
+            $plain = trim(preg_replace('/\s+/', ' ', strip_tags($row['comment'])));
+            if (strlen($plain) > 100) $plain = substr($plain, 0, 97) . '...';
             $context = (!empty($row['type']) ? $row['type'] . ' ' : '') . (!empty($row['sid']) ? $row['sid'] . ' ' : '') . eclipse_admin_dashboard_date($row['date']);
             $html .= '<li><div><strong>' . eclipse_admin_dashboard_h(!empty($row['username']) ? $row['username'] : eclipse_lang('anonymous')) . '</strong><small>' . eclipse_admin_dashboard_h($plain) . '</small><small>' . eclipse_admin_dashboard_h(trim($context)) . '</small></div><a href="' . $site . '/comment.php?mode=view&amp;cid=' . (int) $row['cid'] . '">' . eclipse_admin_dashboard_h(eclipse_lang('view')) . '</a></li>';
         }
@@ -347,7 +384,9 @@ function eclipse_admin_dashboard_render()
 
     if ($pages) {
         $html .= eclipse_admin_dashboard_module_start('eclipse-dashboard-pages', eclipse_admin_dashboard_h(eclipse_lang('recent_static_pages')), false) . '<ul>';
-        foreach ($pages as $row) $html .= '<li><strong>' . eclipse_admin_dashboard_h($row['sp_title']) . '</strong><a href="' . $admin . '/plugins/staticpages/index.php?mode=edit&amp;sp_id=' . rawurlencode($row['sp_id']) . '">' . eclipse_admin_dashboard_h(eclipse_lang('edit')) . '</a></li>';
+        foreach ($pages as $row) {
+            $html .= '<li><strong>' . eclipse_admin_dashboard_h($row['sp_title']) . '</strong><a href="' . $admin . '/plugins/staticpages/index.php?mode=edit&amp;sp_id=' . rawurlencode($row['sp_id']) . '">' . eclipse_admin_dashboard_h(eclipse_lang('edit')) . '</a></li>';
+        }
         $html .= '</ul>' . eclipse_admin_dashboard_module_end();
     }
 
@@ -368,8 +407,13 @@ function eclipse_admin_dashboard_render()
     if ($feeds) {
         $html .= eclipse_admin_dashboard_module_start('eclipse-dashboard-feeds', eclipse_admin_dashboard_h($labels['feeds']), false) . '<ul>';
         foreach ($feeds as $row) {
-            $meta = trim((string) $row['type']); if (!empty($row['format'])) $meta .= ($meta !== '' ? ' · ' : '') . $row['format']; if (!empty($row['filename'])) $meta .= ($meta !== '' ? ' · ' : '') . basename((string) $row['filename']);
-            if (!empty($row['updated'])) { $updated = eclipse_admin_dashboard_date($row['updated']); if ($updated !== '') $meta .= ($meta !== '' ? ' · ' : '') . $updated; }
+            $meta = trim((string) $row['type']);
+            if (!empty($row['format'])) $meta .= ($meta !== '' ? ' · ' : '') . $row['format'];
+            if (!empty($row['filename'])) $meta .= ($meta !== '' ? ' · ' : '') . basename((string) $row['filename']);
+            if (!empty($row['updated'])) {
+                $updated = eclipse_admin_dashboard_date($row['updated']);
+                if ($updated !== '') $meta .= ($meta !== '' ? ' · ' : '') . $updated;
+            }
             $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h($meta) . '</small></div><a href="' . $admin . '/syndication.php?mode=edit&amp;fid=' . (int) $row['fid'] . '">' . eclipse_admin_dashboard_h(eclipse_lang('manage', 'Manage')) . '</a></li>';
         }
         $html .= '</ul>' . eclipse_admin_dashboard_module_end();
@@ -377,28 +421,45 @@ function eclipse_admin_dashboard_render()
 
     if ($siteStats || $pluginStats || $topStories || $topCommented) {
         $html .= eclipse_admin_dashboard_module_start('eclipse-dashboard-statistics', eclipse_admin_dashboard_h($labels['statistics']), true) . '<div class="eclipse-dashboard-stats-grid">';
+
         if ($siteStats) {
             $html .= '<section class="eclipse-dashboard-stats-section"><h3>' . eclipse_admin_dashboard_h($labels['site_stats']) . '</h3><ul class="eclipse-dashboard-stat-overview">';
-            foreach (array('stories' => 'stories', 'comments' => 'site_comments', 'users' => 'users', 'hits' => 'hits') as $key => $labelKey) if (isset($siteStats[$key])) { $value = function_exists('COM_NumberFormat') ? COM_NumberFormat($siteStats[$key]) : $siteStats[$key]; $html .= '<li><strong>' . eclipse_admin_dashboard_h($labels[$labelKey]) . '</strong><span>' . eclipse_admin_dashboard_h($value) . '</span></li>'; }
+            foreach (array('stories' => 'stories', 'comments' => 'site_comments', 'users' => 'users', 'hits' => 'hits') as $key => $labelKey) {
+                if (!isset($siteStats[$key])) continue;
+                $value = function_exists('COM_NumberFormat') ? COM_NumberFormat($siteStats[$key]) : $siteStats[$key];
+                $html .= '<li><strong>' . eclipse_admin_dashboard_h($labels[$labelKey]) . '</strong><span>' . eclipse_admin_dashboard_h($value) . '</span></li>';
+            }
             $html .= '</ul></section>';
         }
+
         if ($pluginStats) {
             $html .= '<section class="eclipse-dashboard-stats-section eclipse-dashboard-widget-stats"><h3>' . eclipse_admin_dashboard_h($labels['plugin_stats']) . '</h3><ul>';
-            foreach ($pluginStats as $row) $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['label']) . '</strong><small>' . eclipse_admin_dashboard_h($row['plugin']) . '</small></div><span class="eclipse-dashboard-value">' . eclipse_admin_dashboard_h($row['value']) . '</span></li>';
+            foreach ($pluginStats as $row) {
+                $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['label']) . '</strong><small>' . eclipse_admin_dashboard_h($row['plugin']) . '</small></div><span class="eclipse-dashboard-value">' . eclipse_admin_dashboard_h($row['value']) . '</span></li>';
+            }
             $html .= '</ul></section>';
         }
+
         if ($topStories) {
             $html .= '<section class="eclipse-dashboard-stats-section"><h3>' . eclipse_admin_dashboard_h($labels['most_viewed']) . '</h3><ol class="eclipse-dashboard-ranking">';
-            foreach ($topStories as $row) { $metric = function_exists('COM_NumberFormat') ? COM_NumberFormat($row['metric']) : $row['metric']; $html .= '<li><a href="' . $site . '/article.php?story=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h($row['title']) . '</a><span>' . eclipse_admin_dashboard_h($metric) . '</span></li>'; }
+            foreach ($topStories as $row) {
+                $metric = function_exists('COM_NumberFormat') ? COM_NumberFormat($row['metric']) : $row['metric'];
+                $html .= '<li><a href="' . $site . '/article.php?story=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h($row['title']) . '</a><span>' . eclipse_admin_dashboard_h($metric) . '</span></li>';
+            }
             $html .= '</ol></section>';
         }
+
         if ($topCommented) {
             $html .= '<section class="eclipse-dashboard-stats-section"><h3>' . eclipse_admin_dashboard_h($labels['most_commented']) . '</h3><ol class="eclipse-dashboard-ranking">';
-            foreach ($topCommented as $row) { $metric = function_exists('COM_NumberFormat') ? COM_NumberFormat($row['metric']) : $row['metric']; $html .= '<li><a href="' . $site . '/article.php?story=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h($row['title']) . '</a><span>' . eclipse_admin_dashboard_h($metric) . '</span></li>'; }
+            foreach ($topCommented as $row) {
+                $metric = function_exists('COM_NumberFormat') ? COM_NumberFormat($row['metric']) : $row['metric'];
+                $html .= '<li><a href="' . $site . '/article.php?story=' . rawurlencode($row['sid']) . '">' . eclipse_admin_dashboard_h($row['title']) . '</a><span>' . eclipse_admin_dashboard_h($metric) . '</span></li>';
+            }
             $html .= '</ol></section>';
         }
+
         $html .= '</div><a class="eclipse-dashboard-more" href="' . $site . '/stats.php">' . eclipse_admin_dashboard_h($labels['full_stats']) . '</a>' . eclipse_admin_dashboard_module_end();
     }
 
-    return $html . '</section>' . eclipse_admin_dashboard_overview_enhancer($attention);
+    return $html . '</section>' . eclipse_admin_dashboard_overview_enhancer($attention, $actualCommentCount > 0);
 }
