@@ -1,0 +1,81 @@
+/* Geeklog jQuery UI compatibility for Eclipse.
+ * Geeklog loads this path automatically when jQuery UI resources are requested.
+ * Keep theme-specific adjustments here so core Resource.php can use Eclipse
+ * without falling back to another theme or generating a 404.
+ */
+
+/* Tabs */
+.ui-tabs{position:relative;margin-bottom:0;padding:.2em}
+.ui-tabs .ui-tabs-nav{display:flex;flex-wrap:wrap;gap:.2rem;margin:0;padding:.2em .2em 0;list-style:none}
+.ui-tabs .ui-tabs-nav li{position:relative;top:1px;margin:0;padding:0;border-bottom:0!important;list-style:none;white-space:nowrap}
+.ui-tabs .ui-tabs-nav li a{display:block;padding:.5em 1em;text-decoration:none}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected,.ui-tabs .ui-tabs-nav li.ui-tabs-active{margin-bottom:0;padding-bottom:1px}
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a,.ui-tabs .ui-tabs-nav li.ui-state-processing a{cursor:default}
+.ui-tabs .ui-tabs-panel{display:block;padding:1em 1.4em;border-width:0;background:none}
+.ui-tabs .ui-tabs-hide{display:none!important}
+#tabs-dropdown{position:absolute;z-index:1000;display:none;margin:0;padding:.5rem 0;list-style:none;background:var(--eclipse-surface,#fff);border:1px solid var(--eclipse-border,#d7dbe4);border-radius:.45rem;box-shadow:var(--eclipse-shadow,0 10px 28px rgba(15,23,42,.12))}
+#tabs-dropdown li,#tabs-dropdown li a{display:block;float:none}
+#tabs-dropdown li{margin:0}
+#tabs-dropdown li a{padding:.45rem .75rem}
+#tabs-dropdown li a:hover{color:#fff;background:var(--eclipse-action,var(--eclipse-link,#2448bd))}
+
+/* Generic jQuery UI states */
+.ui-widget-header{border:1px solid var(--eclipse-border,#d7dbe4)}
+.ui-state-default,.ui-widget-content .ui-state-default,.ui-widget-header .ui-state-default{color:var(--eclipse-text,#202431);background:var(--eclipse-surface,#fff);border:1px solid var(--eclipse-border,#d7dbe4);font-weight:400}
+.ui-state-default a,.ui-state-default a:link,.ui-state-default a:visited{color:inherit}
+.ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover,.ui-state-focus,.ui-widget-content .ui-state-focus,.ui-widget-header .ui-state-focus{color:var(--eclipse-text,#202431);background:color-mix(in srgb,var(--eclipse-action,var(--eclipse-link,#2448bd)) 7%,var(--eclipse-surface,#fff));border-color:color-mix(in srgb,var(--eclipse-action,var(--eclipse-link,#2448bd)) 35%,var(--eclipse-border,#d7dbe4))}
+.ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active{color:var(--eclipse-text,#202431);background:var(--eclipse-surface,#fff);border-color:var(--eclipse-action,var(--eclipse-link,#2448bd))}
+.ui-widget :active{outline:none}
+
+/* Date/time picker */
+.ui-datepicker{font-size:1em}
+.ui-datepicker th{padding:.6em .3em;background:none}
+.ui-datepicker-trigger{vertical-align:middle}
+.ui-timepicker-div .ui-widget-header{margin-bottom:8px}
+.ui-timepicker-div dl{margin:0;text-align:left}
+.ui-timepicker-div dl dt{float:left;clear:left;margin:0;padding:0 0 0 5px;font-weight:400}
+.ui-timepicker-div dl dd{margin:0 10px 10px 40%}
+.ui-timepicker-div td{font-size:90%}
+.ui-tpicker-grid-label{margin:0;padding:0;background:none;border:0}
+.ui-timepicker-div .ui_tpicker_unit_hide{display:none}
+.ui-timepicker-rtl{direction:rtl}
+.ui-timepicker-rtl dl{margin:0;padding:0 5px 0 0;text-align:right}
+.ui-timepicker-rtl dl dt{float:right;clear:right;margin:0;font-weight:400}
+.ui-timepicker-rtl dl dd{margin:0 40% 10px 10px}
+
+/* Autocomplete */
+.ui-autocomplete{z-index:20010;background:var(--eclipse-surface,#fff);border:1px solid var(--eclipse-border,#d7dbe4);border-radius:.45rem;box-shadow:var(--eclipse-shadow,0 10px 28px rgba(15,23,42,.12))}
+.ui-autocomplete-category{margin:.8em 0 .2em;padding:.2em .4em;font-weight:700;line-height:1.5}
+
+/* Configuration UI */
+#geeklog_config_editor .ui-widget-content{background:none;border:0}
+#geeklog_config_editor .ui-widget-header{background:none;border:0;border-bottom:1px solid var(--eclipse-border,#d7dbe4)}
+#geeklog_config_editor .ui-tabs .ui-tabs-panel{padding:1em 0 0;background:none;border:0}
+#geeklog_config_editor #tabs-dropdown .ui-widget-content{background:var(--eclipse-surface,#fff);border:1px solid var(--eclipse-border,#d7dbe4)}
+#geeklog_config_editor .ui-state-default,#geeklog_config_editor .ui-widget-content .ui-state-default,#geeklog_config_editor .ui-widget-header .ui-state-default{background:color-mix(in srgb,var(--eclipse-text,#202431) 4%,var(--eclipse-surface,#fff))}
+#geeklog_config_editor .ui-state-hover,#geeklog_config_editor .ui-widget-content .ui-state-hover,#geeklog_config_editor .ui-widget-header .ui-state-hover,#geeklog_config_editor .ui-state-focus,#geeklog_config_editor .ui-widget-content .ui-state-focus,#geeklog_config_editor .ui-widget-header .ui-state-focus{background:color-mix(in srgb,var(--eclipse-action,var(--eclipse-link,#2448bd)) 7%,var(--eclipse-surface,#fff))}
+#geeklog_config_editor .ui-state-active,#geeklog_config_editor .ui-widget-content .ui-state-active,#geeklog_config_editor .ui-widget-header .ui-state-active{background:var(--eclipse-surface,#fff)}
+.active-config{background:color-mix(in srgb,var(--eclipse-action,var(--eclipse-link,#2448bd)) 9%,var(--eclipse-surface,#fff));border-radius:.35rem}
+
+/* Tooltip balloon */
+#tooltip-container{position:absolute;z-index:20000;top:0;left:0;display:none;background:var(--eclipse-surface,#fff);border:2px solid color-mix(in srgb,var(--eclipse-action,var(--eclipse-link,#2448bd)) 45%,var(--eclipse-border,#d7dbe4));border-radius:.45rem;box-shadow:var(--eclipse-shadow,0 10px 28px rgba(15,23,42,.12))}
+#tooltip-content{min-width:175px;min-height:50px;background:var(--eclipse-surface,#fff)}
+.tooltip-block{width:100%;border-bottom:1px solid var(--eclipse-border,#d7dbe4)}
+.tooltip-title{margin:0;padding:.25rem;font-weight:700;background:color-mix(in srgb,var(--eclipse-text,#202431) 5%,var(--eclipse-surface,#fff))}
+.tooltip-doc{min-height:1em;padding:.35rem .25rem}
+#tooltip-close{position:absolute;z-index:20010;top:1px;right:1px;display:block;width:25px;height:25px;color:var(--eclipse-text,#202431);background:var(--eclipse-surface,#fff);border:1px solid var(--eclipse-border,#d7dbe4);border-radius:.35rem;font-weight:700;line-height:23px;text-align:center;text-decoration:none}
+#tooltip-close:link,#tooltip-close:hover{text-decoration:none}
+
+/* Validation. Deliberately image-free: Eclipse should not depend on Denim sprites. */
+.input_error{border:1px solid var(--eclipse-danger,#b42318)!important}
+.validation_error_block{color:var(--eclipse-danger,#b42318);font-size:.75rem}
+.validation_error_block span{display:inline-grid;place-items:center;width:1rem;height:1rem;margin:0 .25rem 0 0;overflow:visible;color:#fff;background:var(--eclipse-danger,#b42318);border-radius:50%;text-indent:0;font-size:0;vertical-align:middle}
+.validation_error_block span::before{content:'!';font-size:.7rem;font-weight:800;line-height:1}
+.saved_message{margin:5px 0;padding:.7rem .85rem;color:#14532d;background:#dcfce7;border:1px solid #86efac;border-radius:.45rem;overflow:auto;font-weight:700}
+.error_validation{color:#fff;background:var(--eclipse-danger,#b42318);border-color:color-mix(in srgb,var(--eclipse-danger,#b42318) 80%,#000)}
+.saved_message a{color:inherit;text-decoration:underline}
+.error_validation a{color:#fff}
+
+/* RTL */
+body[dir="rtl"] .ui-tabs .ui-tabs-nav{direction:rtl}
+body[dir="rtl"] #tooltip-close{right:auto;left:1px}
