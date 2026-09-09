@@ -1,0 +1,107 @@
+{# begin {templatelocation} #}
+
+<div class="eclipse-forum-editor-body">
+    {user_name}
+    {moods}
+    {code}
+    {smilies}
+
+    <div class="eclipse-forum-field">
+        <label for="form-forum-subject">{LANG_SUBJECT}</label>
+        <input id="form-forum-subject" type="text" name="subject" value="{subject}" maxlength="255"{xhtml}>
+    </div>
+
+    <div class="eclipse-forum-field eclipse-forum-field-message">
+        <label for="form-forum-text" class="eclipse-forum-visually-hidden">Message</label>
+        <textarea name="comment" id="form-forum-text" rows="16" class="post" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{post_message}</textarea>
+    </div>
+
+    {options}
+    {gl_topics}
+
+    {!if captcha}
+    <div class="eclipse-forum-captcha">{captcha}</div>
+    {!endif}
+
+    <div class="eclipse-forum-editor-actions">
+        <button class="uk-button uk-button-primary g-recaptcha" type="submit" name="submitmode" value="{LANG_SUBMIT}"{!if invisible_recaptcha}{invisible_recaptcha}{!endif}>{LANG_SUBMIT}</button>
+        <input type="hidden" name="submitmode" value="{LANG_SUBMIT}"{xhtml}>
+        <button class="uk-button" type="submit" name="submitmode" value="{LANG_PREVIEW}">{LANG_PREVIEW}</button>
+        <button class="uk-button" type="submit" name="submitmode" value="{LANG_CANCEL}">{LANG_CANCEL}</button>
+    </div>
+</div>
+
+<!-- BEGIN submissionform_membertop -->
+<div class="eclipse-forum-field eclipse-forum-author-field">
+    <p class="eclipse-forum-editor-note"><strong>{post_message}</strong></p>
+    <label for="form-forum-username">{LANG_NAME}</label>
+    <div>{username}{!if aname}: <input id="form-forum-username" type="text" name="aname" value="{aname}" maxlength="50"{xhtml}>{!endif}</div>
+</div>
+<!-- END submissionform_membertop -->
+
+<!-- BEGIN submissionform_anontop -->
+<div class="eclipse-forum-field eclipse-forum-author-field">
+    <p class="eclipse-forum-editor-note"><strong>{post_message}</strong></p>
+    <label for="form-forum-username">{LANG_NAME}</label>
+    <input id="form-forum-username" type="text" name="aname" value="{name}" maxlength="50"{xhtml}>
+</div>
+<!-- END submissionform_anontop -->
+
+<!-- BEGIN submissionform_moods -->
+<div class="eclipse-forum-field">
+    <label for="form-forum-mood">{LANG_MOOD}</label>
+    <select id="form-forum-mood" name="mood">{moodoptions}</select>
+</div>
+<!-- END submissionform_moods -->
+
+<!-- BEGIN submissionform_code -->
+<fieldset class="eclipse-forum-editor-tools">
+    <legend>{LANG_code}</legend>
+    <div class="eclipse-forum-bbcode-toolbar" role="toolbar" aria-label="{LANG_code}">
+        <button class="uk-button" type="button" accesskey="b" name="addbbcode0" onclick="bbstyle(0)" onmouseover="helpline('b')" aria-label="Bold"><i class="uk-icon-bold" aria-hidden="true"></i></button>
+        <button class="uk-button" type="button" accesskey="i" name="addbbcode2" onclick="bbstyle(2)" onmouseover="helpline('i')" aria-label="Italic"><i class="uk-icon-italic" aria-hidden="true"></i></button>
+        <button class="uk-button" type="button" accesskey="u" name="addbbcode4" onclick="bbstyle(4)" onmouseover="helpline('u')" aria-label="Underline"><i class="uk-icon-underline" aria-hidden="true"></i></button>
+        <button class="uk-button" type="button" accesskey="q" name="addbbcode6" onclick="bbstyle(6)" onmouseover="helpline('q')" aria-label="Quote"><i class="uk-icon-quote-left" aria-hidden="true"></i></button>
+        <button class="uk-button" type="button" accesskey="c" name="addbbcode8" onclick="bbstyle(8)" onmouseover="helpline('c')" aria-label="Code"><i class="uk-icon-code" aria-hidden="true"></i></button>
+        <button class="uk-button" type="button" accesskey="l" name="addbbcode10" onclick="bbstyle(10)" onmouseover="helpline('l')" aria-label="List"><i class="uk-icon-list" aria-hidden="true"></i></button>
+        {hide_imgbutton_begin}<button class="uk-button" type="button" accesskey="p" name="addbbcode14" onclick="bbstyle(14)" onmouseover="helpline('p')" aria-label="Image"><i class="uk-icon-image" aria-hidden="true"></i></button>{hide_imgbutton_end}
+        <button class="uk-button" type="button" accesskey="w" name="addbbcode16" onclick="bbstyle(16)" onmouseover="helpline('w')" aria-label="Link"><i class="uk-icon-link" aria-hidden="true"></i></button>
+        <button class="uk-button" type="button" name="bbcode-help" data-uk-modal="{ target:'#modal-bbcode-help' }" onmouseover="helpline('h')" aria-label="Help"><i class="uk-icon-question" aria-hidden="true"></i></button>
+    </div>
+
+    <div class="eclipse-forum-editor-selects">
+        <label for="form-forum-font-color">{LANG_fontcolor}</label>
+        <select id="form-forum-font-color" name="addbbcode18" onchange="bbfontstyle('[color=' + this.form.addbbcode18.options[this.form.addbbcode18.selectedIndex].value + ']', '[/color]')" onmouseover="helpline('s')">
+            <option value="#">{LANG_default}</option><option value="darkred">{LANG_dkred}</option><option value="red">{LANG_red}</option><option value="orange">{LANG_orange}</option><option value="brown">{LANG_brown}</option><option value="yellow">{LANG_yellow}</option><option value="green">{LANG_green}</option><option value="olive">{LANG_olive}</option><option value="cyan">{LANG_cyan}</option><option value="blue">{LANG_blue}</option><option value="darkblue">{LANG_dkblue}</option><option value="indigo">{LANG_indigo}</option><option value="violet">{LANG_violet}</option><option value="white">{LANG_white}</option><option value="black">{LANG_black}</option>
+        </select>
+        <label for="form-forum-font-size">{LANG_fontsize}</label>
+        <select id="form-forum-font-size" name="addbbcode20" onchange="bbfontstyle('[size=' + this.form.addbbcode20.options[this.form.addbbcode20.selectedIndex].value + ']', '[/size]')" onmouseover="helpline('f')">
+            <option value="7">{LANG_tiny}</option><option value="9">{LANG_small}</option><option value="12" selected="selected">{LANG_normal}</option><option value="18">{LANG_large}</option><option value="24">{LANG_huge}</option>
+        </select>
+        <a id="form-forum-close-tags" class="uk-button" href="javascript:bbstyle(-1)" onmouseover="helpline('a')">{LANG_closetags}</a>
+    </div>
+    <input class="eclipse-forum-helpbox" type="text" name="helpbox" value="{LANG_codetip}" disabled{xhtml}>
+</fieldset>
+{modal_bbcode_help}
+<!-- END submissionform_code -->
+
+<!-- BEGIN submissionform_smilies -->
+<div class="eclipse-forum-smilies">{smilies}</div>
+<!-- END submissionform_smilies -->
+
+<!-- BEGIN submissionform_options -->
+<fieldset class="eclipse-forum-options"><legend>{LANG_OPTIONS}</legend>{option}</fieldset>
+<!-- END submissionform_options -->
+
+<!-- BEGIN submissionform_option -->
+<label class="eclipse-forum-option" for="form-forum-{option_name}"><input type="checkbox" name="{option_name}" id="form-forum-{option_name}" {option_checked} value="1"{xhtml}> <span>{option_extra}{LANG_OPTION}</span></label>
+<!-- END submissionform_option -->
+
+<!-- BEGIN submissionform_gl_topics -->
+<div class="eclipse-forum-field eclipse-forum-geeklog-topic">
+    <label for="form-forum-topics">{LANG_TOPIC}</label>
+    <div>{topic_selection}<p class="eclipse-forum-context">{LANG_GL_TOPICS_DESC}</p></div>
+</div>
+<!-- END submissionform_gl_topics -->
+
+{# end {templatelocation} #}
