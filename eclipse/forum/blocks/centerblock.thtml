@@ -1,5 +1,6 @@
 {# begin {templatelocation} #}
 
+<link rel="stylesheet" href="{site_url}/layout/eclipse/forum/blocks.css">
 <section class="eclipse-forum-centerblock" aria-label="{LANG_FORUM}">
     <h2 class="eclipse-forum-block-title">{LANG_FORUM}</h2>
     <div class="eclipse-forum-block-card">
