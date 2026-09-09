@@ -6,7 +6,8 @@ body.theme-eclipse .sysmessage img{display:block;float:left;width:2rem;max-width
  * aligned with Eclipse admin controls even when a plugin-specific theme bridge
  * is unavailable (notably on older Geeklog/plugin combinations).
  */
-body.eclipse-admin-page .uk-button{box-sizing:border-box;min-height:2.35rem;padding:.42rem .8rem;border-radius:.5rem;font-size:.86rem;font-weight:650;line-height:1.2}
-body.eclipse-admin-page .uk-button.uk-button-small{min-height:2.1rem;padding:.32rem .68rem;font-size:.82rem}
+body.eclipse-admin-page .uk-button{box-sizing:border-box;min-height:2.1rem;padding:.34rem .66rem;border-radius:.45rem;font-size:.82rem;font-weight:650;line-height:1.15}
+body.eclipse-admin-page .uk-button.uk-button-small{min-height:1.9rem;padding:.27rem .56rem;font-size:.78rem}
 body.eclipse-admin-page .uk-button-primary,body.eclipse-admin-page .uk-button-danger{box-shadow:none}
+body.eclipse-admin-page .uk-button-primary,body.eclipse-admin-page .uk-button-primary:hover,body.eclipse-admin-page .uk-button-primary:focus,body.eclipse-admin-page .uk-button-primary:focus-visible,body.eclipse-admin-page .uk-button-danger,body.eclipse-admin-page .uk-button-danger:hover,body.eclipse-admin-page .uk-button-danger:focus,body.eclipse-admin-page .uk-button-danger:focus-visible{color:#fff!important;text-decoration:none}
 @media(max-width:47.99rem){body.eclipse-admin-page .uk-button,body.eclipse-admin-page .uk-button.uk-button-small{min-height:2.75rem;padding:.55rem .8rem;font-size:.88rem}}
