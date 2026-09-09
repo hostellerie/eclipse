@@ -13,7 +13,6 @@ return array(
     'font_size'          => '16px',
     'spacing'            => 'normal',
     'radius'             => 'medium',
-    'sidebar_position'   => 'right',
     'show_left_sidebar'  => false,
     'show_right_sidebar' => true,
     'button_style'       => 'solid',
