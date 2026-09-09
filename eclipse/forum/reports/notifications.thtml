@@ -1,0 +1,89 @@
+{# begin {templatelocation} #}
+
+<script type="text/javascript">
+var allChecked;
+function checkAll(field) {
+    allChecked = true;
+    for (var i = 0; i < field.length; i++) { field[i].checked = true; }
+}
+function uncheckAll(field) {
+    allChecked = false;
+    for (var i = 0; i < field.length; i++) { field[i].checked = false; }
+}
+</script>
+
+{block_start}
+
+<section class="eclipse-forum-report" aria-labelledby="forum-subscriptions-title">
+    {navmenu}
+
+    <header class="eclipse-forum-report-header">
+        <h1 id="forum-subscriptions-title" class="eclipse-forum-page-title">{lang_subscriptions}</h1>
+    </header>
+
+    <div class="eclipse-forum-report-filters">
+        <form class="eclipse-forum-inline-form" action="{phpself}" method="post">
+            <select name="filter" onchange="this.form.submit();">{filter_options}</select>
+        </form>
+        {!if isAdminUser}
+        <form class="eclipse-forum-inline-form" action="{phpself}" method="post">
+            <select name="uid" onchange="this.form.submit();">{user_options}</select>
+        </form>
+        {!endif}
+        <div class="eclipse-forum-report-filter-action">{select_forum}</div>
+    </div>
+
+    {!if lang_notify_filter_desc}<p class="eclipse-forum-report-description">{lang_notify_filter_desc}</p>{!endif}
+
+    <form class="eclipse-forum-report-form" action="{phpself}" method="post" name="report_table">
+        <input type="hidden" name="op" value=""{xhtml}>
+        <div class="eclipse-forum-report-bulkbar">
+            <label class="eclipse-forum-choice-row">
+                <input type="checkbox" name="chk_record_all" id="chk_record_all" value="y" onclick="if(!allChecked) checkAll(document.report_table.elements['chk_record_delete[]']); else uncheckAll(document.report_table.elements['chk_record_delete[]']);"{xhtml}>
+                <span>{LANG_Heading8}</span>
+            </label>
+            <span>{trash_link}</span>
+        </div>
+
+        <div class="eclipse-forum-report-list">
+            {notification_record}
+            {no_records_message}
+        </div>
+    </form>
+
+    <div class="eclipse-forum-pagination">{pagenavigation}</div>
+    <div class="eclipse-forum-report-actions">{links}</div>
+</section>
+
+{block_end}
+
+<!-- BEGIN notification_record -->
+<article class="eclipse-forum-report-card eclipse-forum-notification-card">
+    <div class="eclipse-forum-report-select">
+        <input type="checkbox" name="chk_record_delete[]" value="{id}" aria-label="{LANG_REMOVE}"{xhtml}>
+    </div>
+    <div class="eclipse-forum-report-card-main">
+        <h2 class="eclipse-forum-report-card-title">{topic_link}</h2>
+        <div class="eclipse-forum-report-meta">
+            {!if uid}<span><strong>{LANG_Heading2}:</strong> {forum_link}</span>{!else}<span><strong>{LANG_Heading9}:</strong> {user_link}</span><span><strong>{LANG_Heading2}:</strong> {forum_link}</span>{!endif}
+            <span><strong>{LANG_Heading4}:</strong> {date_added}</span>
+            <span><strong>{LANG_Heading5}:</strong> {topicauthor}</span>
+            <span><strong>{LANG_Heading6}:</strong> {views}</span>
+            <span><strong>{LANG_Heading7}:</strong> {replies}</span>
+        </div>
+    </div>
+    <div class="eclipse-forum-report-card-actions">
+        <a class="uk-button uk-button-small" href="notify.php?submit=delete&amp;id={notify_id}{!if isAdminUser}&amp;mode=admin{!endif}{!if forum}&amp;forum={forum}{!endif}{!if uid}&amp;uid={uid}{!endif}&amp;filter={notifytype}">{LANG_REMOVE}</a>
+    </div>
+</article>
+<!-- END notification_record -->
+
+<!-- BEGIN no_records_message -->
+<div class="eclipse-forum-empty">{message}</div>
+<!-- END no_records_message -->
+
+<!-- BEGIN links -->
+{return_link}
+<!-- END links -->
+
+{# end {templatelocation} #}
