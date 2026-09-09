@@ -20,13 +20,19 @@ DEV_DOCS = {
 }
 
 NON_RUNTIME_ASSETS = {
-    'images/geeklog-eclipse-template-available.png',
     'images/LUCIDE-MAP.md',
 }
+
+IMAGE_EXTENSIONS = {'.png', '.svg', '.gif', '.jpg', '.jpeg', '.webp'}
 
 REQUIRED_RUNTIME_ASSETS = {
     'images/admin/down.png',
     'images/admin/up.png',
+    'images/info.png',
+    'images/info.svg',
+    'images/icon_info.png',
+    'images/icon_info.svg',
+    'images/logo.png',
 }
 
 UPLOAD_ERROR_HELPER = r'''function eclipse_update_upload_error_message($error)
@@ -101,11 +107,22 @@ def prepare():
         if path.exists():
             path.unlink()
 
-    images = STAGE / 'images'
-    if images.is_dir():
-        for svg in images.rglob('*.svg'):
-            if svg.with_suffix('.png').is_file():
-                svg.unlink()
+    # Runtime image assets are intentionally preserved exactly as maintained in
+    # the theme source. Do not discard SVG files just because a PNG fallback is
+    # present: Geeklog, plugins or templates may request either filename.
+    source_images = {
+        path.relative_to(SOURCE).as_posix()
+        for path in (SOURCE / 'images').rglob('*')
+        if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    }
+    staged_images = {
+        path.relative_to(STAGE).as_posix()
+        for path in (STAGE / 'images').rglob('*')
+        if path.is_file() and path.suffix.lower() in IMAGE_EXTENSIONS
+    }
+    missing_images = sorted(source_images - staged_images)
+    if missing_images:
+        fail('Runtime image assets missing from package stage: ' + ', '.join(missing_images))
 
     for relative in REQUIRED_RUNTIME_ASSETS:
         if not (STAGE / relative).is_file():
@@ -125,8 +142,6 @@ def prepare():
     new_upload_check = "if (!is_array($upload) || !isset($upload['error'])) return $fail('No ZIP upload was received.');\n    if ((int) $upload['error'] !== UPLOAD_ERR_OK) return $fail(eclipse_update_upload_error_message($upload['error']));"
     updater_body = replace_once(updater_body, old_upload_check, new_upload_check, 'generic ZIP upload error handling')
 
-    # The updater is extracted from functions.php (theme root) and moved into
-    # eclipse/includes/theme-update.php. __DIR__ therefore changes meaning.
     updater_body = replace_once(
         updater_body,
         '$themeDir = __DIR__;',
@@ -134,10 +149,6 @@ def prepare():
         'packaged updater theme root'
     )
 
-    # Replace the old merge/copy update with an exact directory replacement.
-    # The new tree is first prepared beside /layout/eclipse so the final
-    # renames happen on the same filesystem. The previous tree is also copied
-    # to protected persistent backups before anything is switched.
     old_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
     if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
     if (!eclipse_copy_tree($sourceTheme, $themeDir, 0755, 0644)) { eclipse_remove_tree($job); return $fail('The update copy failed. Restore the latest persistent Eclipse backup.'); }
@@ -217,7 +228,7 @@ def prepare():
     functions = replace_once(functions, update_message, update_replacement, 'successful update redirect')
 
     rollback_old = "                $message = '<p class=\"eclipse-notice eclipse-success\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';\n                eclipse_clear_theme_cache();"
-    rollback_new = "                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\"eclipse-notice eclipse-success\">Theme backup restored and Eclipse theme caches cleared. Reload the page.</p>';"
+    rollback_new = "                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';"
     functions = replace_once(functions, rollback_old, rollback_new, 'successful rollback redirect')
 
     message_marker = "    $message = '';\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
