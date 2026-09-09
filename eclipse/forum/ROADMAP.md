@@ -4,6 +4,26 @@
 
 The Eclipse Forum integration must stay compatible with Geeklog 2.1.1 and 2.2.2 while reducing theme-specific hacks. The target is a dedicated Forum presentation layer with semantic HTML, mobile-first layouts, accessible controls, and predictable plugin-template overrides.
 
+## Current implementation status
+
+The semantic Eclipse Forum layer now covers the main public and secondary flows:
+
+- forum/category listing;
+- topic listing;
+- topic header and individual posts;
+- new topic/reply editor and preview;
+- search;
+- user preferences;
+- member, notification and topic reports;
+- basic moderation confirmations and split/move;
+- forum footer, legend, permissions, time and online users.
+
+Public Forum-specific legacy selectors were removed from `css/plugins.css`; that shared file now only imports `forum.css` and keeps generic plugin/admin compatibility rules. Remaining legacy selectors in `forum.css` and `blocks.css` are intentionally retained as compatibility fallbacks until manual QA has been completed on Geeklog 2.1.1 and 2.2.2.
+
+### QA gate before further deletion
+
+Do not remove the remaining legacy UIkit/markup fallbacks, the temporary Forum UIkit resource bridge, or request/markup compatibility selectors until the same archive has been exercised on both supported Geeklog generations. After that test pass, obsolete selectors can be removed based on observed coverage instead of assumptions.
+
 ## Architectural rules
 
 1. Geeklog and the Forum plugin remain responsible for data, permissions, actions, pagination, moderation and security.
@@ -145,4 +165,4 @@ Required regression matrix:
 4. Replace temporary structural CSS selectors with stable Eclipse classes and delete obsolete rules.
 5. Rework posting templates.
 6. Rework footer/search/preferences/reports.
-7. Remove any remaining Forum CSS dependency on optional blocks, request-path detection, or version-specific markup.
+7. Remove any remaining Forum CSS dependency on optional blocks, request-path detection, or version-specific markup after the QA gate.
