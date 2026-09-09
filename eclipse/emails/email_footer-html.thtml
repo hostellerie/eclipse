@@ -1,7 +1,6 @@
 {email_divider_html}
 
 <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #666666; text-align: center;">
-    <strong>{site_name}</strong><br>
     <a href="{site_url}" style="color: #666666; text-decoration: none;">{site_url}</a>
 </p>
 
