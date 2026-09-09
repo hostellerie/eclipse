@@ -1,7 +1,6 @@
 {LB}
 {email_divider}{LB}
 {LB}
-{site_name}{LB}
 {site_url}{LB}
 {LB}
 {!if ip_address}
