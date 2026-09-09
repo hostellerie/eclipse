@@ -79,6 +79,7 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options legend
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options dl.form_block{gap:.55rem .85rem}
 
 /* Focus mode must also remove the Modern workspace chrome and editorial side material. */
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-admin-sidebar-shell,
 body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-admin-sidebar,
 body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-admin-bar,
 body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing #advanced_editor>#navlist,
