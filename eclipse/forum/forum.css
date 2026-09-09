@@ -1,52 +1,11 @@
 @import url("blocks.css");
 
-/* Eclipse presentation layer for the Geeklog Forum plugin.
- * Keep selectors tied to Forum/UIkit markup so the plugin keeps ownership of
- * data, permissions and behavior while Eclipse provides the visual skin.
+/* Eclipse compatibility skin for Forum markup that is still owned by the
+ * plugin. Semantic Eclipse template overrides live in semantic.css, reports.css
+ * and footer.css; the native version-specific editor is styled by editor.css.
  */
 
-/* --- Shared Forum surfaces ------------------------------------------------ */
-.glforum-table,
-.glforum-panel-topic,
-.glforum-panel-userinfo,
-.glforum-record,
-.glforum-topic-record {
-    color: var(--eclipse-text);
-}
-
-.glforum-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--eclipse-surface);
-}
-
-.glforum-table th,
-.glforum-table td {
-    padding: .65rem .75rem;
-    border-bottom: 1px solid var(--eclipse-border);
-}
-
-.glforum-category-desc,
-.glforum-lastpost,
-.glforum-topic-lastpost {
-    color: var(--eclipse-muted, #687083);
-}
-
-.glforum-panel-topic-container1,
-.glforum-panel-topic-container2,
-.glforum-panel-topic {
-    background: var(--eclipse-surface) !important;
-}
-
-.glforum-panel-topic,
-.glforum-panel-userinfo {
-    padding: 1rem;
-}
-
-.glforum-grid-divider > [class*='uk-width-']:nth-child(n+2) {
-    border-color: var(--eclipse-border) !important;
-}
-
+/* --- Shared Forum content ------------------------------------------------ */
 .quotemain,
 .glforum-code,
 .codeblock {
@@ -68,59 +27,13 @@
     overflow: auto;
 }
 
-.glforum-post-link a,
-.glforum-topic-name a,
-.glforum-category-name a {
-    color: var(--eclipse-link, var(--eclipse-primary));
-}
-
-/* --- Public Forum pages ---------------------------------------------------
- * Forum 2.x uses UIkit-flavoured markup on both Geeklog 2.1.x and 2.2.x.
- * The Eclipse header adds eclipse-forum-page from the request path, so the
- * public skin never depends on an optional Forum menu block being rendered.
+/* --- Native Forum controls ----------------------------------------------
+ * Posting templates intentionally remain owned by each Forum release because
+ * their POST contracts differ between the Geeklog 2.1.x and 2.2.x generations.
+ * Keep only generic UIkit presentation here; editor.css handles form layout.
  */
 body.eclipse-public-page.eclipse-forum-page #main-content {
     min-width: 0;
-}
-
-body.eclipse-public-page.eclipse-forum-page #main-content > br,
-body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid > br {
-    display: none;
-}
-
-body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
-    gap: .8rem;
-    align-items: end;
-    margin: 0 0 1rem;
-    padding: .85rem;
-    border: 1px solid var(--eclipse-border);
-    border-radius: var(--eclipse-radius);
-    background: var(--eclipse-surface);
-}
-
-body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type > [class*='uk-width-'] {
-    width: auto !important;
-    float: none !important;
-    margin: 0;
-    padding: 0;
-}
-
-body.eclipse-public-page.eclipse-forum-page form.uk-form .uk-form-controls {
-    display: flex;
-    gap: .45rem;
-    align-items: center;
-}
-
-body.eclipse-public-page.eclipse-forum-page form.uk-form input[type='text'],
-body.eclipse-public-page.eclipse-forum-page form.uk-form select {
-    min-height: 2.35rem;
-    max-width: 100%;
-    border: 1px solid var(--eclipse-border);
-    border-radius: .45rem;
-    background: var(--eclipse-surface);
-    color: var(--eclipse-text);
 }
 
 body.eclipse-public-page.eclipse-forum-page .uk-breadcrumb {
@@ -200,79 +113,18 @@ body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-grid-small:not(.uk-margi
     margin: .35rem 0 .75rem !important;
 }
 
-body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-margin-small-top {
-    display: grid;
-    grid-template-columns: minmax(9rem, 11rem) minmax(0, 1fr);
-    gap: .85rem;
-    margin: .55rem 0 1rem !important;
-    padding: .9rem;
-    border: 1px solid var(--eclipse-border);
-    border-radius: var(--eclipse-radius);
-    background: var(--eclipse-surface);
-}
-
-body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-margin-small-top > [class*='uk-width-'] {
-    width: auto !important;
-    float: none !important;
-    margin: 0;
-    padding: 0;
-}
-
-body.eclipse-public-page.eclipse-forum-page .forum-userphoto {
-    max-width: 5rem;
-    margin: 0 auto .45rem;
-}
-
-body.eclipse-public-page.eclipse-forum-page .uk-thumbnail {
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-}
-
-body.eclipse-public-page.eclipse-forum-page .uk-badge {
-    display: inline-flex;
-    align-items: center;
-    min-height: 1.45rem;
-    padding: .16rem .45rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--eclipse-primary) 10%, var(--eclipse-surface));
-    color: var(--eclipse-text);
-    font-size: .72rem;
-    font-weight: 650;
-}
-
 body.eclipse-public-page.eclipse-forum-page .uk-panel.uk-panel-box {
-    margin: 0;
-    padding: 1rem;
-    border: 1px solid var(--eclipse-border);
+    border-color: var(--eclipse-border);
     border-radius: .65rem;
     background: color-mix(in srgb, var(--eclipse-primary) 3%, var(--eclipse-surface));
     color: var(--eclipse-text);
     box-shadow: none;
 }
 
-body.eclipse-public-page.eclipse-forum-page .gl-forum-post-link {
-    min-height: 5rem;
-    line-height: 1.55;
-}
-
 body.eclipse-public-page.eclipse-forum-page #main-content > hr {
     margin: .75rem 0;
     border: 0;
     border-top: 1px solid var(--eclipse-border);
-}
-
-body.eclipse-public-page.eclipse-forum-page #main-content > .uk-text-right {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: .4rem;
-    margin: .65rem 0;
-}
-
-body.eclipse-public-page.eclipse-forum-page #main-content > .uk-panel.uk-panel-box.uk-margin {
-    margin-top: 1rem !important;
-    padding: .85rem 1rem;
 }
 
 body.eclipse-public-page.eclipse-forum-page .forum_menu {
@@ -295,7 +147,7 @@ body.eclipse-public-page.eclipse-forum-page .forum_menu a:focus-visible {
     background: color-mix(in srgb, var(--eclipse-primary) 7%, var(--eclipse-surface));
 }
 
-/* --- Forum blocks --------------------------------------------------------- */
+/* --- Forum blocks -------------------------------------------------------- */
 #gl-blockForumNewPosts .uk-table,
 #gl-blockForumNewPosts table {
     width: 100%;
@@ -310,10 +162,10 @@ body.eclipse-public-page.eclipse-forum-page .forum_menu a:focus-visible {
     padding: .6rem .7rem;
 }
 
-/* --- Forum administration ------------------------------------------------
+/* --- Forum administration -----------------------------------------------
  * Geeklog 2.1.x Denim renders navbar/#navlist with legacy li-navlist/a-navlist
  * classes while newer Geeklog renders the same #navlist as a UIkit uk-tab.
- * Style the stable ids/elements so both generations have the same result.
+ * Style stable ids/elements so both generations keep the same result.
  */
 body.eclipse-admin-page #navcontainer {
     max-width: 100%;
@@ -385,9 +237,6 @@ body.eclipse-admin-page #navlist .a-navlist#current {
     font-weight: 700;
 }
 
-/* The Forum Denim admin templates use UIkit buttons/panels. Keep actions
- * compact on desktop: admin tables can expose four actions for one forum.
- */
 body.eclipse-admin-page .uk-button {
     box-sizing: border-box;
     min-height: 2.1rem;
@@ -473,29 +322,5 @@ body.eclipse-admin-page .uk-tab > li > a {
         min-height: 2.75rem;
         padding: .55rem .8rem;
         font-size: .88rem;
-    }
-
-    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type,
-    body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-margin-small-top {
-        grid-template-columns: 1fr;
-    }
-
-    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type {
-        align-items: stretch;
-    }
-
-    body.eclipse-public-page.eclipse-forum-page form.uk-form .uk-form-controls,
-    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-text-right {
-        align-items: stretch;
-    }
-
-    body.eclipse-public-page.eclipse-forum-page form.uk-form select,
-    body.eclipse-public-page.eclipse-forum-page form.uk-form input[type='text'] {
-        width: 100%;
-    }
-
-    .glforum-panel-topic,
-    .glforum-panel-userinfo {
-        padding: .75rem;
     }
 }
