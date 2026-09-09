@@ -1,0 +1,160 @@
+/* Version-safe, CSS-only presentation for Forum post creation and editing.
+ *
+ * The Forum plugin changed its POST contract between the releases used with
+ * Geeklog 2.1.x and 2.2.x. Eclipse therefore deliberately does not override
+ * submissionform_*.thtml. These rules style the plugin's own Denim-compatible
+ * templates without changing fields, tokens, actions or button names.
+ */
+
+form[name='forumpost'] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 1.25rem;
+}
+
+form[name='forumpost'] .uk-form-row {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 .85rem;
+}
+
+form[name='forumpost'] .uk-form-label {
+    display: block;
+    float: none;
+    width: auto;
+    margin: 0 0 .35rem;
+    color: var(--eclipse-text);
+    font-weight: 700;
+}
+
+form[name='forumpost'] .uk-form-controls {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+}
+
+form[name='forumpost'] input[type='text'],
+form[name='forumpost'] input[type='search'],
+form[name='forumpost'] input[type='email'],
+form[name='forumpost'] select,
+form[name='forumpost'] textarea {
+    box-sizing: border-box;
+    max-width: 100%;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+}
+
+form[name='forumpost'] input[type='text'],
+form[name='forumpost'] input[type='search'],
+form[name='forumpost'] input[type='email'],
+form[name='forumpost'] select {
+    min-height: 2.65rem;
+    padding: .55rem .65rem;
+}
+
+form[name='forumpost'] input[type='text'].uk-form-width-large,
+form[name='forumpost'] input[type='search'].uk-form-width-large,
+form[name='forumpost'] input[type='email'].uk-form-width-large,
+form[name='forumpost'] #form-forum-subject,
+form[name='forumpost'] #form-forum-text {
+    width: 100% !important;
+}
+
+form[name='forumpost'] textarea {
+    width: 100% !important;
+    min-height: 16rem;
+    padding: .7rem;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+form[name='forumpost'] .uk-button {
+    box-sizing: border-box;
+    min-height: 2.65rem;
+    padding: .5rem .72rem;
+    border-radius: .45rem;
+    line-height: 1.2;
+}
+
+form[name='forumpost'] .uk-align-right {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: .45rem;
+    float: none;
+    margin: .5rem 0 0;
+}
+
+form[name='forumpost'] [data-uk-button-checkbox],
+form[name='forumpost'] .uk-form-controls > div {
+    max-width: 100%;
+}
+
+form[name='forumpost'] [data-uk-button-checkbox] {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+}
+
+form[name='forumpost'] label select {
+    display: inline-block;
+    width: auto;
+    min-width: 7rem;
+    margin: .25rem .35rem .25rem 0;
+}
+
+form[name='forumpost'] input[name='helpbox'] {
+    width: 100%;
+    margin-top: .4rem;
+}
+
+form[name='forumpost'] input[type='checkbox'],
+form[name='forumpost'] input[type='radio'] {
+    margin-right: .3rem;
+}
+
+form[name='forumpost'] img,
+form[name='forumpost'] iframe {
+    max-width: 100%;
+}
+
+/* The plugin emits the topic-review iframe after the form. Keep the native
+ * template and only make the preview responsive. */
+form[name='forumpost'] + .uk-grid iframe,
+form[name='forumpost'] ~ .uk-grid iframe {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100%;
+}
+
+@media (min-width: 48rem) {
+    form[name='forumpost'] .uk-form-row {
+        display: grid;
+        grid-template-columns: minmax(8.5rem, 11rem) minmax(0, 1fr);
+        gap: .6rem 1rem;
+        align-items: start;
+    }
+
+    form[name='forumpost'] .uk-form-label {
+        margin: .55rem 0 0;
+    }
+
+    form[name='forumpost'] .uk-form-controls {
+        grid-column: 2;
+    }
+
+    form[name='forumpost'] .uk-form-row > .uk-form-controls:only-child {
+        grid-column: 1 / -1;
+    }
+
+    form[name='forumpost'] .uk-align-right {
+        justify-content: flex-end;
+    }
+}
