@@ -48,6 +48,8 @@
     "forum/categorylisting.thtml": "aed368a9af425acaf298ff03c2ee0ef4159a1432ba15e1619159ca96fffa2d52",
     "forum/footer/footer.thtml": "ff903abc8ef622a5ccb87de48321101b0c0565ba71743d9e9f22642431bcc40f",
     "forum/footer/forum_legend.thtml": "cf933edbd091caa8706925882dbd82df53f1bbf829f997f231bdac57ba484d52",
+    "forum/footer/forum_rules.thtml": "9d2d3386ba3a1454ced2b397a5764d19c43d87bda885d5130d4e0c0894ddbc21",
+    "forum/footer/forum_time.thtml": "d5ffea8ad8bf32e45576187bac50994e40b69a50e523e8253a9274012c96c643",
     "forum/forum_search.thtml": "5998be5676e1621021ff8d0e6adf3268f2bea03f2c5bffc34a9c3258325a4a54",
     "forum/forum.css": "36bbd23aad5ce570b515b1a229b97e25f1fb829c3bf4a0f2e359062be902a8da",
     "forum/functions.php": "284545976371c4049853c12369fd21af7ea05e8e08e052521252fb3ddcdec233",
