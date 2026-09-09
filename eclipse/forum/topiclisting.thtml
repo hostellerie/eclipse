@@ -1,0 +1,63 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-section eclipse-forum-topic-list" aria-labelledby="eclipse-forum-{forum_id}">
+    <nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="{site_url}/forum/index.php">{forum_home}</a></li>
+            <li><a href="{site_url}/forum/index.php?category={category_id}">{cat_name}</a></li>
+            <li aria-current="page"><a href="{site_url}/forum/index.php?forum={forum_id}">{forum_name}</a></li>
+        </ol>
+    </nav>
+
+    <header class="eclipse-forum-section-header">
+        <div class="eclipse-forum-heading-copy">
+            <h1 id="eclipse-forum-{forum_id}" class="eclipse-forum-page-title">{forum_name}</h1>
+            {!if geeklog_topic}<p class="eclipse-forum-context">{lang_geeklog_topic} {geeklog_topic}</p>{!endif}
+        </div>
+        <div class="eclipse-forum-actions">
+            {forummenu_link}
+            {newtopic_link}
+        </div>
+    </header>
+
+    <div class="eclipse-forum-pagination eclipse-forum-pagination-top">{pagenavigation}</div>
+
+    <div class="eclipse-forum-list eclipse-forum-topic-cards" role="list">
+        {topic_record}
+        {no_records_message}
+    </div>
+
+    <div class="eclipse-forum-footer-actions">
+        <div class="eclipse-forum-pagination">{pagenavigation}</div>
+        <div class="eclipse-forum-actions">{newtopic_link}</div>
+    </div>
+</section>
+
+<!-- BEGIN topic_record -->
+<article class="eclipse-forum-list-item eclipse-forum-topic-card" role="listitem">
+    <div class="eclipse-forum-record-main">
+        <div class="eclipse-forum-record-icon" aria-hidden="true">{folderimg}</div>
+        <div class="eclipse-forum-record-copy">
+            <h2 class="eclipse-forum-record-title">{moved}<a href="viewtopic.php?showtopic={topic_id}" title="{topicinfo}">{subject}</a></h2>
+            {!if displaypageslink}<div class="eclipse-forum-topic-pages">{gotomsg}&nbsp;{displaypageslink}</div>{!endif}
+        </div>
+    </div>
+
+    <dl class="eclipse-forum-record-stats">
+        <div><dt>{LANG_VIEWS}</dt><dd>{views}</dd></div>
+        <div><dt>{LANG_REPLIES}</dt><dd>{replies}</dd></div>
+    </dl>
+
+    <div class="eclipse-forum-lastpost">
+        <span class="eclipse-forum-meta-label">{LANG_LASTPOST}</span>
+        <a href="{lastpostURL}" title="{LANG_lastpost}">{LANG_BY}{lastposter}</a>
+        <span>{lastdate}</span>
+    </div>
+</article>
+<!-- END topic_record -->
+
+<!-- BEGIN no_records_message -->
+<div class="eclipse-forum-empty" role="status">{records_message}</div>
+<!-- END no_records_message -->
+
+{# end {templatelocation} #}
