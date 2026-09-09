@@ -1,0 +1,16 @@
+{# begin {templatelocation} #}
+
+<footer class="eclipse-forum-footer" aria-label="Forum information">
+    {forum_time}
+
+    <div class="eclipse-forum-footer-grid">
+        {forum_legend}
+        {forum_rules}
+    </div>
+
+    {forum_whosonline}
+</footer>
+
+{block_end}
+
+{# end {templatelocation} #}
