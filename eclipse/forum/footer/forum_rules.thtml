@@ -1,0 +1,12 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-footer-section eclipse-forum-rules" aria-label="Forum permissions">
+    <ul class="eclipse-forum-rules-list">
+        <li>{anon_perm_image}<span>{anonymous_msg}</span></li>
+        <li>{post_perm_image}<span>{postingperm_msg}</span></li>
+        <li>{html_perm_image}<span>{html_msg}</span></li>
+        <li>{censor_perm_image}<span>{censor_msg}</span></li>
+    </ul>
+</section>
+
+{# end {templatelocation} #}
