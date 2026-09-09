@@ -1,0 +1,52 @@
+{# begin {templatelocation} #}
+
+{block_start}
+
+<section class="eclipse-forum-report" aria-labelledby="forum-members-title">
+    {navmenu}
+
+    <header class="eclipse-forum-report-header">
+        <div>
+            <h1 id="forum-members-title" class="eclipse-forum-page-title">{lang_members_report}</h1>
+            <div class="eclipse-forum-report-description">{LANG_TITLE}</div>
+        </div>
+        <form class="eclipse-forum-inline-form" method="post" action="{site_url}/forum/memberlist.php">
+            <label class="eclipse-forum-choice-row">
+                <input type="checkbox" name="chkactivity" value="1" {chk_activity} onclick="submit();"{xhtml}>
+                <span>{LANG_ACTIVITY}</span>
+            </label>
+        </form>
+    </header>
+
+    <div class="eclipse-forum-sortbar" aria-label="Sort">
+        <span>{LANG_Heading1}: <a href="{phpself}?order=0&amp;sort=1{sort_url_extra}">{img_asc1}</a> <a href="{phpself}?order=1&amp;sort=1{sort_url_extra}">{img_desc1}</a></span>
+        <span>{LANG_Heading2}: <a href="{phpself}?order=0&amp;sort=2{sort_url_extra}">{img_asc2}</a> <a href="{phpself}?order=1&amp;sort=2{sort_url_extra}">{img_desc2}</a></span>
+        <span>{LANG_Heading3}: <a href="{phpself}?order=0&amp;sort=3{sort_url_extra}">{img_asc3}</a> <a href="{phpself}?order=1&amp;sort=3{sort_url_extra}">{img_desc3}</a></span>
+        <span>{LANG_Heading4}: <a href="{phpself}?order=0&amp;sort=4{sort_url_extra}">{img_asc4}</a> <a href="{phpself}?order=1&amp;sort=4{sort_url_extra}">{img_desc4}</a></span>
+    </div>
+
+    <div class="eclipse-forum-report-list">
+        {report_record}
+    </div>
+
+    {no_records_message}
+    <div class="eclipse-forum-pagination">{pagenavigation}</div>
+</section>
+
+{block_end}
+
+<!-- BEGIN report_record -->
+<article class="eclipse-forum-report-card eclipse-forum-member-card">
+    <div class="eclipse-forum-report-card-main">
+        <h2 class="eclipse-forum-report-card-title"><a href="{site_url}/users.php?mode=profile&amp;uid={member_uid}">{member_name}</a></h2>
+        <div class="eclipse-forum-report-meta">
+            <span><strong>{LANG_Heading1}:</strong> {member_uid}</span>
+            <span><strong>{LANG_Heading3}:</strong> {member_regdate}</span>
+            <span><strong>{LANG_Heading4}:</strong> {member_numposts}</span>
+        </div>
+    </div>
+    <div class="eclipse-forum-report-card-actions">{pm_link}{email_link}{website_link}{lastposts_link}</div>
+</article>
+<!-- END report_record -->
+
+{# end {templatelocation} #}
