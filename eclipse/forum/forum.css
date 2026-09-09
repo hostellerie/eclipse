@@ -1,3 +1,5 @@
+@import url("blocks.css");
+
 /* Eclipse presentation layer for the Geeklog Forum plugin.
  * Keep selectors tied to Forum/UIkit markup so the plugin keeps ownership of
  * data, permissions and behavior while Eclipse provides the visual skin.
@@ -74,19 +76,19 @@
 
 /* --- Public Forum pages ---------------------------------------------------
  * Forum 2.x uses UIkit-flavoured markup on both Geeklog 2.1.x and 2.2.x.
- * Scope the public skin to pages that contain the Forum menu so other plugins
- * using similar UIkit classes keep their own presentation.
+ * The Eclipse header adds eclipse-forum-page from the request path, so the
+ * public skin never depends on an optional Forum menu block being rendered.
  */
-body.eclipse-public-page:has(.forum_menu) #main-content {
+body.eclipse-public-page.eclipse-forum-page #main-content {
     min-width: 0;
 }
 
-body.eclipse-public-page:has(.forum_menu) #main-content > br,
-body.eclipse-public-page:has(.forum_menu) #main-content > .uk-grid > br {
+body.eclipse-public-page.eclipse-forum-page #main-content > br,
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid > br {
     display: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) #main-content > .uk-grid:first-of-type {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
     gap: .8rem;
@@ -98,21 +100,21 @@ body.eclipse-public-page:has(.forum_menu) #main-content > .uk-grid:first-of-type
     background: var(--eclipse-surface);
 }
 
-body.eclipse-public-page:has(.forum_menu) #main-content > .uk-grid:first-of-type > [class*='uk-width-'] {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type > [class*='uk-width-'] {
     width: auto !important;
     float: none !important;
     margin: 0;
     padding: 0;
 }
 
-body.eclipse-public-page:has(.forum_menu) form.uk-form .uk-form-controls {
+body.eclipse-public-page.eclipse-forum-page form.uk-form .uk-form-controls {
     display: flex;
     gap: .45rem;
     align-items: center;
 }
 
-body.eclipse-public-page:has(.forum_menu) form.uk-form input[type='text'],
-body.eclipse-public-page:has(.forum_menu) form.uk-form select {
+body.eclipse-public-page.eclipse-forum-page form.uk-form input[type='text'],
+body.eclipse-public-page.eclipse-forum-page form.uk-form select {
     min-height: 2.35rem;
     max-width: 100%;
     border: 1px solid var(--eclipse-border);
@@ -121,7 +123,7 @@ body.eclipse-public-page:has(.forum_menu) form.uk-form select {
     color: var(--eclipse-text);
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-breadcrumb {
+body.eclipse-public-page.eclipse-forum-page .uk-breadcrumb {
     display: flex;
     flex-wrap: wrap;
     gap: .25rem .45rem;
@@ -133,18 +135,18 @@ body.eclipse-public-page:has(.forum_menu) .uk-breadcrumb {
     list-style: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-breadcrumb > li {
+body.eclipse-public-page.eclipse-forum-page .uk-breadcrumb > li {
     margin: 0;
     padding: 0;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-breadcrumb > li + li::before {
+body.eclipse-public-page.eclipse-forum-page .uk-breadcrumb > li + li::before {
     content: '›';
     margin-right: .45rem;
     color: var(--eclipse-muted, #687083);
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-button {
+body.eclipse-public-page.eclipse-forum-page .uk-button {
     box-sizing: border-box;
     min-height: 2.2rem;
     padding: .4rem .72rem;
@@ -156,22 +158,22 @@ body.eclipse-public-page:has(.forum_menu) .uk-button {
     text-decoration: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-button-primary,
-body.eclipse-public-page:has(.forum_menu) .uk-button-primary:hover,
-body.eclipse-public-page:has(.forum_menu) .uk-button-primary:focus,
-body.eclipse-public-page:has(.forum_menu) .uk-button-primary:focus-visible {
+body.eclipse-public-page.eclipse-forum-page .uk-button-primary,
+body.eclipse-public-page.eclipse-forum-page .uk-button-primary:hover,
+body.eclipse-public-page.eclipse-forum-page .uk-button-primary:focus,
+body.eclipse-public-page.eclipse-forum-page .uk-button-primary:focus-visible {
     background: var(--eclipse-primary);
     color: #fff !important;
     text-decoration: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-button:not(.uk-button-primary) {
+body.eclipse-public-page.eclipse-forum-page .uk-button:not(.uk-button-primary) {
     border-color: var(--eclipse-border);
     background: var(--eclipse-surface);
     color: var(--eclipse-text);
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-button-dropdown .uk-dropdown {
+body.eclipse-public-page.eclipse-forum-page .uk-button-dropdown .uk-dropdown {
     min-width: 12rem;
     padding: .45rem;
     border: 1px solid var(--eclipse-border);
@@ -180,25 +182,25 @@ body.eclipse-public-page:has(.forum_menu) .uk-button-dropdown .uk-dropdown {
     box-shadow: 0 12px 30px rgba(28, 38, 66, .12);
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-nav-dropdown {
+body.eclipse-public-page.eclipse-forum-page .uk-nav-dropdown {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-nav-dropdown a {
+body.eclipse-public-page.eclipse-forum-page .uk-nav-dropdown a {
     display: block;
     padding: .45rem .55rem;
     border-radius: .35rem;
     text-decoration: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-grid.uk-grid-small.uk-margin-small-left,
-body.eclipse-public-page:has(.forum_menu) .uk-grid.uk-grid-small:not(.uk-margin-small-top) {
+body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-grid-small.uk-margin-small-left,
+body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-grid-small:not(.uk-margin-small-top) {
     margin: .35rem 0 .75rem !important;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-grid.uk-margin-small-top {
+body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-margin-small-top {
     display: grid;
     grid-template-columns: minmax(9rem, 11rem) minmax(0, 1fr);
     gap: .85rem;
@@ -209,25 +211,25 @@ body.eclipse-public-page:has(.forum_menu) .uk-grid.uk-margin-small-top {
     background: var(--eclipse-surface);
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-grid.uk-margin-small-top > [class*='uk-width-'] {
+body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-margin-small-top > [class*='uk-width-'] {
     width: auto !important;
     float: none !important;
     margin: 0;
     padding: 0;
 }
 
-body.eclipse-public-page:has(.forum_menu) .forum-userphoto {
+body.eclipse-public-page.eclipse-forum-page .forum-userphoto {
     max-width: 5rem;
     margin: 0 auto .45rem;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-thumbnail {
+body.eclipse-public-page.eclipse-forum-page .uk-thumbnail {
     border: 0;
     background: transparent;
     box-shadow: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-badge {
+body.eclipse-public-page.eclipse-forum-page .uk-badge {
     display: inline-flex;
     align-items: center;
     min-height: 1.45rem;
@@ -239,7 +241,7 @@ body.eclipse-public-page:has(.forum_menu) .uk-badge {
     font-weight: 650;
 }
 
-body.eclipse-public-page:has(.forum_menu) .uk-panel.uk-panel-box {
+body.eclipse-public-page.eclipse-forum-page .uk-panel.uk-panel-box {
     margin: 0;
     padding: 1rem;
     border: 1px solid var(--eclipse-border);
@@ -249,18 +251,18 @@ body.eclipse-public-page:has(.forum_menu) .uk-panel.uk-panel-box {
     box-shadow: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .gl-forum-post-link {
+body.eclipse-public-page.eclipse-forum-page .gl-forum-post-link {
     min-height: 5rem;
     line-height: 1.55;
 }
 
-body.eclipse-public-page:has(.forum_menu) #main-content > hr {
+body.eclipse-public-page.eclipse-forum-page #main-content > hr {
     margin: .75rem 0;
     border: 0;
     border-top: 1px solid var(--eclipse-border);
 }
 
-body.eclipse-public-page:has(.forum_menu) #main-content > .uk-text-right {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-text-right {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -268,12 +270,12 @@ body.eclipse-public-page:has(.forum_menu) #main-content > .uk-text-right {
     margin: .65rem 0;
 }
 
-body.eclipse-public-page:has(.forum_menu) #main-content > .uk-panel.uk-panel-box.uk-margin {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-panel.uk-panel-box.uk-margin {
     margin-top: 1rem !important;
     padding: .85rem 1rem;
 }
 
-body.eclipse-public-page:has(.forum_menu) .forum_menu {
+body.eclipse-public-page.eclipse-forum-page .forum_menu {
     display: grid;
     gap: .2rem;
     margin: 0;
@@ -281,15 +283,15 @@ body.eclipse-public-page:has(.forum_menu) .forum_menu {
     list-style: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .forum_menu a {
+body.eclipse-public-page.eclipse-forum-page .forum_menu a {
     display: block;
     padding: .42rem .5rem;
     border-radius: .4rem;
     text-decoration: none;
 }
 
-body.eclipse-public-page:has(.forum_menu) .forum_menu a:hover,
-body.eclipse-public-page:has(.forum_menu) .forum_menu a:focus-visible {
+body.eclipse-public-page.eclipse-forum-page .forum_menu a:hover,
+body.eclipse-public-page.eclipse-forum-page .forum_menu a:focus-visible {
     background: color-mix(in srgb, var(--eclipse-primary) 7%, var(--eclipse-surface));
 }
 
@@ -467,28 +469,28 @@ body.eclipse-admin-page .uk-tab > li > a {
 
     body.eclipse-admin-page .uk-button,
     body.eclipse-admin-page .uk-button.uk-button-small,
-    body.eclipse-public-page:has(.forum_menu) .uk-button {
+    body.eclipse-public-page.eclipse-forum-page .uk-button {
         min-height: 2.75rem;
         padding: .55rem .8rem;
         font-size: .88rem;
     }
 
-    body.eclipse-public-page:has(.forum_menu) #main-content > .uk-grid:first-of-type,
-    body.eclipse-public-page:has(.forum_menu) .uk-grid.uk-margin-small-top {
+    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type,
+    body.eclipse-public-page.eclipse-forum-page .uk-grid.uk-margin-small-top {
         grid-template-columns: 1fr;
     }
 
-    body.eclipse-public-page:has(.forum_menu) #main-content > .uk-grid:first-of-type {
+    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid:first-of-type {
         align-items: stretch;
     }
 
-    body.eclipse-public-page:has(.forum_menu) form.uk-form .uk-form-controls,
-    body.eclipse-public-page:has(.forum_menu) #main-content > .uk-text-right {
+    body.eclipse-public-page.eclipse-forum-page form.uk-form .uk-form-controls,
+    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-text-right {
         align-items: stretch;
     }
 
-    body.eclipse-public-page:has(.forum_menu) form.uk-form select,
-    body.eclipse-public-page:has(.forum_menu) form.uk-form input[type='text'] {
+    body.eclipse-public-page.eclipse-forum-page form.uk-form select,
+    body.eclipse-public-page.eclipse-forum-page form.uk-form input[type='text'] {
         width: 100%;
     }
 
