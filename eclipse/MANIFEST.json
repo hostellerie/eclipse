@@ -49,6 +49,7 @@
     "forum/forum_search.thtml": "5998be5676e1621021ff8d0e6adf3268f2bea03f2c5bffc34a9c3258325a4a54",
     "forum/forum.css": "36bbd23aad5ce570b515b1a229b97e25f1fb829c3bf4a0f2e359062be902a8da",
     "forum/functions.php": "284545976371c4049853c12369fd21af7ea05e8e08e052521252fb3ddcdec233",
+    "forum/moderator/ban.thtml": "de61d84c79f85a5b507f729285efa187282eaf1bcdebbb43fe6e8f383dad0853",
     "forum/moderator/delete.thtml": "3cf5b3d3a0224225ca9750930ce8a33e52bc9381b87bfba1202cb2240d136d71",
     "forum/reports.css": "f44c5a027248ed8c86e9feeda68d875ea8d3c3f7bb518ebbcda6a1c84024fc51",
     "forum/reports/memberlist.thtml": "dc890f7225234a275e2d9cf6f2ec131bfd42c4be2c14a760f429da24b8a082e9",
