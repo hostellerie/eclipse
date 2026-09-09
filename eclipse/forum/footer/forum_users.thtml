@@ -1,0 +1,8 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-footer-section eclipse-forum-users" aria-labelledby="eclipse-forum-online-title">
+    <h2 id="eclipse-forum-online-title" class="eclipse-forum-footer-heading">{LANG_msg07}</h2>
+    <div class="eclipse-forum-online-users">{onlineusers}</div>
+</section>
+
+{# end {templatelocation} #}
