@@ -49,3 +49,52 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor .story_editor butt
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor .story_editor button[onclick*="smaller"]::before{content:"\2212";font-size:1rem;font-weight:900;line-height:1}
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor .story_editor button[onclick*="larger"] i,body.theme-eclipse.eclipse-story-editor-page #advanced_editor .story_editor button[onclick*="smaller"] i{display:none}
 .eclipse-advanced-editor .eclipse-advanced-seo-overview{margin:0 0 1.25rem!important}.eclipse-advanced-editor .eclipse-advanced-seo-overview>dl{display:grid;grid-template-columns:minmax(9rem,12rem) minmax(0,1fr);gap:.75rem 1rem;margin:0 0 1rem}.eclipse-advanced-editor .eclipse-advanced-seo-overview>dl>dt,.eclipse-advanced-editor .eclipse-advanced-seo-overview>dl>dd{float:none!important;width:auto!important;margin:0!important;padding:0!important}.eclipse-advanced-editor .eclipse-advanced-seo-overview textarea,.eclipse-advanced-editor .eclipse-advanced-seo-overview input{width:100%!important;max-width:none!important}@media(max-width:47.99rem){.eclipse-advanced-editor .eclipse-advanced-seo-overview>dl{grid-template-columns:1fr}.eclipse-advanced-editor .eclipse-advanced-seo-overview>dl>dt,.eclipse-advanced-editor .eclipse-advanced-seo-overview>dl>dd{grid-column:1}}
+
+/* 1.1 editor finishing: keep writing first, options contextual and secondary tabs clean. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity{margin:0 0 .65rem!important;padding:.75rem 1rem!important;box-shadow:0 6px 18px rgba(22,30,50,.04)!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity>h2{display:none}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl{grid-template-columns:minmax(7rem,9rem) minmax(0,1fr)!important;gap:.4rem .85rem!important;align-items:center}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dt{padding-top:0!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-canvas{margin:0 0 .75rem!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .story_editor{padding:1rem!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor .story_editor::before{margin:0 0 .7rem!important;padding:0 0 .55rem!important;font-size:1rem!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor>#navlist{margin-bottom:.55rem!important}
+
+/* Geeklog hides both native editors on Preview / Publishing / Images / Archive / Permissions. Hide Eclipse-only context at the same time. */
+body.theme-eclipse.eclipse-story-editor-page #frmstory:has(#text_editor[style*="display: none"]):has(#html_editor[style*="display: none"])>.eclipse-editor-identity,
+body.theme-eclipse.eclipse-story-editor-page #frmstory:has(#text_editor[style*="display: none"]):has(#html_editor[style*="display: none"])>.eclipse-advanced-seo-overview,
+body.theme-eclipse.eclipse-story-editor-page #frmstory:has(#text_editor[style*="display: none"]):has(#html_editor[style*="display: none"])>.eclipse-editor-overview,
+body.theme-eclipse.eclipse-story-editor-page #frmstory:has(#text_editor[style*="display: none"]):has(#html_editor[style*="display: none"])>.eclipse-editor-safety,
+body.theme-eclipse.eclipse-story-editor-page #frmstory:has(#text_editor[style*="display: none"]):has(#html_editor[style*="display: none"])>.eclipse-draft-recovery{display:none!important}
+
+/* Secondary Geeklog tabs should expose their native fields without nested Eclipse cards. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options{gap:.45rem}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_publish,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_images,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_archive,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_perms{margin:0!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fieldset{margin:0!important;padding:.85rem 0!important;background:transparent!important;border:0!important;border-top:1px solid var(--eclipse-border)!important;border-radius:0!important;box-shadow:none!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options>div>fieldset:first-child{border-top:0!important;padding-top:.35rem!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options legend{margin:0 0 .55rem!important;padding:0!important;font-size:.9rem!important;font-weight:800}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options dl.form_block{gap:.55rem .85rem}
+
+/* Focus mode must also remove the Modern workspace chrome and editorial side material. */
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-admin-sidebar,
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-admin-bar,
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing #advanced_editor>#navlist,
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-advanced-seo-overview,
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-editor-overview,
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing #se_options{display:none!important}
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing.admin-ui-mode-modern.eclipse-admin-enhanced #wrapper{display:block!important;width:min(calc(100% - 2rem),90rem)!important;max-width:90rem!important;margin:0 auto!important}
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-editor-identity{max-width:90rem;margin-inline:auto!important}
+body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-editor-canvas{max-width:90rem;margin-inline:auto!important}
+
+/* Keep primary administrative actions readable on dark buttons. */
+body.theme-eclipse.eclipse-admin-page #main-content a.uk-button-primary:hover,
+body.theme-eclipse.eclipse-admin-page #main-content a.uk-button-primary:focus,
+body.theme-eclipse.eclipse-admin-page #main-content button.uk-button-primary:hover,
+body.theme-eclipse.eclipse-admin-page #main-content button.uk-button-primary:focus,
+body.theme-eclipse.eclipse-admin-page #main-content input.uk-button-primary:hover,
+body.theme-eclipse.eclipse-admin-page #main-content input.uk-button-primary:focus{color:#fff!important}
+
+@media(max-width:47.99rem){body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity{padding:.7rem!important}body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl{grid-template-columns:1fr!important;gap:.25rem!important}}
