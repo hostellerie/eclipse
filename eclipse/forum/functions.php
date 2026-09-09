@@ -9,7 +9,8 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 }
 
 /**
- * Add the Eclipse-specific Forum presentation layers.
+ * Add the Eclipse-specific Forum presentation layer.
+ * forum.css is the single entry point and imports the dedicated block styles.
  *
  * @return array
  */
@@ -25,12 +26,6 @@ function forum_css_eclipse()
             'file'       => $layoutUrl . '/forum/forum.css',
             'attributes' => array('media' => 'all'),
             'priority'   => 275
-        ),
-        array(
-            'name'       => 'eclipse-forum-blocks',
-            'file'       => $layoutUrl . '/forum/blocks.css',
-            'attributes' => array('media' => 'all'),
-            'priority'   => 276
         )
     );
 }
