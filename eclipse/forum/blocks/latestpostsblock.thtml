@@ -1,0 +1,35 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-latestblock" aria-label="{view_modemsg}">
+    <div class="eclipse-forum-latestblock-toolbar">
+        <span class="eclipse-forum-latestblock-label">{LANG_ORDERBY}</span>
+        <nav class="eclipse-forum-latestblock-sort" aria-label="{LANG_ORDERBY}">
+            <a href="{phpself}?mode=forumblock&amp;order=new#gl-blockForumNewPosts">{LANG_NEW}</a>
+            <a href="{phpself}?mode=forumblock&amp;order=views#gl-blockForumNewPosts">{LANG_VIEWS}</a>
+            <a href="{phpself}?mode=forumblock&amp;order=posts#gl-blockForumNewPosts">{LANG_POSTS}</a>
+        </nav>
+    </div>
+
+    <div class="eclipse-forum-latestblock-card">
+        <div class="eclipse-forum-block-kicker">{view_modemsg}</div>
+        <div class="eclipse-forum-latestblock-list">
+            {block_record}
+        </div>
+    </div>
+</section>
+
+<!-- BEGIN block_record -->
+<article class="eclipse-forum-latestblock-item">
+    <a href="{postURL}" title="{fullsubject}" class="eclipse-forum-latestblock-topic">{topic_subject}</a>
+    <div class="eclipse-forum-latestblock-meta">
+        <span><strong>{LANG_BY}</strong> {user_name}</span>
+        <span><strong>{LANG_ON}</strong>{date}</span>
+    </div>
+    <div class="eclipse-forum-latestblock-stats">
+        <span><strong>{LANG_VIEWS}</strong> {views}</span>
+        <span><strong>{LANG_REPLIES}</strong> {replies}</span>
+    </div>
+</article>
+<!-- END block_record -->
+
+{# end {templatelocation} #}
