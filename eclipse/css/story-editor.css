@@ -27,8 +27,10 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fields
     clear:both;
 }
 
-/* Keep Toolbar Selection after Body Text in the HTML editor. */
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector){
+/* Keep Toolbar Selection after Body Text in the HTML editor, preserving label then control order. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]){
     order:100;
+}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector){
+    order:101;
 }
