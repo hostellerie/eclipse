@@ -24,3 +24,13 @@ a.uk-button.uk-button-primary:focus {
     -webkit-text-fill-color: #fff !important;
     text-decoration: none !important;
 }
+
+/*
+ * sidebar_position existed briefly during Eclipse 1.1.0 development. The
+ * layout no longer uses it: left/right visibility is controlled independently
+ * by show_left_sidebar and show_right_sidebar. Hide the legacy Theme Studio
+ * field when an older saved settings schema still causes it to be rendered.
+ */
+.eclipse-settings-form label:has(select[name="eclipse[sidebar_position]"]) {
+    display: none !important;
+}
