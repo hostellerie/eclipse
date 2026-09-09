@@ -1,0 +1,63 @@
+{# begin {templatelocation} #}
+
+{block_start}
+
+<section class="eclipse-forum-report">
+    {navmenu}
+    {title}
+    {report_controls}
+
+    <div class="eclipse-forum-sortbar" aria-label="Sort">
+        <span>{LANG_Heading1}: <a href="{phpself}&amp;order=0&amp;sort=1{sort_url_extra}">{img_asc1}</a> <a href="{phpself}&amp;order=1&amp;sort=1{sort_url_extra}">{img_desc1}</a></span>
+        <span>{LANG_Heading2}: <a href="{phpself}&amp;order=0&amp;sort=2{sort_url_extra}">{img_asc2}</a> <a href="{phpself}&amp;order=1&amp;sort=2{sort_url_extra}">{img_desc2}</a></span>
+        <span>{LANG_Heading3}: <a href="{phpself}&amp;order=0&amp;sort=3{sort_url_extra}">{img_asc3}</a> <a href="{phpself}&amp;order=1&amp;sort=3{sort_url_extra}">{img_desc3}</a></span>
+        <span>{LANG_Heading4}: <a href="{phpself}&amp;order=0&amp;sort=4{sort_url_extra}">{img_asc4}</a> <a href="{phpself}&amp;order=1&amp;sort=4{sort_url_extra}">{img_desc4}</a></span>
+    </div>
+
+    <div class="eclipse-forum-report-list">
+        {report_record}
+    </div>
+
+    {no_records_message}
+    <div class="eclipse-forum-pagination">{pagenavigation}</div>
+    <div class="eclipse-forum-report-actions">{links}</div>
+</section>
+
+{block_end}
+
+<!-- BEGIN report_record -->
+<article class="eclipse-forum-report-card">
+    <div class="eclipse-forum-report-card-main">
+        <h2 class="eclipse-forum-report-card-title">{post_start_ahref}{post_subject}{post_end_ahref}</h2>
+        <div class="eclipse-forum-report-meta">
+            <span><strong>{LANG_Heading2}:</strong> {post_replies}</span>
+            <span><strong>{LANG_Heading3}:</strong> {post_views}</span>
+            <span><strong>{LANG_Heading4}:</strong> {post_date}</span>
+        </div>
+    </div>
+</article>
+<!-- END report_record -->
+
+<!-- BEGIN no_records_message -->
+<div class="eclipse-forum-empty">{message}</div>
+<!-- END no_records_message -->
+
+<!-- BEGIN links -->
+{link1} {link2}
+<!-- END links -->
+
+<!-- BEGIN title -->
+<header class="eclipse-forum-report-header">
+    <h1 class="eclipse-forum-page-title">{report_title}</h1>
+</header>
+<!-- END title -->
+
+<!-- BEGIN report_controls_popular -->
+<form class="eclipse-forum-inline-form eclipse-forum-report-controls" action="{site_url}/forum/index.php?op=popular" method="post" name="reportcontrols">
+    <span>{LANG_By}</span>
+    <label class="eclipse-forum-choice-row"><input name="populartype" type="radio" value="replies" {replies_checked} onclick="submit();"{xhtml}> {LANG_Replies}</label>
+    <label class="eclipse-forum-choice-row"><input name="populartype" type="radio" value="views" {views_checked} onclick="submit();"{xhtml}> {LANG_Views}</label>
+</form>
+<!-- END report_controls_popular -->
+
+{# END {templatelocation} #}
