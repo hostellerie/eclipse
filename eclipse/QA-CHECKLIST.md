@@ -85,6 +85,16 @@ This checklist must be completed on both Geeklog 2.1.1 / PHP 5.6 and Geeklog 2.2
 - Confirm the skip link moves focus to the main content and the active main-navigation link exposes `aria-current="page"`.
 - Confirm every legacy editor resize image responds to Tab, Enter and Space.
 
+## Email presentation
+
+- Geeklog 2.1.1 and 2.2.2 resolve Eclipse's `emails/email_footer-html.thtml` and `emails/email_footer-plaintext.thtml` while retaining Denim fallback for every other inherited email template.
+- HTML email footers render the configured site name and site URL without the generic no-reply warning, formatting warning or `End of Message` text.
+- Plaintext email footers render the configured site name and site URL with correct `{LB}` line breaks and without the generic footer prose.
+- When Geeklog supplies `ip_address`, both footer formats retain the native IP-address notice; when it is absent, no empty IP row is rendered.
+- Eclipse does not change `site_mail`, `noreply_mail`, From or Reply-To selection; sender semantics remain controlled by Geeklog core or the sending plugin.
+- Newsletter and other plugin-specific templates can place unsubscribe or legal content before the Eclipse footer without Eclipse adding a duplicate unsubscribe link.
+- Send at least one reply-appropriate message and one automated notification and confirm the footer itself makes no incorrect claim about whether replies are monitored.
+
 ## Theme Studio
 
 - Design, Preview, Updates and Documentation tabs work with pointer, Left/Right, Home and End keys.
