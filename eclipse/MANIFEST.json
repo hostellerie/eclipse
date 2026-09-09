@@ -37,6 +37,8 @@
     "css/ui-fixes.css": "12ba13b0634b7c2b506b81fb834590e42f64ea9d31eebec681f303184cff080a",
     "css/v3.css": "1b4231667ae029b7e6b1473f3e9b3e64bd165b923184ee18b9286431ef3bb477",
     "css/variables.css": "b9d9a50f8d976a658806ae0b7b09d509d96f2592538c4093189474275da1ee62",
+    "emails/email_footer-html.thtml": "21671b7c912b6a4079483524067366c4fa8c80be184448c0ea8d50b5a1367fd9",
+    "emails/email_footer-plaintext.thtml": "58c198ba6b1ee9f59140c07e021c4425b22a4ad8941d6da8010fea4c6ba89f6d",
     "featuredstorytext.thtml": "3fc223124120c3ebdde3365bf579a95174a818243aeed6ed5d66ff4b8be03525",
     "footer.thtml": "54314cae1d1a44430158fe55e3b81d6b8d06ffe6ce5912ffd8baeb0786578bd5",
     "functions.php": "ca85e4256c65eba00bab146eedb50f4678f868ec4cdb9ed530827ad10ee3e7d0",
