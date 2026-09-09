@@ -1,0 +1,13 @@
+{# begin {templatelocation} #}
+
+</form>
+
+{topic_review}
+
+<!-- BEGIN topic_review -->
+<section class="eclipse-forum-topic-review" aria-label="Topic review">
+    <iframe src="{previewlastpostURL}" title="Topic review" loading="lazy" style="position: absolute; top: -9999em; visibility: hidden;" onload="this.style.position='static'; this.style.visibility='visible';"></iframe>
+</section>
+<!-- END topic_review -->
+
+{# end {templatelocation} #}
