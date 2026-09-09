@@ -155,10 +155,9 @@
 }
 
 /* Forum breadcrumb/action toolbar.
- * Do not depend on .forum_menu: that block is optional and may be hidden.
- * blocks.css is registered by the Forum theme bridge on /forum pages.
+ * Scope to the explicit Eclipse Forum page context, not to the optional menu.
  */
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     gap: .75rem;
@@ -170,14 +169,14 @@ body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-br
     background: var(--eclipse-surface);
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) > [class*='uk-width-'] {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) > [class*='uk-width-'] {
     width: auto !important;
     float: none !important;
     margin: 0;
     padding: 0;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-breadcrumb {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-breadcrumb {
     display: flex;
     flex-wrap: wrap;
     gap: .25rem .45rem;
@@ -188,27 +187,27 @@ body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-br
     list-style: none;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-breadcrumb > li {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-breadcrumb > li {
     margin: 0;
     padding: 0;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-breadcrumb > li + li::before {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-breadcrumb > li + li::before {
     content: '›';
     margin-right: .45rem;
     color: var(--eclipse-muted, #687083);
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-button-dropdown {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-button-dropdown {
     display: block;
     position: static;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-button-dropdown > .uk-button {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-button-dropdown > .uk-button {
     display: none;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-dropdown {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-dropdown {
     display: block !important;
     position: static !important;
     min-width: 0 !important;
@@ -220,7 +219,7 @@ body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-br
     box-shadow: none !important;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -230,7 +229,7 @@ body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-br
     list-style: none;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown a {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown a {
     display: block;
     padding: .42rem .65rem;
     border: 1px solid var(--eclipse-border);
@@ -242,8 +241,8 @@ body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-br
     white-space: nowrap;
 }
 
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown a:hover,
-body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown a:focus-visible {
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown a:hover,
+body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown a:focus-visible {
     background: color-mix(in srgb, var(--eclipse-primary) 9%, var(--eclipse-surface));
 }
 
@@ -264,11 +263,11 @@ body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-br
         margin-left: 0;
     }
 
-    body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) {
+    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) {
         grid-template-columns: 1fr;
     }
 
-    body.eclipse-public-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown {
+    body.eclipse-public-page.eclipse-forum-page #main-content > .uk-grid.uk-margin-small-top:has(.uk-breadcrumb) .uk-nav-dropdown {
         justify-content: flex-start;
     }
 }
