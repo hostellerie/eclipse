@@ -1,0 +1,42 @@
+{# begin {templatelocation} #}
+
+<nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
+    <ol>
+        <li><a href="{site_url}/forum/index.php">{forum_home}</a></li>
+        <li><a href="{site_url}/forum/index.php?category={category_id}">{cat_name}</a></li>
+        <li><a href="{site_url}/forum/index.php?forum={forum_id}">{forum_name}</a></li>
+        {!if topic_id}<li aria-current="page"><a href="viewtopic.php?showtopic={topic_id}">{subject}</a></li>{!endif}
+    </ol>
+</nav>
+
+<header class="eclipse-forum-editor-header">
+    <h1 class="eclipse-forum-page-title">{!if topic_id}{subject}{!else}{forum_name}{!endif}</h1>
+</header>
+
+<script type="text/Javascript">
+<!-- Begin
+// Helpline messages
+b_help = "{LANG_bhelp}";
+i_help = "{LANG_ihelp}";
+u_help = "{LANG_uhelp}";
+q_help = "{LANG_qhelp}";
+c_help = "{LANG_chelp}";
+l_help = "{LANG_lhelp}";
+o_help = "{LANG_ohelp}";
+p_help = "{LANG_phelp}";
+w_help = "{LANG_whelp}";
+a_help = "{LANG_ahelp}";
+s_help = "{LANG_shelp}";
+f_help = "{LANG_fhelp}";
+h_help = "{LANG_hhelp}";
+//  End -->
+</script>
+
+<form id="forumform" class="eclipse-forum-editor" action="{phpself}" method="post" name="forumpost">
+    <input type="hidden" name="id" value="{hidden_id}"{xhtml}>
+    <input type="hidden" name="method" value="{hidden_method}"{xhtml}>
+    <input type="hidden" name="quoteid" value="{quoteid}"{xhtml}>
+    <input type="hidden" name="{gltoken_name}" value="{gltoken}"{xhtml}>
+    {gltoken_msg}
+
+{# end {templatelocation} #}
