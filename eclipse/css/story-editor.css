@@ -28,31 +28,48 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fields
 }
 
 /*
- * Keep Toolbar Selection after Body Text and render its select immediately
- * to the right of the label. Other HTML-editor rows stay full width.
+ * Geeklog 2.1.1 and 2.2.2 both expose the toolbar selector in the advanced
+ * HTML editor. Eclipse normalizes its presentation independently of the
+ * inherited Denim rules: Intro Text, Body Text, then Toolbar Selection.
  */
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block{
+    display:grid!important;
     grid-template-columns:minmax(10rem,max-content) minmax(12rem,1fr)!important;
+    align-items:start;
 }
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt,
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd{
     grid-column:1 / -1;
 }
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]){
-    grid-column:1;
-    order:100;
+
+/* Toolbar label: final row, left column. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="advanced_editor_toolbar_selector"]){
+    grid-column:1!important;
+    grid-row:auto!important;
+    order:100!important;
     align-self:center;
+    margin:0!important;
     padding-top:0!important;
 }
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector){
-    grid-column:2;
-    order:100;
+
+/* Toolbar control: final row, right column. Match both id and name for legacy compatibility. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector),
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#advanced_editor_toolbar_selector),
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(select[name="fckeditor_toolbar_selector"]){
+    grid-column:2!important;
+    grid-row:auto!important;
+    order:100!important;
     align-self:center;
+    margin:0!important;
 }
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #fckeditor_toolbar_selector{
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #fckeditor_toolbar_selector,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #advanced_editor_toolbar_selector,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor select[name="fckeditor_toolbar_selector"]{
     width:auto!important;
     min-width:12.5rem;
     max-width:100%;
+    margin:0!important;
 }
 
 @media(max-width:47.99rem){
@@ -60,7 +77,10 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #fcke
         grid-template-columns:1fr!important;
     }
     body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector){
-        grid-column:1;
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="advanced_editor_toolbar_selector"]),
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector),
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#advanced_editor_toolbar_selector),
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(select[name="fckeditor_toolbar_selector"]){
+        grid-column:1!important;
     }
 }
