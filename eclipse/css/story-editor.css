@@ -27,10 +27,40 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fields
     clear:both;
 }
 
-/* Keep Toolbar Selection after Body Text in the HTML editor, preserving label then control order. */
+/*
+ * Keep Toolbar Selection after Body Text and render its select immediately
+ * to the right of the label. Other HTML-editor rows stay full width.
+ */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block{
+    grid-template-columns:minmax(10rem,max-content) minmax(12rem,1fr)!important;
+}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd{
+    grid-column:1 / -1;
+}
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]){
+    grid-column:1;
     order:100;
+    align-self:center;
+    padding-top:0!important;
 }
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector){
-    order:101;
+    grid-column:2;
+    order:100;
+    align-self:center;
+}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #fckeditor_toolbar_selector{
+    width:auto!important;
+    min-width:12.5rem;
+    max-width:100%;
+}
+
+@media(max-width:47.99rem){
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block{
+        grid-template-columns:1fr!important;
+    }
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector){
+        grid-column:1;
+    }
 }
