@@ -16,9 +16,10 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
  *
  * Keep forum.css out of this list: Forum resolves it itself on modern Geeklog
  * and Eclipse also imports it from css/plugins.css for Geeklog 2.1.x fallback.
- * semantic.css owns the primary public Forum presentation; reports.css keeps
- * preferences/reports/moderation separate, and footer.css handles secondary
- * legend/rules/online information without UIkit layout dependencies.
+ * semantic.css owns the primary public Forum presentation; editor.css styles
+ * the Forum-owned submission templates without changing their POST contract;
+ * reports.css keeps preferences/reports/moderation separate, and footer.css
+ * handles secondary legend/rules/online information.
  *
  * @return array
  */
@@ -40,6 +41,12 @@ function forum_css_eclipse()
             'file'       => '/layout/' . $_CONF['theme'] . '/forum/semantic.css',
             'attributes' => array('media' => 'all'),
             'priority'   => 320
+        ),
+        array(
+            'name'       => 'eclipse-forum-editor',
+            'file'       => '/layout/' . $_CONF['theme'] . '/forum/editor.css',
+            'attributes' => array('media' => 'all'),
+            'priority'   => 325
         ),
         array(
             'name'       => 'eclipse-forum-reports',
