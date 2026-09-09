@@ -380,17 +380,178 @@
     margin: 0;
 }
 
+/* Editor and search ------------------------------------------------------ */
+.eclipse-forum-editor-header {
+    margin-bottom: 1rem;
+}
+
+.eclipse-forum-editor,
+.eclipse-forum-editor-body {
+    min-width: 0;
+}
+
+.eclipse-forum-editor-body {
+    display: grid;
+    gap: 1rem;
+}
+
+.eclipse-forum-field,
+.eclipse-forum-editor-tools,
+.eclipse-forum-options,
+.eclipse-forum-topic-review {
+    min-width: 0;
+    padding: .9rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: var(--eclipse-radius);
+    background: var(--eclipse-surface);
+}
+
+.eclipse-forum-field {
+    display: grid;
+    gap: .45rem;
+}
+
+.eclipse-forum-field > label,
+.eclipse-forum-editor-tools legend,
+.eclipse-forum-options legend {
+    color: var(--eclipse-text);
+    font-weight: 750;
+}
+
+.eclipse-forum-editor input[type='text'],
+.eclipse-forum-editor input[type='search'],
+.eclipse-forum-editor select,
+.eclipse-forum-editor textarea,
+.eclipse-forum-search input[type='search'] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding: .6rem .7rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+}
+
+.eclipse-forum-editor textarea {
+    min-height: 16rem;
+    resize: vertical;
+    line-height: 1.55;
+}
+
+.eclipse-forum-bbcode-toolbar,
+.eclipse-forum-editor-selects,
+.eclipse-forum-editor-actions,
+.eclipse-forum-smilies,
+.eclipse-forum-option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem;
+}
+
+.eclipse-forum-editor-tools {
+    display: grid;
+    gap: .75rem;
+}
+
+.eclipse-forum-editor-tools .uk-button,
+.eclipse-forum-editor-actions .uk-button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+}
+
+.eclipse-forum-editor-selects label {
+    font-weight: 650;
+}
+
+.eclipse-forum-editor-selects select {
+    width: auto;
+    min-width: 8rem;
+}
+
+.eclipse-forum-helpbox {
+    width: 100%;
+}
+
+.eclipse-forum-editor-actions {
+    justify-content: flex-end;
+}
+
+.eclipse-forum-captcha {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.eclipse-forum-options {
+    display: grid;
+    gap: .55rem;
+}
+
+.eclipse-forum-option {
+    align-items: flex-start;
+}
+
+.eclipse-forum-option input {
+    margin-top: .25rem;
+}
+
+.eclipse-forum-topic-review {
+    margin-top: 1.25rem;
+}
+
+.eclipse-forum-topic-review iframe {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 18rem;
+    border: 0;
+}
+
+.eclipse-forum-search {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .45rem;
+    min-width: 0;
+    margin: 0 0 1rem;
+}
+
+.eclipse-forum-search .uk-button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+}
+
+.eclipse-forum-visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
 /* Existing Forum links may still be emitted as UIkit buttons/dropdowns while
  * the template migration is in progress. Keep them usable and touch friendly. */
 .eclipse-forum-section .uk-button,
-.eclipse-forum-post .uk-button {
+.eclipse-forum-post .uk-button,
+.eclipse-forum-editor .uk-button,
+.eclipse-forum-search .uk-button {
     min-height: 2.75rem;
     padding: .55rem .8rem;
     border-radius: .48rem;
 }
 
 .eclipse-forum-section .uk-button-primary,
-.eclipse-forum-post .uk-button-primary {
+.eclipse-forum-post .uk-button-primary,
+.eclipse-forum-editor .uk-button-primary,
+.eclipse-forum-search .uk-button-primary {
     background: var(--eclipse-primary);
     color: #fff;
 }
@@ -465,6 +626,12 @@
     .eclipse-forum-post-main {
         padding: 1rem 1.15rem;
     }
+
+    .eclipse-forum-field,
+    .eclipse-forum-editor-tools,
+    .eclipse-forum-options {
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 30rem) {
@@ -481,12 +648,15 @@
     }
 
     .eclipse-forum-actions,
-    .eclipse-forum-actions > * {
+    .eclipse-forum-actions > *,
+    .eclipse-forum-editor-actions,
+    .eclipse-forum-editor-actions > * {
         width: 100%;
     }
 
     .eclipse-forum-actions .uk-button,
-    .eclipse-forum-actions a.uk-button {
+    .eclipse-forum-actions a.uk-button,
+    .eclipse-forum-editor-actions .uk-button {
         display: flex;
         justify-content: center;
         width: 100%;
@@ -506,5 +676,19 @@
 
     .eclipse-forum-post-actions {
         justify-content: flex-start;
+    }
+
+    .eclipse-forum-editor-selects {
+        align-items: stretch;
+    }
+
+    .eclipse-forum-editor-selects label,
+    .eclipse-forum-editor-selects select,
+    .eclipse-forum-editor-selects .uk-button {
+        width: 100%;
+    }
+
+    .eclipse-forum-search {
+        grid-template-columns: minmax(0, 1fr) auto;
     }
 }
