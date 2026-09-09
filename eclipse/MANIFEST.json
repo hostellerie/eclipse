@@ -50,6 +50,8 @@
     "forum/forum.css": "36bbd23aad5ce570b515b1a229b97e25f1fb829c3bf4a0f2e359062be902a8da",
     "forum/functions.php": "7c9b8b62a810bed27c278bc36e801ffb2785357b1d159eb1f857f1304859cfa7",
     "forum/reports/memberlist.thtml": "dc890f7225234a275e2d9cf6f2ec131bfd42c4be2c14a760f429da24b8a082e9",
+    "forum/reports/notifications.thtml": "a6bb349ea29074f529a876e59a8a1eecd563f554a237ed98cd0e408b63eb2d50",
+    "forum/reports/report_results.thtml": "43fde9d81f951b63eeb698568ef13da6ec9751a9a865840b768f74e1870805b4",
     "forum/ROADMAP.md": "003fd2058c3ee1b8411ae989a46320d36a2f9c2de0b6efec19158e99e42954d3",
     "forum/semantic.css": "82352cefbe801260c1f2e90c0ff84dc48c49854bf1f4c2aeed5e06307319deb4",
     "forum/submissionform_footer.thtml": "1905cfdf7478b015eabb0567a2823b911926dcbcbb1f97c709809f23af557fee",
