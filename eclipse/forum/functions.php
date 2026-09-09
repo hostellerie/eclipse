@@ -16,8 +16,9 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
  *
  * Keep forum.css out of this list: Forum resolves it itself on modern Geeklog
  * and Eclipse also imports it from css/plugins.css for Geeklog 2.1.x fallback.
- * semantic.css is the stable mobile-first layer for Eclipse-owned Forum
- * templates and intentionally avoids depending on legacy UIkit structure.
+ * semantic.css owns the primary public Forum presentation; reports.css keeps
+ * preferences/reports/moderation separate so these secondary screens can be
+ * simplified without growing the core stylesheet indefinitely.
  *
  * @return array
  */
@@ -39,6 +40,12 @@ function forum_css_eclipse()
             'file'       => '/layout/' . $_CONF['theme'] . '/forum/semantic.css',
             'attributes' => array('media' => 'all'),
             'priority'   => 320
+        ),
+        array(
+            'name'       => 'eclipse-forum-reports',
+            'file'       => '/layout/' . $_CONF['theme'] . '/forum/reports.css',
+            'attributes' => array('media' => 'all'),
+            'priority'   => 330
         )
     );
 }
