@@ -1,0 +1,33 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-centerblock" aria-label="{LANG_FORUM}">
+    <h2 class="eclipse-forum-block-title">{LANG_FORUM}</h2>
+    <div class="eclipse-forum-block-card">
+        <div class="eclipse-forum-block-kicker">{LANG_NEWPOST}</div>
+        <div class="eclipse-forum-centerblock-list">
+            {block_record}
+        </div>
+    </div>
+</section>
+
+<!-- BEGIN block_record -->
+<article class="eclipse-forum-centerblock-item">
+    <header class="eclipse-forum-centerblock-forum">
+        <span class="eclipse-forum-block-icon" aria-hidden="true">●</span>
+        <a href="{site_url}/forum/index.php?forum={forum_id}" class="eclipse-forum-centerblock-forum-link">{forum_name}</a>
+    </header>
+    <div class="eclipse-forum-centerblock-topic">
+        <a href="{site_url}/forum/viewtopic.php?showtopic={topic_id}" class="eclipse-forum-centerblock-topic-link" data-uk-tooltip title="{topicinfo}">{topic_subject}</a>
+        <div class="eclipse-forum-centerblock-meta">
+            <span>{topicinfo_short}</span>
+            {!!if ($this->get_var('replies') == '0') !!}
+                <a class="eclipse-forum-centerblock-replies" href="{lastpostURL}">{repliesinfo}</a>
+            {!else}
+                <a class="eclipse-forum-centerblock-replies" href="{lastpostURL}" data-uk-tooltip title="{lastpostinfo}">{repliesinfo}</a>
+            {!endif}
+        </div>
+    </div>
+</article>
+<!-- END block_record -->
+
+{# end {templatelocation} #}
