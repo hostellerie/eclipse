@@ -11,32 +11,56 @@ The semantic Eclipse Forum layer now covers the main public and secondary flows:
 - forum/category listing;
 - topic listing;
 - topic header and individual posts;
-- new topic/reply editor and preview;
 - search;
 - user preferences;
 - member, notification and topic reports;
 - basic moderation confirmations and split/move;
 - forum footer, legend, permissions, time and online users.
 
-Public Forum-specific legacy selectors were removed from `css/plugins.css`; that shared file now only imports `forum.css` and keeps generic plugin/admin compatibility rules. Remaining legacy selectors in `forum.css` and `blocks.css` are intentionally retained as compatibility fallbacks until manual QA has been completed on Geeklog 2.1.1 and 2.2.2.
+The posting workflow is intentionally handled differently. Eclipse no longer overrides `submissionform_header.thtml`, `submissionform_main.thtml` or `submissionform_footer.thtml`. The Forum plugin changed its POST contract between the releases used with Geeklog 2.1.1 and 2.2.2, so each installed Forum version must own its native posting templates. Eclipse styles those native forms through `editor.css` only.
 
-### QA gate before further deletion
+Public Forum-specific legacy selectors were removed from `css/plugins.css`; that shared file now only imports `forum.css` and keeps generic plugin/admin compatibility rules. Dead `.eclipse-forum-editor-*` rules were also removed from `semantic.css` after the posting overrides were retired.
 
-Do not remove the remaining legacy UIkit/markup fallbacks, the temporary Forum UIkit resource bridge, or request/markup compatibility selectors until the same archive has been exercised on both supported Geeklog generations. After that test pass, obsolete selectors can be removed based on observed coverage instead of assumptions.
+## QA status
+
+The same Eclipse development line has now been exercised manually on both Geeklog 2.1.1 and 2.2.2.
+
+Validated so far:
+
+- general Forum rendering is acceptable on both supported Geeklog versions;
+- new-topic creation works on both;
+- post editing works on both;
+- the native Forum posting templates restore the version-specific hidden fields and submit contract required by each plugin generation.
+
+This validates the architectural rule that functional POST/security templates remain plugin-owned while Eclipse owns presentation.
+
+Further deletion of `forum.css`, `blocks.css`, the Forum UIkit bridge, or request/markup compatibility selectors should still be incremental. Native Forum templates, especially the editor and older 2.1.1-era screens, continue to use UIkit markup.
 
 ## Architectural rules
 
-1. Geeklog and the Forum plugin remain responsible for data, permissions, actions, pagination, moderation and security.
-2. Eclipse owns presentation for the Forum through `layout/eclipse/forum/` template overrides and `forum.css`.
-3. Denim is a compatibility/template fallback only. Eclipse must not depend on undocumented Denim markup or on optional Forum blocks to recognize Forum content.
-4. Version-specific Geeklog differences must be isolated in PHP/template fallbacks, not scattered through CSS selectors.
-5. New Eclipse Forum templates should use stable `eclipse-forum-*` classes. UIkit classes may remain temporarily where the plugin requires them, but must not be the primary styling API.
-6. Avoid layout-by-`<br>` and fragile selectors such as `#main-content > .uk-grid:first-of-type` or `:has()` where a template override can provide a stable class instead.
-7. Mobile layouts are designed first; desktop tables are an enhancement, not the semantic source of truth.
+1. Geeklog and the Forum plugin remain responsible for data, permissions, actions, pagination, moderation, security and POST contracts.
+2. Eclipse owns presentation through `layout/eclipse/forum/` template overrides and dedicated CSS layers.
+3. Functional templates whose contract differs between Forum generations must remain plugin-owned unless a single proven cross-version contract exists.
+4. Denim is a compatibility/template fallback only. Eclipse must not depend on undocumented Denim markup or on optional Forum blocks to recognize Forum content.
+5. Version-specific Geeklog differences must not be scattered through CSS or duplicated template trees unless a real incompatibility is demonstrated.
+6. New Eclipse Forum templates use stable `eclipse-forum-*` classes. UIkit classes may remain where native plugin templates still require them, but they are not the primary styling API for migrated screens.
+7. Avoid layout-by-`<br>` and fragile selectors such as `#main-content > .uk-grid:first-of-type` or `:has()` where a template override can provide a stable class instead.
+8. Mobile layouts are designed first; desktop table-like layouts are an enhancement, not the semantic source of truth.
+
+## CSS ownership
+
+- `semantic.css` — semantic category, topic-list, topic/post and search overrides.
+- `editor.css` — CSS-only presentation for the plugin-owned posting forms on all supported Forum versions.
+- `reports.css` — preferences, reports and moderation presentation.
+- `footer.css` — Forum footer, legend, permissions, time and online users.
+- `forum.css` — shared Forum compatibility, remaining native UIkit surfaces and administration.
+- `blocks.css` — Forum block and legacy structural compatibility still required by non-migrated markup.
+
+The long-term target is to shrink `forum.css` and `blocks.css` as stable Eclipse templates replace legacy public markup. They must not be reduced by assumption: each removal should follow observed coverage on both Geeklog generations.
 
 ## SEO and semantics target
 
-- One clear H1 per Forum page: Forum index, forum/category listing, topic, create/reply form, search/report page.
+- One clear H1 per Forum page where Eclipse owns the template: Forum/category listing, topic list, topic and search/report pages.
 - H2/H3 hierarchy for categories, forum groups and secondary sections.
 - Breadcrumbs in a `<nav aria-label="Breadcrumb">` container with an ordered list when the available template variables allow it.
 - Forum/category/topic listings use semantic section/article/list structures where practical.
@@ -44,6 +68,8 @@ Do not remove the remaining legacy UIkit/markup fallbacks, the temporary Forum U
 - Avoid duplicated labels such as `Forum name + Forum Category` when a clean name/description variable is available.
 - Preserve existing Geeklog JSON-LD/breadcrumb output and do not duplicate structured data unless the plugin/template layer can supply correct canonical URLs and positions.
 - Link text remains descriptive and crawlable; actions such as Reply, New topic and moderation controls remain separate from navigational links.
+
+The native posting templates are an exception to the H1/template-modernization target for now. Their functional compatibility takes priority; presentation and mobile usability are improved through `editor.css` without changing form fields or POST semantics.
 
 ## Responsive target
 
@@ -53,95 +79,50 @@ Do not remove the remaining legacy UIkit/markup fallbacks, the temporary Forum U
 - Forum and topic rows become cards/stacked rows instead of compressed four-column tables.
 - Topic/forum title is primary; counts and last-post metadata move below it.
 - Post author metadata collapses above the message rather than consuming a permanent left column.
-- Buttons have at least a comfortable touch target and never depend on an icon font for their only accessible name.
+- Buttons have comfortable touch targets and never depend on an icon font for their only accessible name.
 - Search, forum jump, paging and actions wrap naturally.
+- Native posting forms remain plugin-owned but are made full-width and touch-friendly by `editor.css`.
 
 ### Desktop
 
 - Forum/topic listings may use grid/table-like presentation for scanability.
 - Posts use author/meta + content columns when space allows.
 - The DOM order remains useful on mobile and for screen readers.
+- Native posting forms may use a label/control grid without altering their input names or hidden fields.
 
-## Template audit
+## Template strategy
 
-### Priority 1 — public index and navigation
+### Eclipse-owned public templates
 
-#### `categorylisting.thtml`
-Current Denim template uses UIkit panels, floats, a breadcrumb `<ul>`, an H2 and a four-column table. Forum rows rely on `onclick` on a `<div>` in addition to a normal link.
+The following templates are appropriate for semantic Eclipse overrides because they primarily control presentation:
 
-Eclipse override target:
-- semantic breadcrumb nav;
-- clean heading/description;
-- explicit action area;
-- stable `eclipse-forum-category` / `eclipse-forum-list` classes;
-- mobile stacked forum records;
-- preserve all existing variables and normal links;
-- remove presentation-only floats and `<br>` layout.
+- `categorylisting.thtml`;
+- `topiclisting.thtml`;
+- `topic_navbar.thtml`;
+- `topic.thtml`;
+- `forum_search.thtml`;
+- footer templates;
+- selected report, preference and moderation templates after compatibility review.
 
-#### `topiclisting.thtml`
-Current template repeats the same UIkit/table pattern for topics and hides Views/Replies at some breakpoints.
+### Plugin-owned functional templates
 
-Eclipse override target:
-- H1 for the forum page;
-- breadcrumb nav;
-- responsive topic records with subject, pagination, counts and last-post metadata;
-- sort controls remain available without depending on tiny image controls on mobile;
-- New topic/subscription actions in a dedicated action bar.
+The posting templates stay native to the installed Forum version:
 
-#### `topic_navbar.thtml`
-Current template uses a breadcrumb list and an H2 containing the subject link.
+- `submissionform_header.thtml`;
+- `submissionform_main.thtml`;
+- `submissionform_footer.thtml`.
 
-Eclipse override target:
-- semantic breadcrumb;
-- topic H1;
-- stable action bar and pagination region.
-
-## Priority 2 — individual topic/post
-
-#### `topic.thtml`
-Current template is heavily coupled to UIkit grids, overlays and fixed width classes.
-
-Eclipse override target:
-- each post becomes an `<article class="eclipse-forum-post">`;
-- author/meta region precedes message content in DOM order;
-- desktop may use a two-column grid;
-- mobile stacks author then message;
-- permalink target remains stable;
-- edit/quote/like/moderation actions remain available and keyboard accessible;
-- avatar is decorative unless a meaningful alternative is available.
-
-#### `topicfooter.thtml` and `footer/*`
-Rebuild time/legend/users/rules as compact secondary sections. Avoid empty list items and layout `<br>` tags.
-
-## Priority 3 — posting workflow
-
-#### `submissionform_header.thtml`
-Replace UIkit breadcrumb/grid wrapper with semantic breadcrumb + H1/action context while preserving CSRF token and form variables.
-
-#### `submissionform_main.thtml`
-Audit labels, fieldsets, help text, validation messages, BBCode controls, touch targets and textarea sizing. Preserve plugin behavior and JavaScript hooks.
-
-#### `submissionform_footer.thtml` and preview templates
-Keep submit/preview/cancel actions in a responsive button group with explicit labels.
-
-## Priority 4 — search, preferences and reports
-
-- `forum_search.thtml`
-- `userprefs/user_settings.thtml`
-- `reports/memberlist.thtml`
-- `reports/notifications.thtml`
-- `reports/report_results.thtml`
-- moderator templates
-
-These should be converted only after index/topic/post flows are stable.
+This is deliberate. The older Forum line used with Geeklog 2.1.1 expects fields such as `forum`, `editpost`, `editid`, `editpid`, `modedit`, `submit` and `preview`, while the newer Forum line uses a different submission contract. A shared Eclipse copy would couple the theme to one plugin generation and has already been proven unsafe.
 
 ## Resource loading simplification
 
-Eclipse should provide the common resources required by its Denim-compatible template baseline at the theme level. Forum-specific `functions.php` should only request resources that are truly Forum-specific. The temporary Forum UIkit bridge can be removed once Eclipse's global dependency loading is verified on both Geeklog 2.1.1 and 2.2.2.
+Eclipse currently registers the UIkit resources required by remaining Denim-compatible Forum templates from `forum/functions.php`. This bridge remains necessary while native Forum pages still emit UIkit controls and FontAwesome-based icons.
+
+The long-term goal is still to move truly common UIkit dependency loading to the Eclipse theme level if that can be proven safe on both Geeklog 2.1.1 and 2.2.2. Once that is verified, the Forum-specific resource bridge can be reduced without changing plugin behavior.
 
 ## Compatibility strategy
 
-Test each phase on both Geeklog 2.1.1 and 2.2.2 with the same Eclipse override files. Do not fork separate 2.1.x and 2.2.x template trees unless a real template-variable/API incompatibility is demonstrated.
+Use the same Eclipse semantic overrides on Geeklog 2.1.1 and 2.2.2. Do not fork separate theme template trees for the two Geeklog versions. Where the Forum plugin itself has a version-specific functional contract, let its native template resolve that difference and style it with stable CSS selectors.
 
 Required regression matrix:
 
@@ -157,12 +138,12 @@ Required regression matrix:
 - light/dark Eclipse schemes;
 - keyboard focus and visible action labels.
 
-## Implementation order
+## Next cleanup order
 
-1. Stabilize common UIkit/resource loading for compatibility.
-2. Add semantic Eclipse overrides for `categorylisting.thtml` and `topiclisting.thtml`.
-3. Add `topic_navbar.thtml` and `topic.thtml` overrides.
-4. Replace temporary structural CSS selectors with stable Eclipse classes and delete obsolete rules.
-5. Rework posting templates.
-6. Rework footer/search/preferences/reports.
-7. Remove any remaining Forum CSS dependency on optional blocks, request-path detection, or version-specific markup after the QA gate.
+1. Keep `editor.css` as the only Eclipse layer responsible for native posting-form presentation.
+2. Audit `forum.css` public selectors and remove only rules superseded by stable `eclipse-forum-*` templates.
+3. Audit `blocks.css` separately because center/side Forum blocks still use plugin-owned markup.
+4. Keep administration compatibility independent from public Forum cleanup.
+5. Verify reply, preview, locked-topic and pagination flows on both Geeklog generations before further structural deletions.
+6. Revisit global UIkit loading only after those screens are stable.
+7. Finish with SEO/accessibility QA: heading hierarchy, breadcrumb semantics, keyboard focus, link labels and 320 px overflow.
