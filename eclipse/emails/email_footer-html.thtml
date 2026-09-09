@@ -1,0 +1,10 @@
+{email_divider_html}
+
+<p style="margin: 0; font-size: 12px; line-height: 1.5; color: #666666; text-align: center;">
+    <strong>{site_name}</strong><br>
+    <a href="{site_url}" style="color: #666666; text-decoration: none;">{site_url}</a>
+</p>
+
+{!if ip_address}
+<p style="margin: 8px 0 0; font-size: 11px; line-height: 1.5; color: #777777; text-align: center;">{lang_ip_address_email} {ip_address}</p>
+{!endif}
