@@ -87,13 +87,16 @@ This checklist must be completed on both Geeklog 2.1.1 / PHP 5.6 and Geeklog 2.2
 
 ## Email presentation
 
-- Geeklog 2.1.1 and 2.2.2 resolve Eclipse's `emails/email_footer-html.thtml` and `emails/email_footer-plaintext.thtml` while retaining Denim fallback for every other inherited email template.
-- HTML email footers render the configured site name and site URL without the generic no-reply warning, formatting warning or `End of Message` text.
-- Plaintext email footers render the configured site name and site URL with correct `{LB}` line breaks and without the generic footer prose.
+- Geeklog 2.2.2 resolves Eclipse's `emails/email_footer-html.thtml` and `emails/email_footer-plaintext.thtml` for email paths that use the core email-template system, while all other email templates continue to fall back to Denim.
+- Geeklog 2.1.1 `admin/mail.php` sends the entered body directly through `COM_mail()` and does not invoke the Eclipse email footer templates; this native behavior must remain unchanged.
+- HTML email footers on Geeklog 2.2.2 render the configured `{site_url}` without the generic no-reply warning, formatting warning or `End of Message` text.
+- Plaintext email footers on Geeklog 2.2.2 render `{site_url}` with correct `{LB}` line breaks and without the generic footer prose.
+- Do not depend on `{site_name}` in the footer templates: Geeklog 2.2.2 may consume it as an unset template variable before the mail placeholder replacement stage, producing an empty value.
 - When Geeklog supplies `ip_address`, both footer formats retain the native IP-address notice; when it is absent, no empty IP row is rendered.
 - Eclipse does not change `site_mail`, `noreply_mail`, From or Reply-To selection; sender semantics remain controlled by Geeklog core or the sending plugin.
 - Newsletter and other plugin-specific templates can place unsubscribe or legal content before the Eclipse footer without Eclipse adding a duplicate unsubscribe link.
-- Send at least one reply-appropriate message and one automated notification and confirm the footer itself makes no incorrect claim about whether replies are monitored.
+- Send at least one Geeklog 2.2.2 administration email and confirm the delivered footer contains the site URL and no obsolete generic footer wording.
+- Send at least one Geeklog 2.1.1 administration email and confirm Eclipse does not inject a footer into the legacy direct `COM_mail()` path.
 
 ## Theme Studio
 
