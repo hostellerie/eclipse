@@ -1,0 +1,229 @@
+/* Responsive reports, preferences and moderation for Eclipse Forum. */
+
+.eclipse-forum-report,
+.eclipse-forum-report-form,
+.eclipse-forum-settings-grid,
+.eclipse-forum-report-list {
+    min-width: 0;
+}
+
+.eclipse-forum-report-header {
+    display: grid;
+    gap: .75rem;
+    margin: 0 0 1rem;
+}
+
+.eclipse-forum-report-description {
+    margin-top: .35rem;
+    color: var(--eclipse-muted, #687083);
+}
+
+.eclipse-forum-settings-grid,
+.eclipse-forum-report-list {
+    display: grid;
+    gap: .8rem;
+}
+
+.eclipse-forum-settings-card,
+.eclipse-forum-report-card,
+.eclipse-forum-report-filters,
+.eclipse-forum-report-bulkbar,
+.eclipse-forum-sortbar,
+.eclipse-forum-moderation-card {
+    min-width: 0;
+    margin: 0;
+    padding: .85rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: var(--eclipse-radius);
+    background: var(--eclipse-surface);
+}
+
+.eclipse-forum-settings-card {
+    display: grid;
+    gap: .8rem;
+}
+
+.eclipse-forum-setting,
+.eclipse-forum-setting-group {
+    display: grid;
+    gap: .35rem;
+}
+
+.eclipse-forum-setting label,
+.eclipse-forum-setting-label {
+    color: var(--eclipse-text);
+    font-weight: 700;
+}
+
+.eclipse-forum-setting input,
+.eclipse-forum-report select,
+.eclipse-forum-moderation-card input[type='text'],
+.eclipse-forum-moderation-card select {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding: .55rem .65rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+}
+
+.eclipse-forum-setting input[type='number'] {
+    max-width: 7rem;
+}
+
+.eclipse-forum-choice-row,
+.eclipse-forum-report-actions,
+.eclipse-forum-report-card-actions,
+.eclipse-forum-report-controls,
+.eclipse-forum-report-bulkbar,
+.eclipse-forum-sortbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem .75rem;
+}
+
+.eclipse-forum-choice-row input {
+    flex: 0 0 auto;
+}
+
+.eclipse-forum-report-actions,
+.eclipse-forum-report-card-actions {
+    justify-content: flex-end;
+}
+
+.eclipse-forum-report-filters {
+    display: grid;
+    gap: .65rem;
+    margin-bottom: 1rem;
+}
+
+.eclipse-forum-inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+}
+
+.eclipse-forum-report-bulkbar,
+.eclipse-forum-sortbar {
+    justify-content: space-between;
+    margin-bottom: .8rem;
+}
+
+.eclipse-forum-sortbar {
+    font-size: .82rem;
+}
+
+.eclipse-forum-report-card {
+    display: grid;
+    gap: .7rem;
+}
+
+.eclipse-forum-notification-card {
+    grid-template-columns: auto minmax(0, 1fr);
+}
+
+.eclipse-forum-notification-card .eclipse-forum-report-card-actions {
+    grid-column: 1 / -1;
+}
+
+.eclipse-forum-report-card-main {
+    min-width: 0;
+}
+
+.eclipse-forum-report-card-title {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.35;
+}
+
+.eclipse-forum-report-card-title a {
+    overflow-wrap: anywhere;
+}
+
+.eclipse-forum-report-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem .9rem;
+    margin-top: .45rem;
+    color: var(--eclipse-muted, #687083);
+    font-size: .8rem;
+}
+
+.eclipse-forum-report-select {
+    padding-top: .1rem;
+}
+
+.eclipse-forum-report .uk-button,
+.eclipse-forum-moderation-card .uk-button {
+    min-height: 2.75rem;
+    padding: .55rem .8rem;
+    border-radius: .48rem;
+}
+
+.eclipse-forum-moderation-card {
+    display: grid;
+    gap: .8rem;
+}
+
+.eclipse-forum-moderation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .5rem;
+}
+
+.eclipse-forum-moderation-choice {
+    display: grid;
+    gap: .45rem;
+}
+
+@media (min-width: 48rem) {
+    .eclipse-forum-report-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+    }
+
+    .eclipse-forum-settings-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .eclipse-forum-report-filters {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: center;
+    }
+
+    .eclipse-forum-report-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+    }
+
+    .eclipse-forum-notification-card {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .eclipse-forum-notification-card .eclipse-forum-report-card-actions {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 30rem) {
+    .eclipse-forum-report-actions,
+    .eclipse-forum-report-card-actions,
+    .eclipse-forum-moderation-actions {
+        justify-content: stretch;
+    }
+
+    .eclipse-forum-report-actions > *,
+    .eclipse-forum-report-card-actions > *,
+    .eclipse-forum-moderation-actions > * {
+        width: 100%;
+        text-align: center;
+    }
+}
