@@ -99,3 +99,36 @@ body.theme-eclipse.eclipse-admin-page #main-content input.uk-button-primary:hove
 body.theme-eclipse.eclipse-admin-page #main-content input.uk-button-primary:focus{color:#fff!important}
 
 @media(max-width:47.99rem){body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity{padding:.7rem!important}body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl{grid-template-columns:1fr!important;gap:.25rem!important}}
+
+/* 1.1 editor card consolidation: title + writing canvas read as one Article Content card. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity{margin:0!important;padding:1rem 1.1rem .7rem!important;border-bottom:0!important;border-radius:var(--eclipse-radius) var(--eclipse-radius) 0 0!important;box-shadow:none!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity>h2{display:flex!important;align-items:center;gap:.6rem;margin:0 0 .8rem!important;padding:0 10rem .65rem 0!important;border-bottom:1px solid var(--eclipse-border)!important;font-size:0!important;font-weight:850}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity>h2::before{content:"";flex:0 0 .46rem;width:.46rem;height:1.35rem;border-radius:999px;background:linear-gradient(var(--eclipse-primary),var(--eclipse-secondary))}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity>h2::after{content:"Article Content";font-size:1.05rem;letter-spacing:-.015em;color:var(--eclipse-text)}
+body.theme-eclipse.eclipse-story-editor-page:lang(fr) #advanced_editor #frmstory>.eclipse-editor-identity>h2::after{content:"Contenu de l’article"}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-canvas{margin:-1px 0 .9rem!important;padding:.75rem 1.1rem 1rem!important;border-top:0!important;border-radius:0 0 var(--eclipse-radius) var(--eclipse-radius)!important;box-shadow:0 12px 32px rgba(22,30,50,.055)!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-canvas::before{display:none!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity dl{margin-bottom:.1rem!important}
+
+/* Place Focus mode and autosave status in the Article Content card header. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-safety{display:contents!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-safety .eclipse-focus-toggle{position:absolute;z-index:8;top:.72rem;right:1.05rem;margin:0!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-safety .eclipse-autosave-status{position:absolute;z-index:7;top:1.28rem;right:9.3rem;margin:0!important;font-size:.75rem;white-space:nowrap}
+
+/* Each secondary native tab keeps one coherent Eclipse card while its internal fieldsets stay flat. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options{gap:.75rem}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_publish,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_images,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_archive,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_perms{margin:0!important;padding:clamp(1rem,2.5vw,1.35rem)!important;background:var(--eclipse-surface)!important;border:1px solid var(--eclipse-border)!important;border-radius:var(--eclipse-radius)!important;box-shadow:0 12px 32px rgba(22,30,50,.055)!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fieldset{margin:0!important;padding:.8rem 0!important;background:transparent!important;border:0!important;border-top:1px solid var(--eclipse-border)!important;border-radius:0!important;box-shadow:none!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options>div>fieldset:first-child{padding-top:0!important;border-top:0!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options>div>fieldset:last-child{padding-bottom:0!important}
+
+@media(max-width:47.99rem){
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity{padding:.85rem!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-identity>h2{padding-right:0!important;padding-bottom:3rem!important}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-safety .eclipse-focus-toggle{top:3.05rem;left:.85rem;right:auto}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-safety .eclipse-autosave-status{top:3.65rem;left:9.2rem;right:auto;white-space:normal}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory>.eclipse-editor-canvas{padding:.75rem .85rem .9rem!important}
+}
