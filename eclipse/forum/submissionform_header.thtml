@@ -1,17 +1,17 @@
 {# begin {templatelocation} #}
 
-<nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
-    <ol>
-        <li><a href="{site_url}/forum/index.php">{forum_home}</a></li>
-        <li><a href="{site_url}/forum/index.php?category={category_id}">{cat_name}</a></li>
-        <li><a href="{site_url}/forum/index.php?forum={forum_id}">{forum_name}</a></li>
-        {!if topic_id}<li aria-current="page"><a href="viewtopic.php?showtopic={topic_id}">{subject}</a></li>{!endif}
-    </ol>
-</nav>
+<ul class="uk-breadcrumb">
+	<li><i class="uk-icon-folder-open-o"></i></li>
+	<li><a href="{site_url}/forum/index.php">{forum_home}</a></li>
+	<li><a href="{site_url}/forum/index.php?category={category_id}">{cat_name}</a></li>
+	<li class="uk-active"><span><a href="{site_url}/forum/index.php?forum={forum_id}">{forum_name}</a></span></li>
+</ul>
 
-<header class="eclipse-forum-editor-header">
-    <h1 class="eclipse-forum-page-title">{!if topic_id}{subject}{!else}{forum_name}{!endif}</h1>
-</header>
+<div class="uk-grid uk-grid-small uk-margin-small-left">
+	<div class="uk-width-1-1">
+  		<i class="uk-icon-file-text-o"></i>{!if topic_id} <b><a href="viewtopic.php?showtopic={topic_id}">{subject}</a></b>{!endif}
+  	</div>
+</div>
 
 <script type="text/Javascript">
 <!-- Begin
@@ -32,11 +32,11 @@ h_help = "{LANG_hhelp}";
 //  End -->
 </script>
 
-<form id="forumform" class="eclipse-forum-editor" action="{phpself}" method="post" name="forumpost">
-    <input type="hidden" name="id" value="{hidden_id}"{xhtml}>
-    <input type="hidden" name="method" value="{hidden_method}"{xhtml}>
-    <input type="hidden" name="quoteid" value="{quoteid}"{xhtml}>
-    <input type="hidden" name="{gltoken_name}" value="{gltoken}"{xhtml}>
+<form id="forumform" class="uk-form uk-form-horizontal" action="{phpself}" method="post" name="forumpost">
+	<input type="hidden" name="id" value="{hidden_id}"{xhtml}>
+	<input type="hidden" name="method" value="{hidden_method}"{xhtml}>
+	<input type="hidden" name="quoteid" value="{quoteid}"{xhtml}>
+	<input type="hidden" name="{gltoken_name}" value="{gltoken}"{xhtml}>
     {gltoken_msg}
 
 {# end {templatelocation} #}
