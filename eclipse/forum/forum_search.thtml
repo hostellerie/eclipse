@@ -1,0 +1,11 @@
+{# begin {templatelocation} #}
+
+<form class="eclipse-forum-search" action="{site_url}/forum/index.php" method="post" name="searchbox" role="search" onsubmit="return (this.query.value != '');">
+    <label class="eclipse-forum-visually-hidden" for="eclipse-forum-search-query">{search}</label>
+    <input id="eclipse-forum-search-query" type="search" name="query" placeholder="{search}" value=""{xhtml}>
+    <button class="uk-button uk-button-primary" type="submit" name="btnsubmit"><i class="uk-icon-search" aria-hidden="true"></i><span class="eclipse-forum-visually-hidden">{search}</span></button>
+    <input type="hidden" name="op" value="search"{xhtml}>
+    {!if forum}<input type="hidden" name="forum" value="{forum}"{xhtml}>{!endif}
+</form>
+
+{# end {templatelocation} #}
