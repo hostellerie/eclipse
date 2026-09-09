@@ -1,0 +1,53 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-section eclipse-forum-category" aria-labelledby="eclipse-forum-category-{category_id}">
+    <nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="{site_url}/forum/index.php">{forum_home}</a></li>
+            <li aria-current="page"><a href="{site_url}/forum/index.php?category={category_id}">{cat_name}</a></li>
+        </ol>
+    </nav>
+
+    <header class="eclipse-forum-section-header">
+        <div class="eclipse-forum-heading-copy">
+            <h1 id="eclipse-forum-category-{category_id}" class="eclipse-forum-page-title">{cat_name}</h1>
+            {!if cat_desc}<p class="eclipse-forum-description">{cat_desc}</p>{!endif}
+            {!if geeklog_topic}<p class="eclipse-forum-context">{lang_geeklog_topic} {geeklog_topic}</p>{!endif}
+        </div>
+        <div class="eclipse-forum-actions">
+            {categorymenu_link}
+        </div>
+    </header>
+
+    <div class="eclipse-forum-list" role="list">
+        {forum_record}
+    </div>
+</section>
+
+<!-- BEGIN forum_record -->
+<article class="eclipse-forum-list-item eclipse-forum-forum-card" role="listitem">
+    <div class="eclipse-forum-record-main">
+        <div class="eclipse-forum-record-icon" aria-hidden="true">{folderimg}</div>
+        <div class="eclipse-forum-record-copy">
+            <h2 class="eclipse-forum-record-title">
+                <a href="index.php?forum={forum_id}">{forum_name}</a>{!if forumlocked_icon}&nbsp;{forumlocked_icon}{!endif}
+            </h2>
+            {!if forum_desc}<p class="eclipse-forum-record-description">{forum_desc}</p>{!endif}
+        </div>
+    </div>
+
+    <dl class="eclipse-forum-record-stats">
+        <div><dt>{LANGGF01_TOPICS}</dt><dd>{topics}</dd></div>
+        <div><dt>{LANGGF01_POSTS}</dt><dd>{posts}</dd></div>
+    </dl>
+
+    <div class="eclipse-forum-lastpost">
+        <span class="eclipse-forum-meta-label">{LANGGF01_LASTPOST}</span>
+        {!if lastpostURL}<a class="eclipse-forum-lastpost-title" href="{lastpostURL}">{lastpostmsgTopic}</a>{!endif}
+        <span>{lastpostmsgDate}</span>
+        {!if lastpostURL}<span>{lastpostmsgBy}{!if moderator}<br>{moderator}{!endif}</span>{!endif}
+    </div>
+</article>
+<!-- END forum_record -->
+
+{# end {templatelocation} #}
