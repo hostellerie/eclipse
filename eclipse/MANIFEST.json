@@ -46,6 +46,8 @@
     "forum/blocks/centerblock.thtml": "d5679ed6b86d78e72c47a80397d95df9c7f7aa6d8658d9036edcf2993d888e90",
     "forum/blocks/latestpostsblock.thtml": "01d412acb535af74b1b50e5a80c01ea1e53bcf454c4bb97e0fea09bbfedcaf4e",
     "forum/categorylisting.thtml": "aed368a9af425acaf298ff03c2ee0ef4159a1432ba15e1619159ca96fffa2d52",
+    "forum/footer/footer.thtml": "ff903abc8ef622a5ccb87de48321101b0c0565ba71743d9e9f22642431bcc40f",
+    "forum/footer/forum_legend.thtml": "cf933edbd091caa8706925882dbd82df53f1bbf829f997f231bdac57ba484d52",
     "forum/forum_search.thtml": "5998be5676e1621021ff8d0e6adf3268f2bea03f2c5bffc34a9c3258325a4a54",
     "forum/forum.css": "36bbd23aad5ce570b515b1a229b97e25f1fb829c3bf4a0f2e359062be902a8da",
     "forum/functions.php": "284545976371c4049853c12369fd21af7ea05e8e08e052521252fb3ddcdec233",
