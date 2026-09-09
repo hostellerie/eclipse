@@ -2,7 +2,7 @@
 
 Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focuses on readable public pages, a more comfortable editorial workflow, accessible navigation and a built-in Theme Studio.
 
-![Eclipse Template](eclipse/images/geeklog-eclipse-template-available.png)
+![Eclipse Template](docs/geeklog-eclipse-template-available.png)
 
 > **Stable release:** `1.0.0` supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. Back up the site before installation or update.
 
@@ -36,7 +36,7 @@ See [COMPATIBILITY.md](eclipse/COMPATIBILITY.md) for the detailed compatibility 
 5. Select Eclipse in Geeklog and clear the template cache once.
 6. Test the home page, a full article, login/password recovery and Command and Control.
 
-Existing Eclipse installations can upload the release ZIP from **Command and Control â†’ Theme Studio â†’ Updates**.
+Existing Eclipse installations can upload the release ZIP from **Command and Control → Theme Studio → Updates**.
 
 ## Testing and feedback
 
@@ -53,11 +53,12 @@ Use the [release QA checklist](eclipse/QA-CHECKLIST.md) and report reproducible 
 
 ## Repository layout
 
-- `eclipse/` â€” exact installable theme tree and integrity manifest.
-- `quality/` â€” development-only manifest and contract validation tools.
-- `RELEASE-NOTES.md` â€” release notes and release-candidate history.
+- `eclipse/` — exact installable theme tree and integrity manifest.
+- `docs/` — repository documentation assets not shipped in the theme archive.
+- `quality/` — development-only manifest and contract validation tools.
+- `RELEASE-NOTES.md` — release notes and release-candidate history.
 
-Development tools are deliberately excluded from the installable theme archive.
+Development tools and documentation-only assets are deliberately excluded from the installable theme archive.
 
 ## License
 
