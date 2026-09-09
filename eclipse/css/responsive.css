@@ -16,105 +16,118 @@
         justify-content: center;
     }
 
-    /* Theme sidebar preferences remain the fallback for ordinary pages. */
-    .theme-eclipse:not(.hide-left-sidebar):not(.hide-right-sidebar) #wrapper {
-        grid-template-columns: minmax(12rem,17rem) minmax(0,1fr) minmax(12rem,17rem);
-    }
-
-    .theme-eclipse:not(.hide-left-sidebar):not(.hide-right-sidebar) #leftblocks {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    .theme-eclipse:not(.hide-left-sidebar):not(.hide-right-sidebar) #centerblocks {
-        grid-column: 2;
-    }
-
-    .theme-eclipse:not(.hide-left-sidebar):not(.hide-right-sidebar) #rightblocks {
-        grid-column: 3;
-        grid-row: 1;
-    }
-
-    .theme-eclipse.hide-left-sidebar:not(.hide-right-sidebar) #wrapper,
-    .theme-eclipse:not(.hide-left-sidebar).hide-right-sidebar #wrapper {
-        grid-template-columns: minmax(0,1fr) minmax(13rem,19rem);
-    }
-
-    .theme-eclipse:not(.hide-left-sidebar).hide-right-sidebar #leftblocks {
-        grid-column: 1;
-    }
-
-    .theme-eclipse:not(.hide-left-sidebar).hide-right-sidebar #centerblocks {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    .sidebar-position-left.hide-left-sidebar:not(.hide-right-sidebar) #rightblocks {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    .sidebar-position-left.hide-left-sidebar:not(.hide-right-sidebar) #centerblocks {
-        grid-column: 2;
-    }
-
-    /* Geeklog's {layout_columns} class is authoritative for the current page.
-     * Plugin pages can explicitly request no blocks even when Eclipse's global
-     * sidebar preferences are enabled. Honour the actual rendered layout so a
-     * center-only page uses the complete content width.
+    /*
+     * Geeklog's {layout_columns} value describes the blocks that are rendered
+     * for the current page. Eclipse sidebar visibility can then remove one or
+     * both rendered sidebars. Keep this as one explicit matrix so generic
+     * theme preferences can never fight the page layout and swap the content
+     * and sidebar columns.
      */
-    .theme-eclipse.center #wrapper {
+
+    /* Center only, or every rendered sidebar hidden. */
+    body.theme-eclipse.center #wrapper,
+    body.theme-eclipse.left-center.hide-left-sidebar #wrapper,
+    body.theme-eclipse.center-right.hide-right-sidebar #wrapper,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.hide-right-sidebar #wrapper {
         grid-template-columns: minmax(0,1fr);
     }
 
-    .theme-eclipse.center #centerblocks {
+    body.theme-eclipse.center #centerblocks,
+    body.theme-eclipse.left-center.hide-left-sidebar #centerblocks,
+    body.theme-eclipse.center-right.hide-right-sidebar #centerblocks,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.hide-right-sidebar #centerblocks {
         grid-column: 1;
         grid-row: 1;
     }
 
-    .theme-eclipse.left-center #wrapper {
+    /* One visible left block column. */
+    body.theme-eclipse.left-center.show-left-sidebar.sidebar-position-left #wrapper,
+    body.theme-eclipse.left-center-right.show-left-sidebar.hide-right-sidebar.sidebar-position-left #wrapper {
         grid-template-columns: minmax(13rem,19rem) minmax(0,1fr);
     }
 
-    .theme-eclipse.left-center #leftblocks {
+    body.theme-eclipse.left-center.show-left-sidebar.sidebar-position-left #leftblocks,
+    body.theme-eclipse.left-center-right.show-left-sidebar.hide-right-sidebar.sidebar-position-left #leftblocks {
         grid-column: 1;
         grid-row: 1;
     }
 
-    .theme-eclipse.left-center #centerblocks {
+    body.theme-eclipse.left-center.show-left-sidebar.sidebar-position-left #centerblocks,
+    body.theme-eclipse.left-center-right.show-left-sidebar.hide-right-sidebar.sidebar-position-left #centerblocks {
         grid-column: 2;
         grid-row: 1;
     }
 
-    .theme-eclipse.center-right #wrapper {
+    /* The same left block source may be positioned on the right by Eclipse. */
+    body.theme-eclipse.left-center.show-left-sidebar.sidebar-position-right #wrapper,
+    body.theme-eclipse.left-center-right.show-left-sidebar.hide-right-sidebar.sidebar-position-right #wrapper {
         grid-template-columns: minmax(0,1fr) minmax(13rem,19rem);
     }
 
-    .theme-eclipse.center-right #centerblocks {
+    body.theme-eclipse.left-center.show-left-sidebar.sidebar-position-right #centerblocks,
+    body.theme-eclipse.left-center-right.show-left-sidebar.hide-right-sidebar.sidebar-position-right #centerblocks {
         grid-column: 1;
         grid-row: 1;
     }
 
-    .theme-eclipse.center-right #rightblocks {
+    body.theme-eclipse.left-center.show-left-sidebar.sidebar-position-right #leftblocks,
+    body.theme-eclipse.left-center-right.show-left-sidebar.hide-right-sidebar.sidebar-position-right #leftblocks {
         grid-column: 2;
         grid-row: 1;
     }
 
-    .theme-eclipse.left-center-right #wrapper {
+    /* One visible right block column. */
+    body.theme-eclipse.center-right.show-right-sidebar.sidebar-position-right #wrapper,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.show-right-sidebar.sidebar-position-right #wrapper {
+        grid-template-columns: minmax(0,1fr) minmax(13rem,19rem);
+    }
+
+    body.theme-eclipse.center-right.show-right-sidebar.sidebar-position-right #centerblocks,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.show-right-sidebar.sidebar-position-right #centerblocks {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    body.theme-eclipse.center-right.show-right-sidebar.sidebar-position-right #rightblocks,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.show-right-sidebar.sidebar-position-right #rightblocks {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    /* The same right block source may be positioned on the left by Eclipse. */
+    body.theme-eclipse.center-right.show-right-sidebar.sidebar-position-left #wrapper,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.show-right-sidebar.sidebar-position-left #wrapper {
+        grid-template-columns: minmax(13rem,19rem) minmax(0,1fr);
+    }
+
+    body.theme-eclipse.center-right.show-right-sidebar.sidebar-position-left #rightblocks,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.show-right-sidebar.sidebar-position-left #rightblocks {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    body.theme-eclipse.center-right.show-right-sidebar.sidebar-position-left #centerblocks,
+    body.theme-eclipse.left-center-right.hide-left-sidebar.show-right-sidebar.sidebar-position-left #centerblocks {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    /* Both block columns visible: preserve Geeklog's natural L / content / R order. */
+    body.theme-eclipse.left-center-right.show-left-sidebar.show-right-sidebar #wrapper {
         grid-template-columns: minmax(12rem,17rem) minmax(0,1fr) minmax(12rem,17rem);
     }
 
-    .theme-eclipse.left-center-right #leftblocks {
+    body.theme-eclipse.left-center-right.show-left-sidebar.show-right-sidebar #leftblocks {
         grid-column: 1;
         grid-row: 1;
     }
 
-    .theme-eclipse.left-center-right #centerblocks {
+    body.theme-eclipse.left-center-right.show-left-sidebar.show-right-sidebar #centerblocks {
         grid-column: 2;
         grid-row: 1;
     }
 
-    .theme-eclipse.left-center-right #rightblocks {
+    body.theme-eclipse.left-center-right.show-left-sidebar.show-right-sidebar #rightblocks {
         grid-column: 3;
         grid-row: 1;
     }
