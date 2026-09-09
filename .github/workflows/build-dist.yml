@@ -51,8 +51,17 @@ jobs:
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
 
             # Build a purpose-specific runtime package: development documentation
-            # and duplicate SVG icon masters stay in Git, not in the install ZIP.
+            # stays in Git, not in the install ZIP.
             python3 ./quality/prepare-eclipse-package.py
+
+            # Stamp the installable package with the GitHub Actions build time.
+            # Keep theme.ini at the semantic version (for example 1.1.0) so
+            # Geeklog version comparisons and asset cache keys remain stable.
+            build_stamp=$(date -u '+%Y-%m-%d %H:%M UTC')
+            printf '%s\n' "$build_stamp" > .package-stage/eclipse/BUILD.txt
+            printf '\n/* Build identifier injected by GitHub Actions. */\n.eclipse-customizer .eclipse-eyebrow::after{content:" · build %s";}\n' "$build_stamp" >> .package-stage/eclipse/css/studio.css
+            echo "Eclipse $version build: $build_stamp"
+
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
 
             rm -rf dist
