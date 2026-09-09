@@ -88,28 +88,120 @@
 }
 
 /* --- Forum administration ------------------------------------------------
- * The Forum Denim admin templates use UIkit buttons/panels. Their native
- * dimensions are deliberately reduced here to match Eclipse's admin density.
+ * Geeklog 2.1.x Denim renders navbar/#navlist with legacy li-navlist/a-navlist
+ * classes while newer Geeklog renders the same #navlist as a UIkit uk-tab.
+ * Style the stable ids/elements so both generations have the same result.
+ */
+body.eclipse-admin-page #navcontainer {
+    max-width: 100%;
+    margin: 0 0 .75rem;
+    overflow-x: auto;
+}
+
+body.eclipse-admin-page #navlist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0 0 .75rem;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid var(--eclipse-border);
+    list-style: none;
+}
+
+body.eclipse-admin-page #navlist > li,
+body.eclipse-admin-page #navlist > .li-navlist {
+    float: none;
+    margin: 0 0 -1px;
+    padding: 0;
+    list-style: none;
+}
+
+body.eclipse-admin-page #navlist > li > a,
+body.eclipse-admin-page #navlist .a-navlist {
+    display: block;
+    min-height: 2.2rem;
+    padding: .48rem .78rem;
+    border: 1px solid var(--eclipse-border);
+    border-right-width: 0;
+    background: color-mix(in srgb, var(--eclipse-surface) 94%, var(--eclipse-primary) 6%);
+    color: var(--eclipse-text);
+    font-size: .84rem;
+    font-weight: 550;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+body.eclipse-admin-page #navlist > li:first-child > a,
+body.eclipse-admin-page #navlist > .li-navlist:first-child .a-navlist {
+    border-radius: .45rem 0 0 0;
+}
+
+body.eclipse-admin-page #navlist > li:last-child > a,
+body.eclipse-admin-page #navlist > .li-navlist:last-child .a-navlist {
+    border-right-width: 1px;
+    border-radius: 0 .45rem 0 0;
+}
+
+body.eclipse-admin-page #navlist > li > a:hover,
+body.eclipse-admin-page #navlist > li > a:focus-visible,
+body.eclipse-admin-page #navlist .a-navlist:hover,
+body.eclipse-admin-page #navlist .a-navlist:focus-visible {
+    background: color-mix(in srgb, var(--eclipse-primary) 9%, var(--eclipse-surface));
+    color: var(--eclipse-text);
+    text-decoration: none;
+}
+
+body.eclipse-admin-page #navlist > li > a#current,
+body.eclipse-admin-page #navlist > li#active > a,
+body.eclipse-admin-page #navlist .a-navlist#current {
+    border-bottom-color: var(--eclipse-surface);
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font-weight: 700;
+}
+
+/* The Forum Denim admin templates use UIkit buttons/panels. Keep actions
+ * compact on desktop: admin tables can expose four actions for one forum.
  */
 body.eclipse-admin-page .uk-button {
     box-sizing: border-box;
-    min-height: 2.35rem;
-    padding: .42rem .8rem;
-    border-radius: .5rem;
-    font-size: .86rem;
+    min-height: 2.1rem;
+    padding: .34rem .66rem;
+    border-radius: .45rem;
+    font-size: .82rem;
     font-weight: 650;
-    line-height: 1.2;
+    line-height: 1.15;
 }
 
 body.eclipse-admin-page .uk-button.uk-button-small {
-    min-height: 2.1rem;
-    padding: .32rem .68rem;
-    font-size: .82rem;
+    min-height: 1.9rem;
+    padding: .27rem .56rem;
+    font-size: .78rem;
 }
 
 body.eclipse-admin-page .uk-button-primary,
 body.eclipse-admin-page .uk-button-danger {
     box-shadow: none;
+}
+
+body.eclipse-admin-page .uk-button-primary,
+body.eclipse-admin-page .uk-button-primary:hover,
+body.eclipse-admin-page .uk-button-primary:focus,
+body.eclipse-admin-page .uk-button-primary:focus-visible,
+body.eclipse-admin-page .uk-button-danger,
+body.eclipse-admin-page .uk-button-danger:hover,
+body.eclipse-admin-page .uk-button-danger:focus,
+body.eclipse-admin-page .uk-button-danger:focus-visible {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+body.eclipse-admin-page td form.uk-form,
+body.eclipse-admin-page .uk-panel-box form.uk-form {
+    column-gap: .3rem;
+    row-gap: .3rem;
 }
 
 body.eclipse-admin-page .uk-panel-box {
@@ -135,18 +227,23 @@ body.eclipse-admin-page .uk-table {
 
 body.eclipse-admin-page .uk-table th,
 body.eclipse-admin-page .uk-table td {
-    padding: .55rem .65rem;
+    padding: .5rem .58rem;
     border-color: var(--eclipse-border);
 }
 
 body.eclipse-admin-page .uk-tab > li > a {
-    min-height: 2.3rem;
-    padding: .45rem .72rem;
+    min-height: 2.2rem;
+    padding: .48rem .78rem;
     font-size: .84rem;
     line-height: 1.2;
 }
 
 @media (max-width: 47.99rem) {
+    body.eclipse-admin-page #navlist {
+        flex-wrap: nowrap;
+        min-width: max-content;
+    }
+
     body.eclipse-admin-page .uk-button,
     body.eclipse-admin-page .uk-button.uk-button-small {
         min-height: 2.75rem;
