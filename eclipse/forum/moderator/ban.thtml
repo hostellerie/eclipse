@@ -1,0 +1,13 @@
+{# begin {templatelocation} #}
+
+<form class="eclipse-forum-moderation-card" action="{site_url}/forum/moderation.php" method="post">
+    <input type="hidden" name="hostip" value="{hostip}"{xhtml}>
+    <input type="hidden" name="confirmbanip" value="1"{xhtml}>
+    <input type="hidden" name="msgid" value="{fortopicid}"{xhtml}>
+    <div class="eclipse-forum-moderation-actions">
+        <button class="uk-button uk-button-primary" type="submit" name="submit" value="{$LANG_GF01[CONFIRM]}">{$LANG_GF01[CONFIRM]}</button>
+        <button class="uk-button" type="submit" name="submit" value="{$LANG_GF01[CANCEL]}">{$LANG_GF01[CANCEL]}</button>
+    </div>
+</form>
+
+{# end {templatelocation} #}
