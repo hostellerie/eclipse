@@ -1,0 +1,34 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-section eclipse-forum-topic-header" aria-labelledby="eclipse-forum-topic-title">
+    <nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="{site_url}/forum/index.php">{forum_home}</a></li>
+            <li><a href="{site_url}/forum/index.php?category={category_id}">{cat_name}</a></li>
+            <li><a href="{site_url}/forum/index.php?forum={forum_id}">{forum_name}</a></li>
+        </ol>
+    </nav>
+
+    <header class="eclipse-forum-section-header">
+        <div>
+            <h1 id="eclipse-forum-topic-title" class="eclipse-forum-page-title">
+                <a href="viewtopic.php?showtopic={topic_id}">{subject}</a>
+            </h1>
+            {!if geeklog_topic}
+            <p class="eclipse-forum-context">{lang_geeklog_topic} {geeklog_topic}</p>
+            {!endif}
+        </div>
+
+        <div class="eclipse-forum-actions" aria-label="Topic actions">
+            {topicmenu_link}
+            {newtopic_link}
+            {replytopic_link}
+        </div>
+    </header>
+
+    <div class="eclipse-forum-pagination eclipse-forum-pagination-top">
+        {pagenavigation}
+    </div>
+</section>
+
+{# end {templatelocation} #}
