@@ -1,0 +1,126 @@
+{# begin {templatelocation} #}
+
+<article class="eclipse-forum-post glforum-panel-topic-container{csscode}" id="post-{topic_post_id}">
+    <header class="eclipse-forum-post-header">
+        <div class="eclipse-forum-post-meta">
+            <a class="eclipse-forum-post-anchor" href="#post-{topic_post_id}" aria-label="Permalink to this post">#</a>
+            <span>{posted_date}</span>
+            {preview_topic_subject}
+            {read_msg}
+            {topiclocked_icon}
+        </div>
+        {!if mod_functions}
+        <div class="eclipse-forum-post-moderation">{mod_functions}</div>
+        {!endif}
+    </header>
+
+    <div class="eclipse-forum-post-layout">
+        <aside class="eclipse-forum-post-author" aria-label="Author information">
+            {user_information}
+        </aside>
+
+        <div class="eclipse-forum-post-main">
+            <div class="eclipse-forum-post-content glforum-post-link glforum-panel-topic">
+                {topic_comment}
+            </div>
+
+            {!if post_signature}
+            <footer class="eclipse-forum-post-signature">
+                {post_signature}
+            </footer>
+            {!endif}
+
+            <div class="eclipse-forum-post-actions" aria-label="Post actions">
+                {!if likes_control}<span>{likes_control}</span>{!endif}
+                {edittopic_link}
+                {quotetopic_link}
+            </div>
+        </div>
+    </div>
+</article>
+
+{!if blocks_showtopic}
+{blocks_showtopic}
+{!endif}
+
+<!-- BEGIN block_user_name -->
+<h2 class="eclipse-forum-author-name">{userlink}</h2>
+<!-- END block_user_name -->
+
+<!-- BEGIN block_user_information -->
+<div class="eclipse-forum-author-card glforum-panel-userinfo">
+    <div class="eclipse-forum-author-avatar">
+        <figure class="forum-userphoto">
+            {!if avatar}{avatar}{!else}<img src="{site_url}/forum/image_set/avatar.jpg" alt="" class="userphoto"{xhtml}>{!endif}
+        </figure>
+        <div class="eclipse-forum-author-status">{user_status}</div>
+    </div>
+    <div class="eclipse-forum-author-details">
+        <div class="eclipse-forum-author-identity">{user_name}</div>
+        {!if member_badge}<div class="glforum-userinfo-badge">{member_badge}</div>{!endif}
+        {!if user_level}<div class="glforum-userinfo-level">{user_level}</div>{!endif}
+        {!if user_levelname}<div class="glforum-userinfo-levelname">{user_levelname}</div>{!endif}
+        {!if regdate}<div class="glforum-userinfo-regdate">{regdate}</div>{!endif}
+        {!if numposts}<div class="glforum-userinfo-numposts">{numposts}</div>{!endif}
+        {!if location}<div class="glforum-userinfo-location">{location}</div>{!endif}
+        {!if ip_address}<div class="glforum-userinfo-ip">{ip_address}</div>{!endif}
+        <div class="eclipse-forum-author-links">
+            {profile_link}
+            {email_link}
+            {website_link}
+            {pm_link}
+        </div>
+    </div>
+    {!if mood_icon}<div class="eclipse-forum-author-mood">{mood_icon}</div>{!endif}
+</div>
+<!-- END block_user_information -->
+
+<!-- BEGIN block_anon_user_name -->
+<h2 class="eclipse-forum-author-name">{userlink}</h2>
+<!-- END block_anon_user_name -->
+
+<!-- BEGIN block_anon_user_information -->
+<div class="eclipse-forum-author-card glforum-panel-userinfo">
+    <div class="eclipse-forum-author-avatar">
+        <figure class="forum-userphoto">
+            {!if avatar}{avatar}{!else}<img src="{site_url}/forum/image_set/avatar.jpg" alt="" class="userphoto"{xhtml}>{!endif}
+        </figure>
+    </div>
+    <div class="eclipse-forum-author-details">
+        <div class="eclipse-forum-author-identity">{user_name}</div>
+        <div class="glforum-userinfo-badge"><span class="uk-badge">{$LANG_GF01[ANON]}</span></div>
+        {!if ip_address}<div class="glforum-userinfo-ip">{ip_address}</div>{!endif}
+    </div>
+    {!if mood_icon}<div class="eclipse-forum-author-mood">{mood_icon}</div>{!endif}
+</div>
+<!-- END block_anon_user_information -->
+
+<!-- BEGIN location -->
+{$LANG_GF04[label_location]}: {user_location}
+<!-- END location -->
+
+<!-- BEGIN ip_address -->
+{ip}
+<!-- END ip_address -->
+
+<!-- BEGIN anon_ip_address -->
+{ip}
+<!-- END anon_ip_address -->
+
+<!-- BEGIN banned_ip_address -->
+<span style="text-decoration: line-through;">{banned_ip}</span>
+<!-- END banned_ip_address -->
+
+<!-- BEGIN mod_functions -->
+<form class="uk-form eclipse-forum-mod-form" action="{site_url}/forum/moderation.php" method="post">
+    {mod_functions}
+</form>
+<!-- END mod_functions -->
+
+<!-- BEGIN post_signature -->
+<div class="eclipse-forum-signature-content">
+    {user_signature}
+</div>
+<!-- END post_signature -->
+
+{# end {templatelocation} #}
