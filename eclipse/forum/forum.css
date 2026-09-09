@@ -1,0 +1,161 @@
+/* Eclipse presentation layer for the Geeklog Forum plugin.
+ * Keep selectors tied to Forum/UIkit markup so the plugin keeps ownership of
+ * data, permissions and behavior while Eclipse provides the visual skin.
+ */
+
+/* --- Shared Forum surfaces ------------------------------------------------ */
+.glforum-table,
+.glforum-panel-topic,
+.glforum-panel-userinfo,
+.glforum-record,
+.glforum-topic-record {
+    color: var(--eclipse-text);
+}
+
+.glforum-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--eclipse-surface);
+}
+
+.glforum-table th,
+.glforum-table td {
+    padding: .65rem .75rem;
+    border-bottom: 1px solid var(--eclipse-border);
+}
+
+.glforum-category-desc,
+.glforum-lastpost,
+.glforum-topic-lastpost {
+    color: var(--eclipse-muted, #687083);
+}
+
+.glforum-panel-topic-container1,
+.glforum-panel-topic-container2,
+.glforum-panel-topic {
+    background: var(--eclipse-surface) !important;
+}
+
+.glforum-panel-topic,
+.glforum-panel-userinfo {
+    padding: 1rem;
+}
+
+.glforum-grid-divider > [class*='uk-width-']:nth-child(n+2) {
+    border-color: var(--eclipse-border) !important;
+}
+
+.quotemain,
+.glforum-code,
+.codeblock {
+    color: var(--eclipse-text);
+    background: color-mix(in srgb, var(--eclipse-primary) 5%, var(--eclipse-surface));
+    border-color: var(--eclipse-border);
+    border-radius: calc(var(--eclipse-radius) * .75);
+}
+
+.quotemain {
+    border-left: 4px solid var(--eclipse-primary);
+    padding: 1rem;
+}
+
+.glforum-code,
+.codeblock {
+    max-width: 100%;
+    padding: .75rem;
+    overflow: auto;
+}
+
+.glforum-post-link a,
+.glforum-topic-name a,
+.glforum-category-name a {
+    color: var(--eclipse-link, var(--eclipse-primary));
+}
+
+/* --- Forum blocks --------------------------------------------------------- */
+#gl-blockForumNewPosts .uk-table,
+#gl-blockForumNewPosts table {
+    width: 100%;
+    margin-top: .6rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: var(--eclipse-radius);
+    background: var(--eclipse-surface);
+}
+
+#gl-blockForumNewPosts td,
+#gl-blockForumNewPosts th {
+    padding: .6rem .7rem;
+}
+
+/* --- Forum administration ------------------------------------------------
+ * The Forum Denim admin templates use UIkit buttons/panels. Their native
+ * dimensions are deliberately reduced here to match Eclipse's admin density.
+ */
+body.eclipse-admin-page .uk-button {
+    box-sizing: border-box;
+    min-height: 2.35rem;
+    padding: .42rem .8rem;
+    border-radius: .5rem;
+    font-size: .86rem;
+    font-weight: 650;
+    line-height: 1.2;
+}
+
+body.eclipse-admin-page .uk-button.uk-button-small {
+    min-height: 2.1rem;
+    padding: .32rem .68rem;
+    font-size: .82rem;
+}
+
+body.eclipse-admin-page .uk-button-primary,
+body.eclipse-admin-page .uk-button-danger {
+    box-shadow: none;
+}
+
+body.eclipse-admin-page .uk-panel-box {
+    border-color: var(--eclipse-border);
+    border-radius: var(--eclipse-radius);
+    background: var(--eclipse-surface);
+    box-shadow: 0 8px 24px rgba(28, 38, 66, .06);
+}
+
+body.eclipse-admin-page .uk-panel-box fieldset {
+    border-color: var(--eclipse-border);
+}
+
+body.eclipse-admin-page .uk-panel-box legend {
+    color: var(--eclipse-text);
+    font-weight: 750;
+}
+
+body.eclipse-admin-page .uk-table {
+    color: var(--eclipse-text);
+    background: var(--eclipse-surface);
+}
+
+body.eclipse-admin-page .uk-table th,
+body.eclipse-admin-page .uk-table td {
+    padding: .55rem .65rem;
+    border-color: var(--eclipse-border);
+}
+
+body.eclipse-admin-page .uk-tab > li > a {
+    min-height: 2.3rem;
+    padding: .45rem .72rem;
+    font-size: .84rem;
+    line-height: 1.2;
+}
+
+@media (max-width: 47.99rem) {
+    body.eclipse-admin-page .uk-button,
+    body.eclipse-admin-page .uk-button.uk-button-small {
+        min-height: 2.75rem;
+        padding: .55rem .8rem;
+        font-size: .88rem;
+    }
+
+    .glforum-panel-topic,
+    .glforum-panel-userinfo {
+        padding: .75rem;
+    }
+}
