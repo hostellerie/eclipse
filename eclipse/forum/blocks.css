@@ -1,0 +1,173 @@
+/* Eclipse-specific presentation for Forum block template overrides. */
+
+.eclipse-forum-centerblock,
+.eclipse-forum-latestblock {
+    margin: .35rem 0 1rem;
+}
+
+.eclipse-forum-block-title {
+    margin: 0 0 .55rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: var(--eclipse-text);
+}
+
+.eclipse-forum-block-card,
+.eclipse-forum-latestblock-card {
+    overflow: hidden;
+    border: 1px solid var(--eclipse-border);
+    border-radius: var(--eclipse-radius);
+    background: var(--eclipse-surface);
+    box-shadow: 0 8px 24px rgba(28, 38, 66, .04);
+}
+
+.eclipse-forum-block-kicker {
+    padding: .55rem .75rem;
+    border-bottom: 1px solid var(--eclipse-border);
+    background: color-mix(in srgb, var(--eclipse-primary) 5%, var(--eclipse-surface));
+    color: var(--eclipse-muted, #687083);
+    font-size: .76rem;
+    font-weight: 750;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.eclipse-forum-centerblock-list,
+.eclipse-forum-latestblock-list {
+    display: grid;
+}
+
+.eclipse-forum-centerblock-item,
+.eclipse-forum-latestblock-item {
+    margin: 0;
+    padding: 0;
+}
+
+.eclipse-forum-centerblock-item + .eclipse-forum-centerblock-item,
+.eclipse-forum-latestblock-item + .eclipse-forum-latestblock-item {
+    border-top: 1px solid var(--eclipse-border);
+}
+
+.eclipse-forum-centerblock-forum {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem .75rem .25rem;
+}
+
+.eclipse-forum-block-icon {
+    flex: 0 0 auto;
+    font-size: .55rem;
+    color: var(--eclipse-primary);
+}
+
+.eclipse-forum-centerblock-forum-link,
+.eclipse-forum-centerblock-topic-link,
+.eclipse-forum-latestblock-topic {
+    color: var(--eclipse-link, var(--eclipse-primary));
+    text-decoration: none;
+}
+
+.eclipse-forum-centerblock-forum-link {
+    font-size: .82rem;
+    font-weight: 750;
+}
+
+.eclipse-forum-centerblock-topic {
+    padding: .25rem .75rem .7rem 1.75rem;
+}
+
+.eclipse-forum-centerblock-topic-link,
+.eclipse-forum-latestblock-topic {
+    font-weight: 700;
+}
+
+.eclipse-forum-centerblock-meta,
+.eclipse-forum-latestblock-meta,
+.eclipse-forum-latestblock-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem .85rem;
+    margin-top: .35rem;
+    color: var(--eclipse-muted, #687083);
+    font-size: .74rem;
+    line-height: 1.4;
+}
+
+.eclipse-forum-centerblock-meta {
+    justify-content: space-between;
+    padding-top: .4rem;
+    border-top: 1px solid var(--eclipse-border);
+}
+
+.eclipse-forum-centerblock-replies {
+    margin-left: auto;
+    color: var(--eclipse-muted, #687083);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.eclipse-forum-latestblock-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem .6rem;
+    margin-bottom: .5rem;
+    font-size: .76rem;
+}
+
+.eclipse-forum-latestblock-label {
+    color: var(--eclipse-muted, #687083);
+    font-weight: 700;
+}
+
+.eclipse-forum-latestblock-sort {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+}
+
+.eclipse-forum-latestblock-sort a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.75rem;
+    padding: .2rem .5rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: 999px;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-link, var(--eclipse-primary));
+    font-size: .72rem;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.eclipse-forum-latestblock-sort a:hover,
+.eclipse-forum-latestblock-sort a:focus-visible {
+    background: color-mix(in srgb, var(--eclipse-primary) 7%, var(--eclipse-surface));
+}
+
+.eclipse-forum-latestblock-item {
+    padding: .7rem .75rem;
+}
+
+.eclipse-forum-latestblock-stats {
+    margin-top: .2rem;
+}
+
+@media (max-width: 47.99rem) {
+    .eclipse-forum-centerblock-topic {
+        padding-left: .75rem;
+    }
+
+    .eclipse-forum-centerblock-meta,
+    .eclipse-forum-latestblock-meta,
+    .eclipse-forum-latestblock-stats {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: .2rem;
+    }
+
+    .eclipse-forum-centerblock-replies {
+        margin-left: 0;
+    }
+}
