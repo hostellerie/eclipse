@@ -9,25 +9,17 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 }
 
 /**
- * Add the Eclipse-specific Forum presentation layer.
- * forum.css is the single entry point and imports the dedicated block styles.
+ * Forum resolves its theme stylesheet itself on modern Geeklog versions.
+ * Eclipse also imports forum.css from css/plugins.css so Geeklog 2.1.x keeps
+ * the same presentation when Forum does not request plugin CSS without blocks.
+ * Do not register forum.css a second time here: Geeklog 2.2.x would otherwise
+ * emit the same stylesheet twice.
  *
  * @return array
  */
 function forum_css_eclipse()
 {
-    global $_CONF;
-
-    $layoutUrl = rtrim($_CONF['layout_url'], '/');
-
-    return array(
-        array(
-            'name'       => 'eclipse-forum',
-            'file'       => $layoutUrl . '/forum/forum.css',
-            'attributes' => array('media' => 'all'),
-            'priority'   => 275
-        )
-    );
+    return array();
 }
 
 /**
