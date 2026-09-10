@@ -1,7 +1,9 @@
 {# begin {templatelocation} #}
 
 <?php
-$eclipseForumCategoryId = isset($_REQUEST['category']) ? (int) $_REQUEST['category'] : 0;
+$eclipseForumCategoryId = function_exists('eclipse_forum_request_id')
+    ? eclipse_forum_request_id('category')
+    : 0;
 $eclipseForumCategoryName = '';
 if ($eclipseForumCategoryId > 0 && isset($_TABLES['forum_categories']) && function_exists('DB_getItem')) {
     $eclipseForumCategoryName = (string) DB_getItem(
