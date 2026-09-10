@@ -9,23 +9,23 @@
 form[name='forumpost'] {
     box-sizing: border-box;
     width: 100%;
-    max-width: 100%;
+    max-width: 76rem;
     min-width: 0;
-    margin: 0 0 1.25rem;
+    margin: 0 auto 1.25rem;
 }
 
 form[name='forumpost'] .uk-form-row {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    margin: 0 0 .85rem;
+    margin: 0 0 1rem;
 }
 
 form[name='forumpost'] .uk-form-label {
     display: block;
     float: none;
     width: auto;
-    margin: 0 0 .35rem;
+    margin: 0 0 .38rem;
     color: var(--eclipse-text);
     font-weight: 700;
 }
@@ -75,10 +75,22 @@ form[name='forumpost'] textarea {
     line-height: 1.55;
 }
 
+/* Keep the BBCode toolbar compact and wrapping. Older Forum releases place
+ * the toolbar, font controls, help box and smilies in slightly different
+ * wrappers; flex-flow avoids the stretched desktop layout seen on 2.2.x. */
+form[name='forumpost'] [data-uk-button-checkbox],
+form[name='forumpost'] .uk-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+    max-width: 100%;
+}
+
 form[name='forumpost'] .uk-button {
     box-sizing: border-box;
-    min-height: 2.65rem;
-    padding: .5rem .72rem;
+    min-height: 2.55rem;
+    padding: .48rem .68rem;
     border-radius: .45rem;
     line-height: 1.2;
 }
@@ -92,27 +104,21 @@ form[name='forumpost'] .uk-align-right {
     margin: .5rem 0 0;
 }
 
-form[name='forumpost'] [data-uk-button-checkbox],
 form[name='forumpost'] .uk-form-controls > div {
     max-width: 100%;
-}
-
-form[name='forumpost'] [data-uk-button-checkbox] {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: .3rem;
 }
 
 form[name='forumpost'] label select {
     display: inline-block;
     width: auto;
     min-width: 7rem;
-    margin: .25rem .35rem .25rem 0;
+    margin: .25rem .5rem .25rem 0;
 }
 
 form[name='forumpost'] input[name='helpbox'] {
+    display: block;
     width: 100%;
-    margin-top: .4rem;
+    margin-top: .5rem;
 }
 
 form[name='forumpost'] input[type='checkbox'],
@@ -122,6 +128,13 @@ form[name='forumpost'] input[type='radio'] {
 
 form[name='forumpost'] img,
 form[name='forumpost'] iframe {
+    max-width: 100%;
+}
+
+/* Smiley rows in the older Forum template are inline images. Allow natural
+ * wrapping instead of forcing a single long row. */
+form[name='forumpost'] .smiley,
+form[name='forumpost'] [class*='smil'] {
     max-width: 100%;
 }
 
@@ -136,25 +149,26 @@ form[name='forumpost'] ~ .uk-grid iframe {
 
 @media (min-width: 48rem) {
     form[name='forumpost'] .uk-form-row {
-        display: grid;
-        grid-template-columns: minmax(8.5rem, 11rem) minmax(0, 1fr);
-        gap: .6rem 1rem;
-        align-items: start;
-    }
-
-    form[name='forumpost'] .uk-form-label {
-        margin: .55rem 0 0;
+        margin-bottom: 1.1rem;
     }
 
     form[name='forumpost'] .uk-form-controls {
-        grid-column: 2;
-    }
-
-    form[name='forumpost'] .uk-form-row > .uk-form-controls:only-child {
-        grid-column: 1 / -1;
+        width: 100%;
     }
 
     form[name='forumpost'] .uk-align-right {
         justify-content: flex-end;
+    }
+}
+
+@media (max-width: 30rem) {
+    form[name='forumpost'] .uk-button,
+    form[name='forumpost'] label select {
+        min-height: 2.75rem;
+    }
+
+    form[name='forumpost'] .uk-align-right,
+    form[name='forumpost'] .uk-align-right > * {
+        width: 100%;
     }
 }
