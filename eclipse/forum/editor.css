@@ -8,17 +8,23 @@
 
 form[name='forumpost'] {
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    max-width: 76rem;
+    max-width: 68rem;
     min-width: 0;
-    margin: 0 auto 1.25rem;
+    margin: 0 auto 1.5rem;
+}
+
+form[name='forumpost'] > * {
+    order: 50;
 }
 
 form[name='forumpost'] .uk-form-row {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
-    margin: 0 0 1rem;
+    margin: 0 0 .95rem;
 }
 
 form[name='forumpost'] .uk-form-label {
@@ -45,7 +51,7 @@ form[name='forumpost'] textarea {
     box-sizing: border-box;
     max-width: 100%;
     border: 1px solid var(--eclipse-border);
-    border-radius: .45rem;
+    border-radius: .5rem;
     background: var(--eclipse-surface);
     color: var(--eclipse-text);
     font: inherit;
@@ -67,17 +73,102 @@ form[name='forumpost'] #form-forum-text {
     width: 100% !important;
 }
 
-form[name='forumpost'] textarea {
-    width: 100% !important;
-    min-height: 16rem;
-    padding: .7rem;
-    resize: vertical;
-    line-height: 1.55;
+/* Writing-first order. The functional field ids are stable inside each native
+ * Forum template, so the browser can present the composer in a more natural
+ * order without changing the DOM contents or POST contract. */
+form[name='forumpost'] > .uk-form-row:has(#form-forum-subject) {
+    order: 10;
+    margin-bottom: .75rem;
 }
 
-/* Keep the BBCode toolbar compact and wrapping. Older Forum releases place
- * the toolbar, font controls, help box and smilies in slightly different
- * wrappers; flex-flow avoids the stretched desktop layout seen on 2.2.x. */
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) {
+    order: 20;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-text) {
+    order: 30;
+}
+
+form[name='forumpost'] > .uk-form-row:has([class*='smil']),
+form[name='forumpost'] > .uk-form-row:has(img[onclick*='emoticon']) {
+    order: 35;
+}
+
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) {
+    order: 40;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
+    order: 41;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[type='submit']),
+form[name='forumpost'] > .uk-form-row:has(input[type='submit']) {
+    order: 100;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-subject) .uk-form-label {
+    margin-bottom: .45rem;
+    font-size: 1rem;
+}
+
+form[name='forumpost'] #form-forum-subject {
+    min-height: 3rem;
+    padding: .7rem .8rem;
+    font-size: 1.02rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+}
+
+form[name='forumpost'] textarea {
+    width: 100% !important;
+    min-height: 22rem;
+    padding: .85rem .9rem;
+    resize: vertical;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+}
+
+/* Formatting becomes one compact toolbar instead of a large block of controls
+ * spread across the full page width. */
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) {
+    margin-bottom: .6rem;
+    padding: .7rem .8rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .65rem;
+    background: color-mix(in srgb, var(--eclipse-primary) 3%, var(--eclipse-surface));
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) > .uk-form-label {
+    margin: 0 0 .5rem;
+    color: var(--eclipse-muted, #687083);
+    font-size: .78rem;
+    font-weight: 750;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) .uk-form-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem .7rem;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) .uk-form-controls > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+    width: auto;
+    max-width: 100%;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) .uk-form-controls > div:last-child {
+    flex: 1 1 18rem;
+    min-width: 12rem;
+}
+
 form[name='forumpost'] [data-uk-button-checkbox],
 form[name='forumpost'] .uk-button-group {
     display: flex;
@@ -89,10 +180,23 @@ form[name='forumpost'] .uk-button-group {
 
 form[name='forumpost'] .uk-button {
     box-sizing: border-box;
-    min-height: 2.55rem;
-    padding: .48rem .68rem;
+    min-height: 2.45rem;
+    padding: .43rem .65rem;
     border-radius: .45rem;
     line-height: 1.2;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) label.uk-form-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    margin: 0;
+    font-size: .82rem;
+    font-weight: 650;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-code) label.uk-form-label select {
+    margin: 0;
 }
 
 form[name='forumpost'] .uk-align-right {
@@ -118,7 +222,39 @@ form[name='forumpost'] label select {
 form[name='forumpost'] input[name='helpbox'] {
     display: block;
     width: 100%;
-    margin-top: .5rem;
+    min-height: 2.35rem;
+    margin: 0;
+    padding: .4rem .55rem;
+    color: var(--eclipse-muted, #687083);
+    background: color-mix(in srgb, var(--eclipse-surface) 94%, var(--eclipse-bg) 6%);
+    font-size: .78rem;
+}
+
+/* Author and mood are secondary metadata. Keep them compact below the actual
+ * writing area rather than letting them dominate the top of the composer. */
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']),
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: .45rem .7rem;
+    margin-bottom: .55rem;
+    padding: .55rem .7rem;
+    border: 1px solid color-mix(in srgb, var(--eclipse-border) 78%, transparent);
+    border-radius: .5rem;
+    background: color-mix(in srgb, var(--eclipse-surface) 96%, var(--eclipse-bg) 4%);
+}
+
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) .uk-form-label,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) .uk-form-label {
+    margin: 0;
+    color: var(--eclipse-muted, #687083);
+    font-size: .8rem;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) select {
+    min-height: 2.35rem;
+    padding-block: .4rem;
 }
 
 form[name='forumpost'] input[type='checkbox'],
@@ -131,11 +267,16 @@ form[name='forumpost'] iframe {
     max-width: 100%;
 }
 
-/* Smiley rows in the older Forum template are inline images. Allow natural
- * wrapping instead of forcing a single long row. */
+/* Smiley rows stay close to the editor but are visually secondary. */
 form[name='forumpost'] .smiley,
 form[name='forumpost'] [class*='smil'] {
     max-width: 100%;
+}
+
+form[name='forumpost'] > .uk-form-row:has([class*='smil']),
+form[name='forumpost'] > .uk-form-row:has(img[onclick*='emoticon']) {
+    margin: -.1rem 0 .75rem;
+    padding: .45rem .2rem;
 }
 
 /* The plugin emits the topic-review iframe after the form. Keep the native
@@ -148,16 +289,27 @@ form[name='forumpost'] ~ .uk-grid iframe {
 }
 
 @media (min-width: 48rem) {
-    form[name='forumpost'] .uk-form-row {
-        margin-bottom: 1.1rem;
+    form[name='forumpost'] .uk-align-right {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 47.99rem) {
+    form[name='forumpost'] {
+        max-width: 100%;
     }
 
-    form[name='forumpost'] .uk-form-controls {
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-code) {
+        padding: .65rem;
+    }
+
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-code) .uk-form-controls,
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-code) .uk-form-controls > div {
         width: 100%;
     }
 
-    form[name='forumpost'] .uk-align-right {
-        justify-content: flex-end;
+    form[name='forumpost'] textarea {
+        min-height: 18rem;
     }
 }
 
@@ -170,5 +322,10 @@ form[name='forumpost'] ~ .uk-grid iframe {
     form[name='forumpost'] .uk-align-right,
     form[name='forumpost'] .uk-align-right > * {
         width: 100%;
+    }
+
+    form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']),
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
+        grid-template-columns: 1fr;
     }
 }
