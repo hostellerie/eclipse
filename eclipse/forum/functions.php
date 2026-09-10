@@ -9,6 +9,60 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 }
 
 /**
+ * Resolve a numeric Forum request parameter across Geeklog generations.
+ *
+ * Some Forum/Geeklog combinations normalize request variables before the
+ * theme template is rendered. Read the normal superglobals first, then fall
+ * back to QUERY_STRING / REQUEST_URI so presentation logic does not depend on
+ * one particular request-population path.
+ *
+ * @param string $name
+ * @return int
+ */
+function eclipse_forum_request_id($name)
+{
+    $allowed = array('category', 'forum', 'showtopic');
+    if (!in_array($name, $allowed, true)) {
+        return 0;
+    }
+
+    $sources = array();
+    if (isset($_GET[$name])) {
+        $sources[] = $_GET[$name];
+    }
+    if (isset($_REQUEST[$name])) {
+        $sources[] = $_REQUEST[$name];
+    }
+
+    foreach ($sources as $value) {
+        if (is_scalar($value) && preg_match('/^[0-9]+$/', (string) $value)) {
+            return (int) $value;
+        }
+    }
+
+    $queryStrings = array();
+    if (!empty($_SERVER['QUERY_STRING'])) {
+        $queryStrings[] = (string) $_SERVER['QUERY_STRING'];
+    }
+    if (!empty($_SERVER['REQUEST_URI'])) {
+        $query = parse_url((string) $_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+        if (is_string($query) && $query !== '') {
+            $queryStrings[] = $query;
+        }
+    }
+
+    foreach ($queryStrings as $queryString) {
+        $params = array();
+        parse_str($queryString, $params);
+        if (isset($params[$name]) && is_scalar($params[$name]) && preg_match('/^[0-9]+$/', (string) $params[$name])) {
+            return (int) $params[$name];
+        }
+    }
+
+    return 0;
+}
+
+/**
  * Forum's remaining Denim-compatible templates rely on Geeklog's bundled
  * UIkit resources. Geeklog 2.1.1 and 2.2.2 expose those resources differently,
  * so keep that compatibility isolated here instead of leaking version checks
