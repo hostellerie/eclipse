@@ -10,7 +10,7 @@
 
     <header class="eclipse-forum-section-header">
         <div class="eclipse-forum-heading-copy">
-            <h2 id="eclipse-forum-category-{category_id}" class="eclipse-forum-section-title">{cat_name}</h2>
+            <h2 id="eclipse-forum-category-{category_id}" class="eclipse-forum-page-title eclipse-forum-section-title">{cat_name}</h2>
             {!if cat_desc}<p class="eclipse-forum-description">{cat_desc}</p>{!endif}
             {!if geeklog_topic}<p class="eclipse-forum-context">{lang_geeklog_topic} {geeklog_topic}</p>{!endif}
         </div>
