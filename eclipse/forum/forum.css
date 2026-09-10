@@ -163,17 +163,18 @@ body.eclipse-public-page.eclipse-forum-page .forum_menu a:focus-visible {
 }
 
 /* --- Forum administration -----------------------------------------------
+ * forum.css is imported globally by Eclipse, so administration rules must be
+ * restricted to requests that the theme has positively identified as Forum.
  * Geeklog 2.1.x Denim renders navbar/#navlist with legacy li-navlist/a-navlist
  * classes while newer Geeklog renders the same #navlist as a UIkit uk-tab.
- * Style stable ids/elements so both generations keep the same result.
  */
-body.eclipse-admin-page #navcontainer {
+body.eclipse-admin-page.eclipse-forum-page #navcontainer {
     max-width: 100%;
     margin: 0 0 .75rem;
     overflow-x: auto;
 }
 
-body.eclipse-admin-page #navlist {
+body.eclipse-admin-page.eclipse-forum-page #navlist {
     display: flex;
     flex-wrap: wrap;
     gap: 0;
@@ -184,16 +185,16 @@ body.eclipse-admin-page #navlist {
     list-style: none;
 }
 
-body.eclipse-admin-page #navlist > li,
-body.eclipse-admin-page #navlist > .li-navlist {
+body.eclipse-admin-page.eclipse-forum-page #navlist > li,
+body.eclipse-admin-page.eclipse-forum-page #navlist > .li-navlist {
     float: none;
     margin: 0 0 -1px;
     padding: 0;
     list-style: none;
 }
 
-body.eclipse-admin-page #navlist > li > a,
-body.eclipse-admin-page #navlist .a-navlist {
+body.eclipse-admin-page.eclipse-forum-page #navlist > li > a,
+body.eclipse-admin-page.eclipse-forum-page #navlist .a-navlist {
     display: block;
     min-height: 2.2rem;
     padding: .48rem .78rem;
@@ -208,36 +209,36 @@ body.eclipse-admin-page #navlist .a-navlist {
     white-space: nowrap;
 }
 
-body.eclipse-admin-page #navlist > li:first-child > a,
-body.eclipse-admin-page #navlist > .li-navlist:first-child .a-navlist {
+body.eclipse-admin-page.eclipse-forum-page #navlist > li:first-child > a,
+body.eclipse-admin-page.eclipse-forum-page #navlist > .li-navlist:first-child .a-navlist {
     border-radius: .45rem 0 0 0;
 }
 
-body.eclipse-admin-page #navlist > li:last-child > a,
-body.eclipse-admin-page #navlist > .li-navlist:last-child .a-navlist {
+body.eclipse-admin-page.eclipse-forum-page #navlist > li:last-child > a,
+body.eclipse-admin-page.eclipse-forum-page #navlist > .li-navlist:last-child .a-navlist {
     border-right-width: 1px;
     border-radius: 0 .45rem 0 0;
 }
 
-body.eclipse-admin-page #navlist > li > a:hover,
-body.eclipse-admin-page #navlist > li > a:focus-visible,
-body.eclipse-admin-page #navlist .a-navlist:hover,
-body.eclipse-admin-page #navlist .a-navlist:focus-visible {
+body.eclipse-admin-page.eclipse-forum-page #navlist > li > a:hover,
+body.eclipse-admin-page.eclipse-forum-page #navlist > li > a:focus-visible,
+body.eclipse-admin-page.eclipse-forum-page #navlist .a-navlist:hover,
+body.eclipse-admin-page.eclipse-forum-page #navlist .a-navlist:focus-visible {
     background: color-mix(in srgb, var(--eclipse-primary) 9%, var(--eclipse-surface));
     color: var(--eclipse-text);
     text-decoration: none;
 }
 
-body.eclipse-admin-page #navlist > li > a#current,
-body.eclipse-admin-page #navlist > li#active > a,
-body.eclipse-admin-page #navlist .a-navlist#current {
+body.eclipse-admin-page.eclipse-forum-page #navlist > li > a#current,
+body.eclipse-admin-page.eclipse-forum-page #navlist > li#active > a,
+body.eclipse-admin-page.eclipse-forum-page #navlist .a-navlist#current {
     border-bottom-color: var(--eclipse-surface);
     background: var(--eclipse-surface);
     color: var(--eclipse-text);
     font-weight: 700;
 }
 
-body.eclipse-admin-page .uk-button {
+body.eclipse-admin-page.eclipse-forum-page .uk-button {
     box-sizing: border-box;
     min-height: 2.1rem;
     padding: .34rem .66rem;
@@ -247,63 +248,63 @@ body.eclipse-admin-page .uk-button {
     line-height: 1.15;
 }
 
-body.eclipse-admin-page .uk-button.uk-button-small {
+body.eclipse-admin-page.eclipse-forum-page .uk-button.uk-button-small {
     min-height: 1.9rem;
     padding: .27rem .56rem;
     font-size: .78rem;
 }
 
-body.eclipse-admin-page .uk-button-primary,
-body.eclipse-admin-page .uk-button-danger {
+body.eclipse-admin-page.eclipse-forum-page .uk-button-primary,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-danger {
     box-shadow: none;
 }
 
-body.eclipse-admin-page .uk-button-primary,
-body.eclipse-admin-page .uk-button-primary:hover,
-body.eclipse-admin-page .uk-button-primary:focus,
-body.eclipse-admin-page .uk-button-primary:focus-visible,
-body.eclipse-admin-page .uk-button-danger,
-body.eclipse-admin-page .uk-button-danger:hover,
-body.eclipse-admin-page .uk-button-danger:focus,
-body.eclipse-admin-page .uk-button-danger:focus-visible {
+body.eclipse-admin-page.eclipse-forum-page .uk-button-primary,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-primary:hover,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-primary:focus,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-primary:focus-visible,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-danger,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-danger:hover,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-danger:focus,
+body.eclipse-admin-page.eclipse-forum-page .uk-button-danger:focus-visible {
     color: #fff !important;
     text-decoration: none;
 }
 
-body.eclipse-admin-page td form.uk-form,
-body.eclipse-admin-page .uk-panel-box form.uk-form {
+body.eclipse-admin-page.eclipse-forum-page td form.uk-form,
+body.eclipse-admin-page.eclipse-forum-page .uk-panel-box form.uk-form {
     column-gap: .3rem;
     row-gap: .3rem;
 }
 
-body.eclipse-admin-page .uk-panel-box {
+body.eclipse-admin-page.eclipse-forum-page .uk-panel-box {
     border-color: var(--eclipse-border);
     border-radius: var(--eclipse-radius);
     background: var(--eclipse-surface);
     box-shadow: 0 8px 24px rgba(28, 38, 66, .06);
 }
 
-body.eclipse-admin-page .uk-panel-box fieldset {
+body.eclipse-admin-page.eclipse-forum-page .uk-panel-box fieldset {
     border-color: var(--eclipse-border);
 }
 
-body.eclipse-admin-page .uk-panel-box legend {
+body.eclipse-admin-page.eclipse-forum-page .uk-panel-box legend {
     color: var(--eclipse-text);
     font-weight: 750;
 }
 
-body.eclipse-admin-page .uk-table {
+body.eclipse-admin-page.eclipse-forum-page .uk-table {
     color: var(--eclipse-text);
     background: var(--eclipse-surface);
 }
 
-body.eclipse-admin-page .uk-table th,
-body.eclipse-admin-page .uk-table td {
+body.eclipse-admin-page.eclipse-forum-page .uk-table th,
+body.eclipse-admin-page.eclipse-forum-page .uk-table td {
     padding: .5rem .58rem;
     border-color: var(--eclipse-border);
 }
 
-body.eclipse-admin-page .uk-tab > li > a {
+body.eclipse-admin-page.eclipse-forum-page .uk-tab > li > a {
     min-height: 2.2rem;
     padding: .48rem .78rem;
     font-size: .84rem;
@@ -311,13 +312,13 @@ body.eclipse-admin-page .uk-tab > li > a {
 }
 
 @media (max-width: 47.99rem) {
-    body.eclipse-admin-page #navlist {
+    body.eclipse-admin-page.eclipse-forum-page #navlist {
         flex-wrap: nowrap;
         min-width: max-content;
     }
 
-    body.eclipse-admin-page .uk-button,
-    body.eclipse-admin-page .uk-button.uk-button-small,
+    body.eclipse-admin-page.eclipse-forum-page .uk-button,
+    body.eclipse-admin-page.eclipse-forum-page .uk-button.uk-button-small,
     body.eclipse-public-page.eclipse-forum-page .uk-button {
         min-height: 2.75rem;
         padding: .55rem .8rem;
