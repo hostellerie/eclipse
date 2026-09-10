@@ -10,7 +10,7 @@
 
     <header class="eclipse-forum-section-header">
         <div class="eclipse-forum-heading-copy">
-<?php if (empty($_REQUEST['category'])) { ?>
+<?php if (!function_exists('eclipse_forum_request_id') || eclipse_forum_request_id('category') === 0) { ?>
             <h2 id="eclipse-forum-category-{category_id}" class="eclipse-forum-page-title eclipse-forum-section-title">{cat_name}</h2>
 <?php } else { ?>
             <span id="eclipse-forum-category-{category_id}" class="eclipse-forum-section-anchor" aria-hidden="true"></span>
@@ -33,7 +33,7 @@
     <div class="eclipse-forum-record-main">
         <div class="eclipse-forum-record-icon" aria-hidden="true">{folderimg}</div>
         <div class="eclipse-forum-record-copy">
-<?php if (!empty($_REQUEST['category'])) { ?>
+<?php if (function_exists('eclipse_forum_request_id') && eclipse_forum_request_id('category') > 0) { ?>
             <h2 class="eclipse-forum-record-title">
                 <a href="index.php?forum={forum_id}">{forum_name}</a>{!if forumlocked_icon}&nbsp;{forumlocked_icon}{!endif}
             </h2>
