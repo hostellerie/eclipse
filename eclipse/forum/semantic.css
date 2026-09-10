@@ -2,11 +2,16 @@
 
 .eclipse-forum-section {
     min-width: 0;
-    margin: 0 0 1.25rem;
+    margin: 0 0 1.5rem;
+}
+
+.eclipse-forum-home-header {
+    margin-top: 1rem;
+    margin-bottom: 1.15rem;
 }
 
 .eclipse-forum-breadcrumb {
-    margin: 0 0 1rem;
+    margin: 0 0 1.15rem;
 }
 
 .eclipse-forum-breadcrumb ol {
@@ -15,7 +20,7 @@
     align-items: center;
     gap: .3rem .45rem;
     margin: 0;
-    padding: .6rem .75rem;
+    padding: .65rem .8rem;
     border: 1px solid var(--eclipse-border);
     border-radius: .55rem;
     background: color-mix(in srgb, var(--eclipse-primary) 4%, var(--eclipse-surface));
@@ -58,6 +63,11 @@
     color: var(--eclipse-text);
     font-size: clamp(1.45rem, 4vw, 2rem);
     line-height: 1.2;
+}
+
+.eclipse-forum-home .eclipse-forum-page-title {
+    margin-top: .2rem;
+    margin-bottom: .35rem;
 }
 
 .eclipse-forum-page-title a {
@@ -509,6 +519,15 @@
 }
 
 @media (max-width: 30rem) {
+    .eclipse-forum-home-header {
+        margin-top: .75rem;
+        margin-bottom: .9rem;
+    }
+
+    .eclipse-forum-breadcrumb {
+        margin-bottom: .9rem;
+    }
+
     .eclipse-forum-breadcrumb ol {
         padding: .55rem .65rem;
     }
