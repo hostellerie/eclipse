@@ -94,9 +94,35 @@ function forum_css_eclipse()
         ? rtrim($_CONF['site_url'], '/')
         : '';
     $theme = !empty($_CONF['theme']) ? $_CONF['theme'] : 'eclipse';
+
+    // Forum assets change independently from the main theme version. Include
+    // the newest Forum stylesheet mtime in the cache key so CSS edits are
+    // visible immediately after an update, on both Geeklog generations.
     $cacheVersion = function_exists('eclipse_theme_version')
         ? eclipse_theme_version()
         : '1.1.0';
+    $forumCssFiles = array(
+        'forum.css',
+        'blocks.css',
+        'semantic.css',
+        'editor.css',
+        'reports.css',
+        'footer.css'
+    );
+    $forumMtime = 0;
+    foreach ($forumCssFiles as $forumCssFile) {
+        $forumCssPath = __DIR__ . DIRECTORY_SEPARATOR . $forumCssFile;
+        if (is_file($forumCssPath)) {
+            $mtime = @filemtime($forumCssPath);
+            if ($mtime !== false && $mtime > $forumMtime) {
+                $forumMtime = $mtime;
+            }
+        }
+    }
+    if ($forumMtime > 0) {
+        $cacheVersion .= '-' . $forumMtime;
+    }
+
     $version = '?v=' . rawurlencode($cacheVersion);
     $forumRoot = $resourceRoot . '/layout/' . $theme . '/forum/';
 
