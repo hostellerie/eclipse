@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"{xhtml}>
 <title>{page_title_and_site_name}</title>
 <?php
+$eclipseForumSeoPath = rtrim($_CONF['path_layout'], '/\\') . '/includes/forum-seo.php';
+if (is_file($eclipseForumSeoPath)) {
+    require_once $eclipseForumSeoPath;
+    if (function_exists('eclipse_forum_meta_description_tag')) {
+        echo eclipse_forum_meta_description_tag();
+    }
+}
 $eclipseSiteFavicon = !empty($_CONF['path_images']) ? rtrim($_CONF['path_images'], '/\\') . '/favicon.png' : '';
 $eclipseSiteFaviconUrl = '';
 if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
