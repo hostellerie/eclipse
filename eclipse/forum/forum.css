@@ -1,8 +1,13 @@
 @import url("blocks.css");
+@import url("semantic.css");
+@import url("editor.css");
+@import url("reports.css");
+@import url("footer.css");
 
 /* Eclipse compatibility skin for Forum markup that is still owned by the
- * plugin. Semantic Eclipse template overrides live in semantic.css, reports.css
- * and footer.css; the native version-specific editor is styled by editor.css.
+ * plugin. Forum-specific presentation modules are imported above so every
+ * Forum page receives the same CSS even when a Forum release does not invoke
+ * the theme-specific CSS hook consistently.
  */
 
 /* --- Shared Forum content ------------------------------------------------ */
