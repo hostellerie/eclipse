@@ -9,6 +9,27 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 }
 
 /**
+ * Add a cache-busting version to an Eclipse Forum stylesheet while keeping the
+ * public path independent from the server filesystem layout.
+ *
+ * @param string $filename
+ * @return string
+ */
+function eclipse_forum_css_file($filename)
+{
+    global $_CONF;
+
+    $relative = '/layout/' . $_CONF['theme'] . '/forum/' . $filename;
+    $path = rtrim($_CONF['path_layout'], '/\\') . '/forum/' . $filename;
+
+    if (is_file($path)) {
+        return $relative . '?v=' . rawurlencode((string) @filemtime($path));
+    }
+
+    return $relative;
+}
+
+/**
  * Forum's remaining Denim-compatible templates rely on Geeklog's bundled
  * UIkit resources. Geeklog 2.1.1 and 2.2.2 expose those resources differently,
  * so keep that compatibility isolated here instead of leaking version checks
@@ -29,7 +50,7 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
  */
 function forum_css_eclipse()
 {
-    global $_CONF, $LANG_DIRECTION;
+    global $LANG_DIRECTION;
 
     $direction = ($LANG_DIRECTION === 'rtl') ? '_rtl' : '';
     $legacy = !defined('VERSION') || version_compare(VERSION, '2.2.0', '<');
@@ -46,25 +67,25 @@ function forum_css_eclipse()
         ),
         array(
             'name'       => 'eclipse-forum-semantic',
-            'file'       => '/layout/' . $_CONF['theme'] . '/forum/semantic.css',
+            'file'       => eclipse_forum_css_file('semantic.css'),
             'attributes' => array('media' => 'all'),
             'priority'   => 320
         ),
         array(
             'name'       => 'eclipse-forum-editor',
-            'file'       => '/layout/' . $_CONF['theme'] . '/forum/editor.css',
+            'file'       => eclipse_forum_css_file('editor.css'),
             'attributes' => array('media' => 'all'),
             'priority'   => 325
         ),
         array(
             'name'       => 'eclipse-forum-reports',
-            'file'       => '/layout/' . $_CONF['theme'] . '/forum/reports.css',
+            'file'       => eclipse_forum_css_file('reports.css'),
             'attributes' => array('media' => 'all'),
             'priority'   => 330
         ),
         array(
             'name'       => 'eclipse-forum-footer',
-            'file'       => '/layout/' . $_CONF['theme'] . '/forum/footer.css',
+            'file'       => eclipse_forum_css_file('footer.css'),
             'attributes' => array('media' => 'all'),
             'priority'   => 340
         )
