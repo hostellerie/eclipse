@@ -1,5 +1,6 @@
 {# begin {templatelocation} #}
 
+<?php $eclipseForumCategoryPage = !empty($_GET['category']); ?>
 <section class="eclipse-forum-section eclipse-forum-category" aria-labelledby="eclipse-forum-category-{category_id}">
     <nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
         <ol>
@@ -10,7 +11,11 @@
 
     <header class="eclipse-forum-section-header">
         <div class="eclipse-forum-heading-copy">
+<?php if (!$eclipseForumCategoryPage) { ?>
             <h2 id="eclipse-forum-category-{category_id}" class="eclipse-forum-page-title eclipse-forum-section-title">{cat_name}</h2>
+<?php } else { ?>
+            <span id="eclipse-forum-category-{category_id}" class="eclipse-forum-section-anchor" aria-hidden="true"></span>
+<?php } ?>
             {!if cat_desc}<p class="eclipse-forum-description">{cat_desc}</p>{!endif}
             {!if geeklog_topic}<p class="eclipse-forum-context">{lang_geeklog_topic} {geeklog_topic}</p>{!endif}
         </div>
@@ -29,9 +34,15 @@
     <div class="eclipse-forum-record-main">
         <div class="eclipse-forum-record-icon" aria-hidden="true">{folderimg}</div>
         <div class="eclipse-forum-record-copy">
+<?php if ($eclipseForumCategoryPage) { ?>
+            <h2 class="eclipse-forum-record-title">
+                <a href="index.php?forum={forum_id}">{forum_name}</a>{!if forumlocked_icon}&nbsp;{forumlocked_icon}{!endif}
+            </h2>
+<?php } else { ?>
             <h3 class="eclipse-forum-record-title">
                 <a href="index.php?forum={forum_id}">{forum_name}</a>{!if forumlocked_icon}&nbsp;{forumlocked_icon}{!endif}
             </h3>
+<?php } ?>
             {!if forum_desc}<p class="eclipse-forum-record-description">{forum_desc}</p>{!endif}
         </div>
     </div>
