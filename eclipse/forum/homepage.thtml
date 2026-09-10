@@ -2,7 +2,11 @@
 
 <section class="eclipse-forum-home" aria-labelledby="eclipse-forum-index-title">
     <header class="eclipse-forum-section-header eclipse-forum-home-header">
-        <h1 id="eclipse-forum-index-title" class="eclipse-forum-page-title">{forum_home}</h1>
+        <div class="eclipse-forum-heading-copy">
+            <h1 id="eclipse-forum-index-title" class="eclipse-forum-page-title">
+                Forum - {site_name}{!if site_slogan} : {site_slogan}{!endif}
+            </h1>
+        </div>
     </header>
 
     {category_records}
