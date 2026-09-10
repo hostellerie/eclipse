@@ -238,13 +238,14 @@ form[name='forumpost'] iframe {
     max-width: 100%;
 }
 
-/* Author and mood are secondary metadata below the actual writing area. */
+/* Author and mood are secondary metadata below the actual writing area.
+ * Keep label + value/control on a single compact line on normal screens. */
 form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']),
 form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
+    display: flex;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: .4rem .7rem;
+    gap: .45rem .7rem;
     margin-bottom: .45rem;
     padding: .5rem .65rem;
     border: 1px solid color-mix(in srgb, var(--eclipse-border) 78%, transparent);
@@ -252,15 +253,31 @@ form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
     background: color-mix(in srgb, var(--eclipse-surface) 96%, var(--eclipse-bg) 4%);
 }
 
-form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) .uk-form-label,
-form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) .uk-form-label {
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) > .uk-form-label,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-label {
+    flex: 0 0 auto;
+    width: auto !important;
     margin: 0;
     color: var(--eclipse-muted, #687083);
     font-size: .78rem;
+    line-height: 1.2;
+    text-align: left;
+    white-space: nowrap;
+}
+
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) > .uk-form-controls,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-controls {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+    margin: 0 !important;
 }
 
 form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) select {
+    width: auto;
+    min-width: 10rem;
     min-height: 2.3rem;
+    margin: 0;
     padding-block: .35rem;
 }
 
@@ -323,6 +340,11 @@ form[name='forumpost'] ~ .uk-grid iframe {
 
     form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']),
     form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
-        grid-template-columns: 1fr;
+        flex-wrap: wrap;
+    }
+
+    form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) > .uk-form-controls,
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-controls {
+        flex: 1 1 100%;
     }
 }
