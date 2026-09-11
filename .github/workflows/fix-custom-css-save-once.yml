@@ -1,0 +1,113 @@
+name: Fix Custom CSS save once
+
+on:
+  push:
+    branches:
+      - develop-1.1.0
+    paths:
+      - '.github/workflows/fix-custom-css-save-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Fix Custom CSS save flow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          functions = Path('eclipse/functions.php')
+          text = functions.read_text()
+
+          old = "require_once __DIR__ . '/includes/admin-dashboard.php';\n"
+          new = "require_once __DIR__ . '/includes/admin-dashboard.php';\nrequire_once __DIR__ . '/includes/custom-css.php';\n"
+          if "includes/custom-css.php" not in text.split('function theme_config_eclipse', 1)[0]:
+              if old not in text:
+                  raise SystemExit('functions.php require insertion point not found')
+              text = text.replace(old, new, 1)
+
+          old = "    if ($isAdminDashboard) {\n        $cssFiles[] = array('name' => 'eclipse-studio', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/studio.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 280);\n    }"
+          new = "    if ($isAdminDashboard) {\n        $cssFiles[] = array('name' => 'eclipse-studio', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/studio.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 280);\n        $cssFiles[] = array('name' => 'eclipse-custom-css-studio', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/custom-css-studio.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 281);\n    }"
+          if old in text:
+              text = text.replace(old, new, 1)
+
+          old = "function eclipse_render_customizer()\n{\n    global $_CONF, $_TABLES;\n    if (!function_exists('SEC_inGroup') || !SEC_inGroup('Root')) return '';\n    $message = '';"
+          new = "function eclipse_render_customizer()\n{\n    global $_CONF, $_TABLES;\n    if (!function_exists('SEC_inGroup') || !SEC_inGroup('Root')) return '';\n    $customCssActive = isset($_POST['eclipse_custom_css_save']) || isset($_POST['eclipse_custom_css_clear']);\n    if ($customCssActive && function_exists('eclipse_custom_css_handle_request')) {\n        eclipse_custom_css_handle_request();\n    }\n    $message = '';"
+          if old not in text:
+              raise SystemExit('Customizer start not found')
+          text = text.replace(old, new, 1)
+
+          old = "    $html .= '<nav class=\"eclipse-studio-tabs\" role=\"tablist\" aria-label=\"Theme Studio sections\"><button type=\"button\" role=\"tab\" id=\"eclipse-tab-design\" aria-controls=\"eclipse-panel-design\" aria-selected=\"true\">Design</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-preview\" aria-controls=\"eclipse-panel-preview\" aria-selected=\"false\" tabindex=\"-1\">Preview</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-css\" aria-controls=\"eclipse-panel-css\" aria-selected=\"false\" tabindex=\"-1\">CSS</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-updates\" aria-controls=\"eclipse-panel-updates\" aria-selected=\"false\" tabindex=\"-1\">Updates</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-documentation\" aria-controls=\"eclipse-panel-documentation\" aria-selected=\"false\" tabindex=\"-1\">Documentation</button></nav>';"
+          new = "    $html .= '<nav class=\"eclipse-studio-tabs\" role=\"tablist\" aria-label=\"Theme Studio sections\"><button type=\"button\" role=\"tab\" id=\"eclipse-tab-design\" aria-controls=\"eclipse-panel-design\" aria-selected=\"' . ($customCssActive ? 'false' : 'true') . '\"' . ($customCssActive ? ' tabindex=\"-1\"' : '') . '>Design</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-preview\" aria-controls=\"eclipse-panel-preview\" aria-selected=\"false\" tabindex=\"-1\">Preview</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-css\" aria-controls=\"eclipse-panel-css\" aria-selected=\"' . ($customCssActive ? 'true' : 'false') . '\"' . ($customCssActive ? '' : ' tabindex=\"-1\"') . '>CSS</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-updates\" aria-controls=\"eclipse-panel-updates\" aria-selected=\"false\" tabindex=\"-1\">Updates</button><button type=\"button\" role=\"tab\" id=\"eclipse-tab-documentation\" aria-controls=\"eclipse-panel-documentation\" aria-selected=\"false\" tabindex=\"-1\">Documentation</button></nav>';"
+          if old not in text:
+              raise SystemExit('Tabs string not found')
+          text = text.replace(old, new, 1)
+
+          old = "<div id=\"eclipse-panel-design\" class=\"eclipse-studio-panel\" role=\"tabpanel\" aria-labelledby=\"eclipse-tab-design\">"
+          new = "<div id=\"eclipse-panel-design\" class=\"eclipse-studio-panel\" role=\"tabpanel\" aria-labelledby=\"eclipse-tab-design\"' . ($customCssActive ? ' hidden' : '') . '>"
+          if old not in text:
+              raise SystemExit('Design panel start not found')
+          text = text.replace(old, new, 1)
+
+          old = "$customCssClear = $customCssFr ? 'Vider le CSS' : 'Clear CSS';\n    $html .= '<section id=\"eclipse-panel-css\" class=\"eclipse-studio-panel eclipse-custom-css-panel\" role=\"tabpanel\" aria-labelledby=\"eclipse-tab-css\" hidden><form method=\"post\" action=\"#eclipse-theme-studio\" class=\"eclipse-custom-css-form\">"
+          new = "$customCssClear = $customCssFr ? 'Vider le CSS' : 'Clear CSS';\n    $customCssConfirm = $customCssFr ? 'Vider tout le CSS personnalisé ?' : 'Clear all Custom CSS?';\n    $customCssAction = !empty($_CONF['site_admin_url']) ? rtrim((string) $_CONF['site_admin_url'], '/') . '/index.php#eclipse-theme-studio' : '#eclipse-theme-studio';\n    $html .= '<section id=\"eclipse-panel-css\" class=\"eclipse-studio-panel eclipse-custom-css-panel\" role=\"tabpanel\" aria-labelledby=\"eclipse-tab-css\"' . ($customCssActive ? '' : ' hidden') . '><form method=\"post\" action=\"' . $h($customCssAction) . '\" class=\"eclipse-custom-css-form\">"
+          if old not in text:
+              raise SystemExit('Custom CSS panel opening not found')
+          text = text.replace(old, new, 1)
+
+          old = "<div class=\"eclipse-custom-css-actions\"><button type=\"submit\" name=\"eclipse_custom_css_clear\" value=\"1\" class=\"eclipse-reset\">' . $h($customCssClear) . '</button><button type=\"submit\" name=\"eclipse_custom_css_save\" value=\"1\">' . $h($customCssSave) . '</button></div>"
+          new = "<div class=\"eclipse-custom-css-actions\"><button type=\"submit\" name=\"eclipse_custom_css_clear\" value=\"1\" class=\"eclipse-reset\" onclick=\"return window.confirm(&quot;' . $h($customCssConfirm) . '&quot;);\">' . $h($customCssClear) . '</button><button type=\"submit\" name=\"eclipse_custom_css_save\" value=\"1\">' . $h($customCssSave) . '</button></div>"
+          if old not in text:
+              raise SystemExit('Custom CSS action buttons not found')
+          text = text.replace(old, new, 1)
+
+          functions.write_text(text)
+
+          header = Path('eclipse/header.thtml')
+          h = header.read_text()
+          old = "$eclipseCustomCssInclude = rtrim($_CONF['path_layout'], '/\\\\') . '/includes/custom-css.php';\nif (is_file($eclipseCustomCssInclude)) {\n    require_once $eclipseCustomCssInclude;\n    if (function_exists('eclipse_custom_css_handle_request')) {\n        eclipse_custom_css_handle_request();\n    }\n}\n"
+          new = "$eclipseCustomCssInclude = rtrim($_CONF['path_layout'], '/\\\\') . '/includes/custom-css.php';\nif (is_file($eclipseCustomCssInclude)) {\n    require_once $eclipseCustomCssInclude;\n}\n"
+          if old not in h:
+              raise SystemExit('Header Custom CSS handler block not found')
+          h = h.replace(old, new, 1)
+
+          old = "$eclipseCustomCssStudioCssPath = rtrim($_CONF['path_layout'], '/\\\\') . '/css/custom-css-studio.css';\n$eclipseCustomCssStudioCssVersion = is_file($eclipseCustomCssStudioCssPath) ? (string) @filemtime($eclipseCustomCssStudioCssPath) : eclipse_theme_version();\n?>\n<link rel=\"stylesheet\" href=\"{layout_url}/css/custom-css-studio.css?v=<?php echo rawurlencode($eclipseCustomCssStudioCssVersion); ?>\" media=\"all\"{xhtml}>\n"
+          if old in h:
+              h = h.replace(old, "?>\n", 1)
+          header.write_text(h)
+
+          css = Path('eclipse/css/custom-css-studio.css')
+          c = css.read_text()
+          if '.eclipse-custom-css-actions button+button' not in c:
+              c += '\n.eclipse-custom-css-actions button+button{margin-left:.65rem}\n'
+          css.write_text(c)
+          PY
+
+          php -l eclipse/functions.php
+          php -l eclipse/includes/custom-css.php
+
+          rm -f .github/workflows/fix-custom-css-save-once.yml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix Custom CSS save and clear flow"
+
+          for attempt in 1 2 3; do
+            if git push origin HEAD:develop-1.1.0; then
+              exit 0
+            fi
+            git fetch origin develop-1.1.0
+            git rebase origin/develop-1.1.0
+          done
+          exit 1
