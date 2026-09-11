@@ -1,0 +1,19 @@
+{# begin {templatelocation} #}
+
+<footer class="eclipse-forum-topic-footer">
+    <div class="eclipse-forum-pagination">
+        {pagenavigation}
+    </div>
+
+    <div class="eclipse-forum-footer-actions">
+        {!if page_generated_time}
+        <div class="eclipse-forum-page-time">{page_generated_time}</div>
+        {!endif}
+        <div class="eclipse-forum-actions" aria-label="Topic actions">
+            {newtopic_link}
+            {replytopic_link}
+        </div>
+    </div>
+</footer>
+
+{# end {templatelocation} #}
