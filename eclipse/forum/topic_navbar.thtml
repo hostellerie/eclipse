@@ -23,10 +23,6 @@
             {topicmenu_link}
         </div>
     </header>
-
-    <div class="eclipse-forum-pagination eclipse-forum-pagination-top">
-        {pagenavigation}
-    </div>
 </section>
 
 {# end {templatelocation} #}
