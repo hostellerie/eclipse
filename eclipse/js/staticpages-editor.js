@@ -5,6 +5,18 @@
         return (document.documentElement.lang || '').toLowerCase().indexOf('fr') === 0;
     }
 
+    function detachTitleToId(form) {
+        var titleInput = form.querySelector('input[name="sp_title"]');
+        if (!titleInput) return;
+
+        /* Existing Static Page IDs must only change through the ID field.
+         * Geeklog's title-to-ID helper is useful when creating a page, but once
+         * an URL exists the title and ID must remain independent. Remove the
+         * inline handler defensively in case a plugin/template still emitted it. */
+        titleInput.removeAttribute('onkeyup');
+        titleInput.onkeyup = null;
+    }
+
     function enhance(form) {
         if (!form || form.dataset.eclipseStaticpageEnhanced === '1') return;
         form.dataset.eclipseStaticpageEnhanced = '1';
@@ -17,6 +29,10 @@
         var existingId = (oldId.value || '').trim();
         var titleToIdEnabled = document.body.classList.contains('eclipse-titletoid-enabled');
         if (!titleToIdEnabled || existingId === '') return;
+
+        /* On an existing page the public URL already exists. From this point on,
+         * changing the title must never regenerate the ID, even after unlocking. */
+        detachTitleToId(form);
 
         var fr = isFrench();
         var originalId = idInput.value;
@@ -52,6 +68,10 @@
                     ? 'Modifier cet ID changera l’URL de la page statique et peut casser des liens existants. Continuer ?'
                     : 'Changing this ID changes the Static Page URL and may break existing links. Continue?';
                 if (!window.confirm(warning)) return;
+
+                /* Unlocking authorizes direct editing of the ID only. It must not
+                 * re-enable or preserve any title-to-ID synchronization. */
+                detachTitleToId(form);
                 idInput.readOnly = false;
                 idInput.classList.remove('eclipse-staticpage-id-locked');
                 idInput.removeAttribute('aria-readonly');
