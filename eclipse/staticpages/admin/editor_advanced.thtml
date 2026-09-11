@@ -11,7 +11,34 @@
         <input type="text" maxlength="128" {!if titletoid}onkeyup="TitleToId('sp-advanced_editor-sp_title','sp-advanced_editor-sp_id');" {!endif}name="sp_title" value="{sp_title}" id="sp-advanced_editor-sp_title" class="size5"{xhtml}>
       </div>
 
-      <div class="eclipse-sp-identity-grid">
+      <div class="eclipse-sp-editor-controls">
+        <div class="eclipse-sp-editor-mode">
+          <label for="sel_editmode">{lang_postmode}</label>
+          <select name="postmode" id="sel_editmode" {change_editormode}>{post_options}</select>
+        </div>
+        <div id="sel_toolbar" class="eclipse-sp-toolbar" style="display:{show_adveditor};">
+          <label for="adveditor_toolbar_selector">{lang_toolbar}</label>
+          <select id="adveditor_toolbar_selector" name="adveditor_toolbar_selector" onchange="changeToolbar(this.value);"><option value="editor-toolbar1">{toolbar1}</option><option value="editor-toolbar2" selected="selected">{toolbar2}</option><option value="editor-toolbar3">{toolbar3}</option><option value="Default">{toolbar5}</option></select>
+        </div>
+      </div>
+
+      <div class="story_editor eclipse-sp-content-field">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+          <tr id="advanced_editarea" style="display:{show_adveditor};"><td><textarea id="adv_content" name="sp_content" cols="70" rows="40">{sp_content}</textarea><div class="eclipse-sp-help">{lang_allowed_html}</div></td></tr>
+          <tr id="html_editarea" style="display:{show_htmleditor};"><td><textarea id="html_content" name="sp_content" cols="70" rows="40" wrap="virtual">{sp_content}</textarea><div class="eclipse-sp-help warningsmall">{lang_allowed_html}</div></td></tr>
+        </table>
+      </div>
+    </section>
+
+    <nav class="eclipse-sp-tabs" role="tablist" aria-label="Static Page settings">
+      <button type="button" role="tab" aria-selected="true" aria-controls="eclipse-sp-panel-publishing" id="eclipse-sp-tab-publishing">Publishing</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-seo" id="eclipse-sp-tab-seo" tabindex="-1">SEO &amp; display</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-advanced" id="eclipse-sp-tab-advanced" tabindex="-1">Advanced</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-access" id="eclipse-sp-tab-access" tabindex="-1">Access</button>
+    </nav>
+
+    <section id="eclipse-sp-panel-publishing" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-publishing">
+      <div class="eclipse-sp-identity-grid eclipse-sp-settings-identity">
         <div>
           <label for="sp-advanced_editor-sp_id">{lang_id}</label>
           <div class="eclipse-staticpage-id-wrap">
@@ -25,44 +52,12 @@
           <span class="break-word eclipse-sp-url">{example_url}</span>
         </div>
       </div>
-
-      <div class="eclipse-sp-page-title-row">
-        <label for="sp-advanced_editor-sp_page_title">{lang_page_title}</label>
-        <input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-advanced_editor-sp_page_title" class="size5"{xhtml}>
-      </div>
-
-      <div class="eclipse-sp-editor-mode">
-        <label for="sel_editmode">{lang_postmode}</label>
-        <select name="postmode" id="sel_editmode" {change_editormode}>{post_options}</select>
-      </div>
-
-      <div class="story_editor eclipse-sp-content-field">
-        <div id="sel_toolbar" class="eclipse-sp-toolbar" style="display:{show_adveditor};">
-          <label for="adveditor_toolbar_selector">{lang_toolbar}</label>
-          <select id="adveditor_toolbar_selector" name="adveditor_toolbar_selector" onchange="changeToolbar(this.value);"><option value="editor-toolbar1">{toolbar1}</option><option value="editor-toolbar2" selected="selected">{toolbar2}</option><option value="editor-toolbar3">{toolbar3}</option><option value="Default">{toolbar5}</option></select>
-        </div>
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
-          <tr id="advanced_editarea" style="display:{show_adveditor};"><td><textarea id="adv_content" name="sp_content" cols="70" rows="30">{sp_content}</textarea><div class="eclipse-sp-help">{lang_allowed_html}</div></td></tr>
-          <tr id="html_editarea" style="display:{show_htmleditor};"><td><textarea id="html_content" name="sp_content" cols="70" rows="30" wrap="virtual">{sp_content}</textarea><div class="eclipse-sp-help warningsmall">{lang_allowed_html}</div></td></tr>
-        </table>
-      </div>
-    </section>
-
-    <nav class="eclipse-sp-tabs" role="tablist" aria-label="Static Page settings">
-      <button type="button" role="tab" aria-selected="true" aria-controls="eclipse-sp-panel-publishing" id="eclipse-sp-tab-publishing">Publishing</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-seo" id="eclipse-sp-tab-seo" tabindex="-1">SEO &amp; display</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-advanced" id="eclipse-sp-tab-advanced" tabindex="-1">Advanced</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-access" id="eclipse-sp-tab-access" tabindex="-1">Access</button>
-    </nav>
-
-    <section id="eclipse-sp-panel-publishing" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-publishing">
       <dl class="form_block">
         <dt><label for="sp-advanced_editor-sp_onmenu">{lang_addtomenu}</label></dt><dd class="controls_text"><input type="checkbox" name="sp_onmenu" id="sp-advanced_editor-sp_onmenu" {onmenu_checked}{xhtml}></dd>
         <dt><label for="sp-advanced_editor-sp_label">{lang_label}</label></dt><dd><input type="text" name="sp_label" maxlength="64" value="{sp_label}" id="sp-advanced_editor-sp_label" class="size5"{xhtml}></dd>
         <dt><label>{lang_topic}</label></dt><dd class="controls_text">{topic_selection}</dd>
         <dt><label for="sp-advanced_editor-sp_format">{lang_pageformat}</label></dt><dd><select name="sp_format" id="sp-advanced_editor-sp_format"><option value="blankpage" {blankpage_selected}>{lang_blankpage}</option><option value="noblocks" {noblock_selected}>{lang_noblocks}</option><option value="leftblocks" {leftblocks_selected}>{lang_leftblocks}</option><option value="allblocks" {allblocks_selected}>{lang_leftrightblocks}</option></select></dd>
         <dt><label for="sp-advanced_editor-commentcode">{lang_mode}</label></dt><dd><select name="commentcode" id="sp-advanced_editor-commentcode">{comment_options}</select></dd>
-        <dt><label for="sp-advanced_editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-advanced_editor-structureddata">{structured_data_options}</select></dd>
         <dt><label for="sp-advanced_editor-draft_flag">{lang_draft}</label></dt><dd class="controls_text"><input type="checkbox" name="draft_flag" id="sp-advanced_editor-draft_flag" {draft_flag_checked}{xhtml}></dd>
         <dt><label for="sp-advanced_editor-search">{lang_search}</label></dt><dd><select name="search" id="sp-advanced_editor-search">{search_options}</select></dd><dd class="description">{lang_search_desc}</dd>
         <dt><label for="sp-advanced_editor-likes">{lang_likes}</label></dt><dd><select name="likes" id="sp-advanced_editor-likes">{likes_options}</select></dd><dd class="description">{lang_likes_desc}</dd>
@@ -77,6 +72,8 @@
 
     <section id="eclipse-sp-panel-seo" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-seo" hidden>
       <dl class="form_block">
+        <dt><label for="sp-advanced_editor-sp_page_title">{lang_page_title}</label></dt><dd><input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-advanced_editor-sp_page_title" class="size5"{xhtml}></dd>
+        <dt><label for="sp-advanced_editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-advanced_editor-structureddata">{structured_data_options}</select></dd>
         <dt{hide_meta}><label for="sp-advanced_editor-meta_description">{lang_metadescription}</label></dt><dd{hide_meta}><textarea name="meta_description" cols="70" rows="4" id="sp-advanced_editor-meta_description" class="wide">{meta_description}</textarea></dd>
         <dt{hide_meta}><label for="sp-advanced_editor-meta_keywords">{lang_metakeywords}</label></dt><dd{hide_meta}><textarea name="meta_keywords" cols="70" rows="3" id="sp-advanced_editor-meta_keywords" class="wide">{meta_keywords}</textarea></dd>
         <dt><label for="sp-advanced_editor-sp_centerblock">{lang_centerblock}</label></dt><dd class="controls_text"><input type="checkbox" name="sp_centerblock" id="sp-advanced_editor-sp_centerblock" {centerblock_checked}{xhtml}> {lang_centerblock_msg}</dd>
