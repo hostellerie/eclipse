@@ -20,8 +20,6 @@
         </div>
     </header>
 
-    <div class="eclipse-forum-pagination eclipse-forum-pagination-top">{pagenavigation}</div>
-
     <div class="eclipse-forum-list eclipse-forum-topic-cards" role="list">
         {topic_record}
         {no_records_message}
