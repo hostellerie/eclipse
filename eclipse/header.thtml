@@ -15,9 +15,6 @@ if (is_file($eclipseForumSeoPath)) {
 $eclipseCustomCssInclude = rtrim($_CONF['path_layout'], '/\\') . '/includes/custom-css.php';
 if (is_file($eclipseCustomCssInclude)) {
     require_once $eclipseCustomCssInclude;
-    if (function_exists('eclipse_custom_css_handle_request')) {
-        eclipse_custom_css_handle_request();
-    }
 }
 $eclipseSiteFavicon = !empty($_CONF['path_images']) ? rtrim($_CONF['path_images'], '/\\') . '/favicon.png' : '';
 $eclipseSiteFaviconUrl = '';
@@ -52,10 +49,7 @@ if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
 <?php
 $eclipseAdminI18nPath = rtrim($_CONF['path_layout'], '/\\') . '/js/admin-i18n.js';
 $eclipseAdminI18nVersion = is_file($eclipseAdminI18nPath) ? (string) @filemtime($eclipseAdminI18nPath) : eclipse_theme_version();
-$eclipseCustomCssStudioCssPath = rtrim($_CONF['path_layout'], '/\\') . '/css/custom-css-studio.css';
-$eclipseCustomCssStudioCssVersion = is_file($eclipseCustomCssStudioCssPath) ? (string) @filemtime($eclipseCustomCssStudioCssPath) : eclipse_theme_version();
 ?>
-<link rel="stylesheet" href="{layout_url}/css/custom-css-studio.css?v=<?php echo rawurlencode($eclipseCustomCssStudioCssVersion); ?>" media="all"{xhtml}>
 <script>window.ECLIPSE_LANG=<?php echo eclipse_lang_js(); ?>;</script>
 <script src="{layout_url}/js/admin-i18n.js?v=<?php echo rawurlencode($eclipseAdminI18nVersion); ?>"></script>
 <?php } ?>
