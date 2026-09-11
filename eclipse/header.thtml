@@ -12,6 +12,13 @@ if (is_file($eclipseForumSeoPath)) {
         echo eclipse_forum_meta_description_tag();
     }
 }
+$eclipseCustomCssInclude = rtrim($_CONF['path_layout'], '/\\') . '/includes/custom-css.php';
+if (is_file($eclipseCustomCssInclude)) {
+    require_once $eclipseCustomCssInclude;
+    if (function_exists('eclipse_custom_css_handle_request')) {
+        eclipse_custom_css_handle_request();
+    }
+}
 $eclipseSiteFavicon = !empty($_CONF['path_images']) ? rtrim($_CONF['path_images'], '/\\') . '/favicon.png' : '';
 $eclipseSiteFaviconUrl = '';
 if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
@@ -40,10 +47,26 @@ if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
 <?php if (!eclipse_is_admin_request()) { ?>{jsonld}<?php } ?>
 <?php echo eclipse_adsense_header_script(); ?>
 <style><?php echo eclipse_theme_css_variables(); ?></style>
+<?php if (function_exists('eclipse_custom_css_tag')) echo eclipse_custom_css_tag(); ?>
 <?php if (eclipse_is_admin_request()) { ?>
-<?php $eclipseAdminI18nPath = rtrim($_CONF['path_layout'], '/\\') . '/js/admin-i18n.js'; $eclipseAdminI18nVersion = is_file($eclipseAdminI18nPath) ? (string) @filemtime($eclipseAdminI18nPath) : eclipse_theme_version(); ?>
-<script>window.ECLIPSE_LANG=<?php echo eclipse_lang_js(); ?>;</script>
+<?php
+$eclipseAdminI18nPath = rtrim($_CONF['path_layout'], '/\\') . '/js/admin-i18n.js';
+$eclipseAdminI18nVersion = is_file($eclipseAdminI18nPath) ? (string) @filemtime($eclipseAdminI18nPath) : eclipse_theme_version();
+$eclipseCustomCssStudioCssPath = rtrim($_CONF['path_layout'], '/\\') . '/css/custom-css-studio.css';
+$eclipseCustomCssStudioCssVersion = is_file($eclipseCustomCssStudioCssPath) ? (string) @filemtime($eclipseCustomCssStudioCssPath) : eclipse_theme_version();
+$eclipseCustomCssJsPath = rtrim($_CONF['path_layout'], '/\\') . '/js/custom-css.js';
+$eclipseCustomCssJsVersion = is_file($eclipseCustomCssJsPath) ? (string) @filemtime($eclipseCustomCssJsPath) : eclipse_theme_version();
+$eclipseCustomCssValue = function_exists('eclipse_custom_css_read') ? eclipse_custom_css_read() : '';
+$eclipseCustomCssNotice = function_exists('eclipse_custom_css_notice') ? eclipse_custom_css_notice() : array();
+$eclipseCustomCssJson = json_encode($eclipseCustomCssValue, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+$eclipseCustomCssNoticeJson = json_encode($eclipseCustomCssNotice, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+if ($eclipseCustomCssJson === false) $eclipseCustomCssJson = '""';
+if ($eclipseCustomCssNoticeJson === false) $eclipseCustomCssNoticeJson = '{}';
+?>
+<link rel="stylesheet" href="{layout_url}/css/custom-css-studio.css?v=<?php echo rawurlencode($eclipseCustomCssStudioCssVersion); ?>" media="all"{xhtml}>
+<script>window.ECLIPSE_LANG=<?php echo eclipse_lang_js(); ?>;window.ECLIPSE_CUSTOM_CSS=<?php echo $eclipseCustomCssJson; ?>;window.ECLIPSE_CUSTOM_CSS_NOTICE=<?php echo $eclipseCustomCssNoticeJson; ?>;</script>
 <script src="{layout_url}/js/admin-i18n.js?v=<?php echo rawurlencode($eclipseAdminI18nVersion); ?>"></script>
+<script src="{layout_url}/js/custom-css.js?v=<?php echo rawurlencode($eclipseCustomCssJsVersion); ?>"></script>
 <?php } ?>
 </head>
 <?php
