@@ -1,5 +1,48 @@
 {# begin {templatelocation} #}
 
+<style>
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"] {
+    box-sizing: border-box;
+    width: auto;
+    min-width: 0;
+    min-height: 2.15rem;
+    margin: 0;
+    padding: .3rem .6rem;
+    border: 1px solid var(--eclipse-primary);
+    border-radius: .4rem;
+    background: var(--eclipse-primary) !important;
+    color: #fff !important;
+    font: inherit;
+    font-size: .76rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-shadow: none;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"]:hover,
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"]:focus,
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"]:active {
+    background: var(--eclipse-primary) !important;
+    color: #fff !important;
+    border-color: var(--eclipse-primary);
+    text-shadow: none;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"]:focus-visible {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form select {
+    min-height: 2.15rem;
+    padding-top: .28rem;
+    padding-bottom: .28rem;
+    vertical-align: middle;
+}
+</style>
+
 <article class="eclipse-forum-post glforum-panel-topic-container{csscode}" id="post-{topic_post_id}">
     <header class="eclipse-forum-post-header">
         <div class="eclipse-forum-post-meta">
