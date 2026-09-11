@@ -221,6 +221,7 @@
     "jquery_ui/jquery-ui.geeklog.css": "4b4ed283a9652dd6ada98452d64b961847adae406a95fd11e8db5170183ab613",
     "js/admin-i18n.js": "68298780c1d5b105d7e48afc6698f465ec3105e7c570eb97232899f333b70e81",
     "js/admin.js": "704eb099e8d35ee935b5dbcf5fdf6bd39c538722a805196ca1738aa00e95def7",
+    "js/staticpages-editor.js": "c348916c3183e33f6b946d296e83a5b5e22d3d00b48ab5e3e943e823e5e98740",
     "js/theme.js": "389fe1284fbfcbc4c9c77e50a986c159fe0809fddae8db72ef6eebe37174ea2e",
     "language/english-extra.php": "78d5222117692f33173ff683332677d953de2c7ced01c6b169532c00c66f824b",
     "language/english.php": "d430f342316f9194726100939c8a39980167d7bea7de42c4abf9fe3c95bbcd12",
