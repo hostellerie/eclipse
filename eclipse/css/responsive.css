@@ -100,6 +100,124 @@
     }
 }
 
+/* Native Geeklog pagination rendered through Eclipse pagenavigation.thtml. */
+body.theme-eclipse .gl-pagenav {
+    display: block;
+    margin-block: 1.5rem;
+}
+
+body.theme-eclipse .gl-pagenav-message {
+    margin: 0 0 .65rem;
+    text-align: center;
+    color: var(--eclipse-muted);
+}
+
+body.theme-eclipse .gl-pagenav-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.theme-eclipse .gl-pagenav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+body.theme-eclipse .gl-pagenav-item > a,
+body.theme-eclipse .gl-pagenav-item > span,
+body.theme-eclipse .gl-pagenav-page > a,
+body.theme-eclipse .gl-pagenav-page > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.7rem;
+    padding: .45rem .75rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .6rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-link);
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+}
+
+body.theme-eclipse .gl-pagenav-page > a,
+body.theme-eclipse .gl-pagenav-page > span {
+    min-width: 2.7rem;
+    padding-inline: .55rem;
+}
+
+body.theme-eclipse .gl-pagenav-item > a:hover,
+body.theme-eclipse .gl-pagenav-item > a:focus-visible {
+    border-color: var(--eclipse-primary);
+    color: var(--eclipse-primary);
+}
+
+body.theme-eclipse .gl-pagenav-page.is-current > span {
+    border-color: var(--eclipse-primary);
+    background: var(--eclipse-primary);
+    color: #fff;
+}
+
+body.theme-eclipse .gl-pagenav-item.is-disabled > span {
+    opacity: .48;
+    cursor: default;
+}
+
+@media (max-width:40rem) {
+    body.theme-eclipse .gl-pagenav-list {
+        gap: .5rem;
+    }
+
+    body.theme-eclipse .gl-pagenav-first,
+    body.theme-eclipse .gl-pagenav-last {
+        display: none;
+    }
+
+    body.theme-eclipse .gl-pagenav-previous,
+    body.theme-eclipse .gl-pagenav-next {
+        flex: 1 1 calc(50% - .25rem);
+    }
+
+    body.theme-eclipse .gl-pagenav-previous {
+        order: 1;
+    }
+
+    body.theme-eclipse .gl-pagenav-next {
+        order: 2;
+    }
+
+    body.theme-eclipse .gl-pagenav-previous > a,
+    body.theme-eclipse .gl-pagenav-previous > span,
+    body.theme-eclipse .gl-pagenav-next > a,
+    body.theme-eclipse .gl-pagenav-next > span {
+        width: 100%;
+        min-height: 2.85rem;
+    }
+
+    body.theme-eclipse .gl-pagenav-page,
+    body.theme-eclipse .gl-pagenav-open-ended {
+        order: 3;
+    }
+
+    body.theme-eclipse .gl-pagenav-page > a,
+    body.theme-eclipse .gl-pagenav-page > span {
+        min-width: 2.6rem;
+        min-height: 2.6rem;
+        padding: .4rem .5rem;
+    }
+}
+
 @media (prefers-reduced-motion:reduce) {
     html {
         scroll-behavior: auto;
