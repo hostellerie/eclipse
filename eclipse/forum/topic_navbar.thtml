@@ -21,8 +21,6 @@
 
         <div class="eclipse-forum-actions" aria-label="Topic actions">
             {topicmenu_link}
-            {newtopic_link}
-            {replytopic_link}
         </div>
     </header>
 
