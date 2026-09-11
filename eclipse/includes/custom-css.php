@@ -36,6 +36,16 @@ function eclipse_custom_css_validate($css, &$error = '')
 
 function eclipse_custom_css_read()
 {
+    /* Preserve the editor contents on the response to a save attempt. This is
+     * especially useful when storage or token validation fails: the user does
+     * not lose the CSS they just submitted. Persistence is still verified by
+     * eclipse_custom_css_write() before a success notice is emitted. */
+    if (isset($_POST['eclipse_custom_css_save']) && isset($_POST['eclipse_custom_css'])) {
+        $error = '';
+        $submitted = eclipse_custom_css_validate((string) $_POST['eclipse_custom_css'], $error);
+        if ($submitted !== false) return $submitted;
+    }
+
     $path = eclipse_custom_css_path();
     if ($path === '' || !is_file($path) || !is_readable($path) || filesize($path) > 65536) return '';
     $css = @file_get_contents($path, false, null, 0, 65537);
@@ -82,9 +92,20 @@ function eclipse_custom_css_write($css, &$error = '')
         if ($ok) @chmod($path, 0640);
     }
     if (is_file($temp)) @unlink($temp);
+
+    /* Do not report success until the final file can be read back exactly.
+     * This catches permissions/filesystem edge cases that previously could
+     * leave the editor empty after an apparently successful save. */
+    if ($ok) {
+        clearstatcache(true, $path);
+        $stored = @file_get_contents($path, false, null, 0, 65537);
+        $ok = is_string($stored) && strlen($stored) <= 65536 && hash_equals($validated, $stored);
+        if (!$ok) $error = 'verify';
+    }
+
     @flock($lock, LOCK_UN);
     fclose($lock);
-    if (!$ok) $error = 'write';
+    if (!$ok && $error === '') $error = 'write';
     return $ok;
 }
 
@@ -100,7 +121,7 @@ function eclipse_custom_css_message($code)
     $lang = function_exists('eclipse_html_language') ? strtolower((string) eclipse_html_language()) : 'en';
     $fr = strpos($lang, 'fr') === 0;
     $messages = array(
-        'saved' => $fr ? 'CSS personnalisé enregistré.' : 'Custom CSS saved.',
+        'saved' => $fr ? 'CSS personnalisé enregistré et vérifié.' : 'Custom CSS saved and verified.',
         'cleared' => $fr ? 'CSS personnalisé vidé.' : 'Custom CSS cleared.',
         'token' => $fr ? 'Jeton de sécurité refusé. Aucun CSS n’a été modifié.' : 'Security token rejected. Custom CSS was not changed.',
         'too_large' => $fr ? 'Le CSS personnalisé ne peut pas dépasser 64 Kio.' : 'Custom CSS cannot exceed 64 KiB.',
@@ -109,6 +130,7 @@ function eclipse_custom_css_message($code)
         'storage' => $fr ? 'Le stockage protégé Eclipse n’est pas disponible en écriture.' : 'Eclipse protected storage is not writable.',
         'lock' => $fr ? 'Impossible de verrouiller le fichier CSS personnalisé.' : 'Unable to lock the Custom CSS file.',
         'write' => $fr ? 'Impossible d’enregistrer le CSS personnalisé.' : 'Unable to save Custom CSS.',
+        'verify' => $fr ? 'Le CSS a été écrit mais sa relecture a échoué. L’enregistrement n’est pas considéré comme valide.' : 'The CSS was written but could not be read back correctly. The save was not accepted.',
         'invalid' => $fr ? 'Le CSS personnalisé reçu est invalide.' : 'The submitted Custom CSS is invalid.',
     );
     return isset($messages[$code]) ? $messages[$code] : ($fr ? 'Impossible d’enregistrer le CSS personnalisé.' : 'Unable to save Custom CSS.');
