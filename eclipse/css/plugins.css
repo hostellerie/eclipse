@@ -17,3 +17,14 @@ body.eclipse-admin-page .uk-button.uk-button-small{min-height:1.9rem;padding:.27
 body.eclipse-admin-page .uk-button-primary,body.eclipse-admin-page .uk-button-danger{box-shadow:none}
 body.eclipse-admin-page .uk-button-primary,body.eclipse-admin-page .uk-button-primary:hover,body.eclipse-admin-page .uk-button-primary:focus,body.eclipse-admin-page .uk-button-primary:focus-visible,body.eclipse-admin-page .uk-button-danger,body.eclipse-admin-page .uk-button-danger:hover,body.eclipse-admin-page .uk-button-danger:focus,body.eclipse-admin-page .uk-button-danger:focus-visible{color:#fff!important;text-decoration:none}
 @media(max-width:47.99rem){body.eclipse-admin-page .uk-button,body.eclipse-admin-page .uk-button.uk-button-small{min-height:2.75rem;padding:.55rem .8rem;font-size:.88rem}}
+
+/* Legacy Geeklog autotag help tooltips.
+ * Keep the information icon inside its tooltip panel and prevent the local
+ * autotag wrapper from clipping the legacy absolutely-positioned popup.
+ */
+body.eclipse-admin-page .allowed_autotags,
+body.eclipse-admin-page .allowed_autotags>.warningsmall{position:relative;overflow:visible}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip{position:relative}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info{box-sizing:border-box;max-width:min(22rem,calc(100vw - 3rem));padding:.75rem .9rem .85rem 3.75rem;overflow:visible}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info>img.icon{position:absolute!important;top:.75rem!important;left:.75rem!important;float:none!important;width:2.25rem!important;max-width:2.25rem!important;height:2.25rem!important;margin:0!important;padding:0!important;object-fit:contain}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info>em{display:block;margin:0 0 .35rem;font-weight:750}
