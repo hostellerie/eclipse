@@ -34,7 +34,7 @@
 <!-- BEGIN topic_record -->
 <article class="eclipse-forum-list-item eclipse-forum-topic-card" role="listitem">
     <div class="eclipse-forum-record-main">
-        <div class="eclipse-forum-record-icon" aria-hidden="true">{folderimg}</div>
+        <div class="eclipse-forum-record-icon" aria-hidden="true" style="transform:translateY(calc((1.25em - 2.25rem) / 2));margin-top:0">{folderimg}</div>
         <div class="eclipse-forum-record-copy">
             <h2 class="eclipse-forum-record-title">{moved}<a href="viewtopic.php?showtopic={topic_id}" title="{topicinfo}">{subject}</a></h2>
             {!if displaypageslink}<div class="eclipse-forum-topic-pages">{gotomsg}&nbsp;{displaypageslink}</div>{!endif}
