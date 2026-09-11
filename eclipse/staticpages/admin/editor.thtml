@@ -9,7 +9,22 @@
         <input type="text" maxlength="128" {!if titletoid}onkeyup="TitleToId('sp-editor-sp_title','sp-editor-sp_id');" {!endif}name="sp_title" value="{sp_title}" id="sp-editor-sp_title" class="size5"{xhtml}>
       </div>
 
-      <div class="eclipse-sp-identity-grid">
+      <div class="eclipse-sp-content-field">
+        <label for="sp-editor-sp_content">{lang_content}</label>
+        <textarea name="sp_content" cols="70" rows="40" id="sp-editor-sp_content" class="wide">{sp_content}</textarea>
+        <div class="eclipse-sp-help">{lang_allowed_html}</div>
+      </div>
+    </section>
+
+    <nav class="eclipse-sp-tabs" role="tablist" aria-label="Static Page settings">
+      <button type="button" role="tab" aria-selected="true" aria-controls="eclipse-sp-panel-publishing" id="eclipse-sp-tab-publishing">Publishing</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-seo" id="eclipse-sp-tab-seo" tabindex="-1">SEO &amp; display</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-advanced" id="eclipse-sp-tab-advanced" tabindex="-1">Advanced</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-access" id="eclipse-sp-tab-access" tabindex="-1">Access</button>
+    </nav>
+
+    <section id="eclipse-sp-panel-publishing" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-publishing">
+      <div class="eclipse-sp-identity-grid eclipse-sp-settings-identity">
         <div>
           <label for="sp-editor-sp_id">{lang_id}</label>
           <div class="eclipse-staticpage-id-wrap">
@@ -23,34 +38,12 @@
           <span class="break-word eclipse-sp-url">{example_url}</span>
         </div>
       </div>
-
-      <div class="eclipse-sp-page-title-row">
-        <label for="sp-editor-sp_page_title">{lang_page_title}</label>
-        <input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-editor-sp_page_title" class="size5"{xhtml}>
-      </div>
-
-      <div class="eclipse-sp-content-field">
-        <label for="sp-editor-sp_content">{lang_content}</label>
-        <textarea name="sp_content" cols="70" rows="30" id="sp-editor-sp_content" class="wide">{sp_content}</textarea>
-        <div class="eclipse-sp-help">{lang_allowed_html}</div>
-      </div>
-    </section>
-
-    <nav class="eclipse-sp-tabs" role="tablist" aria-label="Static Page settings">
-      <button type="button" role="tab" aria-selected="true" aria-controls="eclipse-sp-panel-publishing" id="eclipse-sp-tab-publishing">Publishing</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-seo" id="eclipse-sp-tab-seo" tabindex="-1">SEO &amp; display</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-advanced" id="eclipse-sp-tab-advanced" tabindex="-1">Advanced</button>
-      <button type="button" role="tab" aria-selected="false" aria-controls="eclipse-sp-panel-access" id="eclipse-sp-tab-access" tabindex="-1">Access</button>
-    </nav>
-
-    <section id="eclipse-sp-panel-publishing" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-publishing">
       <dl class="form_block">
         <dt><label for="sp-editor-sp_onmenu">{lang_addtomenu}</label></dt><dd class="controls_text"><input type="checkbox" name="sp_onmenu" id="sp-editor-sp_onmenu" {onmenu_checked}{xhtml}></dd>
         <dt><label for="sp-editor-sp_label">{lang_label}</label></dt><dd><input type="text" name="sp_label" maxlength="64" value="{sp_label}" id="sp-editor-sp_label" class="size5"{xhtml}></dd>
         <dt><label>{lang_topic}</label></dt><dd class="controls_text">{topic_selection}</dd>
         <dt><label for="sp-editor-sp_format">{lang_pageformat}</label></dt><dd><select name="sp_format" id="sp-editor-sp_format"><option value="blankpage" {blankpage_selected}>{lang_blankpage}</option><option value="noblocks" {noblock_selected}>{lang_noblocks}</option><option value="leftblocks" {leftblocks_selected}>{lang_leftblocks}</option><option value="allblocks" {allblocks_selected}>{lang_leftrightblocks}</option></select></dd>
         <dt><label for="sp-editor-commentcode">{lang_mode}</label></dt><dd><select name="commentcode" id="sp-editor-commentcode">{comment_options}</select></dd>
-        <dt><label for="sp-editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-editor-structureddata">{structured_data_options}</select></dd>
         <dt><label for="sp-editor-draft_flag">{lang_draft}</label></dt><dd class="controls_text"><input type="checkbox" name="draft_flag" id="sp-editor-draft_flag" {draft_flag_checked}{xhtml}></dd>
         <dt><label for="sp-editor-search">{lang_search}</label></dt><dd><select name="search" id="sp-editor-search">{search_options}</select></dd><dd class="description">{lang_search_desc}</dd>
         <dt><label for="sp-editor-likes">{lang_likes}</label></dt><dd><select name="likes" id="sp-editor-likes">{likes_options}</select></dd><dd class="description">{lang_likes_desc}</dd>
@@ -65,6 +58,8 @@
 
     <section id="eclipse-sp-panel-seo" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-seo" hidden>
       <dl class="form_block">
+        <dt><label for="sp-editor-sp_page_title">{lang_page_title}</label></dt><dd><input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-editor-sp_page_title" class="size5"{xhtml}></dd>
+        <dt><label for="sp-editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-editor-structureddata">{structured_data_options}</select></dd>
         <dt{hide_meta}><label for="sp-editor-meta_description">{lang_metadescription}</label></dt><dd{hide_meta}><textarea name="meta_description" cols="70" rows="4" id="sp-editor-meta_description" class="wide">{meta_description}</textarea></dd>
         <dt{hide_meta}><label for="sp-editor-meta_keywords">{lang_metakeywords}</label></dt><dd{hide_meta}><textarea name="meta_keywords" cols="70" rows="3" id="sp-editor-meta_keywords" class="wide">{meta_keywords}</textarea></dd>
         <dt><label for="sp-editor-sp_centerblock">{lang_centerblock}</label></dt><dd class="controls_text"><input type="checkbox" name="sp_centerblock" id="sp-editor-sp_centerblock" {centerblock_checked}{xhtml}> {lang_centerblock_msg}</dd>
