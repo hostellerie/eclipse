@@ -1,5 +1,40 @@
 {# begin {templatelocation} #}
 
+<style>
+.eclipse-forum-post-moderation select,
+.eclipse-forum-mod-form select {
+    box-sizing: border-box;
+    min-height: 2.5rem;
+    padding: .4rem 2rem .4rem .65rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background-color: var(--eclipse-surface) !important;
+    color: var(--eclipse-text) !important;
+    font: inherit;
+}
+
+.eclipse-forum-post-moderation select:hover,
+.eclipse-forum-post-moderation select:focus,
+.eclipse-forum-mod-form select:hover,
+.eclipse-forum-mod-form select:focus {
+    background-color: var(--eclipse-surface) !important;
+    color: var(--eclipse-text) !important;
+    border-color: var(--eclipse-primary);
+}
+
+.eclipse-forum-post-moderation select:focus-visible,
+.eclipse-forum-mod-form select:focus-visible {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
+
+.eclipse-forum-post-moderation select option,
+.eclipse-forum-mod-form select option {
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+}
+</style>
+
 <section class="eclipse-forum-section eclipse-forum-topic-header" aria-labelledby="eclipse-forum-topic-title">
     <nav class="eclipse-forum-breadcrumb" aria-label="Breadcrumb">
         <ol>
