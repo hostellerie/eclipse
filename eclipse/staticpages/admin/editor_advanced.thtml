@@ -60,7 +60,7 @@
         <dt><label for="sp-advanced_editor-commentcode">{lang_mode}</label></dt><dd><select name="commentcode" id="sp-advanced_editor-commentcode">{comment_options}</select></dd>
         <dt><label for="sp-advanced_editor-draft_flag">{lang_draft}</label></dt><dd class="controls_text"><input type="checkbox" name="draft_flag" id="sp-advanced_editor-draft_flag" {draft_flag_checked}{xhtml}></dd>
         <dt><label for="sp-advanced_editor-search">{lang_search}</label></dt><dd><select name="search" id="sp-advanced_editor-search">{search_options}</select></dd><dd class="description">{lang_search_desc}</dd>
-        <dt><label for="sp-advanced_editor-likes">{lang_likes}</label></dt><dd><select name="likes" id="sp-advanced_editor-likes">{likes_options}</select></dd><dd class="description">{lang_likes_desc}</dd>
+        {!if likes_options}<dt><label for="sp-advanced_editor-likes">{lang_likes}</label></dt><dd><select name="likes" id="sp-advanced_editor-likes">{likes_options}</select></dd>{!if lang_likes_desc}<dd class="description">{lang_likes_desc}</dd>{!endif}{!endif}
         <dt><label for="sp-advanced_editor-cachetime">{lang_cache_time}</label></dt><dd><input type="text" size="8" value="{cache_time}" name="cache_time" id="sp-advanced_editor-cachetime" class="text"{xhtml}></dd><dd class="description">{lang_cache_time_desc}</dd>
         <dt><label for="sp-editor-sp_onlastupdate">{lang_lastupdated}</label></dt><dd class="controls_text">{sp_formateddate} (<input type="checkbox" name="sp_onlastupdate" id="sp-editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}> {lang_show_on_page})</dd>
         {!if lang_show_on_page_date_disabled}<dd class="description">{lang_show_on_page_date_disabled}</dd>{!endif}
@@ -72,8 +72,8 @@
 
     <section id="eclipse-sp-panel-seo" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-seo" hidden>
       <dl class="form_block">
-        <dt><label for="sp-advanced_editor-sp_page_title">{lang_page_title}</label></dt><dd><input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-advanced_editor-sp_page_title" class="size5"{xhtml}></dd>
-        <dt><label for="sp-advanced_editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-advanced_editor-structureddata">{structured_data_options}</select></dd>
+        {!if lang_page_title}<dt><label for="sp-advanced_editor-sp_page_title">{lang_page_title}</label></dt><dd><input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-advanced_editor-sp_page_title" class="size5"{xhtml}></dd>{!endif}
+        {!if structured_data_options}<dt><label for="sp-advanced_editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-advanced_editor-structureddata">{structured_data_options}</select></dd>{!endif}
         <dt{hide_meta}><label for="sp-advanced_editor-meta_description">{lang_metadescription}</label></dt><dd{hide_meta}><textarea name="meta_description" cols="70" rows="4" id="sp-advanced_editor-meta_description" class="wide">{meta_description}</textarea></dd>
         <dt{hide_meta}><label for="sp-advanced_editor-meta_keywords">{lang_metakeywords}</label></dt><dd{hide_meta}><textarea name="meta_keywords" cols="70" rows="3" id="sp-advanced_editor-meta_keywords" class="wide">{meta_keywords}</textarea></dd>
         <dt><label for="sp-advanced_editor-sp_centerblock">{lang_centerblock}</label></dt><dd class="controls_text"><input type="checkbox" name="sp_centerblock" id="sp-advanced_editor-sp_centerblock" {centerblock_checked}{xhtml}> {lang_centerblock_msg}</dd>
