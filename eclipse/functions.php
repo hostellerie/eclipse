@@ -73,6 +73,12 @@ function eclipse_is_configuration_page()
     return eclipse_admin_page() === 'configuration';
 }
 
+function eclipse_is_staticpages_admin()
+{
+    if (!eclipse_is_admin_request()) return false;
+    return preg_match('#(?:^|/)admin/plugins/staticpages/index\.php$#', eclipse_request_path()) === 1;
+}
+
 function eclipse_supports_admin_list()
 {
     return defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
@@ -80,9 +86,15 @@ function eclipse_supports_admin_list()
 
 function eclipse_context_classes()
 {
+    global $_CONF;
     if (!eclipse_is_admin_request()) return 'eclipse-public-page';
     $page = eclipse_admin_page();
-    return 'eclipse-admin-page' . ($page !== '' ? ' eclipse-admin-' . $page : '');
+    $classes = 'eclipse-admin-page' . ($page !== '' ? ' eclipse-admin-' . $page : '');
+    if (eclipse_is_staticpages_admin()) {
+        $classes .= ' eclipse-staticpages-admin';
+        if (!empty($_CONF['titletoid'])) $classes .= ' eclipse-titletoid-enabled';
+    }
+    return $classes;
 }
 
 function eclipse_html_language()
@@ -151,6 +163,7 @@ function theme_css_eclipse()
     $isAdmin = eclipse_is_admin_request();
     $isAdminDashboard = $isAdmin && eclipse_admin_page() === 'index';
     $isStoryEditor = eclipse_is_story_editor();
+    $isStaticpagesAdmin = eclipse_is_staticpages_admin();
     $isCommentPage = !$isAdmin && (substr($requestPath, -12) === '/article.php' || substr($requestPath, -12) === '/comment.php');
 
     $cssFiles = array(
@@ -177,6 +190,9 @@ function theme_css_eclipse()
     if ($isStoryEditor) {
         $cssFiles[] = array('name' => 'eclipse-story-editor', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/story-editor.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 310);
     }
+    if ($isStaticpagesAdmin) {
+        $cssFiles[] = array('name' => 'eclipse-staticpages-editor', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/staticpages-editor.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 312);
+    }
     if ($isCommentPage) {
         $cssFiles[] = array('name' => 'eclipse-comments', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/comments.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 310);
     }
@@ -201,6 +217,9 @@ function theme_js_files_eclipse()
     $files = array(array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/theme.js' . $version, 'footer' => true, 'priority' => 100));
     if (eclipse_is_admin_request()) {
         $files[] = array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/admin.js' . $version, 'footer' => true, 'priority' => 110);
+    }
+    if (eclipse_is_staticpages_admin()) {
+        $files[] = array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/staticpages-editor.js' . $version, 'footer' => true, 'priority' => 120);
     }
     return $files;
 }
