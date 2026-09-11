@@ -31,7 +31,7 @@
 <!-- BEGIN forum_record -->
 <article class="eclipse-forum-list-item eclipse-forum-forum-card" role="listitem">
     <div class="eclipse-forum-record-main">
-        <div class="eclipse-forum-record-icon" aria-hidden="true" style="margin-top:-.25rem">{folderimg}</div>
+        <div class="eclipse-forum-record-icon" aria-hidden="true">{folderimg}</div>
         <div class="eclipse-forum-record-copy">
 <?php if (isset($GLOBALS['category']) && (int) $GLOBALS['category'] > 0) { ?>
             <h2 class="eclipse-forum-record-title">
