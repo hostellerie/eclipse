@@ -1,22 +1,26 @@
 /* Eclipse Static Pages editor: native theme override for the Static Pages plugin. */
-body.eclipse-staticpages-admin .eclipse-sp-editor{max-width:82rem;margin-inline:auto}
+body.eclipse-staticpages-admin .eclipse-sp-editor{max-width:88rem;margin-inline:auto}
 body.eclipse-staticpages-admin .eclipse-sp-editor-shell{display:grid;gap:1rem}
 body.eclipse-staticpages-admin .eclipse-sp-primary,
 body.eclipse-staticpages-admin .eclipse-sp-panel{padding:1rem 1.1rem;border:1px solid var(--eclipse-border);border-radius:.85rem;background:var(--eclipse-surface);box-shadow:0 8px 24px rgba(28,38,66,.04)}
-body.eclipse-staticpages-admin .eclipse-sp-primary{display:grid;gap:1rem;padding:1.25rem}
+body.eclipse-staticpages-admin .eclipse-sp-primary{display:grid;gap:.75rem;padding:1rem 1.1rem}
 body.eclipse-staticpages-admin .eclipse-sp-title-row,
-body.eclipse-staticpages-admin .eclipse-sp-page-title-row,
 body.eclipse-staticpages-admin .eclipse-sp-content-field,
-body.eclipse-staticpages-admin .eclipse-sp-editor-mode{display:grid;gap:.4rem}
+body.eclipse-staticpages-admin .eclipse-sp-editor-mode{display:grid;gap:.35rem}
 body.eclipse-staticpages-admin .eclipse-sp-title-row label,
-body.eclipse-staticpages-admin .eclipse-sp-page-title-row label,
 body.eclipse-staticpages-admin .eclipse-sp-content-field>label,
 body.eclipse-staticpages-admin .eclipse-sp-editor-mode>label,
 body.eclipse-staticpages-admin .eclipse-sp-identity-grid label{font-weight:800;color:var(--eclipse-text)}
-body.eclipse-staticpages-admin .eclipse-sp-title-row input{width:100%;min-height:3rem;font-size:1.2rem;font-weight:700}
-body.eclipse-staticpages-admin .eclipse-sp-page-title-row input{width:100%}
+body.eclipse-staticpages-admin .eclipse-sp-title-row input{width:100%;min-height:2.8rem;font-size:1.15rem;font-weight:700}
+body.eclipse-staticpages-admin .eclipse-sp-editor-controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.65rem 1rem;padding:.5rem .65rem;border:1px solid var(--eclipse-border);border-radius:.6rem;background:color-mix(in srgb,var(--eclipse-surface) 92%,var(--eclipse-bg))}
+body.eclipse-staticpages-admin .eclipse-sp-editor-mode{flex:0 1 18rem;min-width:13rem}
+body.eclipse-staticpages-admin .eclipse-sp-editor-mode select{width:100%}
+body.eclipse-staticpages-admin .eclipse-sp-toolbar{display:flex;flex:1 1 24rem;flex-wrap:wrap;align-items:center;gap:.55rem;margin:0}
+body.eclipse-staticpages-admin .eclipse-sp-toolbar label{font-weight:750}
+body.eclipse-staticpages-admin .eclipse-sp-toolbar select{min-width:12rem}
 body.eclipse-staticpages-admin .eclipse-sp-identity-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(18rem,.8fr);gap:1rem;align-items:start}
 body.eclipse-staticpages-admin .eclipse-sp-identity-grid>div{display:grid;gap:.4rem;min-width:0}
+body.eclipse-staticpages-admin .eclipse-sp-settings-identity{margin:0 0 1rem;padding:0 0 1rem;border-bottom:1px solid var(--eclipse-border)}
 body.eclipse-staticpages-admin .eclipse-sp-editor input[type=text],
 body.eclipse-staticpages-admin .eclipse-sp-editor textarea,
 body.eclipse-staticpages-admin .eclipse-sp-editor select{box-sizing:border-box;max-width:100%}
@@ -24,10 +28,12 @@ body.eclipse-staticpages-admin .eclipse-sp-editor input.size5,
 body.eclipse-staticpages-admin .eclipse-sp-editor textarea.wide{width:100%}
 body.eclipse-staticpages-admin #sp-editor-sp_content,
 body.eclipse-staticpages-admin #adv_content,
-body.eclipse-staticpages-admin #html_content{width:100%!important;min-height:36rem;padding:.9rem 1rem;line-height:1.55;resize:vertical}
+body.eclipse-staticpages-admin #html_content{width:100%!important;min-height:clamp(40rem,68vh,58rem);padding:.9rem 1rem;line-height:1.55;resize:vertical}
+body.eclipse-staticpages-admin .eclipse-sp-content-field .cke{width:100%!important}
+body.eclipse-staticpages-admin .eclipse-sp-content-field .cke_contents{height:clamp(40rem,68vh,58rem)!important;min-height:40rem!important}
+body.eclipse-staticpages-admin .eclipse-sp-content-field .cke_wysiwyg_frame,
+body.eclipse-staticpages-admin .eclipse-sp-content-field .cke_wysiwyg_div{height:100%!important;min-height:100%!important}
 body.eclipse-staticpages-admin .eclipse-sp-help{margin-top:.35rem;color:var(--eclipse-muted);font-size:.78rem;line-height:1.45}
-body.eclipse-staticpages-admin .eclipse-sp-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-bottom:.65rem}
-body.eclipse-staticpages-admin .eclipse-sp-toolbar label{font-weight:750}
 body.eclipse-staticpages-admin .story_editor table{width:100%!important;margin:0}
 body.eclipse-staticpages-admin .story_editor td{padding:0}
 body.eclipse-staticpages-admin .break-word{display:inline-block;max-width:100%;padding:.45rem .6rem;border-radius:.45rem;background:color-mix(in srgb,var(--eclipse-primary) 7%,var(--eclipse-surface));font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.78rem;overflow-wrap:anywhere}
@@ -50,5 +56,5 @@ body.eclipse-staticpages-admin input.eclipse-staticpage-id-locked[readonly]{curs
 body.eclipse-staticpages-admin .eclipse-staticpage-id-unlock{flex:0 0 auto;min-height:2.35rem;padding:.4rem .7rem;border:1px solid var(--eclipse-border);border-radius:.45rem;background:var(--eclipse-surface);color:var(--eclipse-text);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
 body.eclipse-staticpages-admin .eclipse-staticpage-id-note{margin:.15rem 0 0;color:var(--eclipse-muted);font-size:.78rem;line-height:1.45}
 body.eclipse-staticpages-admin .eclipse-staticpage-id-note strong{color:var(--eclipse-text)}
-@media(max-width:56rem){body.eclipse-staticpages-admin .eclipse-sp-identity-grid{grid-template-columns:1fr}body.eclipse-staticpages-admin .eclipse-sp-panel dl.form_block,body.eclipse-staticpages-admin .eclipse-sp-panel fieldset dl.form_block{grid-template-columns:1fr;gap:.25rem}body.eclipse-staticpages-admin .eclipse-sp-panel dl.form_block>dd.description{grid-column:1}body.eclipse-staticpages-admin .eclipse-sp-panel dl.form_block>dt{padding:.35rem 0 0}}
-@media(max-width:38rem){body.eclipse-staticpages-admin .eclipse-staticpage-id-wrap{align-items:stretch;flex-direction:column}body.eclipse-staticpages-admin .eclipse-sp-actions{justify-content:stretch}body.eclipse-staticpages-admin .eclipse-sp-actions button{flex:1 1 auto}}
+@media(max-width:56rem){body.eclipse-staticpages-admin .eclipse-sp-identity-grid{grid-template-columns:1fr}body.eclipse-staticpages-admin .eclipse-sp-panel dl.form_block,body.eclipse-staticpages-admin .eclipse-sp-panel fieldset dl.form_block{grid-template-columns:1fr;gap:.25rem}body.eclipse-staticpages-admin .eclipse-sp-panel dl.form_block>dd.description{grid-column:1}body.eclipse-staticpages-admin .eclipse-sp-panel dl.form_block>dt{padding:.35rem 0 0}body.eclipse-staticpages-admin .eclipse-sp-editor-controls{align-items:stretch}body.eclipse-staticpages-admin .eclipse-sp-editor-mode,body.eclipse-staticpages-admin .eclipse-sp-toolbar{flex:1 1 100%}}
+@media(max-width:38rem){body.eclipse-staticpages-admin .eclipse-staticpage-id-wrap{align-items:stretch;flex-direction:column}body.eclipse-staticpages-admin .eclipse-sp-actions{justify-content:stretch}body.eclipse-staticpages-admin .eclipse-sp-actions button{flex:1 1 auto}body.eclipse-staticpages-admin #sp-editor-sp_content,body.eclipse-staticpages-admin #adv_content,body.eclipse-staticpages-admin #html_content{min-height:32rem}body.eclipse-staticpages-admin .eclipse-sp-content-field .cke_contents{height:32rem!important;min-height:32rem!important}}
