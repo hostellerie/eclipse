@@ -1,15 +1,40 @@
 (function () {
     'use strict';
 
+    var initialized = false;
+    var observer = null;
+
+    function activateCustomCssTab(tab, panel, tablist) {
+        Array.prototype.forEach.call(tablist.querySelectorAll('[role="tab"]'), function (item) {
+            var selected = item === tab;
+            item.setAttribute('aria-selected', selected ? 'true' : 'false');
+            item.tabIndex = selected ? 0 : -1;
+            var controlled = document.getElementById(item.getAttribute('aria-controls'));
+            if (controlled) controlled.hidden = !selected;
+        });
+        panel.hidden = false;
+        var studioActions = document.querySelector('.eclipse-customizer .eclipse-actions');
+        if (studioActions) {
+            studioActions.hidden = true;
+            studioActions.style.display = 'none';
+        }
+    }
+
     function setupCustomCssStudio() {
+        if (initialized || document.getElementById('eclipse-tab-css')) {
+            initialized = true;
+            if (observer) observer.disconnect();
+            return true;
+        }
+
         var tablist = document.querySelector('.eclipse-studio-tabs');
         var studio = document.getElementById('eclipse-theme-studio');
-        if (!tablist || !studio || document.getElementById('eclipse-tab-css')) return;
+        if (!tablist || !studio) return false;
 
         var updatesTab = document.getElementById('eclipse-tab-updates');
         var updatesPanel = document.getElementById('eclipse-panel-updates');
         var sourceForm = studio.querySelector('.eclipse-settings-form');
-        if (!updatesTab || !updatesPanel || !sourceForm) return;
+        if (!updatesTab || !updatesPanel || !sourceForm) return false;
 
         var isFrench = /^fr\b/i.test(document.documentElement.lang || '');
         var tab = document.createElement('button');
@@ -125,14 +150,42 @@
         panel.appendChild(form);
         studio.insertBefore(panel, updatesPanel);
 
+        /* The Theme Studio can be moved into the modern administration DOM after
+         * DOMContentLoaded. Keep this tab functional even when its native tab
+         * controller was initialized before the CSS tab existed. */
+        tab.addEventListener('click', function () {
+            activateCustomCssTab(tab, panel, tablist);
+        });
+        tablist.addEventListener('click', function (event) {
+            var clicked = event.target.closest('[role="tab"]');
+            if (!clicked || clicked === tab) return;
+            panel.hidden = true;
+            tab.setAttribute('aria-selected', 'false');
+            tab.tabIndex = -1;
+        });
+
+        initialized = true;
+        if (observer) observer.disconnect();
         if (noticeData && noticeData.message) {
             window.setTimeout(function () { tab.click(); }, 0);
         }
+        return true;
+    }
+
+    function start() {
+        if (setupCustomCssStudio()) return;
+        observer = new MutationObserver(function () {
+            setupCustomCssStudio();
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+        window.setTimeout(function () {
+            if (observer) observer.disconnect();
+        }, 15000);
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupCustomCssStudio, { once: true });
+        document.addEventListener('DOMContentLoaded', start, { once: true });
     } else {
-        setupCustomCssStudio();
+        start();
     }
 }());
