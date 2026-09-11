@@ -62,12 +62,28 @@
         <dt><label for="sp-advanced_editor-search">{lang_search}</label></dt><dd><select name="search" id="sp-advanced_editor-search">{search_options}</select></dd><dd class="description">{lang_search_desc}</dd>
         {!if likes_options}<dt><label for="sp-advanced_editor-likes">{lang_likes}</label></dt><dd><select name="likes" id="sp-advanced_editor-likes">{likes_options}</select></dd>{!if lang_likes_desc}<dd class="description">{lang_likes_desc}</dd>{!endif}{!endif}
         <dt><label for="sp-advanced_editor-cachetime">{lang_cache_time}</label></dt><dd><input type="text" size="8" value="{cache_time}" name="cache_time" id="sp-advanced_editor-cachetime" class="text"{xhtml}></dd><dd class="description">{lang_cache_time_desc}</dd>
-        <dt><label for="sp-editor-sp_onlastupdate">{lang_lastupdated}</label></dt><dd class="controls_text">{sp_formateddate} (<input type="checkbox" name="sp_onlastupdate" id="sp-editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}> {lang_show_on_page})</dd>
-        {!if lang_show_on_page_date_disabled}<dd class="description">{lang_show_on_page_date_disabled}</dd>{!endif}
-        <dt><label for="sp-editor-sp_onhits">{lang_hits}</label></dt><dd class="controls_text"><input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>{sp_hits_formatted} (<input type="checkbox" name="sp_onhits" id="sp-editor-sp_onhits" {onhits_checked}{xhtml}> {lang_show_on_page})</dd>
-        {!if lang_show_on_page_hits_disabled}<dd class="description">{lang_show_on_page_hits_disabled}</dd>{!endif}
         <dt><label>{lang_comments}</label></dt><dd class="controls_text">{sp_comments}</dd>
       </dl>
+
+      <div class="eclipse-sp-status-grid" aria-label="Page status">
+        <div class="eclipse-sp-status-item">
+          <div class="eclipse-sp-status-copy">
+            <span class="eclipse-sp-status-label">{lang_lastupdated}</span>
+            <strong class="eclipse-sp-status-value">{sp_formateddate}</strong>
+          </div>
+          <label class="eclipse-sp-status-toggle" for="sp-advanced_editor-sp_onlastupdate"><input type="checkbox" name="sp_onlastupdate" id="sp-advanced_editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}><span>{lang_show_on_page}</span></label>
+          {!if lang_show_on_page_date_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_date_disabled}</p>{!endif}
+        </div>
+        <div class="eclipse-sp-status-item">
+          <input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>
+          <div class="eclipse-sp-status-copy">
+            <span class="eclipse-sp-status-label">{lang_hits}</span>
+            <strong class="eclipse-sp-status-value">{sp_hits_formatted}</strong>
+          </div>
+          <label class="eclipse-sp-status-toggle" for="sp-advanced_editor-sp_onhits"><input type="checkbox" name="sp_onhits" id="sp-advanced_editor-sp_onhits" {onhits_checked}{xhtml}><span>{lang_show_on_page}</span></label>
+          {!if lang_show_on_page_hits_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_hits_disabled}</p>{!endif}
+        </div>
+      </div>
     </section>
 
     <section id="eclipse-sp-panel-seo" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-seo" hidden>
