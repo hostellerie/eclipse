@@ -28,7 +28,12 @@ if (defined('VERSION') && version_compare(VERSION, '2.1.1', '>=') && version_com
 
 function eclipse_admin_dashboard_h($value)
 {
-    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    // Some legacy Geeklog content is already stored with HTML entities
+    // (for example &#039; in story titles). Normalize it first, then escape
+    // exactly once for safe HTML output. This keeps the helper XSS-safe while
+    // avoiding literal entity strings such as "d&#039;impôt" in the dashboard.
+    $value = html_entity_decode((string) $value, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
 function eclipse_admin_dashboard_rows($sql, $limit)
