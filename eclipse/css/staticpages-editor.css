@@ -1,0 +1,50 @@
+/* Eclipse Static Pages editor
+ * Keep the legacy Static Pages forms readable and writer-focused without
+ * changing the plugin templates or their submitted field names.
+ */
+body.eclipse-staticpages-admin #sp-editor,
+body.eclipse-staticpages-admin #sp-advanced_editor{max-width:78rem;margin-inline:auto}
+body.eclipse-staticpages-admin #sp-editor .admin_basic,
+body.eclipse-staticpages-admin #sp-advanced_editor .admin_basic{display:grid;gap:1rem}
+body.eclipse-staticpages-admin #sp-editor dl.form_block,
+body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block,
+body.eclipse-staticpages-admin #sp-editor fieldset,
+body.eclipse-staticpages-admin #sp-advanced_editor fieldset{margin:0;padding:1rem 1.1rem;border:1px solid var(--eclipse-border);border-radius:.8rem;background:var(--eclipse-surface);box-shadow:0 8px 24px rgba(28,38,66,.04)}
+body.eclipse-staticpages-admin #sp-editor dl.form_block,
+body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block{display:grid;grid-template-columns:minmax(10rem,14rem) minmax(0,1fr);gap:.7rem 1rem;align-items:start}
+body.eclipse-staticpages-admin #sp-editor dl.form_block>dt,
+body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block>dt{margin:0;padding:.5rem 0;color:var(--eclipse-text);font-weight:750;line-height:1.35}
+body.eclipse-staticpages-admin #sp-editor dl.form_block>dd,
+body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block>dd{min-width:0;margin:0;padding:.15rem 0}
+body.eclipse-staticpages-admin #sp-editor dl.form_block>dd.description,
+body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block>dd.description{grid-column:2;color:var(--eclipse-muted);font-size:.82rem;line-height:1.45}
+body.eclipse-staticpages-admin #sp-editor input[type=text],
+body.eclipse-staticpages-admin #sp-editor textarea,
+body.eclipse-staticpages-admin #sp-editor select,
+body.eclipse-staticpages-admin #sp-advanced_editor input[type=text],
+body.eclipse-staticpages-admin #sp-advanced_editor textarea,
+body.eclipse-staticpages-admin #sp-advanced_editor select{box-sizing:border-box;max-width:100%}
+body.eclipse-staticpages-admin #sp-editor input.size5,
+body.eclipse-staticpages-admin #sp-editor textarea.wide,
+body.eclipse-staticpages-admin #sp-advanced_editor input.size5,
+body.eclipse-staticpages-admin #sp-advanced_editor textarea.wide{width:min(100%,56rem)}
+body.eclipse-staticpages-admin #sp-editor #sp-editor-sp_content,
+body.eclipse-staticpages-admin #sp-advanced_editor #adv_content,
+body.eclipse-staticpages-admin #sp-advanced_editor #html_content{width:100%!important;min-height:34rem;padding:.85rem 1rem;line-height:1.55;resize:vertical}
+body.eclipse-staticpages-admin #sp-advanced_editor .story_editor{margin:0;padding:1rem;border:1px solid var(--eclipse-border);border-radius:.8rem;background:var(--eclipse-surface)}
+body.eclipse-staticpages-admin #sp-advanced_editor .story_editor table{width:100%!important}
+body.eclipse-staticpages-admin #sp-editor .break-word,
+body.eclipse-staticpages-admin #sp-advanced_editor .break-word{display:inline-block;max-width:100%;padding:.4rem .6rem;border-radius:.4rem;background:color-mix(in srgb,var(--eclipse-primary) 7%,var(--eclipse-surface));font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.8rem;overflow-wrap:anywhere}
+body.eclipse-staticpages-admin #sp-editor hr,
+body.eclipse-staticpages-admin #sp-advanced_editor hr{display:none}
+body.eclipse-staticpages-admin #sp-editor fieldset legend,
+body.eclipse-staticpages-admin #sp-advanced_editor fieldset legend{padding:0 .4rem;font-weight:800}
+body.eclipse-staticpages-admin #sp-editor .submit,
+body.eclipse-staticpages-admin #sp-advanced_editor .submit{position:sticky;z-index:8;bottom:.5rem;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.6rem;margin-top:.25rem;padding:.8rem;border:1px solid var(--eclipse-border);border-radius:.75rem;background:color-mix(in srgb,var(--eclipse-surface) 94%,transparent);box-shadow:0 12px 32px rgba(28,38,66,.12);backdrop-filter:blur(10px)}
+body.eclipse-staticpages-admin .eclipse-staticpage-id-wrap{display:flex;align-items:center;gap:.55rem;max-width:56rem}
+body.eclipse-staticpages-admin .eclipse-staticpage-id-wrap input{flex:1 1 auto;min-width:0}
+body.eclipse-staticpages-admin input.eclipse-staticpage-id-locked[readonly]{cursor:not-allowed;color:var(--eclipse-muted);background:color-mix(in srgb,var(--eclipse-border) 24%,var(--eclipse-surface));border-style:dashed}
+body.eclipse-staticpages-admin .eclipse-staticpage-id-unlock{flex:0 0 auto;min-height:2.35rem;padding:.4rem .7rem;border:1px solid var(--eclipse-border);border-radius:.45rem;background:var(--eclipse-surface);color:var(--eclipse-text);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
+body.eclipse-staticpages-admin .eclipse-staticpage-id-note{max-width:56rem;margin:.4rem 0 0;color:var(--eclipse-muted);font-size:.78rem;line-height:1.45}
+body.eclipse-staticpages-admin .eclipse-staticpage-id-note strong{color:var(--eclipse-text)}
+@media(max-width:52rem){body.eclipse-staticpages-admin #sp-editor dl.form_block,body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block{grid-template-columns:1fr;gap:.25rem}body.eclipse-staticpages-admin #sp-editor dl.form_block>dd.description,body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block>dd.description{grid-column:1}body.eclipse-staticpages-admin #sp-editor dl.form_block>dt,body.eclipse-staticpages-admin #sp-advanced_editor dl.form_block>dt{padding:.35rem 0 0}body.eclipse-staticpages-admin .eclipse-staticpage-id-wrap{align-items:stretch;flex-direction:column}body.eclipse-staticpages-admin #sp-editor .submit,body.eclipse-staticpages-admin #sp-advanced_editor .submit{justify-content:stretch}body.eclipse-staticpages-admin #sp-editor .submit button,body.eclipse-staticpages-admin #sp-advanced_editor .submit button{flex:1 1 auto}}
