@@ -14,34 +14,49 @@ jobs:
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
+
+      - name: Verify manifest is committed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! git diff --exit-code -- eclipse/MANIFEST.json; then
+            echo 'eclipse/MANIFEST.json is not synchronized with the tagged theme tree.' >&2
+            exit 1
+          fi
 
       - name: Validate installable theme
         shell: pwsh
         run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
       - name: Build release archive and checksum
-        shell: pwsh
+        shell: bash
         run: |
-          $version = "${{ github.ref_name }}" -replace '^v', ''
-          $archive = "eclipse-$version.zip"
-          Compress-Archive -Path ./eclipse -DestinationPath $archive -CompressionLevel Optimal
-          (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash + "  " + $archive | Set-Content -Encoding ascii "$archive.sha256"
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          python3 ./quality/prepare-eclipse-package.py
+          pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
+          (
+            cd .package-stage
+            zip -r -9 "../eclipse-$version.zip" eclipse -x '*/.DS_Store' '*/Thumbs.db'
+          )
+          sha256sum "eclipse-$version.zip" > "eclipse-$version.zip.sha256"
 
       - name: Publish GitHub prerelease
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          set -euo pipefail
           version="${GITHUB_REF_NAME#v}"
           gh release create "$GITHUB_REF_NAME" \
             "eclipse-$version.zip" \
