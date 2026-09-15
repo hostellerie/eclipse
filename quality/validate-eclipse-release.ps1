@@ -12,14 +12,18 @@ $errors = [System.Collections.Generic.List[string]]::new()
 function Fail([string]$Message) { $errors.Add($Message) }
 
 # Keep the comprehensive historical validator and ignore only contracts that
-# Eclipse 1.1.0 intentionally supersedes. Every other historical failure stays
-# release-blocking.
-$legacyOutput = @()
-& $legacyValidator -ThemePath $theme -ParentThemePath $ParentThemePath -NodePath $NodePath 2>&1 | ForEach-Object {
-    $line = [string] $_
-    $legacyOutput += $line
-    Write-Host $line
+# Eclipse 1.1.0 intentionally supersedes. Run it in a child PowerShell process
+# because the historical script uses `exit 1` when it finds any failure.
+$legacyArgs = @('-NoProfile', '-File', $legacyValidator, '-ThemePath', $theme, '-ParentThemePath', $ParentThemePath)
+if ($NodePath -ne '') {
+    $legacyArgs += @('-NodePath', $NodePath)
 }
+$legacyOutput = @(& pwsh @legacyArgs 2>&1 | ForEach-Object {
+    $line = [string] $_
+    Write-Host $line
+    $line
+})
+$legacyExitCode = $LASTEXITCODE
 
 $allowedLegacyFailures = @(
     'Story editor wrapper override must be isolated from Modern workspace.',
@@ -45,6 +49,9 @@ foreach ($failure in $legacyFailures) {
         Fail "Historical validator: $message"
     }
 }
+if ($legacyExitCode -ne 0 -and $legacyFailures.Count -eq 0) {
+    Fail "Historical validator exited with code $legacyExitCode without reporting a recognized FAIL line."
+}
 
 # 1.1.0 editor contract: the wrapper rule moved to story-editor-base.css because
 # story-editor.css imports the shared base layer.
@@ -59,10 +66,10 @@ if ($storyEditorBase -match 'eclipse-story-editor-page\.editor-sidebars-hidden #
 # 1.1.0 asset contract: derive cache keys from theme.ini at runtime instead of
 # embedding a literal version in functions.php.
 $functions = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
-if ($functions -notmatch "\$version\s*=\s*'\?v='\s*\.\s*rawurlencode\(eclipse_theme_version\(\)\)") {
-    Fail 'Asset cache key is not derived from eclipse_theme_version().' 
+if ($functions -notmatch '\$version\s*=\s*''\?v=''\s*\.\s*rawurlencode\(eclipse_theme_version\(\)\)') {
+    Fail 'Asset cache key is not derived from eclipse_theme_version().'
 }
-if ($functions -notmatch "\.css'\s*\.\s*\$version" -or $functions -notmatch "theme\.js'\s*\.\s*\$version") {
+if ($functions -notmatch '\.css''\s*\.\s*\$version' -or $functions -notmatch 'theme\.js''\s*\.\s*\$version') {
     Fail 'Version-derived cache key is not applied to both CSS and JavaScript assets.'
 }
 
@@ -102,5 +109,5 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Host "Eclipse 1.1 release validation passed. Historical checks retained; 1.1 contracts applied."
+Write-Host 'Eclipse 1.1 release validation passed. Historical checks retained; 1.1 contracts applied.'
 exit 0
