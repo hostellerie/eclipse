@@ -31,6 +31,17 @@ Production installations should use a currently maintained PHP version supported
 
 See `eclipse/COMPATIBILITY.md` for the detailed compatibility matrix and `eclipse/QA-CHECKLIST.md` for the final release checks.
 
+## Release validation
+
+Final manual release testing has been completed successfully on both supported Geeklog lines:
+
+- Geeklog 2.1.1;
+- Geeklog 2.2.2.
+
+The repository's automated release-contract checks also pass on the release branch. This includes manifest verification, runtime package construction, version checks and release archive validation.
+
+The email-footer enhancement tracked in issue #1 is included in this release. Geeklog 2.2.2 uses the Eclipse footer templates, while Geeklog 2.1.1 keeps its native mail path unchanged.
+
 ## Administration
 
 The Modern workspace progressively enhances Geeklog's own permission-filtered administration navigation instead of hardcoding destinations. If enhancement cannot initialize, the native interface remains available.
@@ -77,6 +88,4 @@ Before updating:
 5. Clear the Geeklog template cache once after a first installation.
 6. Run the smoke tests from `eclipse/QA-CHECKLIST.md`.
 
-## Release validation
-
-The repository validates the installable theme contract before publishing release assets. A stable `v1.1.0` tag must point at the reviewed `main` branch state after the 1.1.0 pull request has been merged.
+A stable `v1.1.0` tag must point at the reviewed `main` branch state after the 1.1.0 pull request has been merged.
