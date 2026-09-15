@@ -5,14 +5,6 @@ if (isset($_SERVER['PHP_SELF']) &&
     die('This file can not be used on its own!');
 }
 
-/**
- * Consume Monitor through Geeklog's public service contract.
- *
- * Eclipse owns presentation only. It deliberately does not inspect plugin
- * files, Monitor storage or GitHub itself.
- *
- * @return array|null
- */
 function eclipse_monitor_dashboard_data()
 {
     if (!function_exists('eclipse_is_admin_request') || !eclipse_is_admin_request()
@@ -49,7 +41,12 @@ function eclipse_monitor_dashboard_labels()
             'view_all' => 'Voir tous les plugins',
             'attention_one' => '1 upgrade de plugin à terminer',
             'attention_many' => '%d upgrades de plugins à terminer',
-            'manage_upgrades' => 'Terminer les upgrades de plugins'
+            'manage_upgrades' => 'Terminer les upgrades de plugins',
+            'compatible' => 'Compatible avec ce site',
+            'incompatible' => 'Non compatible avec ce site',
+            'compatibility_unknown' => 'Compatibilité non déterminée',
+            'requires_geeklog' => 'Geeklog %s+',
+            'requires_php' => 'PHP %s+'
         );
     }
 
@@ -59,7 +56,12 @@ function eclipse_monitor_dashboard_labels()
         'view_all' => 'View all plugins',
         'attention_one' => '1 plugin upgrade to finish',
         'attention_many' => '%d plugin upgrades to finish',
-        'manage_upgrades' => 'Finish plugin upgrades'
+        'manage_upgrades' => 'Finish plugin upgrades',
+        'compatible' => 'Compatible with this site',
+        'incompatible' => 'Not compatible with this site',
+        'compatibility_unknown' => 'Compatibility not determined',
+        'requires_geeklog' => 'Geeklog %s+',
+        'requires_php' => 'PHP %s+'
     );
 }
 
@@ -73,13 +75,6 @@ function eclipse_monitor_dashboard_safe_url($url)
     return $url;
 }
 
-/**
- * Add local upgrades to the existing Eclipse "attention" overview.
- *
- * The script is additive: the normal Eclipse overview remains authoritative
- * for drafts, submissions and comments. Monitor contributes only the local
- * plugin upgrade signal and links execution back to Geeklog's native manager.
- */
 function eclipse_monitor_dashboard_attention_script($count, $pluginsUrl, $labels)
 {
     $count = max(0, (int) $count);
@@ -109,25 +104,15 @@ function eclipse_monitor_dashboard_attention_script($count, $pluginsUrl, $labels
         . 'var b=document.createElement("span");b.className="eclipse-attention-count";b.textContent=String(d.count);a.appendChild(b);li.appendChild(a);ul.appendChild(li);}'
         . 'var actions=document.querySelector(".eclipse-overview-actions ul");if(actions&&!actions.querySelector("[data-eclipse-monitor-upgrade-action]")){'
         . 'var ali=document.createElement("li");ali.setAttribute("data-eclipse-monitor-upgrade-action","1");var aa=document.createElement("a");aa.href=d.url;aa.textContent=d.action;ali.appendChild(aa);actions.appendChild(ali);}return true;}'
-        . 'function boot(){if(add())return;var o=new MutationObserver(function(){if(add())o.disconnect();});o.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){o.disconnect();add();},3000);}'
+        . 'function boot(){add();var o=new MutationObserver(function(){add();});o.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){add();o.disconnect();},3000);}'
         . 'if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();}());</script>';
 }
 
-/**
- * Move the update card into Eclipse's existing dashboard grid. The card is
- * rendered late through content-bottom.php so this avoids duplicating or
- * modifying the main dashboard business logic.
- */
 function eclipse_monitor_dashboard_attach_script()
 {
     return '<script>(function(){function attach(){var card=document.getElementById("eclipse-dashboard-plugin-updates");var grid=document.querySelector(".eclipse-admin-dashboard-data");if(!card||!grid)return false;if(card.parentNode!==grid)grid.appendChild(card);return true;}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",attach);else attach();}());</script>';
 }
 
-/**
- * Render the remote-update card and local-upgrade attention contribution.
- *
- * @return string
- */
 function eclipse_monitor_dashboard_render()
 {
     global $_CONF;
@@ -198,12 +183,41 @@ function eclipse_monitor_dashboard_render()
         $versionUrl = isset($plugin['version_url'])
             ? eclipse_monitor_dashboard_safe_url($plugin['version_url']) : '';
         $meta = trim($local . ($local !== '' && $latest !== '' ? ' → ' : '') . $latest);
+        $requirements = isset($plugin['remote_requirements']) && is_array($plugin['remote_requirements'])
+            ? $plugin['remote_requirements'] : array();
+        $compatibility = isset($plugin['compatibility']) && is_array($plugin['compatibility'])
+            ? $plugin['compatibility'] : array();
+        $compatibilityState = isset($compatibility['state'])
+            ? (string) $compatibility['state'] : 'unknown';
 
         $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($name) . '</strong>';
         if ($meta !== '') {
             $html .= '<small>' . eclipse_admin_dashboard_h($meta) . '</small>';
         }
+
+        $requirementLabels = array();
+        if (!empty($requirements['geeklog_min'])) {
+            $requirementLabels[] = sprintf($labels['requires_geeklog'], $requirements['geeklog_min']);
+        }
+        if (!empty($requirements['php_min'])) {
+            $requirementLabels[] = sprintf($labels['requires_php'], $requirements['php_min']);
+        }
+        if (!empty($requirementLabels)) {
+            $html .= '<small>' . eclipse_admin_dashboard_h(implode(' · ', $requirementLabels)) . '</small>';
+        }
+
+        if ($compatibilityState === 'compatible') {
+            $compatibilityLabel = '✓ ' . $labels['compatible'];
+        } elseif ($compatibilityState === 'incompatible') {
+            $compatibilityLabel = '✕ ' . $labels['incompatible'];
+        } else {
+            $compatibilityLabel = '? ' . $labels['compatibility_unknown'];
+        }
+        $html .= '<small class="eclipse-monitor-compatibility eclipse-monitor-compatibility-'
+            . eclipse_admin_dashboard_h($compatibilityState) . '">'
+            . eclipse_admin_dashboard_h($compatibilityLabel) . '</small>';
         $html .= '</div>';
+
         if ($versionUrl !== '') {
             $html .= '<a href="' . eclipse_admin_dashboard_h($versionUrl)
                 . '" rel="noopener noreferrer">'
