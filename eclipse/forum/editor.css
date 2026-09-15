@@ -1,0 +1,350 @@
+/* Version-safe, CSS-only presentation for Forum post creation and editing.
+ *
+ * The Forum plugin changed its POST contract between the releases used with
+ * Geeklog 2.1.x and 2.2.x. Eclipse therefore deliberately does not override
+ * submissionform_*.thtml. These rules style the plugin's own Denim-compatible
+ * templates without changing fields, tokens, actions or button names.
+ */
+
+form[name='forumpost'] {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 68rem;
+    min-width: 0;
+    margin: 0 auto 1.5rem;
+}
+
+form[name='forumpost'] > * {
+    order: 60;
+}
+
+form[name='forumpost'] > p {
+    order: 5;
+    margin: 0 0 1rem;
+    font-size: 1.05rem;
+}
+
+form[name='forumpost'] .uk-form-row {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 .9rem;
+}
+
+form[name='forumpost'] .uk-form-label {
+    display: block;
+    float: none;
+    width: auto;
+    margin: 0 0 .38rem;
+    color: var(--eclipse-text);
+    font-weight: 700;
+}
+
+form[name='forumpost'] .uk-form-controls {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+}
+
+form[name='forumpost'] input[type='text'],
+form[name='forumpost'] input[type='search'],
+form[name='forumpost'] input[type='email'],
+form[name='forumpost'] select,
+form[name='forumpost'] textarea {
+    box-sizing: border-box;
+    max-width: 100%;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .5rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+}
+
+form[name='forumpost'] input[type='text'],
+form[name='forumpost'] input[type='search'],
+form[name='forumpost'] input[type='email'],
+form[name='forumpost'] select {
+    min-height: 2.65rem;
+    padding: .55rem .65rem;
+}
+
+form[name='forumpost'] input[type='text'].uk-form-width-large,
+form[name='forumpost'] input[type='search'].uk-form-width-large,
+form[name='forumpost'] input[type='email'].uk-form-width-large,
+form[name='forumpost'] #form-forum-subject,
+form[name='forumpost'] #form-forum-text {
+    width: 100% !important;
+}
+
+/* Writing-first hierarchy. The identifiers below come from the plugin-owned
+ * native forms in both supported Forum generations. They only control visual
+ * order; the DOM and POST contract remain untouched. */
+form[name='forumpost'] > .uk-form-row:has(#form-forum-subject) {
+    order: 10;
+    margin-bottom: .65rem;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']),
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) {
+    order: 20;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-text) {
+    order: 30;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#forum_smilies) {
+    order: 40;
+}
+
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) {
+    order: 50;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
+    order: 51;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-options) {
+    order: 70;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[type='submit']),
+form[name='forumpost'] > .uk-form-row:has(input[type='submit']) {
+    order: 100;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-subject) .uk-form-label {
+    margin-bottom: .45rem;
+    font-size: 1rem;
+}
+
+form[name='forumpost'] #form-forum-subject {
+    min-height: 3rem;
+    padding: .7rem .8rem;
+    font-size: 1.02rem;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+}
+
+form[name='forumpost'] textarea {
+    width: 100% !important;
+    min-height: 22rem;
+    padding: .85rem .9rem;
+    resize: vertical;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+}
+
+/* Compact formatting toolbar. The code row has no stable row id in native
+ * Forum markup, so identify it by its stable BBCode controls instead. */
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']),
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) {
+    margin-bottom: .65rem;
+    padding: .65rem .75rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .65rem;
+    background: color-mix(in srgb, var(--eclipse-primary) 3%, var(--eclipse-surface));
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) > .uk-form-label,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) > .uk-form-label {
+    margin: 0 0 .45rem;
+    color: var(--eclipse-muted, #687083);
+    font-size: .76rem;
+    font-weight: 750;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) .uk-form-controls,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) .uk-form-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .4rem .65rem;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) .uk-form-controls > div,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) .uk-form-controls > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .3rem;
+    width: auto;
+    max-width: 100%;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) .uk-form-controls > div:last-child,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) .uk-form-controls > div:last-child {
+    flex: 1 1 20rem;
+    min-width: 14rem;
+}
+
+form[name='forumpost'] .uk-button {
+    box-sizing: border-box;
+    min-height: 2.35rem;
+    padding: .4rem .62rem;
+    border-radius: .45rem;
+    line-height: 1.2;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) label.uk-form-label,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) label.uk-form-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    margin: 0;
+    font-size: .8rem;
+    font-weight: 650;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) label.uk-form-label select,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) label.uk-form-label select {
+    margin: 0;
+}
+
+form[name='forumpost'] input[name='helpbox'] {
+    display: block;
+    width: 100%;
+    min-height: 2.2rem;
+    margin: 0;
+    padding: .35rem .5rem;
+    color: var(--eclipse-muted, #687083);
+    background: color-mix(in srgb, var(--eclipse-surface) 94%, var(--eclipse-bg) 6%);
+    font-size: .76rem;
+}
+
+/* Smilies sit directly below the writing area. */
+form[name='forumpost'] > .uk-form-row:has(#forum_smilies) {
+    margin: -.1rem 0 .7rem;
+    padding: .35rem .15rem;
+}
+
+form[name='forumpost'] #forum_smilies {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .15rem;
+}
+
+form[name='forumpost'] img,
+form[name='forumpost'] iframe {
+    max-width: 100%;
+}
+
+/* Author and mood are secondary metadata below the actual writing area.
+ * Keep label + value/control on a single compact line on normal screens. */
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']),
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: .45rem .7rem;
+    margin-bottom: .45rem;
+    padding: .5rem .65rem;
+    border: 1px solid color-mix(in srgb, var(--eclipse-border) 78%, transparent);
+    border-radius: .5rem;
+    background: color-mix(in srgb, var(--eclipse-surface) 96%, var(--eclipse-bg) 4%);
+}
+
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) > .uk-form-label,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-label {
+    flex: 0 0 auto;
+    width: auto !important;
+    margin: 0;
+    color: var(--eclipse-muted, #687083);
+    font-size: .78rem;
+    line-height: 1.2;
+    text-align: left;
+    white-space: nowrap;
+}
+
+form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) > .uk-form-controls,
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-controls {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+    margin: 0 !important;
+}
+
+form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) select {
+    width: auto;
+    min-width: 10rem;
+    min-height: 2.3rem;
+    margin: 0;
+    padding-block: .35rem;
+}
+
+form[name='forumpost'] input[type='checkbox'],
+form[name='forumpost'] input[type='radio'] {
+    margin-right: .3rem;
+}
+
+form[name='forumpost'] .uk-align-right {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: .45rem;
+    float: none;
+    margin: .5rem 0 0;
+}
+
+/* The plugin emits the topic-review iframe after the form. Keep the native
+ * template and only make the preview responsive. */
+form[name='forumpost'] + .uk-grid iframe,
+form[name='forumpost'] ~ .uk-grid iframe {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100%;
+}
+
+@media (min-width: 48rem) {
+    form[name='forumpost'] .uk-align-right {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 47.99rem) {
+    form[name='forumpost'] {
+        max-width: 100%;
+    }
+
+    form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) .uk-form-controls,
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) .uk-form-controls,
+    form[name='forumpost'] > .uk-form-row:has(button[name='addbbcode0']) .uk-form-controls > div,
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) .uk-form-controls > div {
+        width: 100%;
+    }
+
+    form[name='forumpost'] textarea {
+        min-height: 18rem;
+    }
+}
+
+@media (max-width: 30rem) {
+    form[name='forumpost'] .uk-button,
+    form[name='forumpost'] label select {
+        min-height: 2.7rem;
+    }
+
+    form[name='forumpost'] .uk-align-right,
+    form[name='forumpost'] .uk-align-right > * {
+        width: 100%;
+    }
+
+    form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']),
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
+        flex-wrap: wrap;
+    }
+
+    form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) > .uk-form-controls,
+    form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-controls {
+        flex: 1 1 100%;
+    }
+}

@@ -142,6 +142,7 @@
         if (!selector || !form) return;
         var palettes = {
             default: ['#3157d5', '#6750a4', '#2448bd', '#f4f6fb', '#ffffff', '#202431'],
+            'vivid-red': ['#ef1b23', '#c90012', '#005bbb', '#f4f6fb', '#ffffff', '#202431'],
             ocean: ['#087e8b', '#155eaa', '#075985', '#eef8fa', '#ffffff', '#16313a'],
             forest: ['#287a52', '#7a8f3a', '#17633f', '#f2f7f1', '#ffffff', '#203229'],
             sunset: ['#6d3f8c', '#e07a5f', '#58316f', '#fff5ee', '#ffffff', '#382522'],
@@ -175,7 +176,7 @@
         }
         function updateContrast(colors) {
             if (!contrastReport) return;
-            contrastReport.innerHTML = contrastBadge('Text / cards', colors[5], colors[4]) + contrastBadge('Links / cards', colors[2], colors[4]) + contrastBadge('White / buttons', '#ffffff', colors[0]);
+            contrastReport.innerHTML = contrastBadge('Text / cards', colors[5], colors[4]) + contrastBadge('Links / cards', colors[2], colors[4]) + contrastBadge('White / buttons', '#ffffff', colors[2]);
         }
         function previewColors(colors) {
             colors.forEach(function (color, index) { document.documentElement.style.setProperty(variables[index], color); });
@@ -412,21 +413,6 @@
         if (!link.querySelector('.eclipse-command-icon')) link.insertAdjacentHTML('afterbegin', commandIcon(link.getAttribute('href') || '', link.textContent || ''));
     });
 
-    document.querySelectorAll('img[src*="/layout/eclipse/images/"]').forEach(function (img) {
-        function fallbackToSvg() {
-            var src = img.getAttribute('src') || '';
-            img.removeEventListener('error', fallbackToSvg);
-            if (/\.png(?:\?.*)?$/i.test(src)) {
-                img.addEventListener('error', function () { img.hidden = true; }, { once: true });
-                img.setAttribute('src', src.replace(/\.png(?=\?|$)/i, '.svg'));
-            } else {
-                img.hidden = true;
-            }
-        }
-        img.addEventListener('error', fallbackToSvg);
-        if (img.complete && img.naturalWidth === 0) window.setTimeout(fallbackToSvg, 0);
-    });
-
     function setupSeoAssistant(form) {
         var assistant = form.querySelector('[data-eclipse-seo-assistant]'); if (!assistant) return;
         var title = form.querySelector('input[name="page_title"],input[name="title"]');
@@ -538,7 +524,7 @@
             save.addEventListener('click', function () { var name = window.prompt('Filter name'); if (!name) return; name = name.trim().slice(0,40); if (!name) return; saved[name] = values(); localStorage.setItem(key,JSON.stringify(saved)); render(); select.value = name; });
             remove.addEventListener('click', function () { if (!select.value) return; delete saved[select.value]; localStorage.setItem(key,JSON.stringify(saved)); render(); });
             select.addEventListener('change', function () { var data = saved[select.value]; if (!data) return; Object.keys(data).forEach(function (name) { var control = form.querySelector('[name="' + CSS.escape(name) + '"]'); if (!control) return; if (control.type === 'checkbox') control.checked = Boolean(data[name]); else control.value = data[name]; }); });
-            tools.appendChild(toggleFilters); tools.appendChild(select); tools.appendChild(save); tools.appendChild(remove); search.insertAdjacentElement('afterend',tools); render();
+            tools.appendChild(toggleFilters); tools.appendChild(select); tools.appendChild(save); tools.appendChild(remove); var toolsHost=search.querySelector('[data-eclipse-filter-tools]'); if(toolsHost) toolsHost.appendChild(tools); else search.insertAdjacentElement('afterend',tools); render();
             setFiltersVisible(localStorage.getItem(visibilityKey) === '1');
         });
         document.querySelectorAll('table.admin-list-table').forEach(function (table, tableIndex) {
@@ -783,7 +769,7 @@
         var backdrop=document.createElement('button');backdrop.type='button';backdrop.className='eclipse-command-backdrop';backdrop.setAttribute('aria-label','Close command palette');
         var dialog=document.createElement('section');dialog.className='eclipse-command-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','eclipse-command-title');
         var title=document.createElement('h2');title.id='eclipse-command-title';title.textContent='Administration commands';
-        var input=document.createElement('input');input.type='search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');
+        var input=document.createElement('input');input.type='search';input.id='eclipse-command-search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');
         var results=document.createElement('ul');results.className='eclipse-command-results';results.setAttribute('role','listbox');
         var help=document.createElement('p');help.className='eclipse-command-help';help.textContent='↑ ↓ Navigate · Enter Open · Esc Close';
         dialog.appendChild(title);dialog.appendChild(input);dialog.appendChild(results);dialog.appendChild(help);palette.appendChild(backdrop);palette.appendChild(dialog);document.body.appendChild(palette);

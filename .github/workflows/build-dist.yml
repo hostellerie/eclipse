@@ -1,0 +1,98 @@
+name: Build installable Eclipse archive
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eclipse-build-dist-develop-1.1.0
+  cancel-in-progress: true
+
+jobs:
+  build-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          ref: develop-1.1.0
+          fetch-depth: 0
+
+      - name: Build and publish latest archive
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3 4; do
+            echo "Archive publication attempt $attempt"
+
+            git fetch origin develop-1.1.0
+            git reset --hard origin/develop-1.1.0
+            source_head=$(git rev-parse HEAD)
+
+            version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
+            if [ -z "$version" ]; then
+              echo "Unable to read Eclipse version from eclipse/theme.ini" >&2
+              exit 1
+            fi
+
+            pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
+            python3 ./quality/prepare-eclipse-package.py
+
+            build_stamp=$(date -u '+%Y-%m-%d %H:%M UTC')
+            printf '%s\n' "$build_stamp" > .package-stage/eclipse/BUILD.txt
+            printf '\n/* Build identifier injected by GitHub Actions. */\n.eclipse-customizer .eclipse-eyebrow::after{content:" · build %s";}\n' "$build_stamp" >> .package-stage/eclipse/css/studio.css
+            echo "Eclipse $version build: $build_stamp"
+
+            pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
+
+            rm -rf dist
+            mkdir -p dist
+            (
+              cd .package-stage
+              zip -r -9 "../dist/eclipse-$version.zip" eclipse \
+                -x '*/.DS_Store' '*/Thumbs.db'
+            )
+
+            archive="dist/eclipse-$version.zip"
+            archive_size=$(stat -c '%s' "$archive")
+            echo "Archive size: $archive_size bytes"
+            if [ "$archive_size" -ge 1900000 ]; then
+              echo "Install archive is too large; expected < 1,900,000 bytes." >&2
+              exit 1
+            fi
+
+            rm -rf .package-stage
+            git add eclipse/MANIFEST.json
+            git add -A -f dist
+
+            if git diff --cached --quiet -- eclipse/MANIFEST.json dist; then
+              echo "Archive already matches source $source_head."
+              exit 0
+            fi
+
+            git commit -m "Build Eclipse $version installable archive"
+
+            git fetch origin develop-1.1.0
+            remote_head=$(git rev-parse origin/develop-1.1.0)
+            if [ "$remote_head" != "$source_head" ]; then
+              echo "Branch advanced from $source_head to $remote_head; rebuilding latest source."
+              continue
+            fi
+
+            if git push origin HEAD:develop-1.1.0; then
+              echo "Published Eclipse $version archive for $source_head."
+              exit 0
+            fi
+
+            echo "Branch changed during push; rebuilding latest source."
+          done
+
+          echo "Unable to publish an archive after 4 attempts because the branch kept changing." >&2
+          exit 1

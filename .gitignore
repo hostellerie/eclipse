@@ -3,3 +3,7 @@
 .DS_Store
 Thumbs.db
 quality/reference/
+
+# Keep generated installable packages in dist/
+!dist/
+!dist/*.zip

@@ -1,0 +1,87 @@
+{# begin {templatelocation} #}
+
+{block_start}
+
+<section class="eclipse-forum-report eclipse-forum-preferences" aria-labelledby="forum-preferences-title">
+    {navmenu}
+
+    <header class="eclipse-forum-report-header">
+        <h1 id="forum-preferences-title" class="eclipse-forum-page-title">{lang_user_preferences}</h1>
+    </header>
+
+    <form class="eclipse-forum-report-form" action="{PHP_SELF}" method="post">
+        <input type="hidden" name="{gltoken_name}" value="{gltoken}"{xhtml}>
+
+        <div class="eclipse-forum-settings-grid">
+            <fieldset class="eclipse-forum-settings-card">
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-tpp" title="{$LANG_GF92[topicsppdscp]}">{$LANG_GF92[topicspp]}</label>
+                    <input id="form-up-tpp" type="number" name="xtopicsperpage" min="1" max="99" value="{topicsperpage}"{xhtml}>
+                </div>
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-postspp" title="{$LANG_GF92[postsppdscp]}">{$LANG_GF92[postspp]}</label>
+                    <input id="form-up-postspp" type="number" name="xpostsperpage" min="1" max="99" value="{postsperpage}"{xhtml}>
+                </div>
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-npp" title="{$LANG_GF92[newppdscp]}">{$LANG_GF92[newpp]}</label>
+                    <input id="form-up-npp" type="number" name="xnewperpage" min="1" max="99" value="{newperpage}"{xhtml}>
+                </div>
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-popularpp" title="{$LANG_GF92[popularppdscp]}">{$LANG_GF92[popularpp]}</label>
+                    <input id="form-up-popularpp" type="number" name="xpopularperpage" min="1" max="99" value="{popularperpage}"{xhtml}>
+                </div>
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-pl" title="{$LANG_GF92[popularldscp]}">{$LANG_GF92[popularl]}</label>
+                    <input id="form-up-pl" type="number" name="xpopularlimit" min="1" max="99" value="{popularlimit}"{xhtml}>
+                </div>
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-spp" title="{$LANG_GF92[searchppdscp]}">{$LANG_GF92[searchpp]}</label>
+                    <input id="form-up-spp" type="number" name="xsearchperpage" min="1" max="99" value="{searchperpage}"{xhtml}>
+                </div>
+                <div class="eclipse-forum-setting">
+                    <label for="form-up-mpp" title="{$LANG_GF92[membersppdscp]}">{$LANG_GF92[memberspp]}</label>
+                    <input id="form-up-mpp" type="number" name="xmembersperpage" min="1" max="99" value="{membersperpage}"{xhtml}>
+                </div>
+            </fieldset>
+
+            <fieldset class="eclipse-forum-settings-card eclipse-forum-choice-settings">
+                <div class="eclipse-forum-setting-group">
+                    <span class="eclipse-forum-setting-label" title="{$LANG_GF92[viewapdscp]}">{$LANG_GF92[viewap]}</span>
+                    <div class="eclipse-forum-choice-row">
+                        <label><input type="radio" name="xviewanonposts" value="1" {viewanonposts_yes}{xhtml}> {$LANG_GF01[YES]}</label>
+                        <label><input type="radio" name="xviewanonposts" value="0" {viewanonposts_no}{xhtml}> {$LANG_GF01[NO]}</label>
+                    </div>
+                </div>
+                <div class="eclipse-forum-setting-group">
+                    <span class="eclipse-forum-setting-label" title="{$LANG_GF92[alwaysndscp]}">{$LANG_GF92[alwaysn]}</span>
+                    <div class="eclipse-forum-choice-row">
+                        <label><input type="radio" name="xalwaysnotify" value="1" {alwaysnotify_yes}{xhtml}> {$LANG_GF01[YES]}</label>
+                        <label><input type="radio" name="xalwaysnotify" value="0" {alwaysnotify_no}{xhtml}> {$LANG_GF01[NO]}</label>
+                    </div>
+                </div>
+                <div class="eclipse-forum-setting-group">
+                    <span class="eclipse-forum-setting-label" title="{$LANG_GF92[notifyoodscp]}">{$LANG_GF92[notifyoo]}</span>
+                    <div class="eclipse-forum-choice-row">
+                        <label><input type="radio" name="xnotifyonce" value="1" {notifyonce_yes}{xhtml}> {$LANG_GF01[YES]}</label>
+                        <label><input type="radio" name="xnotifyonce" value="0" {notifyonce_no}{xhtml}> {$LANG_GF01[NO]}</label>
+                    </div>
+                </div>
+                <div class="eclipse-forum-setting-group">
+                    <span class="eclipse-forum-setting-label" title="{$LANG_GF92[showiframedscp]}">{$LANG_GF92[showiframe]}</span>
+                    <div class="eclipse-forum-choice-row">
+                        <label><input type="radio" name="xshowiframe" value="1" {showiframe_yes}{xhtml}> {$LANG_GF01[YES]}</label>
+                        <label><input type="radio" name="xshowiframe" value="0" {showiframe_no}{xhtml}> {$LANG_GF01[NO]}</label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="eclipse-forum-report-actions">
+            <button class="uk-button uk-button-primary" type="submit" name="submit" value="{LANG_save}">{LANG_save}</button>
+        </div>
+    </form>
+</section>
+
+{block_end}
+
+{# end {templatelocation} #}

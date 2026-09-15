@@ -39,7 +39,39 @@ function MENU_getResolvedTree($name)
                     'resolved' => true,
                     'children' => array(),
                 ),
+                array(
+                    'id' => 4,
+                    'label' => '&lt;span class=&quot;uk-text-danger&quot;&gt;reCAPTCHA&lt;/span&gt; (N/A)',
+                    'status' => 'warning',
+                    'type' => 4,
+                    'url' => 'https://example.test/admin/plugins/recaptcha/',
+                    'target' => '',
+                    'selected' => false,
+                    'resolved' => true,
+                    'children' => array(),
+                ),
+                array(
+                    'id' => 5,
+                    'label' => '&lt;strong&gt;Hello&lt;/strong&gt; (N/A)',
+                    'status' => '',
+                    'type' => 4,
+                    'url' => 'https://example.test/admin/plugins/hello/',
+                    'target' => '',
+                    'selected' => false,
+                    'resolved' => true,
+                    'children' => array(),
+                ),
             ),
+        ),
+        array(
+            'id' => 6,
+            'label' => 'Legacy callback',
+            'type' => 7,
+            'url' => '#',
+            'target' => '',
+            'selected' => false,
+            'resolved' => false,
+            'children' => array(),
         ),
     );
 }
@@ -71,7 +103,17 @@ eclipse_test_assert(strpos($html, 'eclipse-has-submenu') !== false, 'submenu cla
 eclipse_test_assert(strpos($html, 'eclipse-menu-parent') !== false, 'submenu link class missing');
 eclipse_test_assert(strpos($html, 'target="_blank"') !== false, 'target not preserved');
 eclipse_test_assert(strpos($html, 'rel="noopener noreferrer"') !== false, 'noopener not added');
-eclipse_test_assert(strpos($html, 'legacy-menu') === false, 'resolved tree unexpectedly used legacy renderer');
+eclipse_test_assert(strpos($html, 'eclipse-menu-status-warning') !== false, 'semantic warning class missing');
+eclipse_test_assert(strpos($html, 'reCAPTCHA (N/A)') !== false, 'warning label missing');
+eclipse_test_assert(strpos($html, 'Hello (N/A)') !== false, 'generic encoded plugin label missing');
+eclipse_test_assert(strpos($html, '&lt;span') === false, 'encoded warning markup must not be rendered as text');
+eclipse_test_assert(strpos($html, '&lt;strong') === false, 'generic encoded markup must not be rendered as text');
+eclipse_test_assert(strpos($html, 'uk-text-danger') === false, 'Geeklog presentation class must not leak into Eclipse output');
+eclipse_test_assert(eclipse_menu_plain_label('&lt;em&gt;Example&lt;/em&gt;') === 'Example', 'encoded markup normalization failed');
+eclipse_test_assert(eclipse_menu_node_status(array('status' => 'warning')) === 'warning', 'warning status not accepted');
+eclipse_test_assert(eclipse_menu_node_status(array('status' => 'custom-class')) === '', 'unknown status must be ignored');
+eclipse_test_assert(strpos($html, 'legacy-menu') === false, 'one unresolved callback must not force legacy rendering');
+eclipse_test_assert(strpos($html, 'Legacy callback') === false, 'unresolved callback must be omitted from structured rendering');
 
 function eclipse_test_unresolved_tree()
 {
@@ -79,6 +121,8 @@ function eclipse_test_unresolved_tree()
 }
 
 eclipse_test_assert(eclipse_menu_tree_is_resolved(eclipse_test_unresolved_tree()) === false, 'unresolved tree detection failed');
+$filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'));
+eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 // Geeklog 2.1.x compiles .thtml files into path_data/layout_cache. __DIR__ in a
 // compiled template therefore points at the cache rather than layout/eclipse.

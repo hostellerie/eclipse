@@ -1,0 +1,14 @@
+{# begin {templatelocation} #}
+
+<section class="eclipse-forum-footer-section eclipse-forum-legend" aria-label="Forum legend">
+    <ul class="eclipse-forum-legend-list">
+        <li>{normal_icon} <span>{normal_msg}</span></li>
+        <li>{sticky_icon} <span>{sticky_msg}</span></li>
+        <li>{locked_icon} <span>{locked_msg}</span></li>
+        <li>{normalnew_icon} <span>{normalnew_msg}</span></li>
+        <li>{stickynew_icon} <span>{stickynew_msg}</span></li>
+        <li>{lockednew_icon} <span>{lockednew_msg}</span></li>
+    </ul>
+</section>
+
+{# end {templatelocation} #}

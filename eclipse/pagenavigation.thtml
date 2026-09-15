@@ -1,8 +1,33 @@
 {# begin {templatelocation} #}
-<nav class="gl-pagenav" aria-label="Pagination">{message}<span>{start_first_anchortag}{lang_first}{end_first_anchortag}</span><span>{start_previous_anchortag}{lang_previous}{end_previous_anchortag}</span>{pages}</nav>
-<!-- BEGIN message --><p>{message_text}</p><!-- END message -->
-<!-- BEGIN page --><span class="page-number">{page_number}</span><!-- END page -->
-<!-- BEGIN page-current --><strong class="page-number current" aria-current="page">{page_number}</strong><!-- END page-current -->
-<!-- BEGIN nav-end --><span>{start_next_anchortag}{lang_next}{end_next_anchortag}</span><span>{start_last_anchortag}{lang_last}{end_last_anchortag}</span><!-- END nav-end -->
-<!-- BEGIN nav-open-ended --><span>{open_ended}</span><!-- END nav-open-ended -->
+
+<nav class="gl-pagenav" aria-label="Pagination">
+    {message}
+    <ul class="gl-pagenav-list">
+        <li class="gl-pagenav-item gl-pagenav-first {!if start_first_anchortag}{!else}is-disabled{!endif}">{start_first_anchortag}<span>{lang_first}</span>{end_first_anchortag}</li>
+        <li class="gl-pagenav-item gl-pagenav-previous {!if start_previous_anchortag}{!else}is-disabled{!endif}">{start_previous_anchortag}<span>{lang_previous}</span>{end_previous_anchortag}</li>
+        {pages}
+    </ul>
+</nav>
+
 {# end {templatelocation} #}
+
+<!-- BEGIN message -->
+{!if message_text}<p class="gl-pagenav-message">{message_text}</p>{!endif}
+<!-- END message -->
+
+<!-- BEGIN page -->
+<li class="gl-pagenav-item gl-pagenav-page">{page_number}</li>
+<!-- END page -->
+
+<!-- BEGIN page-current -->
+<li class="gl-pagenav-item gl-pagenav-page is-current" aria-current="page"><span>{page_number}</span></li>
+<!-- END page-current -->
+
+<!-- BEGIN nav-end -->
+<li class="gl-pagenav-item gl-pagenav-next {!if start_next_anchortag}{!else}is-disabled{!endif}">{start_next_anchortag}<span>{lang_next}</span>{end_next_anchortag}</li>
+<li class="gl-pagenav-item gl-pagenav-last {!if start_last_anchortag}{!else}is-disabled{!endif}">{start_last_anchortag}<span>{lang_last}</span>{end_last_anchortag}</li>
+<!-- END nav-end -->
+
+<!-- BEGIN nav-open-ended -->
+<li class="gl-pagenav-item gl-pagenav-open-ended">{open_ended}</li>
+<!-- END nav-open-ended -->

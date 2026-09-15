@@ -1,0 +1,5 @@
+{# begin {templatelocation} #}
+
+<p class="eclipse-forum-time">{message}</p>
+
+{# end {templatelocation} #}

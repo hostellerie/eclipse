@@ -5,6 +5,7 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 }
 
 require_once __DIR__ . '/includes/admin-dashboard.php';
+require_once __DIR__ . '/includes/custom-css.php';
 
 function theme_config_eclipse()
 {
@@ -18,7 +19,7 @@ function theme_config_eclipse()
         'theme_author'           => 'Eclipse theme contributors',
         'theme_homepage'         => 'https://github.com/hostellerie/eclipse',
         'theme_license'          => 'GPL-2.0+',
-        'image_type'              => 'svg',
+        'image_type'              => 'png',
         'doctype'                 => 'html5',
         'etag'                    => false,
         'supported_version_theme' => $minimumThemeVersion,
@@ -72,6 +73,12 @@ function eclipse_is_configuration_page()
     return eclipse_admin_page() === 'configuration';
 }
 
+function eclipse_is_staticpages_admin()
+{
+    if (!eclipse_is_admin_request()) return false;
+    return preg_match('#(?:^|/)admin/plugins/staticpages/index\.php$#', eclipse_request_path()) === 1;
+}
+
 function eclipse_supports_admin_list()
 {
     return defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
@@ -79,9 +86,15 @@ function eclipse_supports_admin_list()
 
 function eclipse_context_classes()
 {
+    global $_CONF;
     if (!eclipse_is_admin_request()) return 'eclipse-public-page';
     $page = eclipse_admin_page();
-    return 'eclipse-admin-page' . ($page !== '' ? ' eclipse-admin-' . $page : '');
+    $classes = 'eclipse-admin-page' . ($page !== '' ? ' eclipse-admin-' . $page : '');
+    if (eclipse_is_staticpages_admin()) {
+        $classes .= ' eclipse-staticpages-admin';
+        if (!empty($_CONF['titletoid'])) $classes .= ' eclipse-titletoid-enabled';
+    }
+    return $classes;
 }
 
 function eclipse_html_language()
@@ -145,11 +158,12 @@ function theme_css_eclipse()
     // preserving a real browser cache key even when Resource cache is disabled.
     $modernResource = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
     $resourceRoot = $modernResource && !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
-    $version = '?v=1.0.0';
+    $version = '?v=' . rawurlencode(eclipse_theme_version());
     $requestPath = eclipse_request_path();
     $isAdmin = eclipse_is_admin_request();
     $isAdminDashboard = $isAdmin && eclipse_admin_page() === 'index';
     $isStoryEditor = eclipse_is_story_editor();
+    $isStaticpagesAdmin = eclipse_is_staticpages_admin();
     $isCommentPage = !$isAdmin && (substr($requestPath, -12) === '/article.php' || substr($requestPath, -12) === '/comment.php');
 
     $cssFiles = array(
@@ -171,9 +185,13 @@ function theme_css_eclipse()
     }
     if ($isAdminDashboard) {
         $cssFiles[] = array('name' => 'eclipse-studio', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/studio.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 280);
+        $cssFiles[] = array('name' => 'eclipse-custom-css-studio', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/custom-css-studio.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 281);
     }
     if ($isStoryEditor) {
         $cssFiles[] = array('name' => 'eclipse-story-editor', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/story-editor.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 310);
+    }
+    if ($isStaticpagesAdmin) {
+        $cssFiles[] = array('name' => 'eclipse-staticpages-editor', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/staticpages-editor.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 312);
     }
     if ($isCommentPage) {
         $cssFiles[] = array('name' => 'eclipse-comments', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/comments.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 310);
@@ -195,10 +213,13 @@ function theme_js_files_eclipse()
     global $_CONF;
     $modernResource = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
     $resourceRoot = $modernResource && !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
-    $version = '?v=1.0.0';
+    $version = '?v=' . rawurlencode(eclipse_theme_version());
     $files = array(array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/theme.js' . $version, 'footer' => true, 'priority' => 100));
     if (eclipse_is_admin_request()) {
         $files[] = array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/admin.js' . $version, 'footer' => true, 'priority' => 110);
+    }
+    if (eclipse_is_staticpages_admin()) {
+        $files[] = array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/staticpages-editor.js' . $version, 'footer' => true, 'priority' => 120);
     }
     return $files;
 }
@@ -667,6 +688,10 @@ function eclipse_render_customizer()
 {
     global $_CONF, $_TABLES;
     if (!function_exists('SEC_inGroup') || !SEC_inGroup('Root')) return '';
+    $customCssActive = isset($_POST['eclipse_custom_css_save']) || isset($_POST['eclipse_custom_css_clear']);
+    if ($customCssActive && function_exists('eclipse_custom_css_handle_request')) {
+        eclipse_custom_css_handle_request();
+    }
     $message = '';
     $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';
     if (isset($_POST['eclipse_update'])) {
@@ -800,6 +825,9 @@ function eclipse_render_customizer()
     }
     $token = function_exists('SEC_createToken') ? SEC_createToken() : '';
     $h = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8'); };
+    $customCss = function_exists('eclipse_custom_css_read') ? eclipse_custom_css_read() : '';
+    $customCssNotice = function_exists('eclipse_custom_css_notice') ? eclipse_custom_css_notice() : array();
+    $customCssFr = strpos(strtolower((string) eclipse_html_language()), 'fr') === 0;
     $environmentGeeklog = defined('VERSION') ? VERSION : '2.1.1 reference';
     $environmentDataWritable = eclipse_storage_prepare();
     $environmentHtml = '<dl class="eclipse-environment"><div><dt>Geeklog</dt><dd>' . $h($environmentGeeklog) . '</dd></div><div><dt>PHP</dt><dd>' . $h(PHP_VERSION) . '</dd></div><div><dt>ZIP updates</dt><dd class="' . (class_exists('ZipArchive') ? 'is-ok' : 'is-warning') . '">' . (class_exists('ZipArchive') ? 'Available' : 'ZipArchive missing') . '</dd></div><div><dt>Persistent JSON</dt><dd class="' . ($environmentDataWritable ? 'is-ok' : 'is-warning') . '">' . ($environmentDataWritable ? 'Writable sibling storage' : 'Not writable') . '</dd></div></dl>';
@@ -809,15 +837,15 @@ function eclipse_render_customizer()
         return $html . '</select>';
     };
     $html = '<section class="eclipse-customizer" id="eclipse-theme-studio" tabindex="-1"><header><div><span class="eclipse-eyebrow">Eclipse ' . htmlspecialchars(eclipse_theme_version(), ENT_QUOTES, 'UTF-8') . '</span><h2>Theme studio</h2><p>Changes are stored as protected JSON outside Geeklog\'s cache directory.</p></div><div class="eclipse-studio-header-actions"><span class="eclipse-preview-mark" aria-hidden="true">&#9680;</span><a href="#eclipse-dashboard-start">Back to dashboard</a></div></header>' . $message;
-    $previewDocument = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><style>:root{--p:#3157d5;--s:#6750a4;--l:#2448bd;--bg:#f4f6fb;--surface:#fff;--text:#202431}*{box-sizing:border-box}body{margin:0;color:var(--text);background:var(--bg);font:16px/1.5 system-ui,sans-serif}.hero{padding:2.2rem 7%;color:#fff;background:linear-gradient(125deg,var(--p),var(--s))}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,3.2rem)}nav{display:flex;gap:.35rem;padding:.55rem 7%;background:var(--surface);border-bottom:1px solid #ccd2df}nav a{padding:.45rem .7rem;color:var(--l)}main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:1rem;padding:1.25rem 7%}.card{padding:1.2rem;background:var(--surface);border:1px solid #dce1eb;border-radius:.75rem;box-shadow:0 10px 28px rgba(28,38,66,.08)}h2{margin-top:0}.meta{color:#687083;font-size:.82rem}.button{display:inline-block;padding:.55rem .85rem;color:#fff;background:var(--p);border-radius:.45rem}@media(max-width:600px){main{grid-template-columns:1fr}.hero{padding-block:1.4rem}nav{overflow:auto}}</style></head><body><header class="hero"><h1>Geeklog France</h1><p>Free Content Management System GPL</p></header><nav><a>Home</a><a>Articles</a><a>Contact</a></nav><main><article class="card"><p class="meta">12 January 2026 &middot; Editorial preview</p><h2>Design preview</h2><p>This isolated page shows the selected palette without changing the administration interface.</p><span class="button">Primary action</span></article><aside class="card"><h2>Sidebar</h2><p><a style="color:var(--l)">Current section</a></p><p>Recent content</p></aside></main></body></html>';
+    $previewDocument = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><style>:root{--p:#3157d5;--s:#6750a4;--l:#2448bd;--action:var(--l);--bg:#f4f6fb;--surface:#fff;--text:#202431}*{box-sizing:border-box}body{margin:0;color:var(--text);background:var(--bg);font:16px/1.5 system-ui,sans-serif}.hero{padding:2.2rem 7%;color:#fff;background:linear-gradient(125deg,var(--p),var(--s))}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,3.2rem)}nav{display:flex;gap:.35rem;padding:.55rem 7%;background:var(--surface);border-bottom:1px solid #ccd2df}nav a{padding:.45rem .7rem;color:var(--l)}main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:1rem;padding:1.25rem 7%}.card{padding:1.2rem;background:var(--surface);border:1px solid #dce1eb;border-radius:.75rem;box-shadow:0 10px 28px rgba(28,38,66,.08)}h2{margin-top:0}.meta{color:#687083;font-size:.82rem}.button{display:inline-block;padding:.55rem .85rem;color:#fff;background:var(--action);border-radius:.45rem}@media(max-width:600px){main{grid-template-columns:1fr}.hero{padding-block:1.4rem}nav{overflow:auto}}</style></head><body><header class="hero"><h1>Geeklog France</h1><p>Free Content Management System GPL</p></header><nav><a>Home</a><a>Articles</a><a>Contact</a></nav><main><article class="card"><p class="meta">12 January 2026 &middot; Editorial preview</p><h2>Design preview</h2><p>This isolated page shows the selected palette without changing the administration interface.</p><span class="button">Primary action</span></article><aside class="card"><h2>Sidebar</h2><p><a style="color:var(--l)">Current section</a></p><p>Recent content</p></aside></main></body></html>';
     $previewDocument = str_replace(
         array('Geeklog France', 'Free Content Management System GPL'),
         array($h(!empty($_CONF['site_name']) ? $_CONF['site_name'] : 'Geeklog'), $h(!empty($_CONF['site_slogan']) ? $_CONF['site_slogan'] : 'Content management powered by Geeklog')),
         $previewDocument
     );
-    $html .= '<nav class="eclipse-studio-tabs" role="tablist" aria-label="Theme Studio sections"><button type="button" role="tab" id="eclipse-tab-design" aria-controls="eclipse-panel-design" aria-selected="true">Design</button><button type="button" role="tab" id="eclipse-tab-preview" aria-controls="eclipse-panel-preview" aria-selected="false" tabindex="-1">Preview</button><button type="button" role="tab" id="eclipse-tab-updates" aria-controls="eclipse-panel-updates" aria-selected="false" tabindex="-1">Updates</button><button type="button" role="tab" id="eclipse-tab-documentation" aria-controls="eclipse-panel-documentation" aria-selected="false" tabindex="-1">Documentation</button></nav>';
-    $html .= '<form method="post" enctype="multipart/form-data" class="eclipse-settings-form" data-eclipse-version="' . $h(eclipse_theme_version()) . '"><input type="hidden" name="' . $h($tokenName) . '" value="' . $h($token) . '"><input type="hidden" id="eclipse-portable-palettes" name="eclipse_portable_palettes" value=""><div id="eclipse-panel-design" class="eclipse-studio-panel" role="tabpanel" aria-labelledby="eclipse-tab-design">';
-    $html .= '<fieldset data-studio-section="palette"><legend>Palette</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="palette">Reset palette</button></div><div class="eclipse-palette-tools"><label><span>Preset palette</span><select id="eclipse-palette-preset"><option value="custom">Custom colors</option><option value="default">Eclipse default</option><option value="ocean">Ocean blue</option><option value="forest">Forest green</option><option value="sunset">Warm sunset</option><option value="graphite">Graphite</option>';
+    $html .= '<nav class="eclipse-studio-tabs" role="tablist" aria-label="Theme Studio sections"><button type="button" role="tab" id="eclipse-tab-design" aria-controls="eclipse-panel-design" aria-selected="' . ($customCssActive ? 'false' : 'true') . '"' . ($customCssActive ? ' tabindex="-1"' : '') . '>Design</button><button type="button" role="tab" id="eclipse-tab-preview" aria-controls="eclipse-panel-preview" aria-selected="false" tabindex="-1">Preview</button><button type="button" role="tab" id="eclipse-tab-css" aria-controls="eclipse-panel-css" aria-selected="' . ($customCssActive ? 'true' : 'false') . '"' . ($customCssActive ? '' : ' tabindex="-1"') . '>CSS</button><button type="button" role="tab" id="eclipse-tab-updates" aria-controls="eclipse-panel-updates" aria-selected="false" tabindex="-1">Updates</button><button type="button" role="tab" id="eclipse-tab-documentation" aria-controls="eclipse-panel-documentation" aria-selected="false" tabindex="-1">Documentation</button></nav>';
+    $html .= '<form method="post" enctype="multipart/form-data" class="eclipse-settings-form" data-eclipse-version="' . $h(eclipse_theme_version()) . '"><input type="hidden" name="' . $h($tokenName) . '" value="' . $h($token) . '"><input type="hidden" id="eclipse-portable-palettes" name="eclipse_portable_palettes" value=""><div id="eclipse-panel-design" class="eclipse-studio-panel" role="tabpanel" aria-labelledby="eclipse-tab-design"' . ($customCssActive ? ' hidden' : '') . '>';
+    $html .= '<fieldset data-studio-section="palette"><legend>Palette</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="palette">Reset palette</button></div><div class="eclipse-palette-tools"><label><span>Preset palette</span><select id="eclipse-palette-preset"><option value="custom">Custom colors</option><option value="default">Eclipse default</option><option value="vivid-red">Vivid red</option><option value="ocean">Ocean blue</option><option value="forest">Forest green</option><option value="sunset">Warm sunset</option><option value="graphite">Graphite</option>';
     foreach ($customPalettes as $paletteName => $paletteColors) {
         $orderedColors = array(); foreach (array('color_primary', 'color_secondary', 'color_link', 'color_background', 'color_surface', 'color_text') as $colorKey) $orderedColors[] = isset($paletteColors[$colorKey]) ? $paletteColors[$colorKey] : '';
         $html .= '<option value="saved-' . $h(sha1($paletteName)) . '" data-palette-name="' . $h($paletteName) . '" data-colors="' . $h(implode(',', $orderedColors)) . '">' . $h($paletteName) . '</option>';
@@ -836,6 +864,24 @@ function eclipse_render_customizer()
     $html .= '</div></fieldset>' . eclipse_footer_editor($footerData) . '<fieldset class="eclipse-portability"><legend>Portability and history</legend><div class="eclipse-portability-grid"><div><h3>Import or export</h3><p>Import a complete versioned draft containing settings, footer links and palettes. Review it, then save.</p><input type="file" id="eclipse-settings-import" accept="application/json,.json"><button type="button" id="eclipse-settings-export">Export complete Eclipse state</button></div><div><h3>Complete state history</h3><label><span>Saved snapshot</span><select id="eclipse-history-select" name="eclipse_history_id"><option value="">Select a snapshot</option>';
     foreach ($settingsHistory as $historyEntry) if (isset($historyEntry['id'], $historyEntry['date'])) $html .= '<option value="' . $h($historyEntry['id']) . '">' . $h(substr($historyEntry['date'], 0, 19) . ' -- ' . (isset($historyEntry['label']) ? $historyEntry['label'] : 'Settings')) . '</option>';
     $html .= '</select></label><button id="eclipse-history-restore" type="submit" name="eclipse_history_restore" value="1" disabled>Restore complete snapshot</button></div></div></fieldset></div><div id="eclipse-panel-preview" class="eclipse-studio-panel" role="tabpanel" aria-labelledby="eclipse-tab-preview" hidden><div class="eclipse-preview-toolbar" role="group" aria-label="Preview width"><button type="button" data-preview-width="desktop" aria-pressed="true">Desktop</button><button type="button" data-preview-width="tablet" aria-pressed="false">Tablet</button><button type="button" data-preview-width="mobile" aria-pressed="false">Mobile</button></div><div class="eclipse-isolated-preview" data-width="desktop"><iframe id="eclipse-preview-frame" title="Isolated Eclipse preview" sandbox srcdoc="' . $h($previewDocument) . '"></iframe></div></div><div class="eclipse-actions"><span id="eclipse-draft-status" class="eclipse-draft-status" role="status">No unsaved changes</span><button class="eclipse-cancel-preview" type="button">Cancel preview</button><button class="eclipse-reset" type="submit" name="eclipse_reset" value="1">Restore defaults</button><button type="submit" name="eclipse_save" value="1">Save complete Eclipse state</button></div></form>';
+    $customCssNoticeHtml = '';
+    if (!empty($customCssNotice['message'])) {
+        $customCssNoticeHtml = '<p class="eclipse-notice ' . (!empty($customCssNotice['type']) && $customCssNotice['type'] === 'success' ? 'eclipse-success' : 'eclipse-error') . '" role="status">' . $h($customCssNotice['message']) . '</p>';
+    }
+    $customCssEyebrow = $customCssFr ? 'Personnalisation avancée' : 'Advanced customization';
+    $customCssTitle = $customCssFr ? 'CSS personnalisé' : 'Custom CSS';
+    $customCssIntro = $customCssFr
+        ? 'Ajoutez ici des règles propres à ce site. Elles sont stockées hors du thème, survivent aux mises à jour d’Eclipse et sont chargées après les styles publics du thème.'
+        : 'Add site-specific rules here. They are stored outside the theme, survive Eclipse updates and load after the public theme styles.';
+    $customCssLabel = $customCssFr ? 'Feuille CSS du site' : 'Site CSS';
+    $customCssHelp = $customCssFr
+        ? 'Limite : 64 Kio. Le CSS est appliqué aux pages publiques uniquement. La séquence <code>&lt;/style&gt;</code> est refusée pour éviter de sortir du bloc CSS.'
+        : 'Limit: 64 KiB. CSS is applied to public pages only. The <code>&lt;/style&gt;</code> sequence is rejected to prevent leaving the CSS block.';
+    $customCssSave = $customCssFr ? 'Enregistrer le CSS' : 'Save CSS';
+    $customCssClear = $customCssFr ? 'Vider le CSS' : 'Clear CSS';
+    $customCssConfirm = $customCssFr ? 'Vider tout le CSS personnalisé ?' : 'Clear all Custom CSS?';
+    $customCssAction = !empty($_CONF['site_admin_url']) ? rtrim((string) $_CONF['site_admin_url'], '/') . '/index.php#eclipse-theme-studio' : '#eclipse-theme-studio';
+    $html .= '<section id="eclipse-panel-css" class="eclipse-studio-panel eclipse-custom-css-panel" role="tabpanel" aria-labelledby="eclipse-tab-css"' . ($customCssActive ? '' : ' hidden') . '><form method="post" action="' . $h($customCssAction) . '" class="eclipse-custom-css-form"><input type="hidden" name="' . $h($tokenName) . '" value="' . $h($token) . '"><header><span class="eclipse-eyebrow">' . $h($customCssEyebrow) . '</span><h3>' . $h($customCssTitle) . '</h3><p>' . $h($customCssIntro) . '</p></header>' . $customCssNoticeHtml . '<label class="eclipse-custom-css-editor"><span>' . $h($customCssLabel) . '</span><textarea name="eclipse_custom_css" id="eclipse-custom-css-editor" rows="22" maxlength="65536" spellcheck="false" aria-describedby="eclipse-custom-css-help">' . $h($customCss) . '</textarea></label><p id="eclipse-custom-css-help" class="eclipse-section-intro">' . $customCssHelp . '</p><div class="eclipse-custom-css-actions"><button type="submit" name="eclipse_custom_css_clear" value="1" class="eclipse-reset" onclick="return window.confirm(&quot;' . $h($customCssConfirm) . '&quot;);">' . $h($customCssClear) . '</button><button type="submit" name="eclipse_custom_css_save" value="1">' . $h($customCssSave) . '</button></div></form></section>';
     $html .= '<section id="eclipse-panel-updates" class="eclipse-studio-panel" role="tabpanel" aria-labelledby="eclipse-tab-updates" hidden><div class="eclipse-updater"><div><span class="eclipse-eyebrow">Local update</span><h3>Install an Eclipse archive</h3><p>Select a versioned ZIP from your computer. A backup is created before files are replaced, then the Geeklog template and generated CSS caches are cleared automatically.</p></div><form method="post" enctype="multipart/form-data"><input type="hidden" name="' . $h($tokenName) . '" value="' . $h($token) . '"><label><span>Archive ZIP</span><input type="file" name="eclipse_archive" accept=".zip,application/zip" required></label><button type="submit" name="eclipse_update" value="1">Install update</button></form></div></section>';
     $html .= '<section id="eclipse-panel-documentation" class="eclipse-studio-panel eclipse-studio-documentation" role="tabpanel" aria-labelledby="eclipse-tab-documentation" hidden><header><span class="eclipse-eyebrow">Guide for Eclipse ' . $h(eclipse_theme_version()) . '</span><h3>Discover Theme Studio</h3><p>Use this short guide to configure the theme safely and understand where your choices are stored.</p></header><ol class="eclipse-onboarding"><li><b>Choose a palette</b><span>Start with a preset, then adjust individual colors. Check the contrast badges before saving.</span></li><li><b>Set layout and typography</b><span>Choose the reading width, spacing and type family that suit your content.</span></li><li><b>Review appearance and regions</b><span>Configure navigation, cards, buttons, header, footer and sidebars.</span></li><li><b>Test in Preview</b><span>Compare desktop, tablet and mobile without changing the live site.</span></li><li><b>Save and verify</b><span>Apply the settings, then check public and administration pages. Eclipse clears only its theme caches automatically.</span></li></ol><div class="eclipse-documentation-sections"><details open><summary>Preview, drafts and saving</summary><p>Color changes are previewed immediately. They are not applied site-wide until <b>Save Eclipse settings</b> is used. A successful save clears only Eclipse template and generated CSS cache entries. <b>Cancel preview</b> returns the form to its initial values.</p></details><details><summary>Palettes and accessibility</summary><p>Contrast badges report text and interface-color ratios. Prefer AA or AAA results. Warning and destructive-action colors remain protected from palette presets to avoid ambiguous buttons.</p></details><details><summary>Import, export and history</summary><p>Export settings before major changes. Imported JSON is treated as a draft for review. Successful saves create snapshots that can be restored from Settings history.</p></details><details><summary>Updates and rollback</summary><p>The Updates tab accepts a versioned Eclipse ZIP selected from your computer. The installer validates its contents, creates a backup and clears only Eclipse theme caches after replacement. Use Restore a theme backup if a deployment must be reversed.</p></details><details><summary>Storage and permissions</summary><p>Settings, footer links, palettes and history are protected JSON documents in the multisite-safe sibling directory <code>{path_data}-eclipse/</code>, outside Geeklog\'s cache-cleaning scope. Historical <code>vars</code> records and legacy JSON under <code>path_data</code> are migration sources only.</p></details><details><summary>Administration shortcuts</summary><p>Modern workspace provides a dark administration header and navigation groups that are folded by default. Expand a group heading to show its permission-filtered links. Press <kbd>Ctrl</kbd>+<kbd>K</kbd> on Windows/Linux or <kbd>Command</kbd>+<kbd>K</kbd> on macOS to open the command palette.</p></details><details><summary>Troubleshooting</summary><ul><li>If styling appears unchanged after a manual upload, clear Geeklog\'s resource and template caches once, then force-reload the browser.</li><li>If an archive is refused, verify that it contains a single <code>eclipse/</code> directory and only supported file types.</li><li>If settings cannot be saved, verify that PHP can write to the sibling <code>{path_data}-eclipse/</code> directory.</li><li>Use the backup browser to return to the previous theme files after a failed update.</li></ul></details></div></section></section>';
     $html = str_replace(

@@ -8,6 +8,7 @@ This matrix distinguishes declared requirements, static validation and staging t
 - Geeklog 2.1.1 itself advertised PHP 5.2.0 as its historical minimum. Eclipse 1.0 supports PHP 5.6 through 8.1.
 - Production PHP must still be a maintained version supported by the hosting environment and by the chosen Geeklog core release. The historical minimum is a parsing baseline, not a security recommendation.
 - Denim must remain installed because Eclipse inherits templates and its compatibility stylesheet.
+- Because Eclipse declares Geeklog's standard `image_type = png`, it ships the complete Denim PNG compatibility image set under `images/` and `images/icons/`; Eclipse-specific UI can still use SVG assets independently.
 - PHP must provide `ZipArchive` only for Theme Studio local updates.
 - The parent of `path_data` must allow creation of the protected sibling `{path_data}-eclipse/`; `path_data` remains required only for Geeklog caches and temporary ZIP extraction.
 - Eclipse internal interface strings use `geeklog.lang.iso639Code`, supplied by Geeklog before the theme JavaScript; English is the fallback.

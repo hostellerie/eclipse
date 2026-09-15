@@ -1,2 +1,30 @@
+@import url("../forum/forum.css");
+
 .table-wrapper,.table-wrapper-fit{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}table{border-collapse:collapse;max-width:100%}th,td{padding:.6rem .75rem;border-bottom:1px solid var(--eclipse-border);text-align:start}.plugin,.pluginSubTable{width:100%;color:var(--eclipse-text);background:var(--eclipse-surface);border-color:var(--eclipse-border)}.plugin th,.pluginSubTable th,.pluginTitle,.pluginHeader{background:color-mix(in srgb,var(--eclipse-primary) 12%,var(--eclipse-surface));color:var(--eclipse-text)}.pluginRow1,.pluginRow1 td,.pluginRow2,.pluginRow2 td{color:var(--eclipse-text);background:var(--eclipse-surface)}.sysmessage,.pluginAlert,.pluginInfo{padding:1rem;border-radius:var(--eclipse-radius)}.admin-commandcontrol{display:grid;grid-template-columns:repeat(auto-fill,minmax(9rem,1fr));gap:1rem}.admin-commandcontrol li{list-style:none}.admin-commandcontrol a{display:block;height:100%;padding:1rem;border:1px solid var(--eclipse-border);border-radius:var(--eclipse-radius);background:var(--eclipse-surface);text-align:center}
 body.theme-eclipse .sysmessage img{display:block;float:left;width:2rem;max-width:2rem;height:2rem;margin:0 .75rem .25rem 0;padding:0;object-fit:contain}
+
+/* Plugin administration density.
+ * Several legacy/Denim-compatible plugins use UIkit action buttons. Keep them
+ * aligned with Eclipse admin controls even when a plugin-specific theme bridge
+ * is unavailable (notably on older Geeklog/plugin combinations).
+ *
+ * Public Forum presentation intentionally lives in eclipse/forum/*.css. Keep
+ * this shared plugin stylesheet free of Forum markup-specific selectors so the
+ * Forum layer has one authoritative presentation path.
+ */
+body.eclipse-admin-page .uk-button{box-sizing:border-box;min-height:2.1rem;padding:.34rem .66rem;border-radius:.45rem;font-size:.82rem;font-weight:650;line-height:1.15}
+body.eclipse-admin-page .uk-button.uk-button-small{min-height:1.9rem;padding:.27rem .56rem;font-size:.78rem}
+body.eclipse-admin-page .uk-button-primary,body.eclipse-admin-page .uk-button-danger{box-shadow:none}
+body.eclipse-admin-page .uk-button-primary,body.eclipse-admin-page .uk-button-primary:hover,body.eclipse-admin-page .uk-button-primary:focus,body.eclipse-admin-page .uk-button-primary:focus-visible,body.eclipse-admin-page .uk-button-danger,body.eclipse-admin-page .uk-button-danger:hover,body.eclipse-admin-page .uk-button-danger:focus,body.eclipse-admin-page .uk-button-danger:focus-visible{color:#fff!important;text-decoration:none}
+@media(max-width:47.99rem){body.eclipse-admin-page .uk-button,body.eclipse-admin-page .uk-button.uk-button-small{min-height:2.75rem;padding:.55rem .8rem;font-size:.88rem}}
+
+/* Legacy Geeklog autotag help tooltips.
+ * Keep the information icon inside its tooltip panel and prevent the local
+ * autotag wrapper from clipping the legacy absolutely-positioned popup.
+ */
+body.eclipse-admin-page .allowed_autotags,
+body.eclipse-admin-page .allowed_autotags>.warningsmall{position:relative;overflow:visible}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip{position:relative}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info{box-sizing:border-box;max-width:min(22rem,calc(100vw - 3rem));padding:.75rem .9rem .85rem 3.75rem;overflow:visible}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info>img.icon{position:absolute!important;top:.75rem!important;left:.75rem!important;float:none!important;width:2.25rem!important;max-width:2.25rem!important;height:2.25rem!important;margin:0!important;padding:0!important;object-fit:contain}
+body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info>em{display:block;margin:0 0 .35rem;font-weight:750}
