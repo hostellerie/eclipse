@@ -6,6 +6,7 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'admin-dashboard.php') !== false) {
 
 require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/zip-compat.php';
+require_once __DIR__ . '/monitor-dashboard.php';
 
 if (!empty($_CONF['path_data']) && function_exists('CTL_clearCache')) {
     $manifest = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'MANIFEST.json';
@@ -28,10 +29,6 @@ if (defined('VERSION') && version_compare(VERSION, '2.1.1', '>=') && version_com
 
 function eclipse_admin_dashboard_h($value)
 {
-    // Some legacy Geeklog content is already stored with HTML entities
-    // (for example &#039; in story titles). Normalize it first, then escape
-    // exactly once for safe HTML output. This keeps the helper XSS-safe while
-    // avoiding literal entity strings such as "d&#039;impôt" in the dashboard.
     $value = html_entity_decode((string) $value, ENT_QUOTES, 'UTF-8');
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
@@ -226,7 +223,7 @@ function eclipse_admin_discover_feeds()
 function eclipse_admin_attention_data($draftCount)
 {
     global $_CONF, $_TABLES;
-    $data = array('drafts' => max(0, (int) $draftCount), 'comments' => 0, 'submissions' => 0);
+    $data = array('drafts' => max(0, (int) $draftCount), 'comments' => 0, 'submissions' => 0, 'plugin_upgrades' => 0);
     if (function_exists('SEC_hasRights') && SEC_hasRights('comment.moderate') && !empty($_CONF['commentsubmission']) && !empty($_TABLES['commentsubmissions'])) {
         $data['comments'] = eclipse_admin_dashboard_count($_TABLES['commentsubmissions'], '1=1');
     }
@@ -282,17 +279,53 @@ function eclipse_admin_dashboard_module_end()
     return '</div></article>';
 }
 
+function eclipse_admin_dashboard_is_main_page()
+{
+    global $_CONF;
+
+    if (!function_exists('eclipse_is_admin_request') || !eclipse_is_admin_request()) {
+        return false;
+    }
+
+    $adminUrl = isset($_CONF['site_admin_url']) ? (string) $_CONF['site_admin_url'] : '';
+    $adminPath = $adminUrl !== '' ? parse_url($adminUrl, PHP_URL_PATH) : '';
+    $adminPath = is_string($adminPath) ? rtrim(str_replace('\\', '/', $adminPath), '/') : '';
+    $script = !empty($_SERVER['SCRIPT_NAME']) ? (string) $_SERVER['SCRIPT_NAME']
+        : (!empty($_SERVER['PHP_SELF']) ? (string) $_SERVER['PHP_SELF'] : '');
+    $script = str_replace('\\', '/', $script);
+
+    if ($adminPath !== '') {
+        return $script === $adminPath . '/index.php';
+    }
+
+    return preg_match('#/admin/index\.php$#i', $script) === 1;
+}
+
 function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
 {
     global $_CONF;
     $admin = rtrim($_CONF['site_admin_url'], '/');
+    $monitorLabels = function_exists('eclipse_monitor_dashboard_labels')
+        ? eclipse_monitor_dashboard_labels() : array();
+    $pluginUpgrades = isset($attention['plugin_upgrades']) ? max(0, (int) $attention['plugin_upgrades']) : 0;
+    $pluginUpgradeLabel = '';
+    if ($pluginUpgrades > 0 && !empty($monitorLabels)) {
+        $pluginUpgradeLabel = $pluginUpgrades === 1
+            ? $monitorLabels['attention_one']
+            : sprintf($monitorLabels['attention_many'], $pluginUpgrades);
+    }
+
     $payload = array(
         'drafts' => (int) $attention['drafts'],
         'comments' => (int) $attention['comments'],
         'submissions' => (int) $attention['submissions'],
+        'pluginUpgrades' => $pluginUpgrades,
+        'pluginUpgradeLabel' => $pluginUpgradeLabel,
+        'managePluginUpgrades' => isset($monitorLabels['manage_upgrades']) ? $monitorLabels['manage_upgrades'] : '',
         'hasComments' => (bool) $hasComments,
         'commentsUrl' => $admin . '/comment.php',
         'moderationUrl' => $admin . '/moderation.php',
+        'pluginsUrl' => $admin . '/plugins.php',
         'draftsUrl' => '#eclipse-dashboard-drafts',
         'labels' => eclipse_admin_dashboard_labels()
     );
@@ -334,7 +367,7 @@ function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
 
     $script = '<script>(function(){var data=' . $json . ';'
         . 'function badge(n){var s=document.createElement("span");s.className="eclipse-attention-count";s.textContent=String(n);return s;}'
-        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);return true;}'
+        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(data.pluginUpgrades>0)entries.push({label:data.pluginUpgradeLabel,count:data.pluginUpgrades,url:data.pluginsUrl});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);if(data.pluginUpgrades>0&&data.managePluginUpgrades)ensure(/\/plugins\.php(?:[?#]|$)/i,data.managePluginUpgrades,data.pluginsUrl,data.pluginUpgrades,true);return true;}'
         . 'function setupModules(){var key="eclipse-dashboard-collapsed-v1",saved=[];try{saved=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(saved))saved=[];}catch(e){saved=[];}function save(){try{localStorage.setItem(key,JSON.stringify(saved));}catch(e){}}Array.prototype.forEach.call(document.querySelectorAll("[data-eclipse-module]"),function(module){var id=module.getAttribute("data-eclipse-module");var button=module.querySelector(".eclipse-dashboard-toggle");if(!button)return;function apply(collapsed){module.classList.toggle("is-collapsed",collapsed);button.setAttribute("aria-expanded",collapsed?"false":"true");button.setAttribute("title",collapsed?data.labels.expand:data.labels.collapse);var icon=button.querySelector("span");if(icon)icon.textContent=collapsed?"+":"−";}apply(saved.indexOf(id)!==-1);button.addEventListener("click",function(){var collapsed=!module.classList.contains("is-collapsed");apply(collapsed);var index=saved.indexOf(id);if(collapsed&&index===-1)saved.push(id);if(!collapsed&&index!==-1)saved.splice(index,1);save();});});function revealHash(){if(!location.hash)return;var target=document.querySelector(location.hash);if(target&&target.hasAttribute("data-eclipse-module")&&target.classList.contains("is-collapsed")){var b=target.querySelector(".eclipse-dashboard-toggle");if(b)b.click();}}window.addEventListener("hashchange",revealHash);revealHash();}'
         . 'function boot(){setupModules();if(!enhanceOverview()){var observer=new MutationObserver(function(){if(enhanceOverview())observer.disconnect();});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect();enhanceOverview();},3000);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();}());</script>';
 
@@ -344,7 +377,7 @@ function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
 function eclipse_admin_dashboard_render()
 {
     global $_CONF;
-    if (!eclipse_is_admin_request() || eclipse_admin_page() !== 'index') return '';
+    if (!eclipse_admin_dashboard_is_main_page()) return '';
 
     $stories = eclipse_admin_get_recent_stories(false);
     $drafts = eclipse_admin_get_recent_stories(true);
@@ -358,7 +391,11 @@ function eclipse_admin_dashboard_render()
     $pluginStats = eclipse_admin_discover_plugin_stats();
     $pluginNews = eclipse_admin_discover_plugin_whatsnew();
     $feeds = eclipse_admin_discover_feeds();
+    $monitorData = function_exists('eclipse_monitor_dashboard_data') ? eclipse_monitor_dashboard_data() : null;
     $attention = eclipse_admin_attention_data($draftCount);
+    if (is_array($monitorData) && function_exists('eclipse_monitor_dashboard_upgrade_count')) {
+        $attention['plugin_upgrades'] = eclipse_monitor_dashboard_upgrade_count($monitorData);
+    }
     $labels = eclipse_admin_dashboard_labels();
     $admin = rtrim($_CONF['site_admin_url'], '/');
     $site = rtrim($_CONF['site_url'], '/');
@@ -428,6 +465,10 @@ function eclipse_admin_dashboard_render()
             $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['title']) . '</strong><small>' . eclipse_admin_dashboard_h($meta) . '</small></div><a href="' . $admin . '/syndication.php?mode=edit&amp;fid=' . (int) $row['fid'] . '">' . eclipse_admin_dashboard_h(eclipse_lang('manage', 'Manage')) . '</a></li>';
         }
         $html .= '</ul>' . eclipse_admin_dashboard_module_end();
+    }
+
+    if (is_array($monitorData) && function_exists('eclipse_monitor_dashboard_render')) {
+        $html .= eclipse_monitor_dashboard_render($monitorData);
     }
 
     if ($siteStats || $pluginStats || $topStories || $topCommented) {
