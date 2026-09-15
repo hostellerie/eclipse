@@ -5,10 +5,37 @@ if (isset($_SERVER['PHP_SELF']) &&
     die('This file can not be used on its own!');
 }
 
+function eclipse_monitor_dashboard_is_main_admin_page()
+{
+    global $_CONF;
+
+    if (!function_exists('eclipse_is_admin_request') || !eclipse_is_admin_request()) {
+        return false;
+    }
+
+    $adminUrl = isset($_CONF['site_admin_url'])
+        ? (string) $_CONF['site_admin_url'] : '';
+    $adminPath = $adminUrl !== '' ? parse_url($adminUrl, PHP_URL_PATH) : '';
+    $adminPath = is_string($adminPath) ? rtrim(str_replace('\\', '/', $adminPath), '/') : '';
+
+    $script = '';
+    if (!empty($_SERVER['SCRIPT_NAME'])) {
+        $script = (string) $_SERVER['SCRIPT_NAME'];
+    } elseif (!empty($_SERVER['PHP_SELF'])) {
+        $script = (string) $_SERVER['PHP_SELF'];
+    }
+    $script = str_replace('\\', '/', $script);
+
+    if ($adminPath !== '') {
+        return $script === $adminPath . '/index.php';
+    }
+
+    return preg_match('#/admin/index\.php$#i', $script) === 1;
+}
+
 function eclipse_monitor_dashboard_data()
 {
-    if (!function_exists('eclipse_is_admin_request') || !eclipse_is_admin_request()
-            || !function_exists('eclipse_admin_page') || eclipse_admin_page() !== 'index'
+    if (!eclipse_monitor_dashboard_is_main_admin_page()
             || !function_exists('PLG_invokeService')) {
         return null;
     }
