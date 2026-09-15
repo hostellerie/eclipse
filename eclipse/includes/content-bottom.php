@@ -4,8 +4,6 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'content-bottom.php') !== false) {
     die('This file can not be used on its own!');
 }
 
-require_once __DIR__ . '/monitor-dashboard.php';
-
 function eclipse_content_bottom_defaults()
 {
     return array('content' => '');
@@ -121,10 +119,6 @@ function eclipse_content_bottom_render()
             $rendered[] = $line;
         }
         $output .= '<div class="eclipse-content-bottom">' . implode('<br>', $rendered) . '</div>';
-    }
-
-    if (function_exists('eclipse_monitor_dashboard_render')) {
-        $output .= eclipse_monitor_dashboard_render();
     }
 
     return $output;
