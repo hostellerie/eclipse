@@ -73,14 +73,33 @@ function eclipse_monitor_dashboard_safe_url($url)
     return $url;
 }
 
+/**
+ * Count only upgrades that Geeklog can actually present as actionable in the
+ * native plugin administration screen. Disabled plugins are intentionally
+ * excluded: Geeklog does not offer their upgrade action until they are enabled,
+ * so Eclipse must not advertise an upgrade "to finish" for them.
+ */
 function eclipse_monitor_dashboard_upgrade_count($data)
 {
-    if (!is_array($data) || !isset($data['summary']) || !is_array($data['summary'])) {
+    if (!is_array($data) || !isset($data['plugins']) || !is_array($data['plugins'])) {
         return 0;
     }
 
-    return isset($data['summary']['upgrades_required'])
-        ? max(0, (int) $data['summary']['upgrades_required']) : 0;
+    $count = 0;
+    foreach ($data['plugins'] as $plugin) {
+        if (!is_array($plugin)) {
+            continue;
+        }
+
+        $enabled = isset($plugin['enabled']) ? (bool) $plugin['enabled'] : false;
+        $upgradeRequired = !empty($plugin['upgrade_required']);
+
+        if ($enabled && $upgradeRequired) {
+            $count++;
+        }
+    }
+
+    return $count;
 }
 
 function eclipse_monitor_dashboard_render($data)
