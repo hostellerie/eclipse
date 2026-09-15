@@ -34,9 +34,9 @@ jobs:
             exit 1
           fi
 
-      - name: Validate installable theme
+      - name: Validate Eclipse release contracts
         shell: pwsh
-        run: ./quality/validate-eclipse.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
+        run: ./quality/validate-eclipse-release.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
       - name: Build release archive and checksum
         shell: bash
