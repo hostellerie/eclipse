@@ -4,6 +4,8 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'content-bottom.php') !== false) {
     die('This file can not be used on its own!');
 }
 
+require_once __DIR__ . '/monitor-dashboard.php';
+
 function eclipse_content_bottom_defaults()
 {
     return array('content' => '');
@@ -109,15 +111,23 @@ function eclipse_content_bottom_handle_post($studioHtml)
 function eclipse_content_bottom_render()
 {
     $data = eclipse_content_bottom_read();
-    if ($data['content'] === '') return '';
+    $output = '';
 
-    $rendered = array();
-    foreach (explode("\n", $data['content']) as $line) {
-        $line = htmlspecialchars($line, ENT_QUOTES, 'UTF-8');
-        if (function_exists('PLG_replaceTags')) $line = PLG_replaceTags($line);
-        $rendered[] = $line;
+    if ($data['content'] !== '') {
+        $rendered = array();
+        foreach (explode("\n", $data['content']) as $line) {
+            $line = htmlspecialchars($line, ENT_QUOTES, 'UTF-8');
+            if (function_exists('PLG_replaceTags')) $line = PLG_replaceTags($line);
+            $rendered[] = $line;
+        }
+        $output .= '<div class="eclipse-content-bottom">' . implode('<br>', $rendered) . '</div>';
     }
-    return '<div class="eclipse-content-bottom">' . implode('<br>', $rendered) . '</div>';
+
+    if (function_exists('eclipse_monitor_dashboard_render')) {
+        $output .= eclipse_monitor_dashboard_render();
+    }
+
+    return $output;
 }
 
 function eclipse_content_bottom_studio($html)
