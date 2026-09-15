@@ -4,18 +4,20 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 
 ![Eclipse Template](docs/geeklog-eclipse-template-available.png)
 
-> **Stable release:** `1.0.0` supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. Back up the site before installation or update.
+> **Release 1.1.0:** supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. Back up the site before installation or update.
 
 ## Highlights
 
 - Mobile-first public layout with optional sidebars.
 - Four navigation styles and five accessible palette presets.
 - Native rendering for hierarchical menus supplied by the Geeklog Menu plugin.
-- Refined Geeklog administration pages, forms, tables and story editor.
+- Modern and Classic administration workspaces derived from Geeklog's permission-filtered navigation.
+- Responsive administration dashboard, lists, configuration and article/story editors.
 - Theme Studio with live preview, palettes, update upload, history and rollback.
 - SEO and editorial helpers, local draft recovery and configurable social sharing.
 - Settings, footer links, palettes and history stored as protected JSON in `{path_data}-eclipse/`.
-- Local ZIP updates with integrity validation, safety backup and automatic Geeklog template-cache clearing.
+- Local ZIP updates with integrity validation, safety backup and targeted Geeklog template-cache clearing.
+- Compatibility layers for Geeklog 2.1.1 and 2.2.2 while retaining Denim as the parent theme.
 
 ## Requirements
 
@@ -44,7 +46,7 @@ Please test at 360, 768, 1024 and 1440 CSS pixels where possible. The highest-va
 
 - public home, topic, article, search, login and comment pages;
 - mobile multi-level navigation with every palette and menu style;
-- administration dashboard, lists, configuration and story editor;
+- administration dashboard, lists, configuration and story/article editor;
 - Theme Studio save, preview, archive update and rollback;
 - keyboard navigation, visible focus, 200% zoom and reduced motion;
 - browser console, PHP log, missing images and horizontal overflow.
@@ -56,7 +58,7 @@ Use the [release QA checklist](eclipse/QA-CHECKLIST.md) and report reproducible 
 - `eclipse/` — exact installable theme tree and integrity manifest.
 - `docs/` — repository documentation assets not shipped in the theme archive.
 - `quality/` — development-only manifest and contract validation tools.
-- `RELEASE-NOTES.md` — release notes and release-candidate history.
+- `RELEASE-NOTES.md` — release notes.
 
 Development tools and documentation-only assets are deliberately excluded from the installable theme archive.
 
