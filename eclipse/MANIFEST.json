@@ -215,6 +215,7 @@
     "includes/forum-seo.php": "28642f9dfece032cb8f1937d9937497a4c93ff3c461d53247a83c95de8065a69",
     "includes/language.php": "4e56a685cb498b1098647c77be85c378c7b736424bf195dec04b6c34416d0d4a",
     "includes/menu-navigation.php": "e30ef043329645ba4b9ae746b29f36cd90762371325242e304443ad395ba12b3",
+    "includes/monitor-dashboard.php": "8939dff57bbc9abfeef9364b607239759fe0fc18ed2b6d94b739d511e5aa356a",
     "includes/plugin-presentation-preview.php": "2b2da6213b51b58e008ecb9116722cbc889bccd6cc22fce6ff51ab4f2a52557c",
     "includes/zip-compat.php": "a9c91e62490b8799df3a5df6174950908a3b0d9c8452eb9b9973a3e371e2b3aa",
     "index.thtml": "ddd5f427289c2fa7af389b25e5158bee859a3559284ffaa17f66c92e7ec373af",
