@@ -114,6 +114,16 @@ function eclipse_monitor_dashboard_attention_script($count, $pluginsUrl, $labels
 }
 
 /**
+ * Move the update card into Eclipse's existing dashboard grid. The card is
+ * rendered late through content-bottom.php so this avoids duplicating or
+ * modifying the main dashboard business logic.
+ */
+function eclipse_monitor_dashboard_attach_script()
+{
+    return '<script>(function(){function attach(){var card=document.getElementById("eclipse-dashboard-plugin-updates");var grid=document.querySelector(".eclipse-admin-dashboard-data");if(!card||!grid)return false;if(card.parentNode!==grid)grid.appendChild(card);return true;}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",attach);else attach();}());</script>';
+}
+
+/**
  * Render the remote-update card and local-upgrade attention contribution.
  *
  * @return string
@@ -212,5 +222,5 @@ function eclipse_monitor_dashboard_render()
         $html .= '</div></article>';
     }
 
-    return $html;
+    return $html . eclipse_monitor_dashboard_attach_script();
 }
