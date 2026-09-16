@@ -1,6 +1,12 @@
 name: Build installable Eclipse archive
 
 on:
+  push:
+    branches:
+      - develop-1.2.0
+    paths-ignore:
+      - 'dist/**'
+      - 'eclipse/MANIFEST.json'
   workflow_dispatch:
 
 permissions:
