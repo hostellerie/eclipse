@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "algorithm": "sha256",
   "files": {
     "ADMIN-UI.md": "90143a0e9457fc404550c491d8ac726e569cd2014b0286f8fc79ed9c150bc9a9",
@@ -25,7 +25,7 @@
     "css/components.css": "fdc52b33b588032e9f6eefb85a0436fe33ea9f5b70bfd2b97800d84fe2f82135",
     "css/configuration.css": "78f50606e5c27b40ab2dab59583a4612a7ed70f77dfb4d7d64b125cf67e48e4b",
     "css/custom-css-studio.css": "44c0b1322fb9aa156b2b884f84cc57315587bddbefbc2491a285f2e5ec140f19",
-    "css/footer-links.css": "109df4729bcf096a49950c26421ea8225c989f4f588aee6ee9cf82a5b2150ed2",
+    "css/footer-links.css": "01639b1758519f698e1cafec1233e57f1df40a35a7991f8bad07b39c1893c433",
     "css/forms.css": "57e89a3a3fe4bbd36222745700571efff27b190ed0b4ba193eba91af029e0ed9",
     "css/layout.css": "5b53bf626deba1bfacede0ae730bdd47cad89107ffd1d94745c9f9abf73caefb",
     "css/menu-refinements.css": "90595c3a2b94e9add7118d5e12e2c43ea22513493868b2980b424c377723f036",
@@ -240,7 +240,7 @@
     "staticpages/admin/editor.thtml": "0a21474643b22bfc0f2699ef4ed03c7fcbc81dc5cf58246715876058e8ac5c70",
     "staticpages/staticpage.thtml": "22619b5948bcaed9f95666269d07e4687058dda771e53c70960bf24884cb9340",
     "storytext.thtml": "f2b7fb634fb3b73032669a6c93ccb1074c541ab9f1ac5f26342bc28e02eac6b5",
-    "theme.ini": "018dc75081c544fdd0eedead53cb3ec690ad2d4e6e06a17cb0b9cba9d506f856",
+    "theme.ini": "1d38aed045e54b9956e6d146ecc15f8baf3c37b5f6741394901f971382c00f95",
     "themeconfig.php": "62b8e919eb06c8649aa89026b608dd136b7ea2b5d4151a799f25d847920af123",
     "tooltips/critical.thtml": "92c0b844998f25255e12db0da9f7974cfc3e02bc27a20a192b960642269c1565",
     "tooltips/help.thtml": "1d67b0d5f0522c431465592eb214ddc6f6cbad574fb7edb0971e9a0aa222e0f2",
