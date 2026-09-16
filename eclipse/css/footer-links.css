@@ -12,15 +12,9 @@
 .eclipse-footer-links a{color:var(--eclipse-link);font-size:.8rem;font-weight:560;line-height:1.5;text-decoration:none;opacity:.9}
 .eclipse-footer-links a:hover,.eclipse-footer-links a:focus-visible{color:var(--eclipse-primary);opacity:1;text-decoration:underline;text-underline-offset:.2em}
 .eclipse-footer-links .is-emphasized a{font-weight:750;opacity:1}
-/* Footer autotags such as [menu:footer] render plugin-owned markup inside
-   .eclipse-footer-above. Eclipse owns presentation in this region, so keep
-   link colors connected to Theme Studio instead of Menu's legacy palette. */
-#footer .eclipse-footer-above a,
-#footer .eclipse-footer-above a:link,
-#footer .eclipse-footer-above a:visited{color:var(--eclipse-link)!important}
-#footer .eclipse-footer-above a:hover,
-#footer .eclipse-footer-above a:focus,
-#footer .eclipse-footer-above a:focus-visible{color:var(--eclipse-primary)!important}
+/* Autotags such as [menu:footer] render plugin-owned markup inside
+   .eclipse-footer-above. Eclipse deliberately does not override link colors
+   in that region so the Menu plugin's configured palette remains authoritative. */
 .eclipse-footer-legal{margin-top:.7rem}
 .eclipse-footer-legal p{margin:.12rem 0;color:inherit;font-size:.74rem;line-height:1.45;opacity:.76}
 .eclipse-footer-above{width:min(calc(100% - 2rem),var(--eclipse-max,1200px));margin:.15rem auto .9rem;text-align:center}
