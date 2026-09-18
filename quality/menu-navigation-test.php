@@ -214,6 +214,10 @@ $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 $themeFunctions = file_get_contents(dirname(__DIR__) . '/eclipse/functions.php');
+eclipse_test_assert(strpos($themeFunctions, 'eclipse_verify_installed_manifest') !== false, 'updater must verify installed files after copy');
+eclipse_test_assert(strpos($themeFunctions, 'opcache_invalidate') !== false, 'updater must invalidate PHP OPcache when available');
+eclipse_test_assert(strpos($themeFunctions, "CTL_clearCacheDirectories(\$data . 'layout_cache');") !== false, 'updater must clear complete template cache after theme update');
+eclipse_test_assert(strpos($themeFunctions, "CTL_clearCacheDirectories(\$data . 'layout_css');") !== false, 'updater must clear complete generated CSS cache after theme update');
 eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getResolvedTree')") !== false, 'Eclipse must detect Menu by resolved-tree capability');
 eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getAvailableMenus')") !== false, 'Eclipse must detect Menu by discovery capability');
 
