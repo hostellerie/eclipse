@@ -105,8 +105,27 @@ function eclipse_menu_slot_name($slot)
         return '';
     }
 
-    $options = function_exists('eclipse_theme_options') ? eclipse_theme_options() : array();
     $key = 'menu_' . $slot;
+
+    /*
+     * Read the persisted slot assignment first. Theme Studio may initialize
+     * eclipse_theme_options() earlier in the same request (notably on admin
+     * pages), so relying only on that static cache can leave navigation slots
+     * one save behind. The protected JSON document is the authoritative
+     * persisted source.
+     */
+    if (function_exists('eclipse_data_json')) {
+        $saved = eclipse_data_json('eclipse-settings.json', array());
+        if (is_array($saved) && array_key_exists($key, $saved)) {
+            $name = trim((string) $saved[$key]);
+            if ($name !== '') {
+                return $name;
+            }
+            return $slot === 'primary' ? 'navigation' : '';
+        }
+    }
+
+    $options = function_exists('eclipse_theme_options') ? eclipse_theme_options() : array();
     if (array_key_exists($key, $options)) {
         $name = trim((string) $options[$key]);
         if ($name !== '') {
