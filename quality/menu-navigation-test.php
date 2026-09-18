@@ -227,7 +227,8 @@ eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getResolvedTr
 eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getAvailableMenus')") !== false, 'Eclipse must detect Menu by discovery capability');
 
 $headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
-eclipse_test_assert(strpos($headerTemplate, 'Eclipse header template reached; layout=') !== false, 'header must expose Eclipse Menu runtime trace');
+eclipse_test_assert(strpos($headerTemplate, 'Eclipse header template reached; layout=') === false, 'temporary Eclipse header trace must be removed');
+eclipse_test_assert(strpos($themeFunctions, 'Eclipse runtime: file=') === false, 'temporary Eclipse cache diagnostics must be removed');
 
 eclipse_test_assert(strpos($headerTemplate, "eclipse_menu_plugin_active()") === false, 'header must not gate Menu rendering on plugin registry');
 $footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
