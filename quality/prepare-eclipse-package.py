@@ -159,6 +159,8 @@ def prepare():
         return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
     }
 
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($job);
     $cacheMessage = eclipse_clear_theme_cache()
         ? ' Geeklog template and generated CSS caches were cleared.'
@@ -169,6 +171,9 @@ def prepare():
         'message' => 'Eclipse ' . $newVersion
             . ' installed successfully and verified at ' . $themeDir . '.'
             . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
             . ' PHP OPcache entries were invalidated when supported.'
     );
 """
@@ -211,6 +216,8 @@ def prepare():
         return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
     }
 
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($retiredTheme);
     eclipse_remove_tree($job);
     $cacheMessage = eclipse_clear_theme_cache()
@@ -222,6 +229,9 @@ def prepare():
         'message' => 'Eclipse ' . $newVersion
             . ' installed successfully and verified at ' . $themeDir . '.'
             . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
             . ' PHP OPcache entries were invalidated when supported.'
     );
 """
