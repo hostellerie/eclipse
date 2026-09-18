@@ -17,10 +17,6 @@ if (!defined('VERSION')) {
  */
 function eclipse_menu_available_menus()
 {
-    if (!eclipse_menu_plugin_active()) {
-        return array();
-    }
-
     /*
      * Eclipse runs in the same PHP request as Menu. Prefer Menu's direct,
      * permission-aware API so theme rendering uses the exact runtime state
@@ -58,7 +54,7 @@ function eclipse_menu_available_menus()
 function eclipse_menu_resolved_tree($name)
 {
     $name = trim((string) $name);
-    if ($name === '' || !eclipse_menu_plugin_active()) {
+    if ($name === '') {
         return array();
     }
 
@@ -148,7 +144,7 @@ function eclipse_menu_render($name, $context = 'primary')
 {
     $name = trim((string) $name);
     $context = strtolower(trim((string) $context));
-    if ($name === '' || !eclipse_menu_plugin_active()) {
+    if ($name === '') {
         return '';
     }
 
