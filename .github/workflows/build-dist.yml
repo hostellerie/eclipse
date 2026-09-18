@@ -53,8 +53,18 @@ jobs:
               exit 1
             fi
 
+            echo "Linting source PHP files"
+            find eclipse -type f \( -name '*.php' -o -name '*.inc' \) -print0 \
+              | xargs -0 -n1 php -l
+
+            php ./quality/menu-navigation-test.php
+
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
             python3 ./quality/prepare-eclipse-package.py
+
+            echo "Linting packaged PHP files"
+            find .package-stage/eclipse -type f \( -name '*.php' -o -name '*.inc' \) -print0 \
+              | xargs -0 -n1 php -l
 
             build_stamp=$(date -u '+%Y-%m-%d %H:%M UTC')
             printf '%s\n' "$build_stamp" > .package-stage/eclipse/BUILD.txt
