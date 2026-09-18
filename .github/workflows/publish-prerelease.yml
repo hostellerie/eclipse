@@ -47,11 +47,14 @@ jobs:
           pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
           (
             cd .package-stage
-            zip -9 "../eclipse-$version.zip" ECLIPSE_THEME_PACKAGE
             zip -r -9 "../eclipse-$version.zip" eclipse -x '*/.DS_Store' '*/Thumbs.db'
           )
-          first_entry=$(unzip -Z1 "eclipse-$version.zip" | head -n 1)
-          test "$first_entry" = "ECLIPSE_THEME_PACKAGE"
+          if unzip -Z1 "eclipse-$version.zip" | grep -v '^eclipse/' | grep -q .; then
+            echo 'Archive contains entries outside eclipse/ and is not backward compatible.' >&2
+            exit 1
+          fi
+          test -n "$(unzip -p "eclipse-$version.zip" eclipse/ECLIPSE_THEME_PACKAGE.txt)"
+          unzip -p "eclipse-$version.zip" eclipse/admin/install.php | grep -q "\$pi_name='__eclipse_theme_package__'"
           sha256sum "eclipse-$version.zip" > "eclipse-$version.zip.sha256"
 
       - name: Publish GitHub prerelease
