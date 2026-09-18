@@ -601,10 +601,23 @@ function eclipse_delete_data_json($name)
 function eclipse_clear_theme_cache()
 {
     global $_CONF;
-    if (!function_exists('CTL_clearCacheDirectories') || empty($_CONF['path_data'])) return false;
+
+    if (!function_exists('CTL_clearCacheDirectories') || empty($_CONF['path_data'])) {
+        return false;
+    }
+
     $data = rtrim($_CONF['path_data'], '/\\') . DIRECTORY_SEPARATOR;
-    CTL_clearCacheDirectories($data . 'layout_cache', 'eclipse');
-    CTL_clearCacheDirectories($data . 'layout_css', 'eclipse');
+
+    /*
+     * A theme update can change any core template. Depending on Geeklog's
+     * template prefix configuration, a compiled cache filename is not
+     * guaranteed to contain the literal theme name. Clear the disposable
+     * template/CSS caches completely so stale header/footer templates cannot
+     * survive an Eclipse update.
+     */
+    CTL_clearCacheDirectories($data . 'layout_cache');
+    CTL_clearCacheDirectories($data . 'layout_css');
+
     return true;
 }
 
@@ -1059,9 +1072,59 @@ function eclipse_install_uploaded_update($upload)
     $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
     if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
     if (!eclipse_copy_tree($sourceTheme, $themeDir, 0755, 0644)) { eclipse_remove_tree($job); return $fail('The update copy failed. Restore the latest persistent Eclipse backup.'); }
+
+    $installedError = eclipse_verify_installed_manifest($themeDir);
+    if ($installedError !== '') {
+        eclipse_remove_tree($job);
+        return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
+    }
+
     eclipse_remove_tree($job);
-    $cacheMessage = eclipse_clear_theme_cache() ? ' Eclipse template and generated CSS cache entries were cleared.' : ' Eclipse cache entries could not be cleared automatically.';
-    return array('success' => true, 'message' => 'Eclipse ' . $newVersion . ' installed successfully.' . $cacheMessage . ' Reload the page; refresh the browser only if an older asset remains visible.');
+    $cacheMessage = eclipse_clear_theme_cache()
+        ? ' Geeklog template and generated CSS caches were cleared.'
+        : ' Geeklog template/CSS caches could not be cleared automatically.';
+
+    return array(
+        'success' => true,
+        'message' => 'Eclipse ' . $newVersion
+            . ' installed successfully and verified at ' . $themeDir . '.'
+            . $cacheMessage
+            . ' PHP OPcache entries were invalidated when supported.'
+    );
+}
+
+function eclipse_verify_installed_manifest($themeRoot)
+{
+    $manifestPath = rtrim($themeRoot, "/\\") . DIRECTORY_SEPARATOR . 'MANIFEST.json';
+    if (!is_file($manifestPath)) {
+        return 'Installed Eclipse manifest is missing.';
+    }
+
+    $manifest = json_decode(@file_get_contents($manifestPath), true);
+    if (!is_array($manifest) || !isset($manifest['files']) || !is_array($manifest['files'])) {
+        return 'Installed Eclipse manifest is invalid.';
+    }
+
+    foreach ($manifest['files'] as $relative => $hash) {
+        $relative = str_replace('\\', '/', (string) $relative);
+        if ($relative === '' || $relative === 'MANIFEST.json') {
+            continue;
+        }
+
+        $path = rtrim($themeRoot, "/\\") . DIRECTORY_SEPARATOR
+            . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+
+        if (!is_file($path) || strtolower(hash_file('sha256', $path)) !== strtolower((string) $hash)) {
+            return 'Installed Eclipse file verification failed for ' . $relative . '.';
+        }
+
+        if (substr($relative, -4) === '.php'
+            && function_exists('opcache_invalidate')) {
+            @opcache_invalidate($path, true);
+        }
+    }
+
+    return '';
 }
 
 function eclipse_verify_package_manifest($themeRoot, $expectedVersion)
