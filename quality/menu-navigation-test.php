@@ -218,6 +218,10 @@ eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getResolvedTr
 eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getAvailableMenus')") !== false, 'Eclipse must detect Menu by discovery capability');
 
 $headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
+
+eclipse_test_assert(strpos($headerTemplate, "eclipse_menu_plugin_active()") === false, 'header must not gate Menu rendering on plugin registry');
+$footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
+eclipse_test_assert(strpos($footerTemplate, "eclipse_menu_plugin_active()") === false, 'footer must not gate Menu rendering on plugin registry');
 $footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
 $previewProvider = file_get_contents(dirname(__DIR__) . '/eclipse/includes/plugin-presentation-preview.php');
 eclipse_test_assert(strpos($previewProvider, "eclipse_menu_render(\$resource, \$menuContext)") !== false, 'Theme preview must render the requested Menu resource');
