@@ -45,10 +45,8 @@ function PLG_invokeService($type, $action, $args, &$output, &$svc_msg)
     return -1;
 }
 
-function eclipse_menu_plugin_active()
-{
-    return true;
-}
+$GLOBALS['_PLUGINS'] = array('menu');
+$GLOBALS['_CONF'] = array('path' => sys_get_temp_dir() . '/eclipse-menu-runtime-test/');
 
 function MENU_getAvailableMenus()
 {
@@ -133,6 +131,17 @@ function MENU_getMenu()
     return '<div class="legacy-menu">legacy</div>';
 }
 
+$menuPluginDir = $GLOBALS['_CONF']['path'] . 'plugins/menu';
+if (!is_dir($menuPluginDir) && !mkdir($menuPluginDir, 0755, true)) {
+    fwrite(STDERR, "FAIL: unable to create temporary Menu plugin directory" . PHP_EOL);
+    exit(1);
+}
+file_put_contents(
+    $menuPluginDir . '/functions.inc',
+    "<?php\nif (!function_exists('MENU_getAvailableMenus')) { function MENU_getAvailableMenus() { return array(); } }\nif (!function_exists('MENU_getResolvedTree')) { function MENU_getResolvedTree(\$name) { return array(); } }\n"
+);
+
+require_once dirname(__DIR__) . '/eclipse/functions.php';
 require_once dirname(__DIR__) . '/eclipse/includes/menu-navigation.php';
 
 function eclipse_test_assert($condition, $message)
@@ -142,6 +151,9 @@ function eclipse_test_assert($condition, $message)
         exit(1);
     }
 }
+
+eclipse_test_assert(eclipse_menu_plugin_active() === true, 'Menu plugin should be detected as active');
+eclipse_test_assert(function_exists('MENU_getResolvedTree'), 'Eclipse must load Menu runtime API when not already loaded');
 
 $menus = eclipse_menu_available_menus();
 eclipse_test_assert(count($menus) === 3, 'Menu service discovery count mismatch');
