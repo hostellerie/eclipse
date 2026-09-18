@@ -8,10 +8,34 @@ require_once __DIR__ . '/includes/admin-dashboard.php';
 require_once __DIR__ . '/includes/custom-css.php';
 
 if (function_exists('MENU_debugLog')) {
+    global $TEMPLATE_OPTIONS;
+
+    $eclipseLayout = isset($_CONF['path_layout']) ? (string) $_CONF['path_layout'] : '';
+    $eclipseHeader = $eclipseLayout !== ''
+        ? rtrim($eclipseLayout, "/\\") . DIRECTORY_SEPARATOR . 'header.thtml'
+        : '';
+    $eclipseHeaderContents = ($eclipseHeader !== '' && is_file($eclipseHeader))
+        ? @file_get_contents($eclipseHeader)
+        : false;
+    $eclipseTemplateCache = isset($TEMPLATE_OPTIONS)
+        && is_array($TEMPLATE_OPTIONS)
+        && !empty($TEMPLATE_OPTIONS['path_cache'])
+        ? (string) $TEMPLATE_OPTIONS['path_cache']
+        : '[unset]';
+
     MENU_debugLog(
-        'Eclipse functions.php loaded; file=' . __FILE__
-        . ', layout=' . (isset($_CONF['path_layout']) ? (string) $_CONF['path_layout'] : '[unset]')
-        . ', version=' . (function_exists('eclipse_theme_version') ? eclipse_theme_version() : '[pending]')
+        'Eclipse runtime: file=' . __FILE__
+        . ', layout=' . ($eclipseLayout !== '' ? $eclipseLayout : '[unset]')
+        . ', header_exists=' . ($eclipseHeaderContents !== false ? 'yes' : 'no')
+        . ', header_current_marker='
+        . ($eclipseHeaderContents !== false
+            && strpos($eclipseHeaderContents, 'eclipse_menu_navigation_resolved') !== false
+            ? 'yes' : 'no')
+        . ', header_mtime='
+        . ($eclipseHeader !== '' && is_file($eclipseHeader) ? (string) @filemtime($eclipseHeader) : '[unknown]')
+        . ', header_sha256='
+        . ($eclipseHeaderContents !== false ? hash('sha256', $eclipseHeaderContents) : '[unavailable]')
+        . ', path_cache=' . $eclipseTemplateCache
         . '.'
     );
 }
