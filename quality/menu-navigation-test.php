@@ -214,7 +214,6 @@ $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 $headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
-eclipse_test_assert(strpos($headerTemplate, 'eclipse_menu_debug_comment()') !== false, 'Root-only Menu diagnostics are not wired into header');
 $footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
 $previewProvider = file_get_contents(dirname(__DIR__) . '/eclipse/includes/plugin-presentation-preview.php');
 eclipse_test_assert(strpos($previewProvider, "eclipse_menu_render(\$resource, \$menuContext)") !== false, 'Theme preview must render the requested Menu resource');
@@ -224,6 +223,7 @@ eclipse_test_assert(strpos($previewProvider, "strcasecmp((string) \$resource, 'n
 
 eclipse_test_assert(strpos($headerTemplate, "eclipse_menu_render_slot('secondary')") !== false, 'Secondary Menu slot is not wired into header');
 eclipse_test_assert(strpos($footerTemplate, "eclipse_menu_render_slot('footer')") !== false, 'Footer Menu slot is not wired into footer');
+eclipse_test_assert(strpos(file_get_contents(dirname(__DIR__) . '/eclipse/includes/menu-navigation.php'), "MENU_debugLog('Eclipse slot '") !== false, 'Eclipse Menu slot diagnostics must use Menu debug logging');
 
 // Geeklog 2.1.x compiles .thtml files into path_data/layout_cache. __DIR__ in a
 // compiled template therefore points at the cache rather than layout/eclipse.
