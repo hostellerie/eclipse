@@ -56,6 +56,7 @@ $ECLIPSE_LANG_EXTRA = array(
     'show_native_footer' => 'Afficher le bloc standard du pied de page Geeklog',
     'footer_above_line' => 'Ligne au-dessus du bloc de pied de page',
     'footer_above_line_help' => 'Utilisez n’importe quel autotag Geeklog disponible sur ce site pour insérer un lien, une image, une vidéo, un média ou tout autre contenu dynamique. Exemple : [autotag:parameter].',
+    'footer_column_autotag_help' => 'Les colonnes personnalisées du pied de page acceptent les autotags Geeklog. Utilisez n’importe quel autotag disponible sur ce site pour insérer un lien, une image, une vidéo, un média ou tout autre contenu dynamique. Exemple : [autotag:parameter].',
     'footer_powered_by_geeklog' => 'Propulsé par Geeklog',
     'footer_powered_by_help' => 'Utilisez l’option par défaut pour conserver « Propulsé par Geeklog » et le temps de génération natifs.',
     'footer_use_geeklog_default' => 'Utiliser le contenu par défaut de Geeklog',
