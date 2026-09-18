@@ -188,10 +188,10 @@ eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not f
 $headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
 $footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
 $previewProvider = file_get_contents(dirname(__DIR__) . '/eclipse/includes/plugin-presentation-preview.php');
-eclipse_test_assert(strpos($previewProvider, "eclipse_menu_render($resource, $menuContext)") !== false, 'Theme preview must render the requested Menu resource');
-eclipse_test_assert(strpos($previewProvider, "case 2:") !== false && strpos($previewProvider, "$menuContext = 'footer'") !== false, 'Horizontal simple menus must preview in footer context');
-eclipse_test_assert(strpos($previewProvider, "case 3:") !== false && strpos($previewProvider, "$menuContext = 'sidebar'") !== false, 'Vertical menus must preview in sidebar context');
-eclipse_test_assert(strpos($previewProvider, "strcasecmp((string) $resource, 'navigation')") === false, 'Eclipse preview must not be restricted to navigation');
+eclipse_test_assert(strpos($previewProvider, "eclipse_menu_render(\$resource, \$menuContext)") !== false, 'Theme preview must render the requested Menu resource');
+eclipse_test_assert(strpos($previewProvider, "case 2:") !== false && strpos($previewProvider, "\$menuContext = 'footer'") !== false, 'Horizontal simple menus must preview in footer context');
+eclipse_test_assert(strpos($previewProvider, "case 3:") !== false && strpos($previewProvider, "\$menuContext = 'sidebar'") !== false, 'Vertical menus must preview in sidebar context');
+eclipse_test_assert(strpos($previewProvider, "strcasecmp((string) \$resource, 'navigation')") === false, 'Eclipse preview must not be restricted to navigation');
 
 eclipse_test_assert(strpos($headerTemplate, "eclipse_menu_render_slot('secondary')") !== false, 'Secondary Menu slot is not wired into header');
 eclipse_test_assert(strpos($footerTemplate, "eclipse_menu_render_slot('footer')") !== false, 'Footer Menu slot is not wired into footer');
