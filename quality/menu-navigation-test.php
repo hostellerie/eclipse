@@ -7,6 +7,19 @@ define('PLG_RET_OK', 0);
 
 $GLOBALS['eclipse_test_service_calls'] = array();
 
+function eclipse_data_json($name, $fallback = array())
+{
+    if ($name === 'eclipse-settings.json') {
+        return array(
+            'menu_primary' => 'navigation',
+            'menu_secondary' => 'Menu secondaire été',
+            'menu_footer' => 'footer',
+        );
+    }
+    return $fallback;
+}
+
+
 function PLG_invokeService($type, $action, $args, &$output, &$svc_msg)
 {
     $GLOBALS['eclipse_test_service_calls'][] = $action;
@@ -150,6 +163,10 @@ eclipse_test_assert($menus[0]['name'] === 'navigation', 'Primary menu discovery 
 eclipse_test_assert($menus[1]['name'] === 'footer', 'Footer menu discovery missing');
 eclipse_test_assert($menus[2]['name'] === 'Menu secondaire été', 'UTF-8/spaced menu discovery missing');
 
+eclipse_test_assert(eclipse_menu_slot_name('primary') === 'navigation', 'Persisted primary slot was not used');
+eclipse_test_assert(eclipse_menu_slot_name('secondary') === 'Menu secondaire été', 'Persisted secondary slot was not used');
+eclipse_test_assert(eclipse_menu_slot_name('footer') === 'footer', 'Persisted footer slot was not used');
+
 $footerHtml = eclipse_menu_render('footer', 'footer');
 eclipse_test_assert(strpos($footerHtml, 'eclipse-menu-context-footer') !== false, 'Footer context class missing');
 eclipse_test_assert(strpos($footerHtml, 'eclipse-menu-root-footer') !== false, 'Footer root context class missing');
@@ -159,19 +176,6 @@ $secondaryHtml = eclipse_menu_render('navigation', 'secondary');
 eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-context-secondary') !== false, 'Secondary context class missing');
 eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-root-secondary') !== false, 'Secondary root context class missing');
 
-if (!function_exists('eclipse_theme_options')) {
-    function eclipse_theme_options()
-    {
-        return array(
-            'menu_primary' => '',
-            'menu_secondary' => '',
-            'menu_footer' => '',
-        );
-    }
-}
-eclipse_test_assert(eclipse_menu_slot_name('primary') === 'navigation', 'Empty primary slot must fall back to navigation');
-eclipse_test_assert(eclipse_menu_slot_name('secondary') === '', 'Empty secondary slot must remain disabled');
-eclipse_test_assert(eclipse_menu_slot_name('footer') === '', 'Empty footer slot must remain disabled');
 
 $namedSecondaryHtml = eclipse_menu_render('Menu secondaire été', 'secondary');
 eclipse_test_assert(strpos($namedSecondaryHtml, 'data-menu-name="Menu secondaire été"') !== false, 'Spaced UTF-8 menu name was not preserved for rendering');
