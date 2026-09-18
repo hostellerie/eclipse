@@ -183,7 +183,7 @@ eclipse_test_assert(strpos($namedSecondaryHtml, 'data-menu-name="Menu secondaire
 $html = eclipse_menu_navigation_resolved();
 
 eclipse_test_assert(strpos($html, 'class="eclipse-menu ') !== false, 'Eclipse wrapper missing');
-eclipse_test_assert(strpos($html, 'class="eclipse-menu-root"') !== false, 'Root list class missing');
+eclipse_test_assert(strpos($html, 'class="eclipse-menu-root ') !== false, 'Root list class missing');
 eclipse_test_assert(strpos($html, 'eclipse-menu-current') !== false, 'Current item class missing');
 eclipse_test_assert(strpos($html, 'eclipse-menu-active-trail') !== false, 'Active ancestor trail class missing');
 eclipse_test_assert(strpos($html, 'aria-current="page"') !== false, 'aria-current missing');
