@@ -24,6 +24,7 @@ function PLG_invokeService($type, $action, $args, &$output, &$svc_msg)
             'menus' => array(
                 array('id' => 1, 'name' => 'navigation', 'type' => 1),
                 array('id' => 2, 'name' => 'footer', 'type' => 2),
+                array('id' => 6, 'name' => 'Menu secondaire été', 'type' => 1),
             ),
         );
         return PLG_RET_OK;
@@ -134,9 +135,10 @@ function eclipse_test_assert($condition, $message)
 }
 
 $menus = eclipse_menu_available_menus();
-eclipse_test_assert(count($menus) === 2, 'Menu service discovery count mismatch');
+eclipse_test_assert(count($menus) === 3, 'Menu service discovery count mismatch');
 eclipse_test_assert($menus[0]['name'] === 'navigation', 'Primary menu discovery missing');
 eclipse_test_assert($menus[1]['name'] === 'footer', 'Footer menu discovery missing');
+eclipse_test_assert($menus[2]['name'] === 'Menu secondaire été', 'UTF-8/spaced menu discovery missing');
 
 $footerHtml = eclipse_menu_render('footer', 'footer');
 eclipse_test_assert(strpos($footerHtml, 'eclipse-menu-context-footer') !== false, 'Footer context class missing');
@@ -146,6 +148,9 @@ eclipse_test_assert(strpos($footerHtml, 'data-menu-name="footer"') !== false, 'R
 $secondaryHtml = eclipse_menu_render('navigation', 'secondary');
 eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-context-secondary') !== false, 'Secondary context class missing');
 eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-root-secondary') !== false, 'Secondary root context class missing');
+
+$namedSecondaryHtml = eclipse_menu_render('Menu secondaire été', 'secondary');
+eclipse_test_assert(strpos($namedSecondaryHtml, 'data-menu-name="Menu secondaire été"') !== false, 'Spaced UTF-8 menu name was not preserved for rendering');
 
 $html = eclipse_menu_navigation_resolved();
 
