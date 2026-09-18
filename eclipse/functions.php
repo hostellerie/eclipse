@@ -18,7 +18,7 @@ require_once __DIR__ . '/includes/custom-css.php';
  *
  * @return bool true when a cache refresh was performed
  */
-function eclipse_remove_cache_contents($directory)
+function eclipse_remove_cache_contents($directory, &$removed)
 {
     if (!is_dir($directory)) {
         return true;
@@ -37,11 +37,15 @@ function eclipse_remove_cache_contents($directory)
 
         $path = rtrim($directory, "/\\") . DIRECTORY_SEPARATOR . $item;
         if (is_dir($path) && !is_link($path)) {
-            if (!eclipse_remove_cache_contents($path) || !@rmdir($path)) {
+            if (!eclipse_remove_cache_contents($path, $removed) || !@rmdir($path)) {
                 $ok = false;
+            } else {
+                $removed++;
             }
         } elseif (!@unlink($path)) {
             $ok = false;
+        } else {
+            $removed++;
         }
     }
 
@@ -50,7 +54,7 @@ function eclipse_remove_cache_contents($directory)
 
 function eclipse_refresh_template_cache_on_package_change()
 {
-    global $_CONF;
+    global $_CONF, $TEMPLATE_OPTIONS;
 
     if (empty($_CONF['path_data']) || empty($_CONF['path_layout'])) {
         return false;
@@ -86,13 +90,33 @@ function eclipse_refresh_template_cache_on_package_change()
         return false;
     }
 
-    $layoutCache = $dataRoot . DIRECTORY_SEPARATOR . 'layout_cache';
+    $layoutCache = isset($TEMPLATE_OPTIONS)
+        && is_array($TEMPLATE_OPTIONS)
+        && !empty($TEMPLATE_OPTIONS['path_cache'])
+        ? rtrim((string) $TEMPLATE_OPTIONS['path_cache'], "/\\")
+        : $dataRoot . DIRECTORY_SEPARATOR . 'layout_cache';
     $layoutCss = $dataRoot . DIRECTORY_SEPARATOR . 'layout_css';
 
-    $cacheOk = eclipse_remove_cache_contents($layoutCache);
-    $cssOk = eclipse_remove_cache_contents($layoutCss);
+    $removed = 0;
+    $cacheOk = eclipse_remove_cache_contents($layoutCache, $removed);
+    $cssOk = eclipse_remove_cache_contents($layoutCss, $removed);
     if (!$cacheOk || !$cssOk) {
+        if (function_exists('COM_errorLog')) {
+            COM_errorLog(
+                'Eclipse: template cache refresh failed; path_cache=' . $layoutCache
+                . ', path_data=' . $dataRoot . '.',
+                1
+            );
+        }
         return false;
+    }
+
+    if (function_exists('COM_errorLog')) {
+        COM_errorLog(
+            'Eclipse: refreshed compiled template caches; path_cache=' . $layoutCache
+            . ', removed=' . (int) $removed . '.',
+            1
+        );
     }
 
     $written = @file_put_contents($marker, $fingerprint . PHP_EOL, LOCK_EX);
