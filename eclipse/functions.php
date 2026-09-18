@@ -30,7 +30,21 @@ function theme_config_eclipse()
 function eclipse_menu_plugin_active()
 {
     global $_PLUGINS;
-    return isset($_PLUGINS) && is_array($_PLUGINS) && in_array('menu', $_PLUGINS, true);
+
+    /*
+     * Prefer runtime capability detection. Theme rendering can occur in a
+     * request phase where Menu's public API is already loaded while the
+     * $_PLUGINS registry is not yet available in the expected global scope.
+     */
+    if (function_exists('MENU_getResolvedTree')
+        || function_exists('MENU_getAvailableMenus')
+        || function_exists('MENU_getMenu')) {
+        return true;
+    }
+
+    return isset($_PLUGINS)
+        && is_array($_PLUGINS)
+        && in_array('menu', $_PLUGINS, true);
 }
 
 function eclipse_menu_navigation()
