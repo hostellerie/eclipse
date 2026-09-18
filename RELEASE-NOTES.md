@@ -1,3 +1,11 @@
+## Upgrade compatibility note
+
+Sites running **Eclipse 1.1.0** can upgrade directly to the current 1.2.x archive. The 1.1.0 updater uses the Geeklog-compatible `getStream()` ZIP API.
+
+Sites that already installed an **early Eclipse 1.2.0** package on **Geeklog 2.1.x** may fail before extraction with `Call to undefined method ZipArchive::getFromName()`. Because that failure occurs inside the already-installed updater, a newer archive cannot repair it before extraction. Apply the one-time compatibility hotfix by replacing `layout/eclipse/includes/zip-compat.php` with the current repository version, then retry the normal Theme Studio update. See `docs/HOTFIX-ECLIPSE-1.2.0-GEEKLOG-2.1.1.md`.
+
+Current packages prevent recurrence by detecting `getFromName()` before use and falling back to `getStream()`, while retaining atomic theme-directory replacement.
+
 # Eclipse 1.1.0
 
 Eclipse 1.1.0 is a major refinement of the modern, responsive Denim child theme for Geeklog. It keeps Geeklog's native permissions, URLs, form processing and plugin hooks while improving the public theme, administration workspace, editorial workflow and compatibility across Geeklog 2.1.1 and 2.2.2.
