@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'eclipse'
 STAGE_ROOT = ROOT / '.package-stage'
 STAGE = STAGE_ROOT / 'eclipse'
+PACKAGE_MARKER = STAGE_ROOT / 'ECLIPSE_THEME_PACKAGE'
 
 DEV_DOCS = {
     'ADMIN-UI.md',
@@ -96,6 +97,27 @@ def prepare():
         fail('Missing eclipse source directory')
     shutil.rmtree(STAGE_ROOT, ignore_errors=True)
     shutil.copytree(SOURCE, STAGE, symlinks=False)
+
+    theme_ini = (STAGE / 'theme.ini').read_text(encoding='utf-8')
+    version = ''
+    for line in theme_ini.splitlines():
+        stripped = line.strip()
+        if stripped.startswith('version') and '=' in stripped:
+            version = stripped.split('=', 1)[1].strip().strip('"').strip("'")
+            break
+    if not version:
+        fail('Unable to read Eclipse version from staged theme.ini')
+
+    # This root marker identifies the archive as a Geeklog theme package.
+    # It intentionally sits outside eclipse/ so Geeklog's plugin uploader sees
+    # the marker as archive entry 0 rather than mistaking eclipse/ for a plugin.
+    PACKAGE_MARKER.write_text(
+        'package_type=geeklog-theme\n'
+        'theme=eclipse\n'
+        'version=' + version + '\n'
+        'format=1\n',
+        encoding='utf-8'
+    )
 
     for name in DEV_DOCS:
         path = STAGE / name
@@ -242,6 +264,9 @@ def prepare():
         text = php.read_text(encoding='utf-8', errors='ignore')
         if all(marker in text for marker in markers):
             fail('Unsafe package coupling detected in ' + str(php.relative_to(STAGE)))
+
+    if not PACKAGE_MARKER.is_file():
+        fail('Eclipse package marker was not created')
 
     print(STAGE)
 
