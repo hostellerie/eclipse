@@ -264,7 +264,7 @@ function eclipse_theme_options()
         'font_size' => '16px', 'spacing' => 'normal', 'radius' => 'medium', 'sidebar_position' => 'right',
         'show_left_sidebar' => false, 'show_right_sidebar' => true, 'button_style' => 'solid', 'menu_style' => 'floating',
         'block_style' => 'card', 'header_style' => 'gradient', 'footer_style' => 'dark',
-        'color_scheme' => 'light', 'admin_ui_mode' => 'modern', 'admin_navigation_source' => 'both', 'mobile_menu' => true, 'editor_hide_sidebars' => true, 'share_facebook' => false, 'share_linkedin' => false, 'share_x' => false,
+        'color_scheme' => 'light', 'admin_ui_mode' => 'modern', 'admin_navigation_source' => 'both', 'mobile_menu' => true, 'menu_primary' => 'navigation', 'menu_secondary' => '', 'menu_footer' => '', 'editor_hide_sidebars' => true, 'share_facebook' => false, 'share_linkedin' => false, 'share_x' => false,
         'adsense_enabled' => false, 'adsense_client' => '', 'topic_h1_enabled' => false, 'html_lang' => 'auto', 'sitemap_path' => '', 'logo' => 'images/logo-mark.svg', 'header_image' => '',
     );
     $file = __DIR__ . '/themeconfig.php';
@@ -295,6 +295,13 @@ function eclipse_sanitize_options($input)
         if (array_key_exists($key, $input)) $clean[$key] = !empty($input[$key]);
     }
     foreach (array('logo', 'header_image') as $key) if (isset($input[$key]) && ($input[$key] === '' || preg_match('#^(?:images/)?[a-zA-Z0-9._/-]+$#', $input[$key]))) $clean[$key] = $input[$key];
+    foreach (array('menu_primary', 'menu_secondary', 'menu_footer') as $key) {
+        if (!isset($input[$key])) continue;
+        $menuName = trim((string) $input[$key]);
+        if ($menuName === '' || preg_match('/^[a-zA-Z0-9_.:-]{1,64}$/', $menuName)) {
+            $clean[$key] = $menuName;
+        }
+    }
     if (isset($input['adsense_client'])) {
         $client = trim((string) $input['adsense_client']);
         if ($client === '' || preg_match('/^ca-pub-[0-9]{10,20}$/', $client)) $clean['adsense_client'] = $client;
@@ -308,6 +315,33 @@ function eclipse_sanitize_options($input)
         if ($sitemap === '' || (strpos($sitemap, '..') === false && !preg_match('/[\x00-\x20"<>]/', $sitemap) && preg_match('#^(?:https?://)?[a-zA-Z0-9_./:%?&=+~-]+$#', $sitemap))) $clean['sitemap_path'] = $sitemap;
     }
     return $clean;
+}
+
+function eclipse_menu_slot_choices()
+{
+    global $_CONF;
+
+    $choices = array('' => '— None —');
+    if (!function_exists('eclipse_menu_plugin_active') || !eclipse_menu_plugin_active()) {
+        return $choices;
+    }
+
+    $include = rtrim((string) $_CONF['path_layout'], '/\\') . '/includes/menu-navigation.php';
+    if (!function_exists('eclipse_menu_available_menus') && is_file($include)) {
+        require_once $include;
+    }
+
+    if (!function_exists('eclipse_menu_available_menus')) {
+        return $choices;
+    }
+
+    foreach (eclipse_menu_available_menus() as $menu) {
+        if (!is_array($menu) || empty($menu['name'])) continue;
+        $name = (string) $menu['name'];
+        $choices[$name] = $name;
+    }
+
+    return $choices;
 }
 
 function eclipse_storage_root()
@@ -836,6 +870,7 @@ function eclipse_render_customizer()
         foreach ($values as $value => $label) $html .= '<option value="' . $h($value) . '"' . ($o[$name] === $value ? ' selected' : '') . '>' . $h($label) . '</option>';
         return $html . '</select>';
     };
+    $menuChoices = eclipse_menu_slot_choices();
     $html = '<section class="eclipse-customizer" id="eclipse-theme-studio" tabindex="-1"><header><div><span class="eclipse-eyebrow">Eclipse ' . htmlspecialchars(eclipse_theme_version(), ENT_QUOTES, 'UTF-8') . '</span><h2>Theme studio</h2><p>Changes are stored as protected JSON outside Geeklog\'s cache directory.</p></div><div class="eclipse-studio-header-actions"><span class="eclipse-preview-mark" aria-hidden="true">&#9680;</span><a href="#eclipse-dashboard-start">Back to dashboard</a></div></header>' . $message;
     $previewDocument = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><style>:root{--p:#3157d5;--s:#6750a4;--l:#2448bd;--action:var(--l);--bg:#f4f6fb;--surface:#fff;--text:#202431}*{box-sizing:border-box}body{margin:0;color:var(--text);background:var(--bg);font:16px/1.5 system-ui,sans-serif}.hero{padding:2.2rem 7%;color:#fff;background:linear-gradient(125deg,var(--p),var(--s))}.hero h1{margin:0;font-size:clamp(1.8rem,5vw,3.2rem)}nav{display:flex;gap:.35rem;padding:.55rem 7%;background:var(--surface);border-bottom:1px solid #ccd2df}nav a{padding:.45rem .7rem;color:var(--l)}main{display:grid;grid-template-columns:minmax(0,1fr) 14rem;gap:1rem;padding:1.25rem 7%}.card{padding:1.2rem;background:var(--surface);border:1px solid #dce1eb;border-radius:.75rem;box-shadow:0 10px 28px rgba(28,38,66,.08)}h2{margin-top:0}.meta{color:#687083;font-size:.82rem}.button{display:inline-block;padding:.55rem .85rem;color:#fff;background:var(--action);border-radius:.45rem}@media(max-width:600px){main{grid-template-columns:1fr}.hero{padding-block:1.4rem}nav{overflow:auto}}</style></head><body><header class="hero"><h1>Geeklog France</h1><p>Free Content Management System GPL</p></header><nav><a>Home</a><a>Articles</a><a>Contact</a></nav><main><article class="card"><p class="meta">12 January 2026 &middot; Editorial preview</p><h2>Design preview</h2><p>This isolated page shows the selected palette without changing the administration interface.</p><span class="button">Primary action</span></article><aside class="card"><h2>Sidebar</h2><p><a style="color:var(--l)">Current section</a></p><p>Recent content</p></aside></main></body></html>';
     $previewDocument = str_replace(
@@ -854,7 +889,7 @@ function eclipse_render_customizer()
     foreach (array('color_primary' => 'Primary', 'color_secondary' => 'Secondary', 'color_link' => 'Links', 'color_background' => 'Page', 'color_surface' => 'Cards', 'color_text' => 'Text') as $key => $label) $html .= '<label><span>' . $label . '</span><input type="color" name="eclipse[' . $key . ']" value="' . $h($o[$key]) . '"></label>';
     $html .= '</div><div class="eclipse-palette-save"><label><span>Palette name</span><input name="eclipse_palette_name" maxlength="50"></label><button type="submit" name="eclipse_palette_save" value="1">Save named palette</button><button type="submit" name="eclipse_palette_delete" value="1">Delete named palette</button></div></fieldset><fieldset data-studio-section="layout"><legend>Layout and type</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="layout">Reset section</button></div><div class="eclipse-field-grid"><label><span>Site width</span><input name="eclipse[site_max_width]" value="' . $h($o['site_max_width']) . '"></label><label><span>Reading width</span><input name="eclipse[reading_width]" value="' . $h($o['reading_width']) . '"></label><label><span>Base size</span><input name="eclipse[font_size]" value="' . $h($o['font_size']) . '"></label>';
     $html .= '<label><span>Typography</span>' . $select('font_family', array('system' => 'Modern system', 'serif' => 'Editorial serif', 'humanist' => 'Humanist')) . '</label><label><span>Spacing</span>' . $select('spacing', array('compact' => 'Compact', 'normal' => 'Balanced', 'relaxed' => 'Airy')) . '</label><label><span>Corners</span>' . $select('radius', array('none' => 'Square', 'small' => 'Subtle', 'medium' => 'Rounded', 'large' => 'Very rounded')) . '</label></div></fieldset>';
-    $html .= '<fieldset data-studio-section="appearance"><legend>Appearance</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="appearance">Reset section</button></div><div class="eclipse-field-grid"><label><span>Color mode</span>' . $select('color_scheme', array('auto' => 'System', 'light' => 'Light', 'dark' => 'Dark')) . '</label><label><span>Administration interface</span>' . $select('admin_ui_mode', array('modern' => 'Modern workspace', 'classic' => 'Classic Eclipse')) . '</label><label><span>Admin navigation blocks</span>' . $select('admin_navigation_source', array('left' => 'Left blocks', 'right' => 'Right blocks', 'both' => 'Left and right blocks')) . '</label><label><span>Menu composition</span>' . $select('menu_style', array('floating' => 'Floating glass', 'capsule' => 'Gradient capsule', 'editorial' => 'Editorial line', 'contrast' => 'Contrast dock')) . '</label><label><span>Cards</span>' . $select('block_style', array('card' => 'Elevated', 'bordered' => 'Outlined', 'flat' => 'Flat')) . '</label><label><span>Buttons</span>' . $select('button_style', array('solid' => 'Solid', 'outline' => 'Outline', 'soft' => 'Soft')) . '</label><label><span>Header</span>' . $select('header_style', array('gradient' => 'Aurora gradient', 'solid' => 'Solid', 'minimal' => 'Minimal')) . '</label><label><span>Footer</span>' . $select('footer_style', array('dark' => 'Dark', 'light' => 'Light', 'minimal' => 'Minimal')) . '</label><label><span>Sidebar</span>' . $select('sidebar_position', array('right' => 'Right', 'left' => 'Left')) . '</label></div></fieldset>';
+    $html .= '<fieldset data-studio-section="appearance"><legend>Appearance</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="appearance">Reset section</button></div><div class="eclipse-field-grid"><label><span>Color mode</span>' . $select('color_scheme', array('auto' => 'System', 'light' => 'Light', 'dark' => 'Dark')) . '</label><label><span>Administration interface</span>' . $select('admin_ui_mode', array('modern' => 'Modern workspace', 'classic' => 'Classic Eclipse')) . '</label><label><span>Admin navigation blocks</span>' . $select('admin_navigation_source', array('left' => 'Left blocks', 'right' => 'Right blocks', 'both' => 'Left and right blocks')) . '</label><label><span>Menu composition</span>' . $select('menu_style', array('floating' => 'Floating glass', 'capsule' => 'Gradient capsule', 'editorial' => 'Editorial line', 'contrast' => 'Contrast dock')) . '</label><label><span>Primary menu</span>' . $select('menu_primary', $menuChoices) . '</label><label><span>Secondary menu</span>' . $select('menu_secondary', $menuChoices) . '</label><label><span>Footer menu</span>' . $select('menu_footer', $menuChoices) . '</label><label><span>Cards</span>' . $select('block_style', array('card' => 'Elevated', 'bordered' => 'Outlined', 'flat' => 'Flat')) . '</label><label><span>Buttons</span>' . $select('button_style', array('solid' => 'Solid', 'outline' => 'Outline', 'soft' => 'Soft')) . '</label><label><span>Header</span>' . $select('header_style', array('gradient' => 'Aurora gradient', 'solid' => 'Solid', 'minimal' => 'Minimal')) . '</label><label><span>Footer</span>' . $select('footer_style', array('dark' => 'Dark', 'light' => 'Light', 'minimal' => 'Minimal')) . '</label><label><span>Sidebar</span>' . $select('sidebar_position', array('right' => 'Right', 'left' => 'Left')) . '</label></div></fieldset>';
     $html .= '<fieldset data-studio-section="brand"><legend>Brand and regions</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="brand">Reset section</button></div><div class="eclipse-field-grid"><label><span>Logo path</span><input name="eclipse[logo]" value="' . $h($o['logo']) . '" placeholder="images/logo.svg"></label><label><span>Header image</span><input name="eclipse[header_image]" value="' . $h($o['header_image']) . '" placeholder="images/header.jpg"></label></div><div class="eclipse-checks">';
     foreach (array('show_left_sidebar' => 'Left sidebar', 'show_right_sidebar' => 'Right sidebar', 'mobile_menu' => 'Mobile menu', 'editor_hide_sidebars' => 'Hide sidebars in story editor') as $key => $label) $html .= '<label><input type="checkbox" name="eclipse[' . $key . ']" value="1"' . (!empty($o[$key]) ? ' checked' : '') . '> ' . $label . '</label>';
     $html .= '</div></fieldset><fieldset data-studio-section="social" class="eclipse-social-sharing"><legend>Social sharing</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="social">Reset section</button></div><p class="eclipse-section-intro">Choose the share links displayed on full article pages. No third-party script or request is loaded before a visitor clicks a link.</p><div class="eclipse-checks">';
