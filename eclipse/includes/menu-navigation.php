@@ -192,10 +192,22 @@ function eclipse_menu_render_slot($slot)
 {
     $name = eclipse_menu_slot_name($slot);
     if ($name === '') {
+        if (function_exists('MENU_debugLog')) {
+            MENU_debugLog('Eclipse slot ' . (string) $slot . ' has no assigned menu.');
+        }
         return '';
     }
 
-    return eclipse_menu_render($name, $slot);
+    $html = eclipse_menu_render($name, $slot);
+    if (function_exists('MENU_debugLog')) {
+        MENU_debugLog(
+            'Eclipse slot ' . (string) $slot
+            . ' uses menu ' . $name
+            . ' and rendered ' . strlen((string) $html) . ' bytes.'
+        );
+    }
+
+    return $html;
 }
 
 /**
@@ -208,47 +220,6 @@ function eclipse_menu_navigation_resolved()
     return eclipse_menu_render_slot('primary');
 }
 
-
-/**
- * Return a Root-only HTML comment describing Menu slot resolution.
- *
- * This deliberately exposes no ACL details or private configuration. It exists
- * to diagnose integration issues where the theme knows a slot but the Menu
- * provider returns no renderable tree.
- *
- * @return string
- */
-function eclipse_menu_debug_comment()
-{
-    if (!function_exists('SEC_inGroup') || !SEC_inGroup('Root')) {
-        return '';
-    }
-
-    $parts = array();
-    foreach (array('primary', 'secondary', 'footer') as $slot) {
-        $name = eclipse_menu_slot_name($slot);
-        $treeCount = -1;
-        if ($name !== '' && function_exists('MENU_getResolvedTree')) {
-            $tree = MENU_getResolvedTree($name);
-            $treeCount = is_array($tree) ? count($tree) : -2;
-        }
-
-        $legacyLength = -1;
-        if ($name !== '' && function_exists('MENU_getMenu')) {
-            $legacy = MENU_getMenu($name, '', '', '', '', '', '', 1);
-            $legacyLength = is_string($legacy) ? strlen($legacy) : -2;
-        }
-
-        $parts[] = $slot
-            . ':name=' . ($name === '' ? '(empty)' : preg_replace('/[^\pL\pN_.: -]/u', '?', $name))
-            . ',tree=' . $treeCount
-            . ',legacy=' . $legacyLength;
-    }
-
-    return '<!-- Eclipse Menu debug | API='
-        . (function_exists('MENU_getResolvedTree') ? 'resolved' : 'missing')
-        . ' | ' . implode(' | ', $parts) . ' -->';
-}
 
 /**
  * Return false when a tree contains a node which Menu explicitly reports as
