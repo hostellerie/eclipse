@@ -60,9 +60,12 @@ Use the [release QA checklist](eclipse/QA-CHECKLIST.md) and report reproducible 
 - `eclipse/` — exact installable theme tree and integrity manifest.
 - `docs/` — repository documentation assets not shipped in the theme archive.
 - `quality/` — development-only manifest and contract validation tools.
+- `ROADMAP.md` — maintained development direction and planned transitions.
 - `RELEASE-NOTES.md` — release notes.
 
 Development tools and documentation-only assets are deliberately excluded from the installable theme archive.
+
+See [ROADMAP.md](ROADMAP.md) for the current development direction.
 
 ## License
 
