@@ -979,9 +979,31 @@ function eclipse_install_uploaded_update($upload)
     if (!@mkdir($job, 0750, true)) return $fail('Unable to create the temporary update directory.');
     $zip = new ZipArchive();
     if ($zip->open($upload['tmp_name']) !== true) return $fail('The uploaded archive is not a readable ZIP file.');
+
+    $packageMarker = 'ECLIPSE_THEME_PACKAGE';
+    $firstEntry = $zip->numFiles > 0 ? str_replace('\\', '/', (string) $zip->getNameIndex(0)) : '';
+    if ($firstEntry !== $packageMarker) {
+        $zip->close(); eclipse_remove_tree($job);
+        return $fail('This is not an official Eclipse theme package: the package marker is missing or is not the first archive entry.');
+    }
+
+    $markerData = $zip->getFromName($packageMarker);
+    if (!is_string($markerData) || strlen($markerData) > 1024
+        || !preg_match('/^package_type=geeklog-theme$/m', $markerData)
+        || !preg_match('/^theme=eclipse$/m', $markerData)
+        || !preg_match('/^format=1$/m', $markerData)
+        || !preg_match('/^version=([^\\r\\n]+)$/m', $markerData, $markerVersionMatch)) {
+        $zip->close(); eclipse_remove_tree($job);
+        return $fail('The Eclipse theme package marker is invalid.');
+    }
+    $packageVersion = trim($markerVersionMatch[1]);
+
     $allowed = '/\.(?:php|ini|thtml|thtmlx|css|js|json|md|txt|html|svg|png|jpe?g|gif|ico)$/i';
     for ($i = 0; $i < $zip->numFiles; $i++) {
-        $name = str_replace('\\', '/', $zip->getNameIndex($i));
+        $name = str_replace('\\', '/', (string) $zip->getNameIndex($i));
+        if ($name === $packageMarker) {
+            continue;
+        }
         if ($name === '' || strpos($name, "\0") !== false || $name[0] === '/' || preg_match('#(^|/)\.\.(/|$)#', $name) || strpos($name, 'eclipse/') !== 0) {
             $zip->close(); eclipse_remove_tree($job); return $fail('Unsafe or unexpected path in the archive: ' . $name);
         }
@@ -1016,6 +1038,7 @@ function eclipse_install_uploaded_update($upload)
     $ini = @parse_ini_file($manifest, true);
     $newVersion = isset($ini['theme']['version']) ? $ini['theme']['version'] : '';
     if (!preg_match('/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/', $newVersion)) { eclipse_remove_tree($job); return $fail('The archive has no valid Eclipse version.'); }
+    if ($packageVersion !== $newVersion) { eclipse_remove_tree($job); return $fail('The Eclipse package marker version does not match theme.ini.'); }
     $integrityError = eclipse_verify_package_manifest($sourceTheme, $newVersion);
     if ($integrityError !== '') { eclipse_remove_tree($job); return $fail($integrityError); }
     $themeDir = __DIR__;
