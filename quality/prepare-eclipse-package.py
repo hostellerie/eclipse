@@ -253,6 +253,10 @@ def prepare():
         fail('Packaged updater does not perform an exact Eclipse directory replacement')
     if 'eclipse_copy_tree($sourceTheme, $themeDir' in updater_text:
         fail('Packaged updater still merges the new theme into the existing Eclipse directory')
+    if "method_exists($zip, 'getFromName')" not in updater_text:
+        fail('Packaged updater does not detect getFromName before using it')
+    if "method_exists($zip, 'getStream')" not in updater_text:
+        fail('Packaged updater does not provide the Geeklog 2.1 getStream fallback')
 
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
