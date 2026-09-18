@@ -214,6 +214,7 @@ $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 $headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
+eclipse_test_assert(strpos($headerTemplate, 'eclipse_menu_debug_comment()') !== false, 'Root-only Menu diagnostics are not wired into header');
 $footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
 $previewProvider = file_get_contents(dirname(__DIR__) . '/eclipse/includes/plugin-presentation-preview.php');
 eclipse_test_assert(strpos($previewProvider, "eclipse_menu_render(\$resource, \$menuContext)") !== false, 'Theme preview must render the requested Menu resource');
