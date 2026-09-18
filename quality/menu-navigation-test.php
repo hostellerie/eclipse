@@ -214,6 +214,11 @@ $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 $themeFunctions = file_get_contents(dirname(__DIR__) . '/eclipse/functions.php');
+$indexTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/index.thtml');
+eclipse_test_assert($indexTemplate !== false, 'Unable to read index.thtml');
+eclipse_test_assert(strpos($indexTemplate, "eclipse_menu_render_slot('primary')") !== false, 'Geeklog 2.2 index template must render primary menu slot');
+eclipse_test_assert(strpos($indexTemplate, "eclipse_menu_render_slot('secondary')") !== false, 'Geeklog 2.2 index template must render secondary menu slot');
+eclipse_test_assert(strpos($indexTemplate, "eclipse_menu_render_slot('footer')") !== false, 'Geeklog 2.2 index template must render footer menu slot');
 eclipse_test_assert(strpos($themeFunctions, 'eclipse_verify_installed_manifest') !== false, 'updater must verify installed files after copy');
 eclipse_test_assert(strpos($themeFunctions, 'opcache_invalidate') !== false, 'updater must invalidate PHP OPcache when available');
 eclipse_test_assert(strpos($themeFunctions, "CTL_clearCacheDirectories(\$data . 'layout_cache');") !== false, 'updater must clear complete template cache after theme update');
