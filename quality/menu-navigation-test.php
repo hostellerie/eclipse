@@ -214,6 +214,9 @@ $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 $themeFunctions = file_get_contents(dirname(__DIR__) . '/eclipse/functions.php');
+eclipse_test_assert(strpos($themeFunctions, 'eclipse_refresh_template_cache_on_package_change') !== false, 'theme must refresh compiled templates when the package changes');
+eclipse_test_assert(strpos($themeFunctions, "CTL_clearCacheDirectories(\$data . 'layout_cache');") !== false, 'package-change refresh must clear Geeklog template cache');
+eclipse_test_assert(strpos($themeFunctions, "template-cache-fingerprint.txt") !== false, 'package-change refresh must persist a site-scoped fingerprint');
 eclipse_test_assert(strpos($themeFunctions, 'eclipse_verify_installed_manifest') !== false, 'updater must verify installed files after copy');
 eclipse_test_assert(strpos($themeFunctions, 'opcache_invalidate') !== false, 'updater must invalidate PHP OPcache when available');
 eclipse_test_assert(strpos($themeFunctions, "CTL_clearCacheDirectories(\$data . 'layout_cache');") !== false, 'updater must clear complete template cache after theme update');
