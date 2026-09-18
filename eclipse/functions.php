@@ -7,6 +7,71 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 require_once __DIR__ . '/includes/admin-dashboard.php';
 require_once __DIR__ . '/includes/custom-css.php';
 
+/**
+ * Clear Geeklog's disposable template caches once when the installed Eclipse
+ * package changes.
+ *
+ * Geeklog may keep compiled .thtml files in path_data/layout_cache. A theme
+ * package can therefore be current on disk while an older compiled header is
+ * still executed. Use the installed MANIFEST.json as a build fingerprint and
+ * keep the marker in Eclipse's site-scoped private storage.
+ *
+ * @return bool true when a cache refresh was performed
+ */
+function eclipse_refresh_template_cache_on_package_change()
+{
+    global $_CONF;
+
+    if (!function_exists('CTL_clearCacheDirectories')
+        || empty($_CONF['path_data'])
+        || empty($_CONF['path_layout'])) {
+        return false;
+    }
+
+    $manifest = __DIR__ . '/MANIFEST.json';
+    if (!is_file($manifest) || !is_readable($manifest)) {
+        return false;
+    }
+
+    $fingerprint = @hash_file('sha256', $manifest);
+    if (!is_string($fingerprint) || $fingerprint === '') {
+        return false;
+    }
+
+    $storageRoot = function_exists('eclipse_storage_root')
+        ? eclipse_storage_root()
+        : '';
+    if ($storageRoot === '') {
+        return false;
+    }
+
+    if (!is_dir($storageRoot) && !@mkdir($storageRoot, 0750, true)) {
+        return false;
+    }
+
+    $marker = rtrim($storageRoot, "/\\") . DIRECTORY_SEPARATOR . 'template-cache-fingerprint.txt';
+    $previous = is_file($marker) && is_readable($marker)
+        ? trim((string) @file_get_contents($marker))
+        : '';
+
+    if ($previous === $fingerprint) {
+        return false;
+    }
+
+    $data = rtrim((string) $_CONF['path_data'], "/\\") . DIRECTORY_SEPARATOR;
+    CTL_clearCacheDirectories($data . 'layout_cache');
+    CTL_clearCacheDirectories($data . 'layout_css');
+
+    $written = @file_put_contents($marker, $fingerprint . PHP_EOL, LOCK_EX);
+    if ($written !== false) {
+        @chmod($marker, 0640);
+    }
+
+    return true;
+}
+
+eclipse_refresh_template_cache_on_package_change();
+
 if (function_exists('MENU_debugLog')) {
     MENU_debugLog(
         'Eclipse functions.php loaded; file=' . __FILE__
