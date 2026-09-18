@@ -342,7 +342,7 @@ function eclipse_footer_controls_studio($html)
 
     $controlsHtml = '<div class="eclipse-footer-native-controls">'
         . '<div class="eclipse-checks"><label><input type="checkbox" name="eclipse_footer_controls[show_native]" value="1"' . (!empty($controls['show_native']) ? ' checked' : '') . '> ' . $h(eclipse_lang('show_native_footer', 'Display the standard Geeklog footer block')) . '</label></div>'
-        . '<label class="eclipse-footer-above-field"><span>' . $h(eclipse_lang('footer_above_line', 'Line above the footer block')) . '</span><input name="eclipse_footer_controls[above_line]" value="' . $h($controls['above_line']) . '" placeholder="[menu:footer]" maxlength="500"><small>' . $h(eclipse_lang('footer_above_line_help', 'Accepts Geeklog autotags, for example [menu:footer].')) . '</small></label>'
+        . '<label class="eclipse-footer-above-field"><span>' . $h(eclipse_lang('footer_above_line', 'Line above the footer block')) . '</span><input name="eclipse_footer_controls[above_line]" value="' . $h($controls['above_line']) . '" placeholder="[autotag:parameter]" maxlength="500"><small>' . $h(eclipse_lang('footer_above_line_help', 'Use any Geeklog autotag available on this site to insert a link, image, video, media or other dynamic content. Example: [autotag:parameter].')) . '</small></label>'
         . '</div>';
 
     $legalGrid = '<div class="eclipse-field-grid eclipse-footer-legal-fields">';
