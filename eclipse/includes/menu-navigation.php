@@ -108,7 +108,11 @@ function eclipse_menu_slot_name($slot)
     $options = function_exists('eclipse_theme_options') ? eclipse_theme_options() : array();
     $key = 'menu_' . $slot;
     if (array_key_exists($key, $options)) {
-        return trim((string) $options[$key]);
+        $name = trim((string) $options[$key]);
+        if ($name !== '') {
+            return $name;
+        }
+        return $slot === 'primary' ? 'navigation' : '';
     }
 
     return $slot === 'primary' ? 'navigation' : '';
