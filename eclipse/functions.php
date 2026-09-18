@@ -18,13 +18,41 @@ require_once __DIR__ . '/includes/custom-css.php';
  *
  * @return bool true when a cache refresh was performed
  */
+function eclipse_remove_cache_contents($directory)
+{
+    if (!is_dir($directory)) {
+        return true;
+    }
+
+    $items = @scandir($directory);
+    if (!is_array($items)) {
+        return false;
+    }
+
+    $ok = true;
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+
+        $path = rtrim($directory, "/\\") . DIRECTORY_SEPARATOR . $item;
+        if (is_dir($path) && !is_link($path)) {
+            if (!eclipse_remove_cache_contents($path) || !@rmdir($path)) {
+                $ok = false;
+            }
+        } elseif (!@unlink($path)) {
+            $ok = false;
+        }
+    }
+
+    return $ok;
+}
+
 function eclipse_refresh_template_cache_on_package_change()
 {
     global $_CONF;
 
-    if (!function_exists('CTL_clearCacheDirectories')
-        || empty($_CONF['path_data'])
-        || empty($_CONF['path_layout'])) {
+    if (empty($_CONF['path_data']) || empty($_CONF['path_layout'])) {
         return false;
     }
 
@@ -38,18 +66,18 @@ function eclipse_refresh_template_cache_on_package_change()
         return false;
     }
 
-    $storageRoot = function_exists('eclipse_storage_root')
-        ? eclipse_storage_root()
-        : '';
-    if ($storageRoot === '') {
+    /*
+     * Do not depend on eclipse_storage_root() here. This runs at the very top
+     * of the theme bootstrap and must remain independent from later helpers.
+     * path_data is already site-scoped by Geeklog's multisite bootstrap.
+     */
+    $dataRoot = rtrim((string) $_CONF['path_data'], "/\\");
+    $stateRoot = $dataRoot . DIRECTORY_SEPARATOR . 'eclipse-runtime';
+    if (!is_dir($stateRoot) && !@mkdir($stateRoot, 0750, true)) {
         return false;
     }
 
-    if (!is_dir($storageRoot) && !@mkdir($storageRoot, 0750, true)) {
-        return false;
-    }
-
-    $marker = rtrim($storageRoot, "/\\") . DIRECTORY_SEPARATOR . 'template-cache-fingerprint.txt';
+    $marker = $stateRoot . DIRECTORY_SEPARATOR . 'template-cache-fingerprint.txt';
     $previous = is_file($marker) && is_readable($marker)
         ? trim((string) @file_get_contents($marker))
         : '';
@@ -58,14 +86,20 @@ function eclipse_refresh_template_cache_on_package_change()
         return false;
     }
 
-    $data = rtrim((string) $_CONF['path_data'], "/\\") . DIRECTORY_SEPARATOR;
-    CTL_clearCacheDirectories($data . 'layout_cache');
-    CTL_clearCacheDirectories($data . 'layout_css');
+    $layoutCache = $dataRoot . DIRECTORY_SEPARATOR . 'layout_cache';
+    $layoutCss = $dataRoot . DIRECTORY_SEPARATOR . 'layout_css';
+
+    $cacheOk = eclipse_remove_cache_contents($layoutCache);
+    $cssOk = eclipse_remove_cache_contents($layoutCss);
+    if (!$cacheOk || !$cssOk) {
+        return false;
+    }
 
     $written = @file_put_contents($marker, $fingerprint . PHP_EOL, LOCK_EX);
-    if ($written !== false) {
-        @chmod($marker, 0640);
+    if ($written === false) {
+        return false;
     }
+    @chmod($marker, 0640);
 
     return true;
 }
