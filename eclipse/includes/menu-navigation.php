@@ -21,6 +21,19 @@ function eclipse_menu_available_menus()
         return array();
     }
 
+    /*
+     * Eclipse runs in the same PHP request as Menu. Prefer Menu's direct,
+     * permission-aware API so theme rendering uses the exact runtime state
+     * already initialized by the plugin. Keep Geeklog Plugin Services as a
+     * fallback for environments where only the service facade is exposed.
+     */
+    if (function_exists('MENU_getAvailableMenus')) {
+        $menus = MENU_getAvailableMenus();
+        if (is_array($menus)) {
+            return $menus;
+        }
+    }
+
     if (function_exists('PLG_invokeService')) {
         $output = array();
         $svcMsg = array();
@@ -31,11 +44,6 @@ function eclipse_menu_available_menus()
             && isset($output['menus']) && is_array($output['menus'])) {
             return $output['menus'];
         }
-    }
-
-    if (function_exists('MENU_getAvailableMenus')) {
-        $menus = MENU_getAvailableMenus();
-        return is_array($menus) ? $menus : array();
     }
 
     return array();
@@ -54,6 +62,13 @@ function eclipse_menu_resolved_tree($name)
         return array();
     }
 
+    if (function_exists('MENU_getResolvedTree')) {
+        $tree = MENU_getResolvedTree($name);
+        if (is_array($tree)) {
+            return $tree;
+        }
+    }
+
     if (function_exists('PLG_invokeService')) {
         $output = array();
         $svcMsg = array();
@@ -70,11 +85,6 @@ function eclipse_menu_resolved_tree($name)
             && isset($output['nodes']) && is_array($output['nodes'])) {
             return $output['nodes'];
         }
-    }
-
-    if (function_exists('MENU_getResolvedTree')) {
-        $tree = MENU_getResolvedTree($name);
-        return is_array($tree) ? $tree : array();
     }
 
     return array();
