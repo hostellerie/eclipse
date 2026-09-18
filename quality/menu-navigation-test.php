@@ -50,6 +50,15 @@ function eclipse_menu_plugin_active()
     return true;
 }
 
+function MENU_getAvailableMenus()
+{
+    return array(
+        array('id' => 1, 'name' => 'navigation', 'type' => 1),
+        array('id' => 2, 'name' => 'footer', 'type' => 2),
+        array('id' => 6, 'name' => 'Menu secondaire été', 'type' => 1),
+    );
+}
+
 function MENU_getResolvedTree($name)
 {
     return array(
@@ -202,7 +211,7 @@ $header = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
 eclipse_test_assert(strpos($header, "require_once __DIR__") === false, 'header.thtml must not require theme files through __DIR__');
 eclipse_test_assert(strpos($header, "\$_CONF['path_layout']") !== false, 'header.thtml must use Geeklog path_layout for theme includes');
 
-eclipse_test_assert(in_array('getMenuList', $GLOBALS['eclipse_test_service_calls'], true), 'Eclipse did not use Menu list service');
-eclipse_test_assert(in_array('getMenuTree', $GLOBALS['eclipse_test_service_calls'], true), 'Eclipse did not use Menu tree service');
+eclipse_test_assert(!in_array('getMenuList', $GLOBALS['eclipse_test_service_calls'], true), 'Eclipse should prefer direct Menu list API when available');
+eclipse_test_assert(!in_array('getMenuTree', $GLOBALS['eclipse_test_service_calls'], true), 'Eclipse should prefer direct Menu tree API when available');
 
 echo "Eclipse resolved Menu navigation tests passed" . PHP_EOL;
