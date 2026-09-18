@@ -47,8 +47,11 @@ jobs:
           pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
           (
             cd .package-stage
+            zip -9 "../eclipse-$version.zip" ECLIPSE_THEME_PACKAGE
             zip -r -9 "../eclipse-$version.zip" eclipse -x '*/.DS_Store' '*/Thumbs.db'
           )
+          first_entry=$(unzip -Z1 "eclipse-$version.zip" | head -n 1)
+          test "$first_entry" = "ECLIPSE_THEME_PACKAGE"
           sha256sum "eclipse-$version.zip" > "eclipse-$version.zip.sha256"
 
       - name: Publish GitHub prerelease
