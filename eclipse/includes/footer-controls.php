@@ -360,20 +360,21 @@ function eclipse_footer_controls_studio($html)
 
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[copyright\]" value="([^"]*)" placeholder="[^"]*">#',
-        function ($match) use ($copyrightPlaceholder, $copyrightToggle, $autotagHelp) {
-            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="' . $copyrightPlaceholder . '">' . $match[1] . '</textarea>' . $copyrightToggle . '<small>' . $autotagHelp . '</small>';
+        function ($match) use ($copyrightPlaceholder, $copyrightToggle) {
+            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="' . $copyrightPlaceholder . '">' . $match[1] . '</textarea>' . $copyrightToggle;
         },
         $html
     );
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[legal_notice\]" value="([^"]*)" placeholder="[^"]*">#',
-        function ($match) use ($legalPlaceholder, $legalToggle, $autotagHelp) {
-            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="' . $legalPlaceholder . '">' . $match[1] . '</textarea>' . $legalToggle . '<small>' . $autotagHelp . '</small>';
+        function ($match) use ($legalPlaceholder, $legalToggle) {
+            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="' . $legalPlaceholder . '">' . $match[1] . '</textarea>' . $legalToggle;
         },
         $html
     );
 
-    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $thirdPlaceholder . '">' . $h($controls['third_column']) . '</textarea>' . $thirdToggle . '<small>' . $h(eclipse_lang('footer_custom_empty_help', 'Uncheck the default option and leave this field empty to display an empty column.')) . '</small></label>';
+    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $thirdPlaceholder . '">' . $h($controls['third_column']) . '</textarea>' . $thirdToggle . '<small>' . $h(eclipse_lang('footer_custom_empty_help', 'Uncheck the default option and leave this field empty to display an empty column.')) . '</small></label>'
+        . '<p class="eclipse-field-help eclipse-footer-autotag-help"><small>' . $autotagHelp . '</small></p>';
     $needle = '</div><template id="eclipse-footer-link-template">';
     if (strpos($html, $needle) !== false) {
         $html = str_replace($needle, $thirdField . '</div><template id="eclipse-footer-link-template">', $html);
