@@ -7,6 +7,15 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'functions.php') !== false) {
 require_once __DIR__ . '/includes/admin-dashboard.php';
 require_once __DIR__ . '/includes/custom-css.php';
 
+if (function_exists('MENU_debugLog')) {
+    MENU_debugLog(
+        'Eclipse functions.php loaded; file=' . __FILE__
+        . ', layout=' . (isset($_CONF['path_layout']) ? (string) $_CONF['path_layout'] : '[unset]')
+        . ', version=' . (function_exists('eclipse_theme_version') ? eclipse_theme_version() : '[pending]')
+        . '.'
+    );
+}
+
 function theme_config_eclipse()
 {
     global $_CONF;
