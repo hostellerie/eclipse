@@ -162,6 +162,12 @@ function eclipse_menu_render($name, $context = 'primary')
         }
     }
 
+    /*
+     * Legacy rendering is only a content fallback for this specific menu.
+     * Slot ownership remains with Eclipse: primary, secondary and footer are
+     * resolved independently above and must never depend on Geeklog's historic
+     * single navigation placeholder.
+     */
     if (function_exists('MENU_getMenu')) {
         return MENU_getMenu(
             $name,
