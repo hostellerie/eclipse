@@ -64,13 +64,38 @@ jobs:
 
             rm -rf dist
             mkdir -p dist
+
+            cat > .package-stage/ECLIPSE_THEME_PACKAGE <<EOF
+package_type=geeklog-theme
+theme=eclipse
+version=$version
+format=1
+EOF
+
             (
               cd .package-stage
+              # The marker MUST be the first ZIP entry. Geeklog's plugin upload
+              # derives a candidate plugin name from entry 0, so this prevents
+              # the eclipse/ theme directory from being mistaken for a plugin.
+              zip -9 "../dist/eclipse-1.2.0.zip" ECLIPSE_THEME_PACKAGE
               zip -r -9 "../dist/eclipse-1.2.0.zip" eclipse \
                 -x '*/.DS_Store' '*/Thumbs.db'
             )
 
             archive="dist/eclipse-1.2.0.zip"
+            first_entry=$(unzip -Z1 "$archive" | head -n 1)
+            if [ "$first_entry" != "ECLIPSE_THEME_PACKAGE" ]; then
+              echo "Package marker is not the first ZIP entry: $first_entry" >&2
+              exit 1
+            fi
+            marker_contents=$(unzip -p "$archive" ECLIPSE_THEME_PACKAGE)
+            if ! grep -qx 'package_type=geeklog-theme' <<<"$marker_contents" \
+              || ! grep -qx 'theme=eclipse' <<<"$marker_contents" \
+              || ! grep -qx "version=$version" <<<"$marker_contents" \
+              || ! grep -qx 'format=1' <<<"$marker_contents"; then
+              echo "Eclipse package marker is invalid." >&2
+              exit 1
+            fi
             archive_size=$(stat -c '%s' "$archive")
             echo "Archive size: $archive_size bytes"
             if [ "$archive_size" -ge 1900000 ]; then
