@@ -56,6 +56,7 @@ $ECLIPSE_LANG_EXTRA = array(
     'show_native_footer' => 'Display the standard Geeklog footer block',
     'footer_above_line' => 'Line above the footer block',
     'footer_above_line_help' => 'Use any Geeklog autotag available on this site to insert a link, image, video, media or other dynamic content. Example: [autotag:parameter].',
+    'footer_column_autotag_help' => 'Custom footer columns accept Geeklog autotags. Use any autotag available on this site to insert a link, image, video, media or other dynamic content. Example: [autotag:parameter].',
     'footer_powered_by_geeklog' => 'Powered by Geeklog',
     'footer_powered_by_help' => 'Use the default option to keep the native Powered by Geeklog and page generation time.',
     'footer_use_geeklog_default' => 'Use Geeklog default content',
