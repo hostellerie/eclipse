@@ -1079,6 +1079,8 @@ function eclipse_install_uploaded_update($upload)
         return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
     }
 
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($job);
     $cacheMessage = eclipse_clear_theme_cache()
         ? ' Geeklog template and generated CSS caches were cleared.'
@@ -1089,8 +1091,43 @@ function eclipse_install_uploaded_update($upload)
         'message' => 'Eclipse ' . $newVersion
             . ' installed successfully and verified at ' . $themeDir . '.'
             . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
             . ' PHP OPcache entries were invalidated when supported.'
     );
+}
+
+function eclipse_touch_installed_templates($themeRoot)
+{
+    $themeRoot = rtrim((string) $themeRoot, "/\\");
+    if ($themeRoot === '' || !is_dir($themeRoot)) {
+        return false;
+    }
+
+    $timestamp = time() + 2;
+    $count = 0;
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($themeRoot, FilesystemIterator::SKIP_DOTS)
+    );
+
+    foreach ($iterator as $file) {
+        if (!$file->isFile() || $file->isLink()) {
+            continue;
+        }
+
+        $extension = strtolower(pathinfo($file->getFilename(), PATHINFO_EXTENSION));
+        if ($extension !== 'thtml' && $extension !== 'thtmlx') {
+            continue;
+        }
+
+        if (!@touch($file->getPathname(), $timestamp)) {
+            return false;
+        }
+        $count++;
+    }
+
+    return $count;
 }
 
 function eclipse_verify_installed_manifest($themeRoot)
