@@ -4,6 +4,82 @@ if (!defined('VERSION')) {
     die('This file can not be used on its own!');
 }
 
+
+/**
+ * Discover Menu instances available to the current Geeklog request context.
+ *
+ * Prefer Geeklog's Plugin Service API so Eclipse does not depend on Menu
+ * globals or database tables. Direct feature-detected fallback keeps Eclipse
+ * compatible with Menu builds that expose the discovery function but not the
+ * service facade yet.
+ *
+ * @return array
+ */
+function eclipse_menu_available_menus()
+{
+    if (!eclipse_menu_plugin_active()) {
+        return array();
+    }
+
+    if (function_exists('PLG_invokeService')) {
+        $output = array();
+        $svcMsg = array();
+        $status = PLG_invokeService('menu', 'getMenuList', array(), $output, $svcMsg);
+        $ok = defined('PLG_RET_OK') ? PLG_RET_OK : 0;
+
+        if ($status === $ok && is_array($output)
+            && isset($output['menus']) && is_array($output['menus'])) {
+            return $output['menus'];
+        }
+    }
+
+    if (function_exists('MENU_getAvailableMenus')) {
+        $menus = MENU_getAvailableMenus();
+        return is_array($menus) ? $menus : array();
+    }
+
+    return array();
+}
+
+/**
+ * Retrieve one permission-filtered Menu tree through the owning plugin.
+ *
+ * @param string $name
+ * @return array
+ */
+function eclipse_menu_resolved_tree($name)
+{
+    $name = trim((string) $name);
+    if ($name === '' || !eclipse_menu_plugin_active()) {
+        return array();
+    }
+
+    if (function_exists('PLG_invokeService')) {
+        $output = array();
+        $svcMsg = array();
+        $status = PLG_invokeService(
+            'menu',
+            'getMenuTree',
+            array('name' => $name),
+            $output,
+            $svcMsg
+        );
+        $ok = defined('PLG_RET_OK') ? PLG_RET_OK : 0;
+
+        if ($status === $ok && is_array($output)
+            && isset($output['nodes']) && is_array($output['nodes'])) {
+            return $output['nodes'];
+        }
+    }
+
+    if (function_exists('MENU_getResolvedTree')) {
+        $tree = MENU_getResolvedTree($name);
+        return is_array($tree) ? $tree : array();
+    }
+
+    return array();
+}
+
 /**
  * Render the Menu plugin navigation using its resolved-tree API when available.
  * Unresolved legacy callback nodes are omitted from the structured rendering
@@ -17,15 +93,13 @@ function eclipse_menu_navigation_resolved()
         return '';
     }
 
-    if (function_exists('MENU_getResolvedTree')) {
-        $tree = MENU_getResolvedTree('navigation');
-        if (is_array($tree) && !empty($tree)) {
-            $resolvedTree = eclipse_menu_filter_resolved_nodes($tree);
-            if (!empty($resolvedTree)) {
-                return '<div class="eclipse-menu">'
-                    . eclipse_menu_render_tree($resolvedTree, true)
-                    . '</div>';
-            }
+    $tree = eclipse_menu_resolved_tree('navigation');
+    if (!empty($tree)) {
+        $resolvedTree = eclipse_menu_filter_resolved_nodes($tree);
+        if (!empty($resolvedTree)) {
+            return '<div class="eclipse-menu">'
+                . eclipse_menu_render_tree($resolvedTree, true)
+                . '</div>';
         }
     }
 
