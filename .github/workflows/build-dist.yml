@@ -65,13 +65,6 @@ jobs:
             rm -rf dist
             mkdir -p dist
 
-            cat > .package-stage/ECLIPSE_THEME_PACKAGE <<EOF
-package_type=geeklog-theme
-theme=eclipse
-version=$version
-format=1
-EOF
-
             (
               cd .package-stage
               # The marker MUST be the first ZIP entry. Geeklog's plugin upload
