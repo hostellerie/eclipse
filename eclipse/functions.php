@@ -298,7 +298,11 @@ function eclipse_sanitize_options($input)
     foreach (array('menu_primary', 'menu_secondary', 'menu_footer') as $key) {
         if (!isset($input[$key])) continue;
         $menuName = trim((string) $input[$key]);
-        if ($menuName === '' || preg_match('/^[a-zA-Z0-9_.:-]{1,64}$/', $menuName)) {
+        $menuLength = function_exists('mb_strlen')
+            ? mb_strlen($menuName, 'UTF-8')
+            : strlen($menuName);
+        if ($menuName === ''
+            || ($menuLength <= 64 && !preg_match('/[\\x00-\\x1F\\x7F]/u', $menuName))) {
             $clean[$key] = $menuName;
         }
     }
