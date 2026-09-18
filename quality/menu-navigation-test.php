@@ -213,6 +213,10 @@ eclipse_test_assert(eclipse_menu_tree_is_resolved(eclipse_test_unresolved_tree()
 $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'));
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
+$themeFunctions = file_get_contents(dirname(__DIR__) . '/eclipse/functions.php');
+eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getResolvedTree')") !== false, 'Eclipse must detect Menu by resolved-tree capability');
+eclipse_test_assert(strpos($themeFunctions, "function_exists('MENU_getAvailableMenus')") !== false, 'Eclipse must detect Menu by discovery capability');
+
 $headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
 $footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
 $previewProvider = file_get_contents(dirname(__DIR__) . '/eclipse/includes/plugin-presentation-preview.php');
