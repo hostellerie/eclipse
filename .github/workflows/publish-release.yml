@@ -62,8 +62,11 @@ jobs:
           pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./.package-stage/eclipse
           (
             cd .package-stage
+            zip -9 "../eclipse-$version.zip" ECLIPSE_THEME_PACKAGE
             zip -r -9 "../eclipse-$version.zip" eclipse -x '*/.DS_Store' '*/Thumbs.db'
           )
+          first_entry=$(unzip -Z1 "eclipse-$version.zip" | head -n 1)
+          test "$first_entry" = "ECLIPSE_THEME_PACKAGE"
           size=$(stat -c '%s' "eclipse-$version.zip")
           echo "Archive size: $size bytes"
           if [ "$size" -ge 1900000 ]; then
