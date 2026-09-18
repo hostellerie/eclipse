@@ -214,6 +214,10 @@ $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
 $themeFunctions = file_get_contents(dirname(__DIR__) . '/eclipse/functions.php');
+$zipCompat = file_get_contents(dirname(__DIR__) . '/eclipse/includes/zip-compat.php');
+eclipse_test_assert($zipCompat !== false, 'Unable to read ZIP compatibility layer');
+eclipse_test_assert(strpos($zipCompat, 'public function getFromName(') !== false, 'Geeklog 2.1 ZIP compatibility layer must provide getFromName');
+eclipse_test_assert(strpos($zipCompat, 'public function getStream(') !== false, 'Geeklog 2.1 ZIP compatibility layer must provide getStream');
 $indexTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/index.thtml');
 eclipse_test_assert($indexTemplate !== false, 'Unable to read index.thtml');
 eclipse_test_assert(strpos($indexTemplate, "eclipse_menu_render_slot('primary')") !== false, 'Geeklog 2.2 index template must render primary menu slot');
