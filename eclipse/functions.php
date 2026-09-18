@@ -29,29 +29,8 @@ function theme_config_eclipse()
 
 function eclipse_menu_plugin_active()
 {
-    global $_PLUGINS, $_CONF;
-
-    $active = isset($_PLUGINS) && is_array($_PLUGINS) && in_array('menu', $_PLUGINS, true);
-    if (!$active) {
-        return false;
-    }
-
-    /*
-     * Geeklog's active plugin list does not guarantee that a plugin's
-     * functions.inc has already been loaded at the point where a theme starts
-     * rendering. Eclipse needs Menu's runtime API synchronously in header/footer
-     * templates, so load it explicitly when necessary.
-     */
-    if (!function_exists('MENU_getResolvedTree') && !function_exists('MENU_getMenu')) {
-        $menuFunctions = isset($_CONF['path'])
-            ? rtrim((string) $_CONF['path'], '/\\') . '/plugins/menu/functions.inc'
-            : '';
-        if ($menuFunctions !== '' && is_file($menuFunctions)) {
-            require_once $menuFunctions;
-        }
-    }
-
-    return true;
+    global $_PLUGINS;
+    return isset($_PLUGINS) && is_array($_PLUGINS) && in_array('menu', $_PLUGINS, true);
 }
 
 function eclipse_menu_navigation()
