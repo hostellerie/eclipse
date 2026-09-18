@@ -4,6 +4,82 @@ if (!defined('VERSION')) {
     die('This file can not be used on its own!');
 }
 
+
+/**
+ * Discover Menu instances available to the current Geeklog request context.
+ *
+ * Prefer Geeklog's Plugin Service API so Eclipse does not depend on Menu
+ * globals or database tables. Direct feature-detected fallback keeps Eclipse
+ * compatible with Menu builds that expose the discovery function but not the
+ * service facade yet.
+ *
+ * @return array
+ */
+function eclipse_menu_available_menus()
+{
+    if (!eclipse_menu_plugin_active()) {
+        return array();
+    }
+
+    if (function_exists('PLG_invokeService')) {
+        $output = array();
+        $svcMsg = array();
+        $status = PLG_invokeService('menu', 'getMenuList', array(), $output, $svcMsg);
+        $ok = defined('PLG_RET_OK') ? PLG_RET_OK : 0;
+
+        if ($status === $ok && is_array($output)
+            && isset($output['menus']) && is_array($output['menus'])) {
+            return $output['menus'];
+        }
+    }
+
+    if (function_exists('MENU_getAvailableMenus')) {
+        $menus = MENU_getAvailableMenus();
+        return is_array($menus) ? $menus : array();
+    }
+
+    return array();
+}
+
+/**
+ * Retrieve one permission-filtered Menu tree through the owning plugin.
+ *
+ * @param string $name
+ * @return array
+ */
+function eclipse_menu_resolved_tree($name)
+{
+    $name = trim((string) $name);
+    if ($name === '' || !eclipse_menu_plugin_active()) {
+        return array();
+    }
+
+    if (function_exists('PLG_invokeService')) {
+        $output = array();
+        $svcMsg = array();
+        $status = PLG_invokeService(
+            'menu',
+            'getMenuTree',
+            array('name' => $name),
+            $output,
+            $svcMsg
+        );
+        $ok = defined('PLG_RET_OK') ? PLG_RET_OK : 0;
+
+        if ($status === $ok && is_array($output)
+            && isset($output['nodes']) && is_array($output['nodes'])) {
+            return $output['nodes'];
+        }
+    }
+
+    if (function_exists('MENU_getResolvedTree')) {
+        $tree = MENU_getResolvedTree($name);
+        return is_array($tree) ? $tree : array();
+    }
+
+    return array();
+}
+
 /**
  * Render the Menu plugin navigation using its resolved-tree API when available.
  * Unresolved legacy callback nodes are omitted from the structured rendering
@@ -11,31 +87,92 @@ if (!defined('VERSION')) {
  *
  * @return string
  */
-function eclipse_menu_navigation_resolved()
+function eclipse_menu_slot_name($slot)
 {
-    if (!eclipse_menu_plugin_active()) {
+    $slot = strtolower(trim((string) $slot));
+    $allowed = array('primary', 'secondary', 'footer', 'sidebar');
+    if (!in_array($slot, $allowed, true)) {
         return '';
     }
 
-    if (function_exists('MENU_getResolvedTree')) {
-        $tree = MENU_getResolvedTree('navigation');
-        if (is_array($tree) && !empty($tree)) {
-            $resolvedTree = eclipse_menu_filter_resolved_nodes($tree);
-            if (!empty($resolvedTree)) {
-                return '<div class="eclipse-menu">'
-                    . eclipse_menu_render_tree($resolvedTree, true)
-                    . '</div>';
-            }
+    $options = function_exists('eclipse_theme_options') ? eclipse_theme_options() : array();
+    $key = 'menu_' . $slot;
+    if (array_key_exists($key, $options)) {
+        return trim((string) $options[$key]);
+    }
+
+    return $slot === 'primary' ? 'navigation' : '';
+}
+
+/**
+ * Render any Menu resource with Eclipse-owned markup.
+ *
+ * @param string $name
+ * @param string $context
+ * @return string
+ */
+function eclipse_menu_render($name, $context = 'primary')
+{
+    $name = trim((string) $name);
+    $context = strtolower(trim((string) $context));
+    if ($name === '' || !eclipse_menu_plugin_active()) {
+        return '';
+    }
+
+    if (!in_array($context, array('primary', 'secondary', 'footer', 'sidebar', 'inline'), true)) {
+        $context = 'inline';
+    }
+
+    $tree = eclipse_menu_resolved_tree($name);
+    if (!empty($tree)) {
+        $resolvedTree = eclipse_menu_filter_resolved_nodes($tree);
+        if (!empty($resolvedTree)) {
+            return '<div class="eclipse-menu eclipse-menu-context-' . htmlspecialchars($context, ENT_QUOTES, 'UTF-8') . '" data-menu-name="' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '">'
+                . eclipse_menu_render_tree($resolvedTree, true, $context)
+                . '</div>';
         }
     }
 
     if (function_exists('MENU_getMenu')) {
-        return MENU_getMenu('navigation', 'eclipse-menu', 'eclipse-menu-root',
-            'eclipse-menu-item', 'eclipse-menu-parent', 'eclipse-menu-last',
-            'eclipse-menu-current', 1);
+        return MENU_getMenu(
+            $name,
+            'eclipse-menu eclipse-menu-context-' . $context,
+            'eclipse-menu-root eclipse-menu-root-' . $context,
+            'eclipse-menu-item',
+            'eclipse-menu-parent',
+            'eclipse-menu-last',
+            'eclipse-menu-current',
+            1
+        );
     }
 
     return '';
+}
+
+/**
+ * Render one configured Eclipse navigation slot.
+ *
+ * @param string $slot
+ * @return string
+ */
+function eclipse_menu_render_slot($slot)
+{
+    $name = eclipse_menu_slot_name($slot);
+    if ($name === '') {
+        return '';
+    }
+
+    return eclipse_menu_render($name, $slot);
+}
+
+/**
+ * Backward-compatible primary navigation entry point.
+ *
+ * @return string
+ */
+function eclipse_menu_navigation_resolved()
+{
+    return eclipse_menu_render_slot('primary');
 }
 
 /**
@@ -194,13 +331,14 @@ function eclipse_menu_plain_label($label)
  * @param bool  $root
  * @return string
  */
-function eclipse_menu_render_tree($nodes, $root = false)
+function eclipse_menu_render_tree($nodes, $root = false, $context = 'primary')
 {
     if (!is_array($nodes) || empty($nodes)) {
         return '';
     }
 
-    $html = $root ? '<ul class="eclipse-menu-root">' : '<ul>';
+    $rootClass = 'eclipse-menu-root eclipse-menu-root-' . preg_replace('/[^a-z0-9_-]/', '', strtolower((string) $context));
+    $html = $root ? '<ul class="' . htmlspecialchars($rootClass, ENT_QUOTES, 'UTF-8') . '">' : '<ul>';
     $count = count($nodes);
     $index = 0;
 
@@ -268,7 +406,7 @@ function eclipse_menu_render_tree($nodes, $root = false)
         }
 
         if ($hasChildren) {
-            $html .= eclipse_menu_render_tree($children, false);
+            $html .= eclipse_menu_render_tree($children, false, $context);
         }
 
         $html .= '</li>';
