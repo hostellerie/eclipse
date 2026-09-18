@@ -28,13 +28,25 @@
       </div>
     </div>
   </header>
-<?php if (eclipse_menu_plugin_active()) { ?>
+<?php
+$eclipseMenuInclude = rtrim($_CONF['path_layout'], '/\\') . '/includes/menu-navigation.php';
+if (is_file($eclipseMenuInclude)) {
+    require_once $eclipseMenuInclude;
+}
+$eclipsePrimaryMenu = function_exists('eclipse_menu_render_slot')
+    ? eclipse_menu_render_slot('primary')
+    : '';
+$eclipseSecondaryMenu = function_exists('eclipse_menu_render_slot')
+    ? eclipse_menu_render_slot('secondary')
+    : '';
+?>
+<?php if ($eclipsePrimaryMenu !== '') { ?>
   <div id="navigation" class="navigation_bg eclipse-plugin-menu" role="navigation" aria-label="Main navigation" itemscope="itemscope" itemtype="https://schema.org/SiteNavigationElement">
     <div class="navigation_content">
 <?php if (!empty(eclipse_theme_options()['mobile_menu'])) { ?>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="eclipse-menu-panel"><span aria-hidden="true">&#9776;</span><span>Menu</span></button>
 <?php } ?>
-      <div id="eclipse-menu-panel"><?php echo eclipse_menu_navigation(); ?></div>
+      <div id="eclipse-menu-panel"><?php echo $eclipsePrimaryMenu; ?></div>
     </div>
   </div>
 <?php } else { ?>
@@ -46,6 +58,11 @@
       <ul id="navigation_ul">{menu_elements}</ul>
     </div>
   </nav>
+<?php } ?>
+<?php if ($eclipseSecondaryMenu !== '') { ?>
+  <div class="eclipse-menu-secondary-region" aria-label="Secondary navigation">
+    <div class="navigation_content"><?php echo $eclipseSecondaryMenu; ?></div>
+  </div>
 <?php } ?>
   <div id="wrapper">
     <div id="eclipse-admin-native-source" hidden><?php if (eclipse_is_admin_request() && function_exists('COM_adminMenu')) echo COM_adminMenu(); ?><?php echo eclipse_admin_studio_source(); ?></div>
@@ -64,6 +81,19 @@
   </div>
   <footer id="footer" role="contentinfo" itemscope="itemscope" itemtype="https://schema.org/WPFooter">
     <?php
+    $eclipseMenuInclude = rtrim($_CONF['path_layout'], '/\\') . '/includes/menu-navigation.php';
+    if (is_file($eclipseMenuInclude)) {
+        require_once $eclipseMenuInclude;
+    }
+    $eclipseFooterMenu = function_exists('eclipse_menu_render_slot')
+        ? eclipse_menu_render_slot('footer')
+        : '';
+    if ($eclipseFooterMenu !== '') {
+        echo '<nav class="eclipse-menu-footer-region" aria-label="Footer navigation">'
+            . $eclipseFooterMenu
+            . '</nav>';
+    }
+
     require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
     echo eclipse_footer_render_links_only();
     echo eclipse_footer_render_above_line();
