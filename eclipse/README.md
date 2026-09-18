@@ -8,7 +8,7 @@ Eclipse uses one official archive for both first installation and later updates:
 
 `eclipse-<version>.zip`
 
-The archive contains a root `ECLIPSE_THEME_PACKAGE` marker followed by the complete `eclipse/` theme directory.
+The archive keeps the historical `eclipse/...` layout for permanent compatibility with existing Eclipse uploaders. It contains `eclipse/ECLIPSE_THEME_PACKAGE.txt` as the theme-package marker and `eclipse/admin/install.php` as a guard against accidental submission through Geeklog's plugin uploader.
 
 For a first installation:
 
@@ -18,9 +18,9 @@ For a first installation:
 4. Clear Geeklog's template cache once.
 5. Test the public home page, a full article, login/password recovery and Command and Control.
 
-For later updates, upload that same ZIP from Eclipse Theme Studio. Theme Studio validates the package marker, version and integrity manifest, then installs only the `eclipse/` directory.
+For later updates, upload that same ZIP from Eclipse Theme Studio. Current Theme Studio validates the package marker and integrity manifest, while older Eclipse uploaders remain compatible because every ZIP entry is still under `eclipse/`.
 
-The root marker is intentionally the first ZIP entry. If the archive is accidentally submitted to Geeklog's plugin uploader, Geeklog no longer sees `eclipse/` as the candidate plugin name.
+If the archive is accidentally submitted to Geeklog's plugin uploader, the sentinel `$pi_name` in `eclipse/admin/install.php` prevents Geeklog from treating the theme's `admin/` directory as the administration directory of a plugin named `eclipse`. The incorrect upload may still leave a stray `plugins/eclipse/` directory because that behavior is controlled by Geeklog Core.
 
 ## Requirements
 
