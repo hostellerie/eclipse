@@ -98,6 +98,7 @@ $eclipseForumBodyClass = preg_match('#(?:^|/)forum(?:/|$)#', $eclipseForumPath) 
       <div id="eclipse-menu-panel"><?php echo eclipse_menu_navigation_resolved(); ?></div>
     </div>
   </div>
+<?php echo eclipse_menu_debug_comment(); ?>
 <?php $eclipseSecondaryMenu = eclipse_menu_render_slot('secondary'); if ($eclipseSecondaryMenu !== '') { ?>
   <div class="eclipse-menu-secondary-region" aria-label="Secondary navigation">
     <div class="navigation_content"><?php echo $eclipseSecondaryMenu; ?></div>
