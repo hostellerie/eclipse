@@ -1,14 +1,26 @@
-# Eclipse 1.1.0
+# Eclipse 1.2.0
 
 Eclipse is a modern, mobile-first child theme for Geeklog based on Denim. It supports Geeklog 2.1.1 and 2.2.2 while preserving Geeklog's native permissions, URLs, form processing and plugin hooks.
 
 ## Installation
 
+Eclipse uses one official archive for both first installation and later updates:
+
+`eclipse-<version>.zip`
+
+The archive contains a root `ECLIPSE_THEME_PACKAGE` marker followed by the complete `eclipse/` theme directory.
+
+For a first installation:
+
 1. Keep the `denim` theme installed.
-2. Copy the `eclipse` directory into Geeklog's `layout` directory, or install the versioned Eclipse ZIP through Theme Studio.
+2. Extract or copy the `eclipse/` directory from the official ZIP into Geeklog's `layout` directory.
 3. Select `eclipse` in Geeklog.
-4. Clear Geeklog's template cache once after a first installation.
+4. Clear Geeklog's template cache once.
 5. Test the public home page, a full article, login/password recovery and Command and Control.
+
+For later updates, upload that same ZIP from Eclipse Theme Studio. Theme Studio validates the package marker, version and integrity manifest, then installs only the `eclipse/` directory.
+
+The root marker is intentionally the first ZIP entry. If the archive is accidentally submitted to Geeklog's plugin uploader, Geeklog no longer sees `eclipse/` as the candidate plugin name.
 
 ## Requirements
 
@@ -37,7 +49,7 @@ The Modern workspace uses only links and actions already exposed by Geeklog to t
 
 ## Editorial workflow
 
-Eclipse 1.1.0 includes responsive story/article editor presentation, SEO diagnostics, slug assistance, local draft recovery, focus mode and unsaved-change protection while retaining Geeklog's native editor contracts on supported core versions.
+Eclipse 1.2.0 includes responsive story/article editor presentation, SEO diagnostics, slug assistance, local draft recovery, focus mode and unsaved-change protection while retaining Geeklog's native editor contracts on supported core versions.
 
 ## Compatibility and validation
 
@@ -47,4 +59,4 @@ Development documentation and the complete release QA matrix are maintained in t
 
 ## Version
 
-1.1.0
+1.2.0
