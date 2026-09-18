@@ -291,22 +291,18 @@ function eclipse_footer_render_links_only()
 
 function eclipse_footer_column_one()
 {
-    global $_CONF;
     if (!function_exists('eclipse_footer_data')) return '';
     $data = eclipse_footer_data();
     $value = isset($data['copyright']) ? $data['copyright'] : '';
-    $value = strtr($value, array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    return eclipse_footer_expand_line($value);
 }
 
 function eclipse_footer_column_two()
 {
-    global $_CONF;
     if (!function_exists('eclipse_footer_data')) return '';
     $data = eclipse_footer_data();
     $value = isset($data['legal_notice']) ? $data['legal_notice'] : '';
-    $value = strtr($value, array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    return eclipse_footer_expand_line($value);
 }
 
 function eclipse_footer_column_three()
@@ -357,18 +353,22 @@ function eclipse_footer_controls_studio($html)
     $copyrightPlaceholder = $h(eclipse_footer_default_placeholder(1));
     $legalPlaceholder = $h(eclipse_footer_default_placeholder(2));
     $thirdPlaceholder = $h(eclipse_footer_default_placeholder(3));
+    $autotagHelp = $h(eclipse_lang(
+        'footer_column_autotag_help',
+        'Custom footer columns accept Geeklog autotags. Use any autotag available on this site to insert a link, image, video, media or other dynamic content. Example: [autotag:parameter].'
+    ));
 
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[copyright\]" value="([^"]*)" placeholder="[^"]*">#',
-        function ($match) use ($copyrightPlaceholder, $copyrightToggle) {
-            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="' . $copyrightPlaceholder . '">' . $match[1] . '</textarea>' . $copyrightToggle;
+        function ($match) use ($copyrightPlaceholder, $copyrightToggle, $autotagHelp) {
+            return '<textarea name="eclipse_footer[copyright]" rows="3" maxlength="240" placeholder="' . $copyrightPlaceholder . '">' . $match[1] . '</textarea>' . $copyrightToggle . '<small>' . $autotagHelp . '</small>';
         },
         $html
     );
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[legal_notice\]" value="([^"]*)" placeholder="[^"]*">#',
-        function ($match) use ($legalPlaceholder, $legalToggle) {
-            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="' . $legalPlaceholder . '">' . $match[1] . '</textarea>' . $legalToggle;
+        function ($match) use ($legalPlaceholder, $legalToggle, $autotagHelp) {
+            return '<textarea name="eclipse_footer[legal_notice]" rows="3" maxlength="320" placeholder="' . $legalPlaceholder . '">' . $match[1] . '</textarea>' . $legalToggle . '<small>' . $autotagHelp . '</small>';
         },
         $html
     );
