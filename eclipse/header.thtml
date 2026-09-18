@@ -89,6 +89,14 @@ $eclipseForumBodyClass = preg_match('#(?:^|/)forum(?:/|$)#', $eclipseForumPath) 
     </div>
   </header>
 <?php
+if (function_exists('MENU_debugLog')) {
+    MENU_debugLog(
+        'Eclipse header template reached; layout='
+        . (isset($_CONF['path_layout']) ? (string) $_CONF['path_layout'] : '[unset]')
+        . ', theme_version=' . (function_exists('eclipse_theme_version') ? eclipse_theme_version() : '[unknown]')
+        . '.'
+    );
+}
 $eclipseMenuInclude = rtrim($_CONF['path_layout'], '/\\') . '/includes/menu-navigation.php';
 if (is_file($eclipseMenuInclude)) {
     require_once $eclipseMenuInclude;
