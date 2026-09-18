@@ -158,6 +158,20 @@ $secondaryHtml = eclipse_menu_render('navigation', 'secondary');
 eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-context-secondary') !== false, 'Secondary context class missing');
 eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-root-secondary') !== false, 'Secondary root context class missing');
 
+if (!function_exists('eclipse_theme_options')) {
+    function eclipse_theme_options()
+    {
+        return array(
+            'menu_primary' => '',
+            'menu_secondary' => '',
+            'menu_footer' => '',
+        );
+    }
+}
+eclipse_test_assert(eclipse_menu_slot_name('primary') === 'navigation', 'Empty primary slot must fall back to navigation');
+eclipse_test_assert(eclipse_menu_slot_name('secondary') === '', 'Empty secondary slot must remain disabled');
+eclipse_test_assert(eclipse_menu_slot_name('footer') === '', 'Empty footer slot must remain disabled');
+
 $namedSecondaryHtml = eclipse_menu_render('Menu secondaire été', 'secondary');
 eclipse_test_assert(strpos($namedSecondaryHtml, 'data-menu-name="Menu secondaire été"') !== false, 'Spaced UTF-8 menu name was not preserved for rendering');
 
