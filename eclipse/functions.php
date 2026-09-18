@@ -1008,7 +1008,16 @@ function eclipse_install_uploaded_update($upload)
     if ($zip->open($upload['tmp_name']) !== true) return $fail('The uploaded archive is not a readable ZIP file.');
 
     $packageMarker = 'eclipse/ECLIPSE_THEME_PACKAGE.txt';
-    $markerData = $zip->getFromName($packageMarker);
+    $markerData = false;
+    if (method_exists($zip, 'getFromName')) {
+        $markerData = $zip->getFromName($packageMarker);
+    } elseif (method_exists($zip, 'getStream')) {
+        $markerStream = $zip->getStream($packageMarker);
+        if (is_resource($markerStream)) {
+            $markerData = stream_get_contents($markerStream);
+            fclose($markerStream);
+        }
+    }
     if (!is_string($markerData) || strlen($markerData) > 1024
         || !preg_match('/^package_type=geeklog-theme$/m', $markerData)
         || !preg_match('/^theme=eclipse$/m', $markerData)
