@@ -186,6 +186,10 @@ function eclipse_menu_render($name, $context = 'primary')
  */
 function eclipse_menu_render_slot($slot)
 {
+    if (function_exists('MENU_debugLog')) {
+        MENU_debugLog('Eclipse render slot entered: ' . (string) $slot . '.');
+    }
+
     $name = eclipse_menu_slot_name($slot);
     if ($name === '') {
         if (function_exists('MENU_debugLog')) {
