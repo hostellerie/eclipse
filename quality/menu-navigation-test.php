@@ -2,6 +2,48 @@
 
 define('VERSION', '2.2.2');
 
+
+define('PLG_RET_OK', 0);
+
+$GLOBALS['eclipse_test_service_calls'] = array();
+
+function PLG_invokeService($type, $action, $args, &$output, &$svc_msg)
+{
+    $GLOBALS['eclipse_test_service_calls'][] = $action;
+    $svc_msg = array();
+
+    if ($type !== 'menu') {
+        return -1;
+    }
+
+    if ($action === 'getMenuList') {
+        $output = array(
+            'provider' => 'menu',
+            'provider_family' => 'navigation',
+            'provider_contract_version' => 1,
+            'menus' => array(
+                array('id' => 1, 'name' => 'navigation', 'type' => 1),
+                array('id' => 2, 'name' => 'footer', 'type' => 2),
+            ),
+        );
+        return PLG_RET_OK;
+    }
+
+    if ($action === 'getMenuTree') {
+        $name = isset($args['name']) ? $args['name'] : '';
+        $output = array(
+            'provider' => 'menu',
+            'provider_family' => 'navigation',
+            'name' => $name,
+            'provider_contract_version' => 1,
+            'nodes' => MENU_getResolvedTree($name),
+        );
+        return PLG_RET_OK;
+    }
+
+    return -1;
+}
+
 function eclipse_menu_plugin_active()
 {
     return true;
@@ -91,6 +133,20 @@ function eclipse_test_assert($condition, $message)
     }
 }
 
+$menus = eclipse_menu_available_menus();
+eclipse_test_assert(count($menus) === 2, 'Menu service discovery count mismatch');
+eclipse_test_assert($menus[0]['name'] === 'navigation', 'Primary menu discovery missing');
+eclipse_test_assert($menus[1]['name'] === 'footer', 'Footer menu discovery missing');
+
+$footerHtml = eclipse_menu_render('footer', 'footer');
+eclipse_test_assert(strpos($footerHtml, 'eclipse-menu-context-footer') !== false, 'Footer context class missing');
+eclipse_test_assert(strpos($footerHtml, 'eclipse-menu-root-footer') !== false, 'Footer root context class missing');
+eclipse_test_assert(strpos($footerHtml, 'data-menu-name="footer"') !== false, 'Rendered menu name metadata missing');
+
+$secondaryHtml = eclipse_menu_render('navigation', 'secondary');
+eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-context-secondary') !== false, 'Secondary context class missing');
+eclipse_test_assert(strpos($secondaryHtml, 'eclipse-menu-root-secondary') !== false, 'Secondary root context class missing');
+
 $html = eclipse_menu_navigation_resolved();
 
 eclipse_test_assert(strpos($html, 'class="eclipse-menu"') !== false, 'Eclipse wrapper missing');
@@ -124,10 +180,18 @@ eclipse_test_assert(eclipse_menu_tree_is_resolved(eclipse_test_unresolved_tree()
 $filtered = eclipse_menu_filter_resolved_nodes(MENU_getResolvedTree('navigation'));
 eclipse_test_assert(count($filtered) === 2, 'unresolved top-level node was not filtered');
 
+$headerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
+$footerTemplate = file_get_contents(dirname(__DIR__) . '/eclipse/footer.thtml');
+eclipse_test_assert(strpos($headerTemplate, "eclipse_menu_render_slot('secondary')") !== false, 'Secondary Menu slot is not wired into header');
+eclipse_test_assert(strpos($footerTemplate, "eclipse_menu_render_slot('footer')") !== false, 'Footer Menu slot is not wired into footer');
+
 // Geeklog 2.1.x compiles .thtml files into path_data/layout_cache. __DIR__ in a
 // compiled template therefore points at the cache rather than layout/eclipse.
 $header = file_get_contents(dirname(__DIR__) . '/eclipse/header.thtml');
 eclipse_test_assert(strpos($header, "require_once __DIR__") === false, 'header.thtml must not require theme files through __DIR__');
 eclipse_test_assert(strpos($header, "\$_CONF['path_layout']") !== false, 'header.thtml must use Geeklog path_layout for theme includes');
+
+eclipse_test_assert(in_array('getMenuList', $GLOBALS['eclipse_test_service_calls'], true), 'Eclipse did not use Menu list service');
+eclipse_test_assert(in_array('getMenuTree', $GLOBALS['eclipse_test_service_calls'], true), 'Eclipse did not use Menu tree service');
 
 echo "Eclipse resolved Menu navigation tests passed" . PHP_EOL;
