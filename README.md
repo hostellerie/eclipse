@@ -4,7 +4,7 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 
 ![Eclipse Template](docs/geeklog-eclipse-template-available.png)
 
-> **Release 1.1.0:** supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. Final release testing has been completed successfully on both supported Geeklog lines. Back up the site before installation or update.
+> **Release candidate 1.2.0:** supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. The 1.2 branch adds richer Menu integration, a capability-driven administration dashboard, and safer update/package handling while preserving Classic Eclipse compatibility. Back up the site before installation or update.
 
 ## Highlights
 
@@ -42,7 +42,7 @@ Existing Eclipse installations can upload the release ZIP from **Command and Con
 
 ## Validation and feedback
 
-Eclipse 1.1.0 has completed final manual release testing on Geeklog 2.1.1 and Geeklog 2.2.2 in addition to the repository's automated release-contract checks.
+Eclipse 1.2.0 is in release-candidate preparation. Automated release-contract checks cover PHP syntax, Menu integration contracts, manifest synchronization, runtime package construction, archive layout and size. Final manual smoke testing on Geeklog 2.1.1 and Geeklog 2.2.2 remains required before the stable tag.
 
 For additional site-specific testing, check 360, 768, 1024 and 1440 CSS pixels where possible. The highest-value checks are:
 
