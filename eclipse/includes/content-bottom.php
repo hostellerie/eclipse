@@ -134,8 +134,8 @@ function eclipse_content_bottom_studio($html)
         . '<legend>' . $h(eclipse_lang('content_bottom_title', 'Content below the site content')) . '</legend>'
         . '<p class="eclipse-section-intro">' . $h(eclipse_lang('content_bottom_intro', 'Add text or Geeklog autotags displayed below the main site content and before the right column.')) . '</p>'
         . '<label><span>' . $h(eclipse_lang('content_bottom_content', 'Text or autotag')) . '</span>'
-        . '<textarea name="eclipse_content_bottom[content]" rows="5" maxlength="4000" placeholder="[menu:footer]">' . $h($data['content']) . '</textarea>'
-        . '<small>' . $h(eclipse_lang('content_bottom_help', 'Plain text and Geeklog autotags are accepted. Leave empty to display nothing.')) . '</small></label>'
+        . '<textarea name="eclipse_content_bottom[content]" rows="5" maxlength="4000" placeholder="[autotag:parameter]">' . $h($data['content']) . '</textarea>'
+        . '<small>' . $h(eclipse_lang('content_bottom_help', 'Plain text and any Geeklog autotag available on this site are accepted. Use autotags to insert links, images, videos, media or other dynamic content. Example: [autotag:parameter]. Leave empty to display nothing.')) . '</small></label>'
         . '</fieldset>';
 
     $needle = '<fieldset data-studio-section="footer-links" class="eclipse-footer-editor">';

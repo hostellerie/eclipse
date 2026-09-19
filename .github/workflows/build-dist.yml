@@ -1,13 +1,20 @@
 name: Build installable Eclipse archive
 
 on:
+  push:
+    branches:
+      - develop-1.2.0
+    paths-ignore:
+      - 'dist/**'
+      - 'eclipse/MANIFEST.json'
+      - 'ROADMAP.md'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: eclipse-build-dist-develop-1.1.0
+  group: eclipse-build-dist-develop-1.2.0
   cancel-in-progress: true
 
 jobs:
@@ -18,7 +25,7 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v5
         with:
-          ref: develop-1.1.0
+          ref: develop-1.2.0
           fetch-depth: 0
 
       - name: Build and publish latest archive
@@ -32,8 +39,8 @@ jobs:
           for attempt in 1 2 3 4; do
             echo "Archive publication attempt $attempt"
 
-            git fetch origin develop-1.1.0
-            git reset --hard origin/develop-1.1.0
+            git fetch origin develop-1.2.0
+            git reset --hard origin/develop-1.2.0
             source_head=$(git rev-parse HEAD)
 
             version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
@@ -41,9 +48,23 @@ jobs:
               echo "Unable to read Eclipse version from eclipse/theme.ini" >&2
               exit 1
             fi
+            if [ "$version" != "1.2.0" ]; then
+              echo "Expected Eclipse version 1.2.0 on develop-1.2.0; found $version" >&2
+              exit 1
+            fi
+
+            echo "Linting source PHP files"
+            find eclipse -type f \( -name '*.php' -o -name '*.inc' \) -print0 \
+              | xargs -0 -n1 php -l
+
+            php ./quality/menu-navigation-test.php
 
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
             python3 ./quality/prepare-eclipse-package.py
+
+            echo "Linting packaged PHP files"
+            find .package-stage/eclipse -type f \( -name '*.php' -o -name '*.inc' \) -print0 \
+              | xargs -0 -n1 php -l
 
             build_stamp=$(date -u '+%Y-%m-%d %H:%M UTC')
             printf '%s\n' "$build_stamp" > .package-stage/eclipse/BUILD.txt
@@ -54,13 +75,29 @@ jobs:
 
             rm -rf dist
             mkdir -p dist
+
             (
               cd .package-stage
-              zip -r -9 "../dist/eclipse-$version.zip" eclipse \
+              zip -r -9 "../dist/eclipse-1.2.0.zip" eclipse \
                 -x '*/.DS_Store' '*/Thumbs.db'
             )
 
-            archive="dist/eclipse-$version.zip"
+            archive="dist/eclipse-1.2.0.zip"
+            if unzip -Z1 "$archive" | grep -v '^eclipse/' | grep -q .; then
+              echo "Archive contains entries outside eclipse/ and is not backward compatible." >&2
+              exit 1
+            fi
+            marker_contents=$(unzip -p "$archive" eclipse/ECLIPSE_THEME_PACKAGE.txt)
+            if ! grep -qx 'package_type=geeklog-theme' <<<"$marker_contents" \
+              || ! grep -qx 'theme=eclipse' <<<"$marker_contents" \
+              || ! grep -qx 'format=1' <<<"$marker_contents"; then
+              echo "Eclipse package marker is invalid." >&2
+              exit 1
+            fi
+            if ! unzip -p "$archive" eclipse/admin/install.php | grep -q "\$pi_name='__eclipse_theme_package__'"; then
+              echo "Plugin-upload guard is missing from Eclipse archive." >&2
+              exit 1
+            fi
             archive_size=$(stat -c '%s' "$archive")
             echo "Archive size: $archive_size bytes"
             if [ "$archive_size" -ge 1900000 ]; then
@@ -77,17 +114,17 @@ jobs:
               exit 0
             fi
 
-            git commit -m "Build Eclipse $version installable archive"
+            git commit -m "Build Eclipse 1.2.0 installable archive"
 
-            git fetch origin develop-1.1.0
-            remote_head=$(git rev-parse origin/develop-1.1.0)
+            git fetch origin develop-1.2.0
+            remote_head=$(git rev-parse origin/develop-1.2.0)
             if [ "$remote_head" != "$source_head" ]; then
               echo "Branch advanced from $source_head to $remote_head; rebuilding latest source."
               continue
             fi
 
-            if git push origin HEAD:develop-1.1.0; then
-              echo "Published Eclipse $version archive for $source_head."
+            if git push origin HEAD:develop-1.2.0; then
+              echo "Published Eclipse 1.2.0 archive for $source_head."
               exit 0
             fi
 

@@ -291,22 +291,18 @@ function eclipse_footer_render_links_only()
 
 function eclipse_footer_column_one()
 {
-    global $_CONF;
     if (!function_exists('eclipse_footer_data')) return '';
     $data = eclipse_footer_data();
     $value = isset($data['copyright']) ? $data['copyright'] : '';
-    $value = strtr($value, array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    return eclipse_footer_expand_line($value);
 }
 
 function eclipse_footer_column_two()
 {
-    global $_CONF;
     if (!function_exists('eclipse_footer_data')) return '';
     $data = eclipse_footer_data();
     $value = isset($data['legal_notice']) ? $data['legal_notice'] : '';
-    $value = strtr($value, array('{year}' => date('Y'), '{site_name}' => isset($_CONF['site_name']) ? $_CONF['site_name'] : ''));
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    return eclipse_footer_expand_line($value);
 }
 
 function eclipse_footer_column_three()
@@ -342,7 +338,7 @@ function eclipse_footer_controls_studio($html)
 
     $controlsHtml = '<div class="eclipse-footer-native-controls">'
         . '<div class="eclipse-checks"><label><input type="checkbox" name="eclipse_footer_controls[show_native]" value="1"' . (!empty($controls['show_native']) ? ' checked' : '') . '> ' . $h(eclipse_lang('show_native_footer', 'Display the standard Geeklog footer block')) . '</label></div>'
-        . '<label class="eclipse-footer-above-field"><span>' . $h(eclipse_lang('footer_above_line', 'Line above the footer block')) . '</span><input name="eclipse_footer_controls[above_line]" value="' . $h($controls['above_line']) . '" placeholder="[menu:footer]" maxlength="500"><small>' . $h(eclipse_lang('footer_above_line_help', 'Accepts Geeklog autotags, for example [menu:footer].')) . '</small></label>'
+        . '<label class="eclipse-footer-above-field"><span>' . $h(eclipse_lang('footer_above_line', 'Line above the footer block')) . '</span><input name="eclipse_footer_controls[above_line]" value="' . $h($controls['above_line']) . '" placeholder="[autotag:parameter]" maxlength="500"><small>' . $h(eclipse_lang('footer_above_line_help', 'Use any Geeklog autotag available on this site to insert a link, image, video, media or other dynamic content. Example: [autotag:parameter].')) . '</small></label>'
         . '</div>';
 
     $legalGrid = '<div class="eclipse-field-grid eclipse-footer-legal-fields">';
@@ -357,6 +353,10 @@ function eclipse_footer_controls_studio($html)
     $copyrightPlaceholder = $h(eclipse_footer_default_placeholder(1));
     $legalPlaceholder = $h(eclipse_footer_default_placeholder(2));
     $thirdPlaceholder = $h(eclipse_footer_default_placeholder(3));
+    $autotagHelp = $h(eclipse_lang(
+        'footer_column_autotag_help',
+        'Custom footer columns accept Geeklog autotags. Use any autotag available on this site to insert a link, image, video, media or other dynamic content. Example: [autotag:parameter].'
+    ));
 
     $html = preg_replace_callback(
         '#<input name="eclipse_footer\[copyright\]" value="([^"]*)" placeholder="[^"]*">#',
@@ -373,7 +373,8 @@ function eclipse_footer_controls_studio($html)
         $html
     );
 
-    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $thirdPlaceholder . '">' . $h($controls['third_column']) . '</textarea>' . $thirdToggle . '<small>' . $h(eclipse_lang('footer_custom_empty_help', 'Uncheck the default option and leave this field empty to display an empty column.')) . '</small></label>';
+    $thirdField = '<label><span>' . $h(eclipse_lang('footer_powered_by_geeklog', 'Powered by Geeklog')) . '</span><textarea name="eclipse_footer_controls[third_column]" rows="3" maxlength="500" placeholder="' . $thirdPlaceholder . '">' . $h($controls['third_column']) . '</textarea>' . $thirdToggle . '<small>' . $h(eclipse_lang('footer_custom_empty_help', 'Uncheck the default option and leave this field empty to display an empty column.')) . '</small></label>'
+        . '<p class="eclipse-field-help eclipse-footer-autotag-help"><small>' . $autotagHelp . '</small></p>';
     $needle = '</div><template id="eclipse-footer-link-template">';
     if (strpos($html, $needle) !== false) {
         $html = str_replace($needle, $thirdField . '</div><template id="eclipse-footer-link-template">', $html);
