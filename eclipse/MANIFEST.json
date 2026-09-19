@@ -2,7 +2,7 @@
   "version": "1.2.0",
   "algorithm": "sha256",
   "files": {
-    "ADMIN-UI.md": "90143a0e9457fc404550c491d8ac726e569cd2014b0286f8fc79ed9c150bc9a9",
+    "ADMIN-UI.md": "e6c426d6c3187f3eb52036bbeb1c127d1c2e1b1bae3e00d3a3d51f56ee5e9aef",
     "admin/commandcontrol.thtml": "1a1d9672547aac77c6a647c93d30b45c6734afc6c22da3f0f2702ea47e3706c2",
     "admin/config/config_element_2.thtml": "74874bda497c6714f658b7670287910b8e17a6bb957bd748f18bbb2fe9985647",
     "admin/config/config_element.thtml": "74874bda497c6714f658b7670287910b8e17a6bb957bd748f18bbb2fe9985647",
