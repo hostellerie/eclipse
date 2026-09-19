@@ -220,7 +220,12 @@ function eclipse_admin_discover_dashboard_summaries()
         $status = PLG_invokeService($plugin, 'dashboard_summary', array(), $output, $svcMsg);
         if ($status !== $ok || !is_array($output)) continue;
         if (isset($output['schema']) && (int) $output['schema'] !== 1) continue;
-        if (isset($output['status']) && strtolower((string) $output['status']) !== 'ok') continue;
+
+        $summaryStatus = isset($output['status'])
+            ? strtolower(trim((string) $output['status'])) : 'ok';
+        if (!in_array($summaryStatus, array('ok', 'warning', 'critical'), true)) {
+            $summaryStatus = 'ok';
+        }
 
         $metrics = array();
         if (!empty($output['metrics']) && is_array($output['metrics'])) {
@@ -248,12 +253,27 @@ function eclipse_admin_discover_dashboard_summaries()
         $alerts = array();
         if (!empty($output['alerts']) && is_array($output['alerts'])) {
             foreach ($output['alerts'] as $alert) {
-                if (!is_array($alert) || !isset($alert['label'])) continue;
-                $label = trim(strip_tags((string) $alert['label']));
-                $count = isset($alert['count']) ? max(0, (int) $alert['count']) : 0;
+                if (!is_array($alert)) continue;
+                $label = '';
+                if (isset($alert['label'])) {
+                    $label = trim(strip_tags((string) $alert['label']));
+                } elseif (isset($alert['message'])) {
+                    $label = trim(strip_tags((string) $alert['message']));
+                }
+                $alertStatus = isset($alert['status'])
+                    ? strtolower(trim((string) $alert['status'])) : 'warning';
+                if (!in_array($alertStatus, array('info', 'warning', 'critical'), true)) {
+                    $alertStatus = 'warning';
+                }
+                $count = isset($alert['count']) ? max(0, (int) $alert['count']) : 1;
                 if ($label === '' || $count < 1) continue;
                 $url = !empty($alert['url']) ? eclipse_admin_dashboard_safe_url($alert['url']) : '';
-                $alerts[] = array('label' => $label, 'count' => $count, 'url' => $url);
+                $alerts[] = array(
+                    'label' => $label,
+                    'count' => $count,
+                    'url' => $url,
+                    'status' => $alertStatus
+                );
             }
         }
 
@@ -261,6 +281,7 @@ function eclipse_admin_discover_dashboard_summaries()
             $providerLabel = !empty($links[0]['label']) ? $links[0]['label'] : ucfirst($plugin);
             $summaries[$plugin] = array(
                 'label' => $providerLabel,
+                'status' => $summaryStatus,
                 'metrics' => $metrics,
                 'alerts' => $alerts,
                 'links' => $links,
@@ -320,7 +341,8 @@ function eclipse_admin_dashboard_summary_attention($summaries)
                     'label' => (!empty($summary['label']) ? $summary['label'] : ucfirst((string) $plugin)) . ' — ' . $alert['label'],
                     'count' => (int) $alert['count'],
                     'url' => !empty($alert['url']) ? $alert['url'] : $defaultUrl,
-                    'draft' => false
+                    'draft' => false,
+                    'status' => isset($alert['status']) ? $alert['status'] : 'warning'
                 );
             }
         }
@@ -546,7 +568,7 @@ function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments, $pl
 
     $script = '<script>(function(){var data=' . $json . ';'
         . 'function badge(n){var s=document.createElement("span");s.className="eclipse-attention-count";s.textContent=String(n);return s;}'
-        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(Array.isArray(data.pluginAttention))data.pluginAttention.forEach(function(e){if(e&&e.count>0)entries.push({label:e.label,count:e.count,url:e.url||data.pluginsUrl,draft:!!e.draft});});if(data.pluginUpgrades>0)entries.push({label:data.pluginUpgradeLabel,count:data.pluginUpgrades,url:data.pluginsUrl});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);if(data.pluginUpgrades>0&&data.managePluginUpgrades)ensure(/\/plugins\.php(?:[?#]|$)/i,data.managePluginUpgrades,data.pluginsUrl,data.pluginUpgrades,true);return true;}'
+        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(Array.isArray(data.pluginAttention))data.pluginAttention.forEach(function(e){if(e&&e.count>0)entries.push({label:e.label,count:e.count,url:e.url||data.pluginsUrl,draft:!!e.draft,status:e.status||"warning"});});if(data.pluginUpgrades>0)entries.push({label:data.pluginUpgradeLabel,count:data.pluginUpgrades,url:data.pluginsUrl});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);if(data.pluginUpgrades>0&&data.managePluginUpgrades)ensure(/\/plugins\.php(?:[?#]|$)/i,data.managePluginUpgrades,data.pluginsUrl,data.pluginUpgrades,true);return true;}'
         . 'function setupModules(){var key="eclipse-dashboard-collapsed-v1",saved=[];try{saved=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(saved))saved=[];}catch(e){saved=[];}function save(){try{localStorage.setItem(key,JSON.stringify(saved));}catch(e){}}Array.prototype.forEach.call(document.querySelectorAll("[data-eclipse-module]"),function(module){var id=module.getAttribute("data-eclipse-module");var button=module.querySelector(".eclipse-dashboard-toggle");if(!button)return;function apply(collapsed){module.classList.toggle("is-collapsed",collapsed);button.setAttribute("aria-expanded",collapsed?"false":"true");button.setAttribute("title",collapsed?data.labels.expand:data.labels.collapse);var icon=button.querySelector("span");if(icon)icon.textContent=collapsed?"+":"−";}apply(saved.indexOf(id)!==-1);button.addEventListener("click",function(){var collapsed=!module.classList.contains("is-collapsed");apply(collapsed);var index=saved.indexOf(id);if(collapsed&&index===-1)saved.push(id);if(!collapsed&&index!==-1)saved.splice(index,1);save();});});function revealHash(){if(!location.hash)return;var target=document.querySelector(location.hash);if(target&&target.hasAttribute("data-eclipse-module")&&target.classList.contains("is-collapsed")){var b=target.querySelector(".eclipse-dashboard-toggle");if(b)b.click();}}window.addEventListener("hashchange",revealHash);revealHash();}'
         . 'function boot(){setupModules();if(!enhanceOverview()){var observer=new MutationObserver(function(){if(enhanceOverview())observer.disconnect();});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect();enhanceOverview();},3000);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();}());</script>';
 
