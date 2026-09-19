@@ -56,3 +56,17 @@ Implementation status: structured renderer introduced on `main`; staging validat
 - Supported Geeklog/browser matrix, migration guide and rollback documentation.
 
 Implementation status: release-candidate work started in 1.0.0-rc1. Static accessibility contracts, legacy editor keyboard controls, current-page semantics, reduced motion and forced colors are covered; staging WCAG, zoom, visual regression, performance and compatibility sign-off remain.
+
+
+## 1.2 — interoperability and release hardening
+
+- Consume provider-declared `dashboard.summary` capabilities generically in the Modern workspace dashboard.
+- Prefer structured provider metrics over duplicate legacy plugin statistics while keeping legacy statistics as a compatibility fallback.
+- Surface provider alerts and conventional pending/draft work in **Needs attention** without querying plugin-private tables.
+- Use Documents 1.2 and Videos 0.20 as reference dashboard providers while keeping Eclipse provider-neutral.
+- Support independent Menu plugin slots for primary, secondary, footer and sidebar navigation.
+- Keep public secondary navigation out of administration pages while preserving primary navigation for Classic Eclipse.
+- Harden Theme Studio update packaging and Geeklog 2.1.x ZIP compatibility.
+- Keep release archive construction, manifest synchronization and package validation automated on `develop-1.2.0`.
+
+Implementation status: feature work is integrated on `develop-1.2.0`. Automated branch package builds are passing. Final PR review and manual Geeklog 2.1.1 / 2.2.2 release smoke tests remain before the stable `v1.2.0` tag.
