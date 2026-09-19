@@ -229,7 +229,7 @@ function eclipse_admin_discover_dashboard_summaries()
                 $id = strtolower(trim((string) $metric['id']));
                 $label = trim(strip_tags((string) $metric['label']));
                 $value = $metric['value'];
-                if ($id === '' || $label === '' || (!is_scalar($value) && $value !== null)) continue;
+                if ($id === '' || $label === '' || $value === null || !is_scalar($value)) continue;
                 $metrics[] = array('id' => $id, 'label' => $label, 'value' => $value);
             }
         }
@@ -258,7 +258,9 @@ function eclipse_admin_discover_dashboard_summaries()
         }
 
         if ($metrics || $alerts || $links) {
+            $providerLabel = !empty($links[0]['label']) ? $links[0]['label'] : ucfirst($plugin);
             $summaries[$plugin] = array(
+                'label' => $providerLabel,
                 'metrics' => $metrics,
                 'alerts' => $alerts,
                 'links' => $links,
@@ -282,7 +284,7 @@ function eclipse_admin_dashboard_summary_stats($summaries, $fallbackRows)
             $url = !empty($summary['links'][0]['url']) ? $summary['links'][0]['url'] : '';
             foreach ($summary['metrics'] as $metric) {
                 $rows[] = array(
-                    'plugin' => (string) $plugin,
+                    'plugin' => !empty($summary['label']) ? $summary['label'] : (string) $plugin,
                     'label' => $metric['label'],
                     'value' => $metric['value'],
                     'url' => $url
@@ -315,7 +317,7 @@ function eclipse_admin_dashboard_summary_attention($summaries)
             foreach ($summary['alerts'] as $alert) {
                 if (empty($alert['count'])) continue;
                 $entries[] = array(
-                    'label' => ucfirst((string) $plugin) . ' — ' . $alert['label'],
+                    'label' => (!empty($summary['label']) ? $summary['label'] : ucfirst((string) $plugin)) . ' — ' . $alert['label'],
                     'count' => (int) $alert['count'],
                     'url' => !empty($alert['url']) ? $alert['url'] : $defaultUrl,
                     'draft' => false
@@ -329,7 +331,7 @@ function eclipse_admin_dashboard_summary_attention($summaries)
             $count = max(0, (int) $metric['value']);
             if ($count < 1) continue;
             $entries[] = array(
-                'label' => ucfirst((string) $plugin) . ' — ' . $metric['label'],
+                'label' => (!empty($summary['label']) ? $summary['label'] : ucfirst((string) $plugin)) . ' — ' . $metric['label'],
                 'count' => $count,
                 'url' => $defaultUrl,
                 'draft' => $metric['id'] === 'drafts'
