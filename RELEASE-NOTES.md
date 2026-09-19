@@ -6,86 +6,83 @@ Sites that already installed an **early Eclipse 1.2.0** package on **Geeklog 2.1
 
 Current packages prevent recurrence by detecting `getFromName()` before use and falling back to `getStream()`, while retaining atomic theme-directory replacement.
 
-# Eclipse 1.1.0
+# Eclipse 1.2.0
 
-Eclipse 1.1.0 is a major refinement of the modern, responsive Denim child theme for Geeklog. It keeps Geeklog's native permissions, URLs, form processing and plugin hooks while improving the public theme, administration workspace, editorial workflow and compatibility across Geeklog 2.1.1 and 2.2.2.
+Eclipse 1.2.0 advances the theme from a modern Denim child theme into a more interoperable Geeklog administration and presentation layer while preserving the Geeklog 2.1.1 to 2.2.2 transition range and PHP 5.6 parsing baseline.
 
 ## Highlights
 
-- Modern administration workspace built from links already rendered by Geeklog for the current user.
-- Classic Eclipse administration mode retained as a fallback.
-- Responsive administration dashboard, navigation, lists, filters and configuration pages.
-- Improved Geeklog 2.1.1 and 2.2.2 compatibility layers without replacing core permissions or workflows.
-- Dedicated article/story editor presentation with responsive sidebars and SEO assistance.
-- Local draft recovery, slug assistance, focus mode and unsaved-change protection.
-- Theme Studio with persistent protected JSON storage, live preview, palettes, import/export, history and rollback.
-- Safer local ZIP updates with integrity validation, automatic backup and targeted cache clearing.
-- Improved responsive public layout, navigation, footer controls and plugin presentation.
-- Accessible focus states, keyboard navigation, reduced-motion support and high-contrast safeguards.
-- Optional article sharing without loading third-party scripts before activation.
-- Geeklog 2.2.2 email footer compatibility while preserving Geeklog 2.1.1's native mail behavior.
-- Forum presentation and SEO helpers integrated at theme level.
+- Generic capability-driven administration dashboard integration through plugin-declared `dashboard.summary` services.
+- Structured provider metrics, management links and operational alerts from modernized plugins such as Documents and Videos.
+- Provider `pending` and `drafts` metrics can surface in **Needs attention** without Eclipse querying plugin-private tables.
+- Legacy Geeklog plugin statistics remain available as a fallback and are suppressed for a provider when structured dashboard metrics are present, avoiding duplicate presentation.
+- Menu plugin integration now supports independently configured primary, secondary, footer and sidebar navigation slots.
+- Secondary public navigation is excluded from administration pages while the primary menu remains available for Classic Eclipse administration.
+- Continued Modern workspace and Classic Eclipse administration modes.
+- Safer Theme Studio update handling, including Geeklog 2.1.x ZIP compatibility and exact theme-directory replacement.
+- Versioned installable archive remains compatible with both first installation and Theme Studio updates.
+- Repository-level roadmap and automated release/package validation refined for the 1.2 cycle.
+
+## Dashboard interoperability
+
+Eclipse remains a presentation consumer. It does not query Documents, Videos or other plugin-private tables.
+
+For active plugins that declare:
+
+```text
+dashboard.summary
+```
+
+Eclipse invokes the provider-owned `dashboard_summary` service and consumes bounded `metrics`, `alerts`, `links`, `status` and `updated` data. Invalid, unauthorized or unavailable providers are ignored without breaking the complete dashboard.
+
+Current reference providers include Documents 1.2 and Videos 0.20. Other plugins can integrate with the same dashboard without Eclipse-specific SQL or provider adapters by implementing the shared capability contract documented in the Geeklog memorandum.
+
+## Menu integration
+
+Eclipse keeps Menu plugin data and permissions provider-owned while rendering the navigation presentation.
+
+The theme supports independent primary, secondary, footer and sidebar slots. The public secondary menu is not rendered on administration pages. Classic Eclipse retains the primary navigation behavior expected by the traditional administration shell.
+
+## Update compatibility
+
+The official archive remains:
+
+`eclipse-1.2.0.zip`
+
+The package preserves the historical `eclipse/...` archive layout, contains the theme-package marker and plugin-upload guard, and is validated against the committed integrity manifest.
+
+The Theme Studio updater preserves the existing safety backup and rollback workflow. Current packages also detect whether the installed ZIP API provides `getFromName()` and fall back to the older `getStream()` path required by some Geeklog 2.1.x environments.
+
+See the compatibility note above for sites that installed an early 1.2.0 package before that compatibility fix.
 
 ## Compatibility
 
-Eclipse 1.1.0 declares:
+Eclipse 1.2.0 declares:
 
-- Geeklog 2.1.1 or later.
-- PHP 5.6.0 or later, with PHP 5.6 retained as the parsing compatibility baseline.
-- Denim installed as the parent compatibility theme.
+- Geeklog 2.1.1 or later;
+- PHP 5.6.0 or later as the parsing compatibility baseline;
+- Denim installed as the parent compatibility theme;
 - `ZipArchive` only when Theme Studio's local update installer is used.
 
-Production installations should use a currently maintained PHP version supported by the selected Geeklog release and hosting environment.
-
-See `eclipse/COMPATIBILITY.md` for the detailed compatibility matrix and `eclipse/QA-CHECKLIST.md` for the final release checks.
+Production sites should use a currently maintained PHP version supported by the selected Geeklog release and hosting environment.
 
 ## Release validation
 
-Final manual release testing has been completed successfully on both supported Geeklog lines:
+The release branch automatically:
 
-- Geeklog 2.1.1;
-- Geeklog 2.2.2.
+- lints source and packaged PHP files;
+- runs the Menu navigation contract test;
+- rebuilds and verifies `eclipse/MANIFEST.json`;
+- constructs the runtime-only package;
+- verifies that every archive entry remains under `eclipse/`;
+- checks the theme package marker and plugin-upload guard;
+- enforces the release archive size budget.
 
-The repository's automated release-contract checks also pass on the release branch. This includes manifest verification, runtime package construction, version checks and release archive validation.
-
-The email-footer enhancement tracked in issue #1 is included in this release. Geeklog 2.2.2 uses the Eclipse footer templates, while Geeklog 2.1.1 keeps its native mail path unchanged.
-
-## Administration
-
-The Modern workspace progressively enhances Geeklog's own permission-filtered administration navigation instead of hardcoding destinations. If enhancement cannot initialize, the native interface remains available.
-
-Eclipse 1.1.0 also adds or refines:
-
-- responsive sidebar and mobile administration navigation;
-- permission-aware dashboard modules and quick actions;
-- compact table controls, saved filters and column visibility;
-- improved Configuration Manager presentation while retaining native behavior;
-- Geeklog 2.2.2 article editor compatibility;
-- Geeklog 2.1.1 story editor compatibility;
-- plugin administration styling scoped to Eclipse administration pages.
-
-## Theme Studio and storage
-
-Theme Studio stores settings, footer links, palettes and history in protected JSON documents under the multisite-safe sibling directory `{path_data}-eclipse/`.
-
-The update workflow includes:
-
-- integrity manifest validation;
-- safety backups;
-- rollback support;
-- import/export;
-- migration from legacy Eclipse storage sources;
-- targeted Eclipse cache invalidation rather than global Geeklog cache clearing.
-
-## Public theme and accessibility
-
-The release improves responsive layouts, navigation, forms, article metadata, pagination, footer controls and plugin presentation across desktop, tablet and mobile widths.
-
-Accessibility work includes visible focus states, keyboard-operable navigation, skip-link support, reduced-motion handling, forced-colors/high-contrast safeguards and preservation of semantic attributes supplied by Geeklog.
+Before creating the stable `v1.2.0` tag, complete the manual smoke-test matrix on Geeklog 2.1.1 and Geeklog 2.2.2, including public navigation, Modern and Classic administration, Theme Studio update/rollback, Documents/Videos dashboard integration and the supported PHP combinations.
 
 ## Installation and update
 
-Use the versioned `eclipse-1.1.0.zip` asset published with the GitHub release. Do not use GitHub's automatic source archive as the install package.
+Use the versioned `eclipse-1.2.0.zip` asset published with the GitHub release. Do not use GitHub's automatic source archive as the install package.
 
 Before updating:
 
@@ -96,4 +93,4 @@ Before updating:
 5. Clear the Geeklog template cache once after a first installation.
 6. Run the smoke tests from `eclipse/QA-CHECKLIST.md`.
 
-A stable `v1.1.0` tag must point at the reviewed `main` branch state after the 1.1.0 pull request has been merged.
+A stable `v1.2.0` tag should point at the reviewed `main` branch state after the 1.2.0 pull request has been merged.
