@@ -59,7 +59,7 @@ $eclipseSecondaryMenu = function_exists('eclipse_menu_render_slot')
     </div>
   </nav>
 <?php } ?>
-<?php if ($eclipseSecondaryMenu !== '') { ?>
+<?php if (!eclipse_is_admin_request() && $eclipseSecondaryMenu !== '') { ?>
   <div class="eclipse-menu-secondary-region" aria-label="Secondary navigation">
     <div class="navigation_content"><?php echo $eclipseSecondaryMenu; ?></div>
   </div>
