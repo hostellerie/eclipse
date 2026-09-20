@@ -105,8 +105,21 @@ if ($themeBytes -gt 950000) {
     Fail "Installable theme budget exceeded for 1.2.0: $themeBytes bytes (maximum 950000)."
 }
 
+# Static Pages editor compatibility: Geeklog 2.1.1 does not expose the
+# per-page Search control added in later Static Pages versions. Eclipse keeps
+# the newer editor markup but must render Search only when the provider supplies
+# search_options. Likes already follows the same capability-style guard.
+$staticEditor = Get-Content -Raw -LiteralPath (Join-Path $theme 'staticpages/admin/editor.thtml')
+$staticAdvancedEditor = Get-Content -Raw -LiteralPath (Join-Path $theme 'staticpages/admin/editor_advanced.thtml')
+if ($staticEditor -notmatch '\{!if search_options\}.*?name="search".*?\{!endif\}') {
+    Fail 'Static Pages basic editor does not guard the newer Search control for Geeklog 2.1.1.'
+}
+if ($staticAdvancedEditor -notmatch '\{!if search_options\}.*?name="search".*?\{!endif\}') {
+    Fail 'Static Pages advanced editor does not guard the newer Search control for Geeklog 2.1.1.'
+}
+
 # Configuration Manager intentionally follows native Denim layout/behavior in
-# 1.1.0. Do not require the removed custom tab/select geometry fallbacks.
+# 1.2.0. Do not require the removed custom tab/select geometry fallbacks.
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
 $uiFixes = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/ui-fixes.css')
 if ($functions -match "name'\s*=>\s*'eclipse-configuration'" -or
