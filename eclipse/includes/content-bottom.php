@@ -108,6 +108,13 @@ function eclipse_content_bottom_handle_post($studioHtml)
 
 function eclipse_content_bottom_render()
 {
+    // This region belongs to the public site layout only. The same footer
+    // template is also used by Geeklog administration pages, so explicitly
+    // suppress the custom content there.
+    if (function_exists('eclipse_is_admin_request') && eclipse_is_admin_request()) {
+        return '';
+    }
+
     $data = eclipse_content_bottom_read();
     $output = '';
 
