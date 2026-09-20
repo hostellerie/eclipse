@@ -253,7 +253,7 @@ function theme_init_eclipse()
     $_BLOCK_TEMPLATE['configmanager_subblock'] = 'blockheader-config.thtml,blockfooter-config.thtml';
     $_BLOCK_TEMPLATE['whats_related_block'] = 'blockheader-related.thtml,blockfooter-related.thtml';
     $_BLOCK_TEMPLATE['story_options_block'] = 'blockheader-related.thtml,blockfooter-related.thtml';
-    $_BLOCK_TEMPLATE['admin_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';
+    $_BLOCK_TEMPLATE['_admin_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';
     $_BLOCK_TEMPLATE['section_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';
     // Geeklog 2.2 introduced a separate wrapper for administration lists.
     // Do not register it on 2.1.1: its Denim fallback has no corresponding template.
