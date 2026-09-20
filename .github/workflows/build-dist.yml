@@ -60,6 +60,7 @@ jobs:
             php ./quality/menu-navigation-test.php
 
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
+            pwsh ./quality/validate-eclipse-release.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath "$(command -v node)"
             python3 ./quality/prepare-eclipse-package.py
 
             echo "Linting packaged PHP files"
