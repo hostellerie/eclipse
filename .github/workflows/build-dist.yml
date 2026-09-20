@@ -102,6 +102,16 @@ jobs:
               echo "Plugin-upload guard is missing from Eclipse archive." >&2
               exit 1
             fi
+
+            functions_php=$(unzip -p "$archive" eclipse/functions.php)
+            if ! grep -Fq "\$_BLOCK_TEMPLATE['admin_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';" <<<"$functions_php"; then
+              echo "Expected legacy admin_block mapping is missing from Eclipse archive." >&2
+              exit 1
+            fi
+            if grep -Fq "\$_BLOCK_TEMPLATE['_admin_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';" <<<"$functions_php"; then
+              echo "Invalid _admin_block override detected in Eclipse archive." >&2
+              exit 1
+            fi
             archive_size=$(stat -c '%s' "$archive")
             echo "Archive size: $archive_size bytes"
             if [ "$archive_size" -ge 1900000 ]; then
