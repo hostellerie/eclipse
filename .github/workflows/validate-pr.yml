@@ -1,14 +1,15 @@
 name: Validate Eclipse pull request
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - develop-1.2.0
     paths:
       - 'eclipse/**'
       - '!eclipse/MANIFEST.json'
       - 'quality/**'
       - '.github/workflows/validate-pr.yml'
+      - '.github/workflows/build-dist.yml'
       - 'RELEASE-NOTES.md'
       - 'README.md'
   workflow_dispatch:
