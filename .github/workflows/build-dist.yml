@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: eclipse-build-dist-develop-1.2.0
@@ -125,7 +126,10 @@ jobs:
             fi
 
             if git push origin HEAD:develop-1.2.0; then
-              echo "Published Eclipse 1.2.0 archive for $source_head."
+              published_head=$(git rev-parse HEAD)
+              echo "Published Eclipse 1.2.0 archive for $source_head as $published_head."
+              echo "Dispatching release validation for generated branch head."
+              gh workflow run validate-pr.yml --ref develop-1.2.0
               exit 0
             fi
 
