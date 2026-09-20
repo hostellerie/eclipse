@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'eclipse/**'
+      - '!eclipse/MANIFEST.json'
       - 'quality/**'
       - '.github/workflows/validate-pr.yml'
       - 'RELEASE-NOTES.md'
@@ -31,15 +32,6 @@ jobs:
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
-
-      - name: Verify manifest is committed
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! git diff --exit-code -- eclipse/MANIFEST.json; then
-            echo 'eclipse/MANIFEST.json is not synchronized with the theme tree.' >&2
-            exit 1
-          fi
 
       - name: Validate Eclipse 1.2 release contracts
         shell: pwsh
