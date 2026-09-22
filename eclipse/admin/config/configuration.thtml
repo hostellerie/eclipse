@@ -48,6 +48,17 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     gap: .5rem !important;
     min-width: 0;
 }
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field[id],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name[id] {
+    scroll-margin-top: 7rem;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-target {
+    background: color-mix(in srgb, var(--eclipse-primary) 10%, var(--eclipse-surface)) !important;
+    border-color: color-mix(in srgb, var(--eclipse-primary) 68%, var(--eclipse-border)) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--eclipse-primary) 18%, transparent), 0 8px 24px rgba(15, 23, 42, .08) !important;
+    transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field,
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name {
     float: none !important;
