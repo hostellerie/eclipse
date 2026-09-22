@@ -118,6 +118,21 @@ if ($staticAdvancedEditor -notmatch '\{!if search_options\}.*?name="search".*?\{
     Fail 'Static Pages advanced editor does not guard the newer Search control for Geeklog 2.1.1.'
 }
 
+# Configuration search result targeting is an Eclipse 1.2 usability contract.
+# Geeklog supplies URLs such as ?tab-20#advanced_editor; Eclipse must turn the
+# stable parameter hash into a real row anchor, scroll to it and highlight it.
+$adminJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/admin.js')
+$configTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'admin/config/configuration.thtml')
+if ($adminJs -notmatch 'name\$="\[nameholder\]"' -or
+    $adminJs -notmatch 'scrollIntoView' -or
+    $adminJs -notmatch 'eclipse-config-target') {
+    Fail 'Configuration search result targeting contract is incomplete.'
+}
+if ($configTemplate -notmatch 'eclipse-config-target' -or
+    $configTemplate -notmatch 'scroll-margin-top') {
+    Fail 'Configuration search target highlighting styles are missing.'
+}
+
 # Configuration Manager intentionally follows native Denim layout/behavior in
 # 1.2.0. Do not require the removed custom tab/select geometry fallbacks.
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
