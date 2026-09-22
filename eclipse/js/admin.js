@@ -1,5 +1,113 @@
 (function () {
     'use strict';
+
+    if (!document.body || !document.body.classList.contains('eclipse-admin-configuration')) return;
+
+    var targetTimer = null;
+    var retryTimers = [];
+
+    function configRows() {
+        return Array.prototype.slice.call(document.querySelectorAll(
+            '#config_content input[type="hidden"][name$="[nameholder]"]'
+        ));
+    }
+
+    function rowForHolder(holder) {
+        var node = holder ? holder.parentNode : null;
+        while (node && node !== document.body) {
+            if ((' ' + (node.className || '') + ' ').indexOf(' config_name ') !== -1 ||
+                (' ' + (node.className || '') + ' ').indexOf(' eclipse-config-field ') !== -1) {
+                return node;
+            }
+            node = node.parentNode;
+        }
+        return null;
+    }
+
+    function parameterName(holder) {
+        var name = holder && holder.getAttribute ? holder.getAttribute('name') : '';
+        var suffix = '[nameholder]';
+        if (!name || name.slice(-suffix.length) !== suffix) return '';
+        return name.slice(0, -suffix.length);
+    }
+
+    function prepareAnchors() {
+        configRows().forEach(function (holder) {
+            var name = parameterName(holder);
+            var row = rowForHolder(holder);
+            if (!name || !row || row.id) return;
+            if (/^[A-Za-z0-9_.:-]+$/.test(name)) row.id = name;
+        });
+    }
+
+    function currentTargetName() {
+        var hash = window.location.hash ? window.location.hash.slice(1) : '';
+        if (!hash) return '';
+        try { return decodeURIComponent(hash); } catch (ignore) { return hash; }
+    }
+
+    function findTargetRow(name) {
+        if (!name) return null;
+
+        var byId = document.getElementById(name);
+        if (byId && ((' ' + (byId.className || '') + ' ').indexOf(' config_name ') !== -1 ||
+            (' ' + (byId.className || '') + ' ').indexOf(' eclipse-config-field ') !== -1)) {
+            return byId;
+        }
+
+        var holders = configRows();
+        for (var i = 0; i < holders.length; i += 1) {
+            if (parameterName(holders[i]) === name) return rowForHolder(holders[i]);
+        }
+        return null;
+    }
+
+    function clearTarget() {
+        Array.prototype.slice.call(document.querySelectorAll('.eclipse-config-target')).forEach(function (row) {
+            row.classList.remove('eclipse-config-target');
+        });
+    }
+
+    function revealTarget() {
+        prepareAnchors();
+
+        var name = currentTargetName();
+        var row = findTargetRow(name);
+        if (!row) return false;
+
+        clearTarget();
+        row.classList.add('eclipse-config-target');
+
+        if (targetTimer) window.clearTimeout(targetTimer);
+        targetTimer = window.setTimeout(function () {
+            row.classList.remove('eclipse-config-target');
+        }, 5000);
+
+        if (row.scrollIntoView) {
+            try {
+                row.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            } catch (ignore) {
+                row.scrollIntoView(true);
+            }
+        }
+
+        return true;
+    }
+
+    function scheduleReveal() {
+        retryTimers.forEach(function (timer) { window.clearTimeout(timer); });
+        retryTimers = [0, 120, 350].map(function (delay) {
+            return window.setTimeout(revealTarget, delay);
+        });
+    }
+
+    prepareAnchors();
+    scheduleReveal();
+    window.addEventListener('hashchange', scheduleReveal);
+}());
+
+(function () {
+    'use strict';
     if (!document.body.classList.contains('admin-ui-mode-modern')) return;
     var main = document.getElementById('main-content');
     var wrapper = document.getElementById('wrapper');
