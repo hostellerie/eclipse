@@ -111,6 +111,7 @@ body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul>li.ui-ta
 body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>.ui-tabs-panel{clear:both;padding:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel{min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel fieldset{margin:0 0 1rem;padding:1rem 1.1rem 1.1rem;border:1px solid var(--eclipse-border);border-radius:.65rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel .inputTable{display:grid;row-gap:.5rem;min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel legend{margin-left:.15rem;padding:0 .4rem;color:var(--eclipse-text);font-weight:800}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes{margin:0 0 1rem;padding:1rem 1.1rem;background:color-mix(in srgb,var(--eclipse-secondary) 5%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-radius:.65rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes h4{margin:0 0 .35rem;color:var(--eclipse-text);font-size:1rem}
