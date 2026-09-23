@@ -45,7 +45,7 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-p
 /* Geeklog 2.1.x may use either Eclipse's config_element override or legacy Denim markup. */
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields {
     display: grid !important;
-    gap: .42rem !important;
+    gap: .5rem !important;
     min-width: 0;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field[id],
