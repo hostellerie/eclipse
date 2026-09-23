@@ -13,3 +13,25 @@ body.theme-eclipse select option{color:var(--eclipse-text);background:var(--ecli
 /* Configuration tabs: keep labels compact while preserving a comfortable target. */
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_content #tabs>ul>li>a{min-height:2.15rem!important;padding:.35rem .58rem!important;line-height:1.25!important}
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_content #tabs>ul{gap:.28rem!important;padding:.32rem .38rem 0!important}
+
+
+/* User settings: preserve Geeklog's native profile editor behavior while
+   presenting #navlist as a clear Eclipse tab bar. */
+body.theme-eclipse.eclipse-user-settings #pe_navbar{margin:0 0 1rem;padding:0;border-bottom:1px solid var(--eclipse-border)}
+body.theme-eclipse.eclipse-user-settings #pe_navbar #navlist{display:flex;align-items:flex-end;flex-wrap:wrap;gap:.35rem;margin:0;padding:.45rem .5rem 0;background:color-mix(in srgb,var(--eclipse-primary) 4%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-bottom:0;border-radius:.7rem .7rem 0 0;list-style:none}
+body.theme-eclipse.eclipse-user-settings #pe_navbar #navlist::before,body.theme-eclipse.eclipse-user-settings #pe_navbar #navlist::after{display:none;content:none}
+body.theme-eclipse.eclipse-user-settings #pe_navbar .li-navlist{float:none;display:block;width:auto;height:auto;margin:0;padding:0}
+body.theme-eclipse.eclipse-user-settings #pe_navbar .a-navlist{display:flex;align-items:center;width:auto;height:auto;min-height:2.55rem;margin:0;padding:.5rem .85rem;color:var(--eclipse-link);background:var(--eclipse-surface);border:1px solid var(--eclipse-border);border-bottom-color:transparent;border-radius:.5rem .5rem 0 0;font-size:.82rem;font-weight:700;line-height:1.25;text-decoration:none;white-space:nowrap}
+body.theme-eclipse.eclipse-user-settings #pe_navbar .a-navlist:hover,body.theme-eclipse.eclipse-user-settings #pe_navbar .a-navlist:focus-visible{color:var(--eclipse-primary);background:color-mix(in srgb,var(--eclipse-primary) 8%,var(--eclipse-surface));outline:0}
+body.theme-eclipse.eclipse-user-settings #pe_navbar .a-navlist#current{position:relative;top:1px;height:auto;margin:0;padding-top:.5rem;color:#fff;background:var(--eclipse-primary);border-color:var(--eclipse-primary);border-bottom-color:var(--eclipse-primary);box-shadow:0 -2px 0 color-mix(in srgb,var(--eclipse-primary) 65%,#000)}
+body.theme-eclipse.eclipse-user-settings #profile>div[id^=pe_]:not(#pe_preview){padding:1rem;background:var(--eclipse-surface);border:1px solid var(--eclipse-border);border-radius:0 0 .7rem .7rem}
+body.theme-eclipse.eclipse-user-settings #profile #save_button{display:flex;justify-content:flex-end;gap:.55rem;margin:1rem 0 0;padding:.7rem .85rem;background:color-mix(in srgb,var(--eclipse-surface) 95%,transparent);border:1px solid var(--eclipse-border);border-radius:.6rem}
+@media(max-width:47.99rem){
+body.theme-eclipse.eclipse-user-settings #pe_navbar{overflow:hidden}
+body.theme-eclipse.eclipse-user-settings #pe_navbar #navlist{flex-wrap:nowrap;align-items:stretch;overflow-x:auto;overflow-y:hidden;padding:.4rem .4rem 0;scrollbar-width:thin}
+body.theme-eclipse.eclipse-user-settings #pe_navbar .li-navlist{flex:0 0 auto}
+body.theme-eclipse.eclipse-user-settings #pe_navbar .a-navlist{min-height:2.4rem;padding:.45rem .7rem;font-size:.78rem}
+body.theme-eclipse.eclipse-user-settings #profile>div[id^=pe_]:not(#pe_preview){padding:.75rem}
+body.theme-eclipse.eclipse-user-settings #profile #save_button{justify-content:stretch}
+body.theme-eclipse.eclipse-user-settings #profile #save_button button{flex:1 1 auto}
+}
