@@ -118,6 +118,18 @@ if ($staticAdvancedEditor -notmatch '\{!if search_options\}.*?name="search".*?\{
     Fail 'Static Pages advanced editor does not guard the newer Search control for Geeklog 2.1.1.'
 }
 
+# User settings keep Geeklog's native profile_editor.js behavior but Eclipse
+# must present the profile navigation as a real tab bar on usersettings.php.
+$functionsPhp = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
+$formsCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/forms.css')
+if ($functionsPhp -notmatch 'eclipse-user-settings') {
+    Fail 'User settings page context class is missing.'
+}
+if ($formsCss -notmatch 'eclipse-user-settings #pe_navbar' -or
+    $formsCss -notmatch '\.a-navlist#current') {
+    Fail 'User settings tab presentation contract is incomplete.'
+}
+
 # Configuration search result targeting is an Eclipse 1.2 usability contract.
 # Geeklog supplies URLs such as ?tab-20#advanced_editor; Eclipse must turn the
 # stable parameter hash into a real row anchor, scroll to it and highlight it.
