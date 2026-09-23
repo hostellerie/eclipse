@@ -6,9 +6,9 @@ body.theme-eclipse .eclipse-danger-action{background:var(--eclipse-danger)!impor
 
 /* Keep native dropdowns readable even inside compact admin toolbars and on
  * older browsers/Geeklog skins that apply their own option colors. */
-body.theme-eclipse select:not([multiple]):not([size]){box-sizing:border-box;min-height:2.5rem!important;height:auto!important;padding:.45rem 2rem .45rem .65rem!important;color:var(--eclipse-text)!important;background-color:var(--eclipse-surface)!important;font-size:.875rem!important;line-height:1.35!important;vertical-align:middle}
+body.theme-eclipse select:not([multiple]):not([size]){box-sizing:border-box;min-height:2.5rem;height:auto;padding:.45rem 2rem .45rem .65rem;color:var(--eclipse-text);background-color:var(--eclipse-surface);font-size:.875rem;line-height:1.35;vertical-align:middle}
 body.theme-eclipse select option{color:var(--eclipse-text);background:var(--eclipse-surface)}
-@media(max-width:52rem){body.theme-eclipse select:not([multiple]):not([size]){min-height:3rem!important;padding:.55rem 2rem .55rem .7rem!important;font-size:1rem!important;line-height:1.4!important}}
+@media(max-width:52rem){body.theme-eclipse select:not([multiple]):not([size]){min-height:3rem;padding:.55rem 2rem .55rem .7rem;font-size:1rem;line-height:1.4}}
 
 /* Configuration tabs: keep labels compact while preserving a comfortable target. */
 body.theme-eclipse.eclipse-admin-configuration #geeklog_config_editor #config_content #tabs>ul>li>a{min-height:2.15rem!important;padding:.35rem .58rem!important;line-height:1.25!important}
@@ -34,4 +34,33 @@ body.theme-eclipse.eclipse-user-settings #pe_navbar .a-navlist{min-height:2.4rem
 body.theme-eclipse.eclipse-user-settings #profile>div[id^=pe_]:not(#pe_preview){padding:.75rem}
 body.theme-eclipse.eclipse-user-settings #profile #save_button{justify-content:stretch}
 body.theme-eclipse.eclipse-user-settings #profile #save_button button{flex:1 1 auto}
+}
+
+
+/* Shared ADMIN_list search/filter shell.
+   This component is intentionally public-safe: plugins may use the same
+   markup outside /admin and inherit a compact neutral Eclipse presentation. */
+body.theme-eclipse .eclipse-admin-list-search{box-sizing:border-box;display:flex;align-items:center;flex-wrap:wrap;gap:.5rem .75rem;width:100%;max-width:100%;margin:.65rem 0;padding:.65rem .75rem;background:color-mix(in srgb,var(--eclipse-primary) 2%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-radius:.55rem;font-size:.78rem;line-height:1.25}
+body.theme-eclipse .eclipse-admin-list-search-main{display:flex;align-items:center;gap:.55rem;min-width:min(100%,18rem);flex:1 1 22rem}
+body.theme-eclipse .eclipse-admin-list-search-label{margin:0;color:var(--eclipse-text);font-size:.8rem;font-weight:750;line-height:1.2;white-space:nowrap}
+body.theme-eclipse .eclipse-admin-list-search-field{display:flex;align-items:stretch;gap:.4rem;min-width:0;flex:1 1 auto}
+body.theme-eclipse .eclipse-admin-list-search-field input[type=search]{box-sizing:border-box;min-width:10rem;width:100%;min-height:2.15rem;height:2.15rem;margin:0;padding:.3rem .55rem;border-radius:.4rem;font:inherit}
+body.theme-eclipse .eclipse-admin-list-search-field button{box-sizing:border-box;min-height:2.15rem;height:2.15rem;margin:0;padding:.3rem .65rem;border-radius:.4rem;font-size:.78rem;font-weight:700;line-height:1;white-space:nowrap}
+body.theme-eclipse .eclipse-admin-list-search-filters,body.theme-eclipse .eclipse-admin-list-filter-primary,body.theme-eclipse .eclipse-admin-list-search-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.45rem .65rem}
+body.theme-eclipse .eclipse-admin-list-filter-primary label,body.theme-eclipse .eclipse-admin-list-filter-limit{display:inline-flex;align-items:center;gap:.4rem;margin:0;color:var(--eclipse-text);font-size:.76rem;font-weight:650;line-height:1.2;white-space:nowrap}
+body.theme-eclipse .eclipse-admin-list-search select{box-sizing:border-box;field-sizing:content;width:auto;min-width:0;max-width:16rem;min-height:2.1rem;height:2.1rem;margin:0;padding:.28rem 1.65rem .28rem .5rem;border-radius:.4rem;font-size:.76rem;font-weight:600;line-height:1.2}
+body.theme-eclipse .eclipse-admin-list-filter-limit select{min-width:4.25rem;max-width:6rem}
+body.theme-eclipse .eclipse-admin-list-search input[type=checkbox]{width:.9rem;height:.9rem;margin:0}
+body.theme-eclipse .eclipse-admin-list-search-status{display:inline-flex;align-items:baseline;gap:.3rem;color:var(--eclipse-muted);font-size:.76rem;white-space:nowrap}
+body.theme-eclipse .eclipse-admin-list-search-status strong{color:var(--eclipse-text);font-weight:750;font-variant-numeric:tabular-nums}
+body.theme-eclipse .eclipse-admin-list-search-tools{display:flex;align-items:center;margin-left:auto}
+body.theme-eclipse .eclipse-admin-list-search-tools:empty{display:none}
+body.theme-eclipse .eclipse-admin-list-search-tools .eclipse-filter-tools{margin:0;padding:0;background:transparent;border:0}
+@media(max-width:47.99rem){
+body.theme-eclipse .eclipse-admin-list-search{align-items:stretch;padding:.6rem}
+body.theme-eclipse .eclipse-admin-list-search-main{flex-basis:100%;min-width:0}
+body.theme-eclipse .eclipse-admin-list-search-label{flex:0 0 100%}
+body.theme-eclipse .eclipse-admin-list-search-field{width:100%}
+body.theme-eclipse .eclipse-admin-list-search-filters,body.theme-eclipse .eclipse-admin-list-filter-primary,body.theme-eclipse .eclipse-admin-list-search-meta{width:100%}
+body.theme-eclipse .eclipse-admin-list-search-tools{margin-left:0}
 }
