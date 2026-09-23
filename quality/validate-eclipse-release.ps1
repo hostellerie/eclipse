@@ -118,6 +118,22 @@ if ($staticAdvancedEditor -notmatch '\{!if search_options\}.*?name="search".*?\{
     Fail 'Static Pages advanced editor does not guard the newer Search control for Geeklog 2.1.1.'
 }
 
+# Shared ADMIN_list search/filter presentation is a public Eclipse component.
+# Plugins may use .eclipse-admin-list-search outside /admin; admin/admin.css
+# should only enrich that base. Generic select sizing must remain overrideable.
+$formsCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/forms.css')
+$adminCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/admin/admin.css')
+if ($formsCss -notmatch 'Shared ADMIN_list search/filter shell' -or
+    $formsCss -notmatch '\.eclipse-admin-list-search select') {
+    Fail 'Shared public list-search component is missing.'
+}
+if ($formsCss -match 'select:not\(\[multiple\]\):not\(\[size\]\)[^\{]*\{[^\}]*min-height:[^;]+!important') {
+    Fail 'Generic select sizing still blocks compact component overrides.'
+}
+if ($adminCss -notmatch 'body\.eclipse-admin-page \.eclipse-admin-list-search') {
+    Fail 'Administrative list-search enrichment layer is missing.'
+}
+
 # User settings keep Geeklog's native profile_editor.js behavior but Eclipse
 # must present the profile navigation as a real tab bar on usersettings.php.
 $functionsPhp = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
