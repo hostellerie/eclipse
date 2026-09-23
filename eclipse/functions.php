@@ -101,7 +101,13 @@ function eclipse_supports_admin_list()
 function eclipse_context_classes()
 {
     global $_CONF;
-    if (!eclipse_is_admin_request()) return 'eclipse-public-page';
+    if (!eclipse_is_admin_request()) {
+        $classes = 'eclipse-public-page';
+        if (basename(eclipse_request_path()) === 'usersettings.php') {
+            $classes .= ' eclipse-user-settings';
+        }
+        return $classes;
+    }
     $page = eclipse_admin_page();
     $classes = 'eclipse-admin-page' . ($page !== '' ? ' eclipse-admin-' . $page : '');
     if (eclipse_is_staticpages_admin()) {
