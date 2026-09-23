@@ -35,6 +35,11 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-p
     border: 0 !important;
     border-radius: 0;
 }
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel .inputTable {
+    display: grid !important;
+    row-gap: .5rem !important;
+    min-width: 0;
+}
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel legend {
     margin: 0 0 .65rem !important;
     padding: 0 !important;
