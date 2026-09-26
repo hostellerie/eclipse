@@ -51,28 +51,31 @@
         <dt><label>{lang_comments}</label></dt><dd class="controls_text">{sp_comments}</dd>
       </dl>
 
-      <div class="eclipse-sp-status-grid" aria-label="Page status">
-        <div class="eclipse-sp-status-item">
-          <div class="eclipse-sp-status-copy">
-            <span class="eclipse-sp-status-label">{lang_lastupdated}</span>
-            <strong class="eclipse-sp-status-value">{sp_formateddate}</strong>
-          </div>
-          <label class="eclipse-sp-status-toggle" for="sp-editor-sp_onlastupdate"><input type="checkbox" name="sp_onlastupdate" id="sp-editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}><span>{lang_show_on_page}</span></label>
-          {!if lang_show_on_page_date_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_date_disabled}</p>{!endif}
-        </div>
-        <div class="eclipse-sp-status-item">
-          <input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>
-          <div class="eclipse-sp-status-copy">
-            <span class="eclipse-sp-status-label">{lang_hits}</span>
-            <strong class="eclipse-sp-status-value">{sp_hits_formatted}</strong>
-          </div>
-          <label class="eclipse-sp-status-toggle" for="sp-editor-sp_onhits"><input type="checkbox" name="sp_onhits" id="sp-editor-sp_onhits" {onhits_checked}{xhtml}><span>{lang_show_on_page}</span></label>
-          {!if lang_show_on_page_hits_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_hits_disabled}</p>{!endif}
-        </div>
-      </div>
     </section>
 
     <section id="eclipse-sp-panel-seo" class="eclipse-sp-panel" role="tabpanel" aria-labelledby="eclipse-sp-tab-seo" hidden>
+      <div class="eclipse-sp-display-options" aria-label="Display options">
+        <h3>Display options</h3>
+        <div class="eclipse-sp-status-grid">
+          <div class="eclipse-sp-status-item">
+            <div class="eclipse-sp-status-copy">
+              <span class="eclipse-sp-status-label">{lang_lastupdated}</span>
+              <strong class="eclipse-sp-status-value">{sp_formateddate}</strong>
+            </div>
+            <label class="eclipse-sp-status-toggle" for="sp-editor-sp_onlastupdate"><input type="checkbox" name="sp_onlastupdate" id="sp-editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}><span>{lang_show_on_page}</span></label>
+            {!if lang_show_on_page_date_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_date_disabled}</p>{!endif}
+          </div>
+          <div class="eclipse-sp-status-item">
+            <input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>
+            <div class="eclipse-sp-status-copy">
+              <span class="eclipse-sp-status-label">{lang_hits}</span>
+              <strong class="eclipse-sp-status-value">{sp_hits_formatted}</strong>
+            </div>
+            <label class="eclipse-sp-status-toggle" for="sp-editor-sp_onhits"><input type="checkbox" name="sp_onhits" id="sp-editor-sp_onhits" {onhits_checked}{xhtml}><span>{lang_show_on_page}</span></label>
+            {!if lang_show_on_page_hits_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_hits_disabled}</p>{!endif}
+          </div>
+        </div>
+      </div>
       <dl class="form_block">
         {!if lang_page_title}<dt><label for="sp-editor-sp_page_title">{lang_page_title}</label></dt><dd><input type="text" maxlength="128" name="sp_page_title" value="{sp_page_title}" id="sp-editor-sp_page_title" class="size5"{xhtml}></dd>{!endif}
         {!if structured_data_options}<dt><label for="sp-editor-structureddata">{lang_structured_data_type}</label></dt><dd><select name="structured_data_type" id="sp-editor-structureddata">{structured_data_options}</select></dd>{!endif}
