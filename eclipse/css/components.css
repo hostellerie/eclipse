@@ -7,12 +7,7 @@ body.theme-eclipse #centerblocks section.block-center,body.theme-eclipse #center
 .likes-control button,.likes_control button,.likes-control a,.likes_control a{display:inline-flex;align-items:center;gap:.25rem;min-height:2.25rem;padding:.35rem .55rem;border-radius:var(--eclipse-radius)}
 .likes-control button:focus-visible,.likes_control button:focus-visible,.likes-control a:focus-visible,.likes_control a:focus-visible{outline:3px solid var(--eclipse-primary);outline-offset:2px}
 
-/* Static Pages: keep Hub/Core related topics visually consistent with article
- * footers and present page metadata/actions as one centered footer row. */
-body.theme-eclipse .eclipse-staticpage-content>.related-topics{margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--eclipse-border);line-height:1.6}
-body.theme-eclipse .eclipse-staticpage-content>.related-topics a{display:inline;text-decoration:none}
-body.theme-eclipse .eclipse-staticpage-content>.related-topics a:hover,
-body.theme-eclipse .eclipse-staticpage-content>.related-topics a:focus{text-decoration:underline}
+/* Static Pages metadata/actions footer. */
 body.theme-eclipse .eclipse-staticpage-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.35rem;margin:1.35rem 0;color:var(--eclipse-text);text-align:center}
 body.theme-eclipse .eclipse-staticpage-meta-item{display:inline-flex;align-items:center}
 body.theme-eclipse .eclipse-staticpage-meta-separator{display:inline-flex;align-items:center;margin:0 .15rem;color:var(--eclipse-muted)}
