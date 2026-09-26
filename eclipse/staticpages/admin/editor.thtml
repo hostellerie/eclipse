@@ -57,7 +57,7 @@
             <span class="eclipse-sp-status-label">{lang_lastupdated}</span>
             <strong class="eclipse-sp-status-value">{sp_formateddate}</strong>
           </div>
-          {!if likes_options}<label class="eclipse-sp-status-toggle" for="sp-editor-sp_onlastupdate"><input type="checkbox" name="sp_onlastupdate" id="sp-editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}><span>{lang_show_on_page}</span></label>{!endif}
+          <label class="eclipse-sp-status-toggle" for="sp-editor-sp_onlastupdate"><input type="checkbox" name="sp_onlastupdate" id="sp-editor-sp_onlastupdate" {onlastupdate_checked}{xhtml}><span>{lang_show_on_page}</span></label>
           {!if lang_show_on_page_date_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_date_disabled}</p>{!endif}
         </div>
         <div class="eclipse-sp-status-item">
@@ -66,7 +66,7 @@
             <span class="eclipse-sp-status-label">{lang_hits}</span>
             <strong class="eclipse-sp-status-value">{sp_hits_formatted}</strong>
           </div>
-          {!if likes_options}<label class="eclipse-sp-status-toggle" for="sp-editor-sp_onhits"><input type="checkbox" name="sp_onhits" id="sp-editor-sp_onhits" {onhits_checked}{xhtml}><span>{lang_show_on_page}</span></label>{!endif}
+          <label class="eclipse-sp-status-toggle" for="sp-editor-sp_onhits"><input type="checkbox" name="sp_onhits" id="sp-editor-sp_onhits" {onhits_checked}{xhtml}><span>{lang_show_on_page}</span></label>
           {!if lang_show_on_page_hits_disabled}<p class="eclipse-sp-status-note">{lang_show_on_page_hits_disabled}</p>{!endif}
         </div>
       </div>
