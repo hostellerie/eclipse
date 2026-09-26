@@ -111,6 +111,7 @@ body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul>li.ui-ta
 body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>.ui-tabs-panel{clear:both;padding:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel{min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel fieldset{margin:0 0 1rem;padding:1rem 1.1rem 1.1rem;border:1px solid var(--eclipse-border);border-radius:.65rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel .inputTable{display:grid;row-gap:.5rem;min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-panel legend{margin-left:.15rem;padding:0 .4rem;color:var(--eclipse-text);font-weight:800}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes{margin:0 0 1rem;padding:1rem 1.1rem;background:color-mix(in srgb,var(--eclipse-secondary) 5%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-radius:.65rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes h4{margin:0 0 .35rem;color:var(--eclipse-text);font-size:1rem}
@@ -118,15 +119,15 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes p{margin:.2
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-notes .warningsmall{display:block;margin-top:.5rem}
 
 /* Fields */
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-fields{display:grid;gap:.65rem}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{position:relative;display:grid;grid-template-columns:minmax(16rem,20rem) minmax(18rem,42rem) auto;justify-content:start;gap:.7rem 1rem;align-items:center;min-width:0;margin:0!important;padding:1rem 1.1rem!important;background:var(--eclipse-surface);border:1px solid color-mix(in srgb,var(--eclipse-border) 82%,transparent);border-radius:.6rem}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field:hover{border-color:color-mix(in srgb,var(--eclipse-primary) 28%,var(--eclipse-border));box-shadow:0 5px 16px rgba(15,23,42,.04)}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label{display:flex;align-items:center;flex-wrap:wrap;gap:.25rem .4rem;min-width:0;padding:0;color:var(--eclipse-text);font-size:.87rem;font-weight:700;line-height:1.45}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-fields{display:grid;gap:.5rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{position:relative;display:grid;grid-template-columns:minmax(15rem,19rem) minmax(18rem,42rem) auto;justify-content:start;gap:.5rem .9rem;align-items:center;min-width:0;margin:0!important;padding:.72rem .9rem!important;background:var(--eclipse-surface);border:1px solid color-mix(in srgb,var(--eclipse-border) 82%,transparent);border-radius:.55rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field:hover{border-color:color-mix(in srgb,var(--eclipse-primary) 22%,var(--eclipse-border));box-shadow:0 3px 10px rgba(15,23,42,.035)}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label{display:flex;align-items:center;flex-wrap:wrap;gap:.2rem .35rem;min-width:0;padding:0;color:var(--eclipse-text);font-size:.84rem;font-weight:650;line-height:1.35}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label-text{min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help{display:inline-flex;align-items:center;font-size:0;line-height:1}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help:empty,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-unset:empty{display:none}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-unset{display:inline-flex;align-items:center;font-size:.72rem;font-weight:600}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>.opt,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>textarea,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>select{box-sizing:border-box;width:100%;max-width:42rem;min-width:0;margin:0}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>.opt,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>textarea,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>select{box-sizing:border-box;width:100%;max-width:42rem;min-width:0;margin:0;min-height:2.35rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>textarea{min-height:7rem;resize:vertical}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field-list{align-items:start}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-list-actions{display:flex;align-items:center;gap:.35rem}
@@ -139,7 +140,9 @@ body.theme-eclipse.eclipse-admin-configuration .validation_error_block{grid-colu
 body.theme-eclipse.eclipse-admin-configuration .del-link,body.theme-eclipse.eclipse-admin-configuration .toggle_hidden,body.theme-eclipse.eclipse-admin-configuration .add_ele_input{box-sizing:border-box;min-height:2.35rem;padding:.35rem .6rem}
 
 /* Actions */
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions{position:sticky;z-index:20;bottom:.75rem;display:flex;justify-content:flex-end;gap:.65rem;margin:1rem 0 0;padding:.8rem 1.1rem;background:color-mix(in srgb,var(--eclipse-surface) 94%,transparent);border:1px solid var(--eclipse-border);border-radius:.65rem;box-shadow:0 -8px 24px rgba(15,23,42,.08);backdrop-filter:blur(12px)}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions{position:sticky;z-index:20;bottom:.6rem;display:flex;align-items:center;justify-content:flex-end;gap:.55rem;min-height:3.5rem;margin:.8rem 0 0;padding:.55rem .85rem;background:color-mix(in srgb,var(--eclipse-surface) 95%,transparent);border:1px solid var(--eclipse-border);border-radius:.6rem;box-shadow:0 -5px 18px rgba(15,23,42,.065);backdrop-filter:blur(12px)}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions::before{content:"Configuration";margin-right:auto;color:var(--eclipse-muted);font-size:.78rem;font-weight:700;letter-spacing:.02em}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions input{min-height:2.45rem;padding:.48rem .9rem}
 body.theme-eclipse.eclipse-admin-configuration #form_reset{color:var(--eclipse-text);background:var(--eclipse-surface);border-color:var(--eclipse-border)}
 body.theme-eclipse.eclipse-admin-configuration #form_reset:hover,body.theme-eclipse.eclipse-admin-configuration #form_reset:focus-visible{color:var(--eclipse-primary);border-color:var(--eclipse-primary)}
 
@@ -175,6 +178,7 @@ body.theme-eclipse.eclipse-admin-configuration #tabs-dropdown a:hover,body.theme
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field{grid-template-columns:1fr;gap:.5rem;padding:.9rem!important}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-list-values,body.theme-eclipse.eclipse-admin-configuration .validation_error_block,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field-unset .restore{grid-column:1}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions{position:static;justify-content:stretch}
+    body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions::before{display:none}
     body.theme-eclipse.eclipse-admin-configuration .eclipse-config-actions input{flex:1 1 auto}
 }
 @media(max-width:32rem){

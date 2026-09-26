@@ -33,3 +33,135 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
 }
 
 
+
+
+/* Structured Menu contexts ------------------------------------------------- */
+.eclipse-menu-context-secondary,
+.eclipse-menu-context-footer {
+    width: 100%;
+}
+
+.eclipse-menu-context-secondary ul,
+.eclipse-menu-context-footer ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.eclipse-menu-context-secondary > .eclipse-menu-root,
+.eclipse-menu-context-footer > .eclipse-menu-root {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem .8rem;
+}
+
+.eclipse-menu-context-secondary a,
+.eclipse-menu-context-footer a,
+.eclipse-menu-context-secondary .eclipse-menu-label,
+.eclipse-menu-context-footer .eclipse-menu-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    text-decoration: none;
+}
+
+.eclipse-menu-secondary-region {
+    width: 100%;
+    border-top: 1px solid color-mix(in srgb, var(--eclipse-border) 70%, transparent);
+    background: color-mix(in srgb, var(--eclipse-surface) 97%, transparent);
+}
+
+.eclipse-menu-secondary-region .navigation_content {
+    min-height: 2.65rem;
+    justify-content: center;
+}
+
+.eclipse-menu-context-secondary a {
+    padding: .35rem .55rem;
+    color: var(--eclipse-muted);
+    font-size: .92rem;
+    border-radius: .4rem;
+}
+
+.eclipse-menu-context-secondary a:hover,
+.eclipse-menu-context-secondary a:focus-visible,
+.eclipse-menu-context-secondary a[aria-current="page"] {
+    color: var(--eclipse-primary);
+    background: color-mix(in srgb, var(--eclipse-primary) 7%, transparent);
+}
+
+.eclipse-menu-context-secondary li,
+.eclipse-menu-context-footer li {
+    position: relative;
+}
+
+.eclipse-menu-context-secondary ul ul,
+.eclipse-menu-context-footer ul ul {
+    display: none;
+}
+
+.eclipse-menu-context-secondary li:hover > ul,
+.eclipse-menu-context-secondary li:focus-within > ul,
+.eclipse-menu-context-footer li:hover > ul,
+.eclipse-menu-context-footer li:focus-within > ul {
+    position: absolute;
+    z-index: 70;
+    display: block;
+    min-width: 13rem;
+    padding: .45rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .55rem;
+    background: var(--eclipse-surface);
+    box-shadow: var(--eclipse-shadow);
+}
+
+.eclipse-menu-footer-region {
+    width: min(calc(100% - 2rem), var(--eclipse-max));
+    max-width: var(--eclipse-max);
+    margin: 0 auto 1.5rem;
+}
+
+.eclipse-menu-context-footer > .eclipse-menu-root {
+    justify-content: center;
+}
+
+.eclipse-menu-context-footer a,
+.eclipse-menu-context-footer .eclipse-menu-label {
+    padding: .3rem .45rem;
+    color: inherit;
+}
+
+.eclipse-menu-context-footer a:hover,
+.eclipse-menu-context-footer a:focus-visible,
+.eclipse-menu-context-footer a[aria-current="page"] {
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+@media (max-width:47.99rem) {
+    .eclipse-menu-context-secondary > .eclipse-menu-root,
+    .eclipse-menu-context-footer > .eclipse-menu-root {
+        align-items: stretch;
+        flex-direction: column;
+        gap: .2rem;
+    }
+
+    .eclipse-menu-context-secondary ul ul,
+    .eclipse-menu-context-footer ul ul,
+    .eclipse-menu-context-secondary li:hover > ul,
+    .eclipse-menu-context-secondary li:focus-within > ul,
+    .eclipse-menu-context-footer li:hover > ul,
+    .eclipse-menu-context-footer li:focus-within > ul {
+        position: static;
+        display: block;
+        min-width: 0;
+        margin-left: .8rem;
+        padding: .15rem 0 .15rem .65rem;
+        border: 0;
+        border-left: 1px solid var(--eclipse-border);
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+}

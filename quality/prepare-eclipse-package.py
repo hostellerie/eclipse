@@ -152,7 +152,30 @@ def prepare():
     old_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
     if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
     if (!eclipse_copy_tree($sourceTheme, $themeDir, 0755, 0644)) { eclipse_remove_tree($job); return $fail('The update copy failed. Restore the latest persistent Eclipse backup.'); }
+
+    $installedError = eclipse_verify_installed_manifest($themeDir);
+    if ($installedError !== '') {
+        eclipse_remove_tree($job);
+        return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
+    }
+
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($job);
+    $cacheMessage = eclipse_clear_theme_cache()
+        ? ' Geeklog template and generated CSS caches were cleared.'
+        : ' Geeklog template/CSS caches could not be cleared automatically.';
+
+    return array(
+        'success' => true,
+        'message' => 'Eclipse ' . $newVersion
+            . ' installed successfully and verified at ' . $themeDir . '.'
+            . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
+            . ' PHP OPcache entries were invalidated when supported.'
+    );
 """
     new_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
     if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
@@ -186,8 +209,31 @@ def prepare():
             : 'Unable to activate the new Eclipse directory and automatic restoration failed. Restore the latest persistent Eclipse backup.');
     }
 
+    $installedError = eclipse_verify_installed_manifest($themeDir);
+    if ($installedError !== '') {
+        eclipse_remove_tree($retiredTheme);
+        eclipse_remove_tree($job);
+        return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
+    }
+
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($retiredTheme);
     eclipse_remove_tree($job);
+    $cacheMessage = eclipse_clear_theme_cache()
+        ? ' Geeklog template and generated CSS caches were cleared.'
+        : ' Geeklog template/CSS caches could not be cleared automatically.';
+
+    return array(
+        'success' => true,
+        'message' => 'Eclipse ' . $newVersion
+            . ' installed successfully and verified at ' . $themeDir . '.'
+            . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
+            . ' PHP OPcache entries were invalidated when supported.'
+    );
 """
     updater_body = replace_once(updater_body, old_install, new_install, 'exact Eclipse directory replacement')
 
@@ -207,6 +253,10 @@ def prepare():
         fail('Packaged updater does not perform an exact Eclipse directory replacement')
     if 'eclipse_copy_tree($sourceTheme, $themeDir' in updater_text:
         fail('Packaged updater still merges the new theme into the existing Eclipse directory')
+    if "method_exists($zip, 'getFromName')" not in updater_text:
+        fail('Packaged updater does not detect getFromName before using it')
+    if "method_exists($zip, 'getStream')" not in updater_text:
+        fail('Packaged updater does not provide the Geeklog 2.1 getStream fallback')
 
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]

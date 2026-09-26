@@ -97,6 +97,23 @@ if ($eclipseZipCompatDashboard && !class_exists('ZipArchive', false)) {
             return $result !== false && $result !== 0;
         }
 
+        public function getFromName($name, $length = 0, $flags = 0)
+        {
+            $stream = $this->getStream($name);
+            if (!is_resource($stream)) {
+                return false;
+            }
+
+            if ((int) $length > 0) {
+                $data = stream_get_contents($stream, (int) $length);
+            } else {
+                $data = stream_get_contents($stream);
+            }
+
+            fclose($stream);
+            return is_string($data) ? $data : false;
+        }
+
         public function getStream($name)
         {
             global $_CONF;

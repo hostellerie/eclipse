@@ -35,6 +35,11 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-p
     border: 0 !important;
     border-radius: 0;
 }
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel .inputTable {
+    display: grid !important;
+    row-gap: .5rem !important;
+    min-width: 0;
+}
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-panel legend {
     margin: 0 0 .65rem !important;
     padding: 0 !important;
@@ -48,12 +53,23 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     gap: .5rem !important;
     min-width: 0;
 }
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field[id],
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name[id] {
+    scroll-margin-top: 7rem;
+}
+body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-target {
+    background: color-mix(in srgb, var(--eclipse-primary) 13%, var(--eclipse-surface)) !important;
+    border-color: color-mix(in srgb, var(--eclipse-primary) 78%, var(--eclipse-border)) !important;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--eclipse-primary) 20%, transparent), 0 8px 24px rgba(15, 23, 42, .08) !important;
+    transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-field,
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name {
     float: none !important;
     clear: none !important;
     display: grid !important;
-    grid-template-columns: minmax(13rem, 19rem) minmax(18rem, 42rem) auto !important;
+    grid-template-columns: minmax(13rem, 18.5rem) minmax(18rem, 42rem) auto !important;
     align-items: center !important;
     justify-content: start !important;
     width: 100% !important;
@@ -61,8 +77,8 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     min-width: 0 !important;
     min-height: 0 !important;
     margin: 0 !important;
-    padding: .7rem .85rem !important;
-    gap: .45rem .9rem !important;
+    padding: .62rem .8rem !important;
+    gap: .38rem .85rem !important;
     box-sizing: border-box !important;
     background: var(--eclipse-surface) !important;
     border: 1px solid color-mix(in srgb, var(--eclipse-border) 82%, transparent) !important;
@@ -81,7 +97,7 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
     min-width: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.4 !important;
+    line-height: 1.32 !important;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-help {
     display: inline-flex !important;
@@ -114,10 +130,10 @@ body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-f
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > input[type="text"],
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > input[type="password"],
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-fields > .config_name > select {
-    min-height: 2.55rem !important;
+    min-height: 2.35rem !important;
     height: auto !important;
-    padding-top: .5rem !important;
-    padding-bottom: .5rem !important;
+    padding-top: .42rem !important;
+    padding-bottom: .42rem !important;
 }
 body.theme-eclipse.eclipse-admin-configuration #config_content .eclipse-config-list-values,
 body.theme-eclipse.eclipse-admin-configuration #config_content .validation_error_block,

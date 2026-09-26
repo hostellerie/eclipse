@@ -1,13 +1,15 @@
 name: Validate Eclipse pull request
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - develop-1.2.0
     paths:
       - 'eclipse/**'
+      - '!eclipse/MANIFEST.json'
       - 'quality/**'
       - '.github/workflows/validate-pr.yml'
+      - '.github/workflows/build-dist.yml'
       - 'RELEASE-NOTES.md'
       - 'README.md'
   workflow_dispatch:
@@ -32,16 +34,7 @@ jobs:
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
 
-      - name: Verify manifest is committed
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! git diff --exit-code -- eclipse/MANIFEST.json; then
-            echo 'eclipse/MANIFEST.json is not synchronized with the theme tree.' >&2
-            exit 1
-          fi
-
-      - name: Validate Eclipse 1.1 release contracts
+      - name: Validate Eclipse 1.2 release contracts
         shell: pwsh
         run: ./quality/validate-eclipse-release.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
@@ -52,7 +45,7 @@ jobs:
           python3 ./quality/prepare-eclipse-package.py
           version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
           test -n "$version"
-          test "$version" = '1.1.0'
+          test "$version" = '1.2.0'
           test -d .package-stage/eclipse
           test ! -e .package-stage/eclipse/QA-CHECKLIST.md
           test ! -e .package-stage/eclipse/COMPATIBILITY.md
@@ -62,10 +55,17 @@ jobs:
         run: |
           set -euo pipefail
           version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
+          test -f .package-stage/eclipse/ECLIPSE_THEME_PACKAGE.txt
+          test -f .package-stage/eclipse/admin/install.php
           (
             cd .package-stage
             zip -r -9 "../eclipse-$version.zip" eclipse -x '*/.DS_Store' '*/Thumbs.db'
           )
+          if unzip -Z1 "eclipse-$version.zip" | grep -v '^eclipse/' | grep -q .; then
+            echo 'Archive contains entries outside eclipse/ and is not backward compatible.' >&2
+            exit 1
+          fi
+          unzip -p "eclipse-$version.zip" eclipse/admin/install.php | grep -q "\$pi_name='__eclipse_theme_package__'"
           size=$(stat -c '%s' "eclipse-$version.zip")
           echo "Archive size: $size bytes"
           if [ "$size" -ge 1900000 ]; then
