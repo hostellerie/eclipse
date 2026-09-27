@@ -152,41 +152,41 @@ function forum_css_eclipse()
     }
 
     $css[] = array(
-            'name'       => 'eclipse-forum',
-            'file'       => $forumRoot . 'forum.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 320
-        ),
-        array(
-            'name'       => 'eclipse-forum-blocks',
-            'file'       => $forumRoot . 'blocks.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 321
-        ),
-        array(
-            'name'       => 'eclipse-forum-semantic',
-            'file'       => $forumRoot . 'semantic.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 322
-        ),
-        array(
-            'name'       => 'eclipse-forum-editor',
-            'file'       => $forumRoot . 'editor.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 323
-        ),
-        array(
-            'name'       => 'eclipse-forum-reports',
-            'file'       => $forumRoot . 'reports.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 324
-        ),
-        array(
-            'name'       => 'eclipse-forum-footer',
-            'file'       => $forumRoot . 'footer.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 325
-        );
+        'name'       => 'eclipse-forum',
+        'file'       => $forumRoot . 'forum.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 320
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-blocks',
+        'file'       => $forumRoot . 'blocks.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 321
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-semantic',
+        'file'       => $forumRoot . 'semantic.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 322
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-editor',
+        'file'       => $forumRoot . 'editor.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 323
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-reports',
+        'file'       => $forumRoot . 'reports.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 324
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-footer',
+        'file'       => $forumRoot . 'footer.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 325
+    );
 
     return $css;
 }
