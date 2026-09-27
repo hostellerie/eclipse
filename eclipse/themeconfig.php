@@ -11,6 +11,7 @@ return array(
     'reading_width'      => '72ch',
     'font_family'        => 'humanist',
     'font_size'          => '16px',
+    'content_link_style' => 'hover',
     'spacing'            => 'normal',
     'radius'             => 'medium',
     'show_left_sidebar'  => false,
