@@ -237,7 +237,7 @@
         }
         var defaults = {
             palette: { color_primary:'#3157d5',color_secondary:'#6750a4',color_link:'#2448bd',color_background:'#f4f6fb',color_surface:'#ffffff',color_text:'#202431' },
-            layout: { site_max_width:'1200px',reading_width:'72ch',font_size:'16px',font_family:'humanist',spacing:'normal',radius:'medium' },
+            layout: { site_max_width:'1200px',reading_width:'72ch',font_size:'16px',font_family:'humanist',content_link_style:'hover',spacing:'normal',radius:'medium' },
             appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark',sidebar_position:'right' },
             brand: { logo:'images/logo-mark.svg',header_image:'',show_left_sidebar:false,show_right_sidebar:true,mobile_menu:true,editor_hide_sidebars:true },
             social: { share_facebook:false,share_linkedin:false,share_x:false },
