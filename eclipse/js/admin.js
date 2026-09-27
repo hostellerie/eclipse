@@ -244,6 +244,14 @@
     });
     if (dashboardGroups.length) {
         dashboardGroups.forEach(function (group) { addSection(group.label, group.links); });
+
+        // Command & Control is built from plugin_cclabel_* while Geeklog's
+        // native administration menu is built from plugin_getadminoption_*.
+        // Some plugins intentionally expose only the latter. Merge the native
+        // source as a completion pass; addSection() de-duplicates links already
+        // present in Command & Control.
+        if (nativeSource) addSource(nativeSource);
+
         var studioLink = dashboard ? dashboard.querySelector('.eclipse-studio-launch[href]') : null;
         if (!studioLink && nativeSource) studioLink = nativeSource.querySelector('.eclipse-native-studio-link[href]');
         if (studioLink) addSection('Studio', [studioLink]);
