@@ -150,7 +150,7 @@
     brand.className = 'eclipse-admin-brand'; brand.href = window.geeklog && window.geeklog.site_url ? window.geeklog.site_url + '/admin/' : '#';
     brand.innerHTML = '<span aria-hidden="true">E</span><b>Eclipse</b><small>Administration</small>'; sidebar.appendChild(brand);
     var navigation = document.createElement('nav'); navigation.setAttribute('aria-label', 'Administration');
-    var known = {}; var sectionIndex = 0;
+    var known = {}; var sectionsByLabel = {}; var sectionIndex = 0;
     function blockIcon(label, links) {
         var labelProbe = label.toLowerCase(); var probe = (label + ' ' + links.map(function (link) { return (link.textContent || '') + ' ' + (link.getAttribute('href') || ''); }).join(' ')).toLowerCase();
         var categoryProbe = /user|users|plugin|extension|tool|tools|config|setting|content|core|studio/.test(labelProbe) ? labelProbe : probe;
@@ -169,6 +169,17 @@
             known[href + '|' + text] = true; return true;
         });
         if (!links.length) return;
+        var sectionKey = sectionLabel.trim().toLowerCase();
+        if (sectionsByLabel[sectionKey]) {
+            var existingList = sectionsByLabel[sectionKey].list;
+            links.forEach(function (original) {
+                var item = document.createElement('li'); var link = document.createElement('a');
+                link.href = original.href; link.textContent = /^studio$/i.test(sectionLabel) && /#eclipse-theme-studio$/.test(original.href) ? 'Theme Studio' : original.textContent.trim();
+                if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) link.setAttribute('aria-current', 'page');
+                item.appendChild(link); existingList.appendChild(item);
+            });
+            return;
+        }
         var section = document.createElement('section');
         var sectionButton = document.createElement('button'); sectionButton.type = 'button'; sectionButton.className = 'eclipse-admin-section-toggle';
         var sectionIcon = document.createElement('span'); sectionIcon.className = 'eclipse-admin-section-icon'; sectionIcon.setAttribute('aria-hidden', 'true'); sectionIcon.innerHTML = blockIcon(sectionLabel, links);
@@ -219,6 +230,7 @@
         list.addEventListener('click', function () { section.classList.remove('is-open'); section.classList.add('is-dismissing'); sectionButton.setAttribute('aria-expanded', 'false'); });
         section.addEventListener('mouseleave', function () { section.classList.remove('is-dismissing'); });
         section.appendChild(sectionButton); section.appendChild(list); navigation.appendChild(section);
+        sectionsByLabel[sectionKey] = { section: section, list: list };
     }
     function addSource(source) {
         var sourceTitle = source.querySelector('.block-title, h2'); var defaultLabel = sourceTitle ? sourceTitle.textContent.trim() : 'Administration';
