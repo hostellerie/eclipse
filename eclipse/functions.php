@@ -170,6 +170,25 @@ function eclipse_topic_heading()
     return '<h1 class="eclipse-topic-heading">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</h1>';
 }
 
+function eclipse_asset_cache_version($type)
+{
+    static $versions = array();
+    $type = ($type === 'js') ? 'js' : 'css';
+    if (isset($versions[$type])) return $versions[$type];
+
+    $stamp = 0;
+    $files = glob(__DIR__ . '/' . $type . '/*.' . $type);
+    if (is_array($files)) {
+        foreach ($files as $file) {
+            $mtime = @filemtime($file);
+            if ($mtime !== false && $mtime > $stamp) $stamp = $mtime;
+        }
+    }
+
+    $versions[$type] = eclipse_theme_version() . ($stamp > 0 ? '-' . $stamp : '');
+    return $versions[$type];
+}
+
 function theme_css_eclipse()
 {
     global $_CONF, $LANG_DIRECTION;
@@ -179,6 +198,7 @@ function theme_css_eclipse()
     $modernResource = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
     $resourceRoot = $modernResource && !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
     $version = '?v=' . rawurlencode(eclipse_theme_version());
+    $version = '?v=' . rawurlencode(eclipse_asset_cache_version('css'));
     $requestPath = eclipse_request_path();
     $isAdmin = eclipse_is_admin_request();
     $isAdminDashboard = $isAdmin && eclipse_admin_page() === 'index';
@@ -234,6 +254,7 @@ function theme_js_files_eclipse()
     $modernResource = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
     $resourceRoot = $modernResource && !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
     $version = '?v=' . rawurlencode(eclipse_theme_version());
+    $version = '?v=' . rawurlencode(eclipse_asset_cache_version('js'));
     $files = array(array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/theme.js' . $version, 'footer' => true, 'priority' => 100));
     if (eclipse_is_admin_request()) {
         $files[] = array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/admin.js' . $version, 'footer' => true, 'priority' => 110);
