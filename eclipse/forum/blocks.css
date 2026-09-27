@@ -185,3 +185,8 @@
         gap: .25rem .55rem;
     }
 }
+
+.eclipse-forum-centerblock a:hover,
+.eclipse-forum-centerblock a:focus-visible {
+    color: var(--eclipse-link, var(--eclipse-primary)) !important;
+}
