@@ -327,3 +327,26 @@
     if (desktop.addEventListener) desktop.addEventListener('change', updateNavigationButtons); else if (desktop.addListener) desktop.addListener(updateNavigationButtons);
     window.addEventListener('resize', updateSidebarFit); updateNavigationButtons(); updateSidebarFit();
 }());
+
+
+(function () {
+    'use strict';
+
+    var input = document.getElementById('eclipse-update-archive');
+    if (!input) return;
+
+    input.addEventListener('change', function () {
+        var file = input.files && input.files.length ? input.files[0] : null;
+        var message = input.getAttribute('data-filename-error') ||
+            'The file name does not contain the word "eclipse".';
+
+        input.setCustomValidity('');
+        if (!file) return;
+
+        if (file.name.toLowerCase().indexOf('eclipse') === -1) {
+            input.setCustomValidity(message);
+            input.reportValidity();
+            input.value = '';
+        }
+    });
+}());
