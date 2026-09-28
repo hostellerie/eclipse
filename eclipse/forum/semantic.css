@@ -328,6 +328,10 @@
     line-height: 1.4;
 }
 
+.eclipse-forum-author-mood {
+    margin-top: .25rem;
+}
+
 .eclipse-forum-author-identity,
 .eclipse-forum-author-name {
     color: var(--eclipse-text);
@@ -343,11 +347,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: .35rem;
-    margin-top: .25rem;
-}
-
-.eclipse-forum-author-links + .forum-mood-badge,
-.eclipse-forum-author-details .forum-mood-badge {
     margin-top: .25rem;
 }
 
@@ -368,6 +367,17 @@
 .eclipse-forum-post-content iframe,
 .eclipse-forum-post-content pre {
     max-width: 100%;
+}
+
+/* Forum smileys are inline text content. Keep their sprite box aligned to
+ * the surrounding baseline rather than treating them like ordinary images. */
+.eclipse-forum-post-content .frm_sml {
+    display: inline-block;
+    width: 1.15em;
+    height: 1.15em;
+    max-width: none;
+    margin: 0 .08em;
+    vertical-align: -0.14em;
 }
 
 .eclipse-forum-post-content pre {
