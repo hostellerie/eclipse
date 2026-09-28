@@ -281,8 +281,8 @@ def prepare():
     rollback_new = "                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';"
     functions = replace_once(functions, rollback_old, rollback_new, 'successful rollback redirect')
 
-    message_marker = "    $message = '';\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
-    message_replacement = "    $message = '';\n    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\"eclipse-notice eclipse-success\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
+    message_marker = "    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
+    message_replacement = "    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\"eclipse-notice eclipse-success\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
     functions = replace_once(functions, message_marker, message_replacement, 'post-update status message')
 
     functions_path.write_text(functions, encoding='utf-8')
