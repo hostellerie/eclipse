@@ -343,7 +343,12 @@
     display: flex;
     flex-wrap: wrap;
     gap: .35rem;
-    margin-top: .35rem;
+    margin-top: .25rem;
+}
+
+.eclipse-forum-author-links + .forum-mood-badge,
+.eclipse-forum-author-details .forum-mood-badge {
+    margin-top: .25rem;
 }
 
 .eclipse-forum-post-main {
