@@ -375,7 +375,7 @@ body.eclipse-public-page.eclipse-forum-page .forum-mood-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
     gap: .45rem;
-    max-width: 58rem;
+    max-width: 52rem;
     padding: .55rem;
     border: 1px solid var(--eclipse-border);
     border-radius: .65rem;
@@ -434,7 +434,7 @@ body.eclipse-public-page.eclipse-forum-page .forum-mood-badge {
     align-items: center;
     gap: .28rem;
     max-width: 100%;
-    margin-top: .45rem;
+    margin-top: .2rem;
     padding: .3rem .58rem;
     border: 1px solid color-mix(in srgb, var(--eclipse-primary) 15%, var(--eclipse-border));
     border-radius: 999px;
@@ -459,4 +459,15 @@ body.eclipse-public-page.eclipse-forum-page .forum-mood-badge__label {
         min-height: 2.7rem;
         padding: .62rem .55rem;
     }
+}
+
+
+/* Inline Forum smileys: align the legacy sprite image with surrounding text. */
+body.eclipse-public-page.eclipse-forum-page .eclipse-forum-post-content .frm_sml {
+    display: inline-block;
+    width: 1.15em;
+    height: 1.15em;
+    max-width: none;
+    margin: 0 .08em;
+    vertical-align: -0.14em;
 }
