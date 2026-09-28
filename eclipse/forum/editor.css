@@ -92,20 +92,23 @@ form[name='forumpost'] > .uk-form-row:has(#form-forum-font-color) {
     order: 20;
 }
 
+form[name='forumpost'] > .forum-smilies-row,
+form[name='forumpost'] > .uk-form-row:has(#forum_smilies) {
+    order: 25;
+}
+
+form[name='forumpost'] > .forum-editor-row,
 form[name='forumpost'] > .uk-form-row:has(#form-forum-text) {
     order: 30;
 }
 
-form[name='forumpost'] > .uk-form-row:has(#forum_smilies) {
-    order: 40;
-}
-
 form[name='forumpost'] > .uk-form-row:has(label[for='form-forum-username']) {
-    order: 50;
+    order: 5;
 }
 
+form[name='forumpost'] > .forum-mood-field,
 form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) {
-    order: 51;
+    order: 50;
 }
 
 form[name='forumpost'] > .uk-form-row:has(#form-forum-options) {
@@ -220,10 +223,12 @@ form[name='forumpost'] input[name='helpbox'] {
     font-size: .76rem;
 }
 
-/* Smilies sit directly below the writing area. */
+/* Smilies are writing tools: keep them directly below the BBCode toolbar
+ * and immediately above the textarea. */
+form[name='forumpost'] > .forum-smilies-row,
 form[name='forumpost'] > .uk-form-row:has(#forum_smilies) {
-    margin: -.1rem 0 .7rem;
-    padding: .35rem .15rem;
+    margin: -.2rem 0 .55rem;
+    padding: .25rem .15rem;
 }
 
 form[name='forumpost'] #forum_smilies {
@@ -347,4 +352,37 @@ form[name='forumpost'] ~ .uk-grid iframe {
     form[name='forumpost'] > .uk-form-row:has(#form-forum-mood) > .uk-form-controls {
         flex: 1 1 100%;
     }
+}
+
+
+/* MediaGallery belongs to the editor toolbar, next to the native image/link
+ * insertion tools. */
+form[name='forumpost'] .forum-media-toolbar {
+    display: inline-flex;
+    align-items: center;
+}
+
+form[name='forumpost'] .forum-media-toolbar .forum-media-picker {
+    min-height: 2.35rem;
+    margin: 0;
+    padding: .4rem .62rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font-size: .82rem;
+    font-weight: 650;
+    line-height: 1.2;
+    box-shadow: none;
+}
+
+form[name='forumpost'] .forum-media-toolbar .forum-media-picker:hover,
+form[name='forumpost'] .forum-media-toolbar .forum-media-picker:focus-visible {
+    border-color: var(--eclipse-primary);
+    color: var(--eclipse-primary);
+    background: color-mix(in srgb, var(--eclipse-primary) 5%, var(--eclipse-surface));
+}
+
+form[name='forumpost'] .forum-media-picker-wrap {
+    display: none;
 }
