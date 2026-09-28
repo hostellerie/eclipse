@@ -502,3 +502,41 @@ form[name='forumpost'] #forum-media-transport[hidden] {
         padding: .5rem;
     }
 }
+
+
+/* Inline Forum posting feedback. The form remains on the page, so validation
+ * messages should read as contextual feedback instead of a separate legacy
+ * warning screen. */
+.eclipse-forum-page .forum-alert {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 0 1rem;
+    padding: .85rem 1rem;
+    border: 1px solid color-mix(in srgb, #d97706 35%, var(--eclipse-border));
+    border-left: .3rem solid #d97706;
+    border-radius: .6rem;
+    background: color-mix(in srgb, #f59e0b 7%, var(--eclipse-surface));
+    color: var(--eclipse-text);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, .04);
+}
+
+.eclipse-forum-page .forum-alert .forum-alert-title {
+    margin: 0 0 .3rem;
+    color: var(--eclipse-text);
+    font-size: 1rem;
+    font-weight: 750;
+}
+
+.eclipse-forum-page .forum-alert .forum-alert-message {
+    margin: 0;
+    color: var(--eclipse-text);
+    line-height: 1.5;
+}
+
+.eclipse-forum-page .forum-alert .forum-alert-prompt:empty {
+    display: none;
+}
+
+.eclipse-forum-page .forum-alert .forum-alert-prompt {
+    margin: .45rem 0 0;
+}
