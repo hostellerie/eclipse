@@ -235,7 +235,12 @@ form[name='forumpost'] #forum_smilies {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: .15rem;
+    gap: .25rem;
+}
+
+form[name='forumpost'] #forum_smilies .frm_sml {
+    display: block;
+    margin: 0;
 }
 
 form[name='forumpost'] img,
