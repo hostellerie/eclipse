@@ -391,3 +391,114 @@ form[name='forumpost'] .forum-media-toolbar .forum-media-picker:focus-visible {
 form[name='forumpost'] .forum-media-picker-wrap {
     display: none;
 }
+
+
+/* Forum visual editor (plugin-owned markup).
+ *
+ * Eclipse deliberately keeps the posting templates in the Forum plugin. The
+ * visual editor is therefore styled here only through the stable classes
+ * emitted by the plugin, preserving the version-specific POST contract.
+ */
+form[name='forumpost'] > .forum-visual-toolbar {
+    order: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem;
+    width: 100%;
+    margin: 0 0 .65rem;
+    padding: .6rem .7rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .65rem;
+    background: color-mix(in srgb, var(--eclipse-primary) 3%, var(--eclipse-surface));
+}
+
+form[name='forumpost'] .forum-visual-toolbar button,
+form[name='forumpost'] .forum-visual-toolbar .forum-media-picker {
+    min-height: 2.35rem;
+    padding: .4rem .62rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+    line-height: 1.2;
+}
+
+form[name='forumpost'] .forum-visual-toolbar button:hover,
+form[name='forumpost'] .forum-visual-toolbar button:focus-visible,
+form[name='forumpost'] .forum-visual-toolbar .forum-media-picker:hover,
+form[name='forumpost'] .forum-visual-toolbar .forum-media-picker:focus-visible {
+    border-color: var(--eclipse-primary);
+    color: var(--eclipse-primary);
+}
+
+form[name='forumpost'] .forum-visual-editor-shell {
+    width: 100%;
+    min-width: 0;
+}
+
+form[name='forumpost'] .forum-visual-editor {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 22rem;
+    padding: .85rem .9rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .5rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+}
+
+form[name='forumpost'] .forum-visual-editor:focus {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 1px;
+}
+
+form[name='forumpost'] .forum-visual-editor ul,
+form[name='forumpost'] .forum-visual-editor ol {
+    margin: .65rem 0 .65rem 1.75rem;
+}
+
+form[name='forumpost'] .forum-visual-editor blockquote {
+    margin: .75rem 0;
+    padding: .55rem .8rem;
+    border-left: 3px solid var(--eclipse-primary);
+    background: color-mix(in srgb, var(--eclipse-primary) 4%, var(--eclipse-surface));
+}
+
+form[name='forumpost'] .forum-visual-editor pre {
+    overflow: auto;
+    padding: .75rem;
+    border-radius: .4rem;
+    background: color-mix(in srgb, var(--eclipse-text) 6%, var(--eclipse-surface));
+    color: var(--eclipse-text);
+    white-space: pre-wrap;
+}
+
+form[name='forumpost'] .forum-editor-embed {
+    max-width: 100%;
+}
+
+form[name='forumpost'] .forum-editor-embed img {
+    max-width: 100%;
+    height: auto;
+}
+
+form[name='forumpost'] textarea[hidden],
+form[name='forumpost'] #forum-media-transport[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 47.99rem) {
+    form[name='forumpost'] .forum-visual-editor {
+        min-height: 18rem;
+    }
+
+    form[name='forumpost'] > .forum-visual-toolbar {
+        padding: .5rem;
+    }
+}
