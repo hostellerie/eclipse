@@ -330,3 +330,34 @@ body.eclipse-admin-page.eclipse-forum-page .uk-tab > li > a {
         font-size: .88rem;
     }
 }
+
+
+/* MediaGallery legacy browser link: keep the proven browser integration,
+ * but present it as a primary Forum action. */
+body.eclipse-public-page.eclipse-forum-page #mg_browser {
+    display: inline-block;
+    box-sizing: border-box;
+    margin: .5rem 0;
+    padding: .7rem 1.2rem;
+    border: 0;
+    border-radius: .6rem;
+    background: var(--eclipse-primary);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.eclipse-public-page.eclipse-forum-page #mg_browser:hover,
+body.eclipse-public-page.eclipse-forum-page #mg_browser:focus-visible {
+    background: color-mix(in srgb, var(--eclipse-primary) 88%, #000 12%);
+    color: #fff;
+    text-decoration: none;
+}
+
+body.eclipse-public-page.eclipse-forum-page #mg_browser:focus-visible {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
