@@ -755,3 +755,16 @@
 .eclipse-forum-post-actions a.uk-button i {
     line-height: 1;
 }
+
+
+/* Links inside Forum post content must remain visibly identifiable even when
+ * the global theme uses hover-only link decoration. */
+.eclipse-forum-post-content a {
+    text-decoration: underline !important;
+    text-underline-offset: .14em;
+}
+
+.eclipse-forum-post-content a:hover,
+.eclipse-forum-post-content a:focus-visible {
+    text-decoration-thickness: .12em;
+}
