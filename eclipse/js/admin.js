@@ -151,6 +151,49 @@
     brand.innerHTML = '<span aria-hidden="true">E</span><b>Eclipse</b><small>Administration</small>'; sidebar.appendChild(brand);
     var navigation = document.createElement('nav'); navigation.setAttribute('aria-label', 'Administration');
     var known = {}; var sectionsByLabel = {}; var sectionIndex = 0;
+
+    function normalizeAdminHref(href) {
+        href = (href || '').trim();
+        if (!href) return '';
+        if (href === '#eclipse-theme-studio') return href;
+
+        try {
+            var url = new URL(href, window.location.href);
+            var path = url.pathname.replace(/\/+$/, '') || '/';
+            return path + url.search;
+        } catch (ignore) {
+            return href.replace(/\/+$/, '');
+        }
+    }
+
+    function adminLabelHasCount(label) {
+        return /\([0-9]+(?:\/[0-9]+)?\)\s*$/.test((label || '').trim());
+    }
+
+    function mergeAdminLink(existing, original) {
+        if (!existing || !original) return;
+
+        var candidate = original.textContent.trim();
+        var current = existing.textContent.trim();
+        if (adminLabelHasCount(candidate) && !adminLabelHasCount(current)) {
+            existing.textContent = candidate;
+        }
+
+        if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) {
+            existing.setAttribute('aria-current', 'page');
+        }
+    }
+
+    function sortAdminList(list) {
+        if (!list) return;
+        var items = Array.prototype.slice.call(list.children);
+        items.sort(function (a, b) {
+            var al = (a.textContent || '').trim();
+            var bl = (b.textContent || '').trim();
+            return al.localeCompare(bl, undefined, { sensitivity: 'base', numeric: true });
+        });
+        items.forEach(function (item) { list.appendChild(item); });
+    }
     function blockIcon(label, links) {
         var labelProbe = label.toLowerCase(); var probe = (label + ' ' + links.map(function (link) { return (link.textContent || '') + ' ' + (link.getAttribute('href') || ''); }).join(' ')).toLowerCase();
         var categoryProbe = /user|users|plugin|extension|tool|tools|config|setting|content|core|studio/.test(labelProbe) ? labelProbe : probe;
@@ -163,21 +206,35 @@
         return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
     }
     function addSection(sectionLabel, rawLinks) {
-        var links = rawLinks.filter(function (link) {
-            var href = link.getAttribute('href') || ''; var text = link.textContent.trim();
-            if (!href || !text || (href.charAt(0) === '#' && href !== '#eclipse-theme-studio') || known[href + '|' + text]) return false;
-            known[href + '|' + text] = true; return true;
+        var links = [];
+        rawLinks.forEach(function (original) {
+            var href = original.getAttribute('href') || '';
+            var text = original.textContent.trim();
+            var key = normalizeAdminHref(href);
+
+            if (!href || !text || (href.charAt(0) === '#' && href !== '#eclipse-theme-studio')) return;
+
+            if (key && known[key]) {
+                mergeAdminLink(known[key], original);
+                return;
+            }
+
+            links.push({ original: original, key: key });
         });
+
         if (!links.length) return;
         var sectionKey = sectionLabel.trim().toLowerCase();
         if (sectionsByLabel[sectionKey]) {
             var existingList = sectionsByLabel[sectionKey].list;
-            links.forEach(function (original) {
+            links.forEach(function (entry) {
+                var original = entry.original;
                 var item = document.createElement('li'); var link = document.createElement('a');
                 link.href = original.href; link.textContent = /^studio$/i.test(sectionLabel) && /#eclipse-theme-studio$/.test(original.href) ? 'Theme Studio' : original.textContent.trim();
                 if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) link.setAttribute('aria-current', 'page');
                 item.appendChild(link); existingList.appendChild(item);
+                if (entry.key) known[entry.key] = link;
             });
+            sortAdminList(existingList);
             return;
         }
         var section = document.createElement('section');
@@ -186,12 +243,15 @@
         var sectionText = document.createElement('b'); sectionText.textContent = sectionLabel; sectionButton.appendChild(sectionIcon); sectionButton.appendChild(sectionText);
         var list = document.createElement('ul'); var listId = 'eclipse-admin-section-' + sectionIndex++;
         list.id = listId; sectionButton.setAttribute('aria-controls', listId);
-        links.forEach(function (original) {
+        links.forEach(function (entry) {
+            var original = entry.original;
             var item = document.createElement('li'); var link = document.createElement('a');
             link.href = original.href; link.textContent = /^studio$/i.test(sectionLabel) && /#eclipse-theme-studio$/.test(original.href) ? 'Theme Studio' : original.textContent.trim();
             if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) link.setAttribute('aria-current', 'page');
             item.appendChild(link); list.appendChild(item);
+            if (entry.key) known[entry.key] = link;
         });
+        sortAdminList(list);
         function fitDesktopSubmenu() {
             if (!window.matchMedia('(min-width:52.01rem)').matches) {
                 list.style.removeProperty('top');
@@ -238,9 +298,9 @@
         groupHeadings.forEach(function (heading) {
             var list = heading.nextElementSibling;
             while (list && list.tagName !== 'UL') list = list.nextElementSibling;
-            if (!list) return; groupedLists.push(list); addSection(heading.textContent.trim() || defaultLabel, Array.prototype.slice.call(list.querySelectorAll('.adminoption a[href]')));
+            if (!list) return; groupedLists.push(list); addSection(heading.textContent.trim() || defaultLabel, Array.prototype.slice.call(list.querySelectorAll('.adminoption a[href], .adminoption_off a[href]')));
         });
-        var baseLinks = Array.prototype.slice.call(source.querySelectorAll('.adminoption a[href]')).filter(function (link) {
+        var baseLinks = Array.prototype.slice.call(source.querySelectorAll('.adminoption a[href], .adminoption_off a[href]')).filter(function (link) {
             return !groupedLists.some(function (list) { return list.contains(link); });
         });
         addSection(defaultLabel, baseLinks);
@@ -260,8 +320,9 @@
         // Command & Control is built from plugin_cclabel_* while Geeklog's
         // native administration menu is built from plugin_getadminoption_*.
         // Some plugins intentionally expose only the latter. Merge the native
-        // source as a completion pass; addSection() de-duplicates links already
-        // present in Command & Control.
+        // source as a completion pass; addSection() de-duplicates by normalized
+        // destination URL, preserves the more informative counted label when
+        // available, and sorts each merged section alphabetically.
         if (nativeSource) addSource(nativeSource);
 
         var studioLink = dashboard ? dashboard.querySelector('.eclipse-studio-launch[href]') : null;
