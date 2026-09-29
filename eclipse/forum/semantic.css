@@ -605,3 +605,107 @@
         grid-template-columns: minmax(0, 1fr) auto;
     }
 }
+
+/* Compact per-post moderation controls. These are intentionally separate from
+ * the full moderation confirmation forms styled in reports.css. */
+.eclipse-forum-post-moderation {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .4rem;
+    margin: 0;
+}
+
+.eclipse-forum-post-moderation select,
+.eclipse-forum-mod-form select {
+    box-sizing: border-box;
+    width: auto;
+    min-width: 12rem;
+    min-height: 2.15rem;
+    padding: .3rem 1.9rem .3rem .55rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .4rem;
+    background-color: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+    font-size: .78rem;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"] {
+    box-sizing: border-box;
+    width: auto;
+    min-width: 0;
+    min-height: 2.15rem;
+    margin: 0;
+    padding: .3rem .6rem;
+    border: 1px solid var(--eclipse-primary);
+    border-radius: .4rem;
+    background: var(--eclipse-primary);
+    color: #fff;
+    font: inherit;
+    font-size: .76rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-shadow: none;
+    cursor: pointer;
+}
+
+.eclipse-forum-post-moderation select:hover,
+.eclipse-forum-post-moderation select:focus,
+.eclipse-forum-mod-form select:hover,
+.eclipse-forum-mod-form select:focus {
+    border-color: var(--eclipse-primary);
+    background-color: var(--eclipse-surface);
+    color: var(--eclipse-text);
+}
+
+.eclipse-forum-post-moderation select:focus-visible,
+.eclipse-forum-mod-form select:focus-visible,
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"]:focus-visible {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
+
+.eclipse-forum-post-moderation select option,
+.eclipse-forum-mod-form select option {
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+}
+
+/* Keep the author column compact and close to the established Ecologie
+ * Pratique presentation while remaining responsive. */
+@media (min-width: 48rem) {
+    .eclipse-forum-post-layout {
+        grid-template-columns: minmax(11rem, 17.5rem) minmax(0, 1fr);
+    }
+
+    .eclipse-forum-post-author {
+        padding: 1.25rem 1rem;
+    }
+
+    .eclipse-forum-post-main {
+        padding: 1.15rem 1.4rem;
+    }
+}
+
+@media (max-width: 47.99rem) {
+    .eclipse-forum-post-moderation,
+    .eclipse-forum-post-moderation .eclipse-forum-mod-form {
+        width: 100%;
+    }
+
+    .eclipse-forum-post-moderation .eclipse-forum-mod-form {
+        justify-content: stretch;
+    }
+
+    .eclipse-forum-post-moderation select {
+        flex: 1 1 12rem;
+        min-width: 0;
+    }
+}
