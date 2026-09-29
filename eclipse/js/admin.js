@@ -195,7 +195,10 @@
         items.forEach(function (item) { list.appendChild(item); });
     }
     function blockIcon(label, links) {
-        var labelProbe = label.toLowerCase(); var probe = (label + ' ' + links.map(function (link) { return (link.textContent || '') + ' ' + (link.getAttribute('href') || ''); }).join(' ')).toLowerCase();
+        var labelProbe = label.toLowerCase(); var probe = (label + ' ' + links.map(function (entry) {
+            var link = entry && entry.original ? entry.original : entry;
+            return link ? (link.textContent || '') + ' ' + (link.getAttribute('href') || '') : '';
+        }).join(' ')).toLowerCase();
         var categoryProbe = /user|users|plugin|extension|tool|tools|config|setting|content|core|studio/.test(labelProbe) ? labelProbe : probe;
         var path = '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>';
         if (/tool|log|backup|clear|security|outil|cache/.test(categoryProbe)) path = '<path d="M14 6a4 4 0 0 0-5 5L3 17l4 4 6-6a4 4 0 0 0 5-5l-3 2-3-3Z"/>';
