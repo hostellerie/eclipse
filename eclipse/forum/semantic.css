@@ -682,7 +682,7 @@
  * Pratique presentation while remaining responsive. */
 @media (min-width: 48rem) {
     .eclipse-forum-post-layout {
-        grid-template-columns: minmax(11rem, 17.5rem) minmax(0, 1fr);
+        grid-template-columns: minmax(10.5rem, 15.5rem) minmax(0, 1fr);
     }
 
     .eclipse-forum-post-author {
@@ -725,4 +725,33 @@
 
 .eclipse-forum-post-content p:last-child {
     margin-bottom: 0;
+}
+
+.eclipse-forum-post-content ul,
+.eclipse-forum-post-content ol {
+    margin-top: .65rem;
+    margin-bottom: 1.05rem;
+}
+
+.eclipse-forum-post-content ul + p,
+.eclipse-forum-post-content ol + p {
+    margin-top: .15rem;
+}
+
+
+/* Keep Edit and Quote visually aligned as one action group while preserving
+ * their primary/secondary hierarchy. */
+.eclipse-forum-post-actions .uk-button,
+.eclipse-forum-post-actions a.uk-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.55rem;
+    padding: .5rem .8rem;
+    line-height: 1.2;
+}
+
+.eclipse-forum-post-actions .uk-button i,
+.eclipse-forum-post-actions a.uk-button i {
+    line-height: 1;
 }
