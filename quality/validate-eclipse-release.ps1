@@ -161,6 +161,17 @@ if ($configTemplate -notmatch 'eclipse-config-target' -or
     Fail 'Configuration search target highlighting styles are missing.'
 }
 
+# Modern admin navigation merges Command & Control with Geeklog's native
+# plugin_getadminoption_* source. The merged result must stay unique by
+# destination URL and alphabetically ordered regardless of source order.
+if ($adminJs -notmatch 'function normalizeAdminHref' -or
+    $adminJs -notmatch 'function sortAdminList' -or
+    $adminJs -notmatch 'known\[entry\.key\]' -or
+    $adminJs -notmatch 'sortAdminList\(existingList\)' -or
+    $adminJs -notmatch 'sortAdminList\(list\)') {
+    Fail 'Merged administration navigation de-duplication/sorting contract is incomplete.'
+}
+
 # Configuration Manager intentionally follows native Denim layout/behavior in
 # 1.2.0. Do not require the removed custom tab/select geometry fallbacks.
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
