@@ -540,3 +540,15 @@ form[name='forumpost'] #forum-media-transport[hidden] {
 .eclipse-forum-page .forum-alert .forum-alert-prompt {
     margin: .45rem 0 0;
 }
+
+
+/* Match published Forum content: links stay visibly underlined while editing. */
+form[name='forumpost'] .forum-visual-editor a {
+    text-decoration: underline !important;
+    text-underline-offset: .14em;
+}
+
+form[name='forumpost'] .forum-visual-editor a:hover,
+form[name='forumpost'] .forum-visual-editor a:focus-visible {
+    text-decoration-thickness: .12em;
+}
