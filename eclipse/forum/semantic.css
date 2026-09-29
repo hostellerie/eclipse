@@ -709,3 +709,20 @@
         min-width: 0;
     }
 }
+
+
+/* Preserve readable paragraph rhythm for visual-editor posts that use the
+ * canonical BR+BR separator rather than wrapping every paragraph in <p>. */
+.eclipse-forum-post-content br + br {
+    display: block;
+    content: "";
+    margin-top: .75rem;
+}
+
+.eclipse-forum-post-content p {
+    margin: 0 0 .9rem;
+}
+
+.eclipse-forum-post-content p:last-child {
+    margin-bottom: 0;
+}
