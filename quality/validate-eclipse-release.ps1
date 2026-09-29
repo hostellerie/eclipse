@@ -172,6 +172,10 @@ if ($adminJs -notmatch 'function normalizeAdminHref' -or
     Fail 'Merged administration navigation de-duplication/sorting contract is incomplete.'
 }
 
+if ($adminJs -notmatch 'entry && entry\.original \? entry\.original : entry') {
+    Fail 'Merged administration navigation icon discovery is not compatible with normalized link entries.'
+}
+
 # Configuration Manager intentionally follows native Denim layout/behavior in
 # 1.2.0. Do not require the removed custom tab/select geometry fallbacks.
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
