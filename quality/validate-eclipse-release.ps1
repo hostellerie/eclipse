@@ -34,7 +34,8 @@ $allowedLegacyFailures = @(
     'Public Eclipse CSS budget exceeded:',
     'Installable theme budget exceeded:',
     'Configuration secondary-tab fallback styling is incomplete.',
-    'Mobile configuration select-value geometry is incomplete.'
+    'Mobile configuration select-value geometry is incomplete.',
+    'Configuration Manager must retain its native Denim layout and behavior.'
 )
 
 $legacyFailures = @($legacyOutput | Where-Object { $_ -match '^FAIL:\s*(.+)$' })
@@ -200,14 +201,18 @@ if ($adminJs -notmatch 'entry && entry\.original \? entry\.original : entry') {
     Fail 'Merged administration navigation icon discovery is not compatible with normalized link entries.'
 }
 
-# Configuration Manager intentionally follows native Denim layout/behavior in
-# 1.2.0. Do not require the removed custom tab/select geometry fallbacks.
+# Configuration Manager keeps Geeklog's native behavior while Eclipse owns
+# presentation through one dedicated stylesheet. Do not reintroduce JavaScript
+# workspace replacements or scattered CSS patches.
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
 $uiFixes = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/ui-fixes.css')
-if ($functions -match "name'\s*=>\s*'eclipse-configuration'" -or
-    $themeJs -match 'setupConfigurationWorkspace|protectConfigurationTabs' -or
+if ($functions -notmatch "name'\s*=>\s*'eclipse-configuration'" -or
+    $functions -notmatch 'css/configuration\.css') {
+    Fail 'Configuration Manager stylesheet is not loaded through theme_css_eclipse().'
+}
+if ($themeJs -match 'setupConfigurationWorkspace|protectConfigurationTabs' -or
     $uiFixes -match 'eclipse-configuration-page #rightblocks\{display:none\}') {
-    Fail 'Configuration Manager no longer retains native Denim layout and behavior.'
+    Fail 'Configuration Manager contains obsolete behavior overrides outside the dedicated presentation layer.'
 }
 
 if ($errors.Count -gt 0) {
