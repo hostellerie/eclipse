@@ -59,13 +59,6 @@ POST_UPDATE_HELPERS = r'''function eclipse_theme_homepage()
     return isset($ini['theme']['url']) ? (string) $ini['theme']['url'] : '';
 }
 
-function eclipse_asset_cache_token()
-{
-    $stamp = @filemtime(__DIR__ . '/theme.ini');
-    $value = eclipse_theme_version() . ($stamp ? '-' . (string) $stamp : '');
-    return '?v=' . rawurlencode($value);
-}
-
 function eclipse_admin_post_redirect($status)
 {
     global $_CONF;
@@ -267,11 +260,6 @@ def prepare():
     homepage_line = "        'theme_homepage'         => 'https://github.com/hostellerie/eclipse',"
     functions = replace_once(functions, homepage_line, "        'theme_homepage'         => eclipse_theme_homepage(),", 'theme homepage metadata')
 
-    asset_line = "$version = '?v=' . rawurlencode(eclipse_theme_version());"
-    asset_count = functions.count(asset_line)
-    if asset_count != 2:
-        fail('Expected two Eclipse asset cache token declarations, found ' + str(asset_count))
-    functions = functions.replace(asset_line, '$version = eclipse_asset_cache_token();')
 
     update_message = "            $message = '<p class=\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';"
     update_replacement = "            if (!empty($result['success']) && eclipse_admin_post_redirect('updated')) return '';\n" + update_message
