@@ -101,6 +101,10 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-content{min-width
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-main{min-width:0;width:100%;padding:0;background:transparent}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message{margin:0 0 1rem;padding:.9rem 1.1rem;background:color-mix(in srgb,var(--eclipse-primary) 6%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-left:4px solid var(--eclipse-primary);border-radius:.6rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-form{width:100%;margin:0}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-title{margin-bottom:.85rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field[id],
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-fields>.config_name[id]{scroll-margin-top:7rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-target{background:color-mix(in srgb,var(--eclipse-primary) 13%,var(--eclipse-surface))!important;border-color:color-mix(in srgb,var(--eclipse-primary) 78%,var(--eclipse-border))!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--eclipse-primary) 20%,transparent),0 8px 24px rgba(15,23,42,.08)!important;transition:background-color .25s ease,border-color .25s ease,box-shadow .25s ease}
 
 /* Tabs */
 body.theme-eclipse.eclipse-admin-configuration #config_content #tabs>ul{display:flex;align-items:flex-end;flex-wrap:wrap;gap:.4rem;margin:0 0 1.1rem;padding:.5rem .5rem 0;overflow:visible;background:color-mix(in srgb,var(--eclipse-primary) 4%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-radius:.7rem .7rem 0 0;list-style:none}
@@ -125,6 +129,7 @@ body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field:hover{borde
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label{display:flex;align-items:center;flex-wrap:wrap;gap:.2rem .35rem;min-width:0;padding:0;color:var(--eclipse-text);font-size:.84rem;font-weight:650;line-height:1.35}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-label-text{min-width:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help{display:inline-flex;align-items:center;font-size:0;line-height:1}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help :is(a.tooltip,.gl-tooltip){font-size:.72rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-help:empty,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-unset:empty{display:none}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-unset{display:inline-flex;align-items:center;font-size:.72rem;font-weight:600}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>.opt,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>textarea,body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field>select{box-sizing:border-box;width:100%;max-width:42rem;min-width:0;margin:0;min-height:2.35rem}
