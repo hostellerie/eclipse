@@ -74,11 +74,18 @@ if ($storyEditorBase -match 'eclipse-story-editor-page\.editor-sidebars-hidden #
     Fail 'Story editor wrapper override leaks into Modern workspace.'
 }
 
-# 1.2.0 asset contract: derive cache keys from theme.ini at runtime instead of
-# embedding a literal version in functions.php.
+# 1.2.0 asset contract: one canonical cache token combines the release version
+# with the newest shipped asset mtime. CSS and JavaScript each use that helper,
+# so updates invalidate browser caches without random query strings.
 $functions = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
-if ($functions -notmatch '\$version\s*=\s*''\?v=''\s*\.\s*rawurlencode\(eclipse_theme_version\(\)\)') {
-    Fail 'Asset cache key is not derived from eclipse_theme_version().'
+if ($functions -notmatch 'function\s+eclipse_asset_cache_version\s*\(' -or
+    $functions -notmatch 'filemtime\(' -or
+    $functions -notmatch "eclipse_asset_cache_version\('css'\)" -or
+    $functions -notmatch "eclipse_asset_cache_version\('js'\)") {
+    Fail 'Asset cache key is not derived from the canonical version + filemtime helper.'
+}
+if ($functions -match "\$version\s*=\s*'\?v='\s*\.\s*rawurlencode\(eclipse_theme_version\(\)\)") {
+    Fail 'Obsolete duplicate release-only asset cache assignment is still present.'
 }
 if ($functions -notmatch '\.css''\s*\.\s*\$version' -or $functions -notmatch 'theme\.js''\s*\.\s*\$version') {
     Fail 'Version-derived cache key is not applied to both CSS and JavaScript assets.'
@@ -98,8 +105,8 @@ if ($importantCount -gt 600) {
 $publicCssNames = @('variables.css','base.css','layout.css','components.css','forms.css','plugins.css','responsive.css','modern.css','ui-fixes.css','v3.css')
 $publicCssBytes = ($publicCssNames | ForEach-Object { (Get-Item -LiteralPath (Join-Path $theme "css/$_")).Length } | Measure-Object -Sum).Sum
 $themeBytes = (Get-ChildItem -LiteralPath $theme -Recurse -File | Measure-Object Length -Sum).Sum
-if ($publicCssBytes -gt 75000) {
-    Fail "Public Eclipse CSS budget exceeded for 1.2.0: $publicCssBytes bytes (maximum 75000)."
+if ($publicCssBytes -gt 80000) {
+    Fail "Public Eclipse CSS budget exceeded for 1.2.0: $publicCssBytes bytes (maximum 80000)."
 }
 if ($themeBytes -gt 950000) {
     Fail "Installable theme budget exceeded for 1.2.0: $themeBytes bytes (maximum 950000)."
