@@ -175,15 +175,15 @@ if ($configCss -notmatch 'eclipse-config-help\s+:is\(a\.tooltip,\.gl-tooltip\)\s
 # Geeklog supplies URLs such as ?tab-20#advanced_editor; Eclipse must turn the
 # stable parameter hash into a real row anchor, scroll to it and highlight it.
 $adminJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/admin.js')
-$configTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'admin/config/configuration.thtml')
+$configCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/configuration.css')
 if ($adminJs -notmatch 'name\$="\[nameholder\]"' -or
     $adminJs -notmatch 'scrollIntoView' -or
     $adminJs -notmatch 'eclipse-config-target') {
     Fail 'Configuration search result targeting contract is incomplete.'
 }
-if ($configTemplate -notmatch 'eclipse-config-target' -or
-    $configTemplate -notmatch 'scroll-margin-top') {
-    Fail 'Configuration search target highlighting styles are missing.'
+if ($configCss -notmatch 'eclipse-config-target' -or
+    $configCss -notmatch 'scroll-margin-top') {
+    Fail 'Configuration search target highlighting styles are missing from css/configuration.css.'
 }
 
 # Modern admin navigation merges Command & Control with Geeklog's native
