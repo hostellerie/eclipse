@@ -189,12 +189,15 @@ if ($configCss -notmatch 'eclipse-config-target' -or
 # Modern admin navigation merges Command & Control with Geeklog's native
 # plugin_getadminoption_* source. The merged result must stay unique by
 # destination URL and alphabetically ordered regardless of source order.
+# URL fragments are part of the destination identity: the Theme Studio lives at
+# /admin/index.php#eclipse-theme-studio and must not collapse into /admin/index.php.
 if ($adminJs -notmatch 'function normalizeAdminHref' -or
+    $adminJs -notmatch 'return path \+ url\.search \+ url\.hash' -or
     $adminJs -notmatch 'function sortAdminList' -or
     $adminJs -notmatch 'known\[entry\.key\]' -or
     $adminJs -notmatch 'sortAdminList\(existingList\)' -or
     $adminJs -notmatch 'sortAdminList\(list\)') {
-    Fail 'Merged administration navigation de-duplication/sorting contract is incomplete.'
+    Fail 'Merged administration navigation de-duplication/sorting contract is incomplete or drops URL fragments.'
 }
 
 if ($adminJs -notmatch 'entry && entry\.original \? entry\.original : entry') {
