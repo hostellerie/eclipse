@@ -160,7 +160,11 @@
         try {
             var url = new URL(href, window.location.href);
             var path = url.pathname.replace(/\/+$/, '') || '/';
-            return path + url.search;
+            // Preserve fragments: /admin/index.php and
+            // /admin/index.php#eclipse-theme-studio are distinct destinations.
+            // Dropping the hash makes the Studio link look like a duplicate of
+            // the administration dashboard and removes it from the sidebar.
+            return path + url.search + url.hash;
         } catch (ignore) {
             return href.replace(/\/+$/, '');
         }
