@@ -201,6 +201,7 @@ function theme_css_eclipse()
     $requestPath = eclipse_request_path();
     $isAdmin = eclipse_is_admin_request();
     $isAdminDashboard = $isAdmin && eclipse_admin_page() === 'index';
+    $isConfiguration = eclipse_is_configuration_page();
     $isStoryEditor = eclipse_is_story_editor();
     $isStaticpagesAdmin = eclipse_is_staticpages_admin();
     $isCommentPage = !$isAdmin && (substr($requestPath, -12) === '/article.php' || substr($requestPath, -12) === '/comment.php');
@@ -221,6 +222,9 @@ function theme_css_eclipse()
     );
     if ($isAdmin) {
         $cssFiles[] = array('name' => 'eclipse-admin', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/admin/admin.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 307);
+    }
+    if ($isConfiguration) {
+        $cssFiles[] = array('name' => 'eclipse-configuration', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/configuration.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 308);
     }
     if ($isAdminDashboard) {
         $cssFiles[] = array('name' => 'eclipse-studio', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/studio.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 280);
