@@ -153,6 +153,23 @@ if ($formsCss -notmatch 'eclipse-user-settings #pe_navbar' -or
     Fail 'User settings tab presentation contract is incomplete.'
 }
 
+# Configuration presentation must remain centralized in css/configuration.css.
+# The template must not carry a second inline stylesheet, and the native
+# COM_getTooltip() trigger must remain visible even though the wrapper hides
+# Geeklog's literal parentheses with font-size: 0.
+$configCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/configuration.css')
+$configPageTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'admin/config/configuration.thtml')
+if ($functions -notmatch "name'\s*=>\s*'eclipse-configuration'" -or
+    $functions -notmatch 'css/configuration\.css') {
+    Fail 'Configuration stylesheet is not registered by theme_css_eclipse().'
+}
+if ($configPageTemplate -match '<style[\s>]') {
+    Fail 'Configuration template contains inline CSS instead of using css/configuration.css.'
+}
+if ($configCss -notmatch 'eclipse-config-help\s+:is\(a\.tooltip,\.gl-tooltip\)\s*\{[^}]*font-size:\.72rem') {
+    Fail 'Configuration help does not restore the native COM_getTooltip() trigger size.'
+}
+
 # Configuration search result targeting is an Eclipse 1.2 usability contract.
 # Geeklog supplies URLs such as ?tab-20#advanced_editor; Eclipse must turn the
 # stable parameter hash into a real row anchor, scroll to it and highlight it.
