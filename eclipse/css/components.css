@@ -68,6 +68,10 @@ body.theme-eclipse .gl-tooltip:focus-visible>.eclipse-tooltip-content{
     visibility:visible;
     opacity:1;
 }
+body.theme-eclipse .gl-tooltip:focus-visible{
+    outline:3px solid color-mix(in srgb,var(--eclipse-primary) 60%,white);
+    outline-offset:2px;
+}
 body.theme-eclipse .eclipse-tooltip-title{
     display:block;
     margin:0 0 .35rem;
