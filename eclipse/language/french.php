@@ -174,7 +174,7 @@ $LANG_ECLIPSE = array(
     'save_and_verify_help' => 'Appliquez les réglages, puis vérifiez les pages publiques et d’administration. Eclipse ne vide automatiquement que ses propres caches de thème.',
 
     'configuration' => 'Configuration',
-    'search_configuration' => 'Rechercher dans la configuration'
+    'search_configuration' => 'Rechercher dans la configuration',
     'footer_links' => 'Liens du pied de page',
     'footer_links_intro' => 'Créez jusqu’à huit lignes de liens. Les données sont stockées dans un fichier JSON protégé, hors du répertoire de cache de Geeklog, et sont conservées lors des mises à jour du thème et du nettoyage du cache.',
     'link_row' => 'Ligne de liens',
