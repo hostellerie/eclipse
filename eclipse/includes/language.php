@@ -20,11 +20,10 @@ function eclipse_language_file_name()
 
 function eclipse_language_read($name)
 {
-    global $LANG_ECLIPSE, $ECLIPSE_LANG_EXTRA;
+    global $LANG_ECLIPSE;
 
     $directory = dirname(__DIR__) . '/language/';
     $LANG_ECLIPSE = array();
-    $ECLIPSE_LANG_EXTRA = array();
 
     $file = $directory . $name . '.php';
     if (is_file($file)) {
@@ -32,13 +31,6 @@ function eclipse_language_read($name)
     }
     $strings = is_array($LANG_ECLIPSE) ? $LANG_ECLIPSE : array();
 
-    $extra = $directory . $name . '-extra.php';
-    if (is_file($extra)) {
-        include $extra;
-        if (is_array($ECLIPSE_LANG_EXTRA)) {
-            $strings = array_merge($strings, $ECLIPSE_LANG_EXTRA);
-        }
-    }
 
     return $strings;
 }
@@ -72,6 +64,47 @@ function eclipse_lang($key, $fallback = '')
         return $strings[$key];
     }
     return $fallback !== '' ? $fallback : $key;
+}
+
+if (!function_exists('eclipse_translate_theme_studio_remaining_html')) {
+    function eclipse_translate_theme_studio_remaining_html($html)
+    {
+        if (!function_exists('eclipse_language_file_name') || eclipse_language_file_name() === 'english' || $html === '') {
+            return $html;
+        }
+
+        $map = array(
+            'Load the Google AdSense script' => 'load_adsense_script',
+            'Display the Geeklog topic name as an H1 on topic index pages' => 'display_topic_h1',
+            'Hide sidebars in story editor' => 'hide_sidebars_story_editor',
+            'Left sidebar' => 'left_sidebar',
+            'Right sidebar' => 'right_sidebar',
+            'Mobile menu' => 'mobile_menu',
+            'Copyright line' => 'copyright_line',
+            'Legal notice' => 'legal_notice',
+            'URL or path' => 'url_or_path',
+            'New window' => 'new_window',
+            'Emphasize' => 'emphasize',
+            'Enabled' => 'enabled',
+            'Nofollow' => 'nofollow',
+            'Label' => 'label',
+            'Remove' => 'remove',
+            'ZIP updates' => 'zip_updates',
+            'Available' => 'available',
+            'ZipArchive missing' => 'ziparchive_missing',
+            'Persistent JSON' => 'persistent_json',
+            'Writable sibling storage' => 'writable_sibling_storage',
+            'Not writable' => 'not_writable'
+        );
+
+        foreach ($map as $english => $key) {
+            $translation = htmlspecialchars(eclipse_lang($key, $english), ENT_QUOTES, 'UTF-8');
+            $html = str_replace('>' . $english . '<', '>' . $translation . '<', $html);
+            $html = str_replace('> ' . $english . '<', '> ' . $translation . '<', $html);
+        }
+
+        return $html;
+    }
 }
 
 function eclipse_lang_js()
