@@ -1,5 +1,113 @@
 (function () {
     'use strict';
+
+    if (!document.body || !document.body.classList.contains('eclipse-admin-configuration')) return;
+
+    var targetTimer = null;
+    var retryTimers = [];
+
+    function configRows() {
+        return Array.prototype.slice.call(document.querySelectorAll(
+            '#config_content input[type="hidden"][name$="[nameholder]"]'
+        ));
+    }
+
+    function rowForHolder(holder) {
+        var node = holder ? holder.parentNode : null;
+        while (node && node !== document.body) {
+            if ((' ' + (node.className || '') + ' ').indexOf(' config_name ') !== -1 ||
+                (' ' + (node.className || '') + ' ').indexOf(' eclipse-config-field ') !== -1) {
+                return node;
+            }
+            node = node.parentNode;
+        }
+        return null;
+    }
+
+    function parameterName(holder) {
+        var name = holder && holder.getAttribute ? holder.getAttribute('name') : '';
+        var suffix = '[nameholder]';
+        if (!name || name.slice(-suffix.length) !== suffix) return '';
+        return name.slice(0, -suffix.length);
+    }
+
+    function prepareAnchors() {
+        configRows().forEach(function (holder) {
+            var name = parameterName(holder);
+            var row = rowForHolder(holder);
+            if (!name || !row || row.id) return;
+            if (/^[A-Za-z0-9_.:-]+$/.test(name)) row.id = name;
+        });
+    }
+
+    function currentTargetName() {
+        var hash = window.location.hash ? window.location.hash.slice(1) : '';
+        if (!hash) return '';
+        try { return decodeURIComponent(hash); } catch (ignore) { return hash; }
+    }
+
+    function findTargetRow(name) {
+        if (!name) return null;
+
+        var byId = document.getElementById(name);
+        if (byId && ((' ' + (byId.className || '') + ' ').indexOf(' config_name ') !== -1 ||
+            (' ' + (byId.className || '') + ' ').indexOf(' eclipse-config-field ') !== -1)) {
+            return byId;
+        }
+
+        var holders = configRows();
+        for (var i = 0; i < holders.length; i += 1) {
+            if (parameterName(holders[i]) === name) return rowForHolder(holders[i]);
+        }
+        return null;
+    }
+
+    function clearTarget() {
+        Array.prototype.slice.call(document.querySelectorAll('.eclipse-config-target')).forEach(function (row) {
+            row.classList.remove('eclipse-config-target');
+        });
+    }
+
+    function revealTarget() {
+        prepareAnchors();
+
+        var name = currentTargetName();
+        var row = findTargetRow(name);
+        if (!row) return false;
+
+        clearTarget();
+        row.classList.add('eclipse-config-target');
+
+        if (targetTimer) window.clearTimeout(targetTimer);
+        targetTimer = window.setTimeout(function () {
+            row.classList.remove('eclipse-config-target');
+        }, 5000);
+
+        if (row.scrollIntoView) {
+            try {
+                row.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            } catch (ignore) {
+                row.scrollIntoView(true);
+            }
+        }
+
+        return true;
+    }
+
+    function scheduleReveal() {
+        retryTimers.forEach(function (timer) { window.clearTimeout(timer); });
+        retryTimers = [0, 120, 350].map(function (delay) {
+            return window.setTimeout(revealTarget, delay);
+        });
+    }
+
+    prepareAnchors();
+    scheduleReveal();
+    window.addEventListener('hashchange', scheduleReveal);
+}());
+
+(function () {
+    'use strict';
     if (!document.body.classList.contains('admin-ui-mode-modern')) return;
     var main = document.getElementById('main-content');
     var wrapper = document.getElementById('wrapper');
@@ -42,9 +150,59 @@
     brand.className = 'eclipse-admin-brand'; brand.href = window.geeklog && window.geeklog.site_url ? window.geeklog.site_url + '/admin/' : '#';
     brand.innerHTML = '<span aria-hidden="true">E</span><b>Eclipse</b><small>Administration</small>'; sidebar.appendChild(brand);
     var navigation = document.createElement('nav'); navigation.setAttribute('aria-label', 'Administration');
-    var known = {}; var sectionIndex = 0;
+    var known = {}; var sectionsByLabel = {}; var sectionIndex = 0;
+
+    function normalizeAdminHref(href) {
+        href = (href || '').trim();
+        if (!href) return '';
+        if (href === '#eclipse-theme-studio') return href;
+
+        try {
+            var url = new URL(href, window.location.href);
+            var path = url.pathname.replace(/\/+$/, '') || '/';
+            // Preserve fragments: /admin/index.php and
+            // /admin/index.php#eclipse-theme-studio are distinct destinations.
+            // Dropping the hash makes the Studio link look like a duplicate of
+            // the administration dashboard and removes it from the sidebar.
+            return path + url.search + url.hash;
+        } catch (ignore) {
+            return href.replace(/\/+$/, '');
+        }
+    }
+
+    function adminLabelHasCount(label) {
+        return /\([0-9]+(?:\/[0-9]+)?\)\s*$/.test((label || '').trim());
+    }
+
+    function mergeAdminLink(existing, original) {
+        if (!existing || !original) return;
+
+        var candidate = original.textContent.trim();
+        var current = existing.textContent.trim();
+        if (adminLabelHasCount(candidate) && !adminLabelHasCount(current)) {
+            existing.textContent = candidate;
+        }
+
+        if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) {
+            existing.setAttribute('aria-current', 'page');
+        }
+    }
+
+    function sortAdminList(list) {
+        if (!list) return;
+        var items = Array.prototype.slice.call(list.children);
+        items.sort(function (a, b) {
+            var al = (a.textContent || '').trim();
+            var bl = (b.textContent || '').trim();
+            return al.localeCompare(bl, undefined, { sensitivity: 'base', numeric: true });
+        });
+        items.forEach(function (item) { list.appendChild(item); });
+    }
     function blockIcon(label, links) {
-        var labelProbe = label.toLowerCase(); var probe = (label + ' ' + links.map(function (link) { return (link.textContent || '') + ' ' + (link.getAttribute('href') || ''); }).join(' ')).toLowerCase();
+        var labelProbe = label.toLowerCase(); var probe = (label + ' ' + links.map(function (entry) {
+            var link = entry && entry.original ? entry.original : entry;
+            return link ? (link.textContent || '') + ' ' + (link.getAttribute('href') || '') : '';
+        }).join(' ')).toLowerCase();
         var categoryProbe = /user|users|plugin|extension|tool|tools|config|setting|content|core|studio/.test(labelProbe) ? labelProbe : probe;
         var path = '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>';
         if (/tool|log|backup|clear|security|outil|cache/.test(categoryProbe)) path = '<path d="M14 6a4 4 0 0 0-5 5L3 17l4 4 6-6a4 4 0 0 0 5-5l-3 2-3-3Z"/>';
@@ -55,24 +213,52 @@
         return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
     }
     function addSection(sectionLabel, rawLinks) {
-        var links = rawLinks.filter(function (link) {
-            var href = link.getAttribute('href') || ''; var text = link.textContent.trim();
-            if (!href || !text || (href.charAt(0) === '#' && href !== '#eclipse-theme-studio') || known[href + '|' + text]) return false;
-            known[href + '|' + text] = true; return true;
+        var links = [];
+        rawLinks.forEach(function (original) {
+            var href = original.getAttribute('href') || '';
+            var text = original.textContent.trim();
+            var key = normalizeAdminHref(href);
+
+            if (!href || !text || (href.charAt(0) === '#' && href !== '#eclipse-theme-studio')) return;
+
+            if (key && known[key]) {
+                mergeAdminLink(known[key], original);
+                return;
+            }
+
+            links.push({ original: original, key: key });
         });
+
         if (!links.length) return;
+        var sectionKey = sectionLabel.trim().toLowerCase();
+        if (sectionsByLabel[sectionKey]) {
+            var existingList = sectionsByLabel[sectionKey].list;
+            links.forEach(function (entry) {
+                var original = entry.original;
+                var item = document.createElement('li'); var link = document.createElement('a');
+                link.href = original.href; link.textContent = /^studio$/i.test(sectionLabel) && /#eclipse-theme-studio$/.test(original.href) ? 'Theme Studio' : original.textContent.trim();
+                if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) link.setAttribute('aria-current', 'page');
+                item.appendChild(link); existingList.appendChild(item);
+                if (entry.key) known[entry.key] = link;
+            });
+            sortAdminList(existingList);
+            return;
+        }
         var section = document.createElement('section');
         var sectionButton = document.createElement('button'); sectionButton.type = 'button'; sectionButton.className = 'eclipse-admin-section-toggle';
         var sectionIcon = document.createElement('span'); sectionIcon.className = 'eclipse-admin-section-icon'; sectionIcon.setAttribute('aria-hidden', 'true'); sectionIcon.innerHTML = blockIcon(sectionLabel, links);
         var sectionText = document.createElement('b'); sectionText.textContent = sectionLabel; sectionButton.appendChild(sectionIcon); sectionButton.appendChild(sectionText);
         var list = document.createElement('ul'); var listId = 'eclipse-admin-section-' + sectionIndex++;
         list.id = listId; sectionButton.setAttribute('aria-controls', listId);
-        links.forEach(function (original) {
+        links.forEach(function (entry) {
+            var original = entry.original;
             var item = document.createElement('li'); var link = document.createElement('a');
             link.href = original.href; link.textContent = /^studio$/i.test(sectionLabel) && /#eclipse-theme-studio$/.test(original.href) ? 'Theme Studio' : original.textContent.trim();
             if (original.parentNode && /adminoption_off|sideoption_off/.test(original.parentNode.className || '')) link.setAttribute('aria-current', 'page');
             item.appendChild(link); list.appendChild(item);
+            if (entry.key) known[entry.key] = link;
         });
+        sortAdminList(list);
         function fitDesktopSubmenu() {
             if (!window.matchMedia('(min-width:52.01rem)').matches) {
                 list.style.removeProperty('top');
@@ -111,6 +297,7 @@
         list.addEventListener('click', function () { section.classList.remove('is-open'); section.classList.add('is-dismissing'); sectionButton.setAttribute('aria-expanded', 'false'); });
         section.addEventListener('mouseleave', function () { section.classList.remove('is-dismissing'); });
         section.appendChild(sectionButton); section.appendChild(list); navigation.appendChild(section);
+        sectionsByLabel[sectionKey] = { section: section, list: list };
     }
     function addSource(source) {
         var sourceTitle = source.querySelector('.block-title, h2'); var defaultLabel = sourceTitle ? sourceTitle.textContent.trim() : 'Administration';
@@ -118,9 +305,9 @@
         groupHeadings.forEach(function (heading) {
             var list = heading.nextElementSibling;
             while (list && list.tagName !== 'UL') list = list.nextElementSibling;
-            if (!list) return; groupedLists.push(list); addSection(heading.textContent.trim() || defaultLabel, Array.prototype.slice.call(list.querySelectorAll('.adminoption a[href]')));
+            if (!list) return; groupedLists.push(list); addSection(heading.textContent.trim() || defaultLabel, Array.prototype.slice.call(list.querySelectorAll('.adminoption a[href], .adminoption_off a[href]')));
         });
-        var baseLinks = Array.prototype.slice.call(source.querySelectorAll('.adminoption a[href]')).filter(function (link) {
+        var baseLinks = Array.prototype.slice.call(source.querySelectorAll('.adminoption a[href], .adminoption_off a[href]')).filter(function (link) {
             return !groupedLists.some(function (list) { return list.contains(link); });
         });
         addSection(defaultLabel, baseLinks);
@@ -136,6 +323,15 @@
     });
     if (dashboardGroups.length) {
         dashboardGroups.forEach(function (group) { addSection(group.label, group.links); });
+
+        // Command & Control is built from plugin_cclabel_* while Geeklog's
+        // native administration menu is built from plugin_getadminoption_*.
+        // Some plugins intentionally expose only the latter. Merge the native
+        // source as a completion pass; addSection() de-duplicates by normalized
+        // destination URL, preserves the more informative counted label when
+        // available, and sorts each merged section alphabetically.
+        if (nativeSource) addSource(nativeSource);
+
         var studioLink = dashboard ? dashboard.querySelector('.eclipse-studio-launch[href]') : null;
         if (!studioLink && nativeSource) studioLink = nativeSource.querySelector('.eclipse-native-studio-link[href]');
         if (studioLink) addSection('Studio', [studioLink]);
@@ -198,4 +394,27 @@
     });
     if (desktop.addEventListener) desktop.addEventListener('change', updateNavigationButtons); else if (desktop.addListener) desktop.addListener(updateNavigationButtons);
     window.addEventListener('resize', updateSidebarFit); updateNavigationButtons(); updateSidebarFit();
+}());
+
+
+(function () {
+    'use strict';
+
+    var input = document.getElementById('eclipse-update-archive');
+    if (!input) return;
+
+    input.addEventListener('change', function () {
+        var file = input.files && input.files.length ? input.files[0] : null;
+        var message = input.getAttribute('data-filename-error') ||
+            'The file name does not contain the word "eclipse".';
+
+        input.setCustomValidity('');
+        if (!file) return;
+
+        if (file.name.toLowerCase().indexOf('eclipse') === -1) {
+            input.setCustomValidity(message);
+            input.reportValidity();
+            input.value = '';
+        }
+    });
 }());

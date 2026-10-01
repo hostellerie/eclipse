@@ -227,3 +227,64 @@
         text-align: center;
     }
 }
+
+
+/* Native Forum moderation forms stay plugin-owned so each Forum generation
+ * keeps its exact hidden fields and POST contract. Eclipse only styles them. */
+form[action$="/forum/moderation.php"].uk-form:not(.eclipse-forum-mod-form),
+form[action$="/forum/moderation.php"].uk-form-horizontal:not(.eclipse-forum-mod-form) {
+    display: grid;
+    gap: .8rem;
+    min-width: 0;
+    margin: 0;
+}
+
+form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) .uk-form-row {
+    display: grid;
+    gap: .35rem;
+    margin: 0;
+}
+
+form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) .uk-form-label {
+    color: var(--eclipse-text);
+    font-weight: 700;
+}
+
+form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) input[type='text'],
+form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) select {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-height: 2.75rem;
+    padding: .55rem .65rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .45rem;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+}
+
+form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) .uk-text-center {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .5rem;
+    text-align: initial;
+}
+
+form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) .uk-button {
+    min-height: 2.75rem;
+    padding: .55rem .8rem;
+    border-radius: .48rem;
+}
+
+@media (max-width: 30rem) {
+    form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) .uk-text-center {
+        justify-content: stretch;
+    }
+
+    form[action$="/forum/moderation.php"]:not(.eclipse-forum-mod-form) .uk-text-center > * {
+        width: 100%;
+        text-align: center;
+    }
+}

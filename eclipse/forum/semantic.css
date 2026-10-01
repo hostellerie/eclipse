@@ -328,6 +328,10 @@
     line-height: 1.4;
 }
 
+.eclipse-forum-author-mood {
+    margin-top: .25rem;
+}
+
 .eclipse-forum-author-identity,
 .eclipse-forum-author-name {
     color: var(--eclipse-text);
@@ -343,7 +347,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: .35rem;
-    margin-top: .35rem;
+    margin-top: .25rem;
 }
 
 .eclipse-forum-post-main {
@@ -363,6 +367,17 @@
 .eclipse-forum-post-content iframe,
 .eclipse-forum-post-content pre {
     max-width: 100%;
+}
+
+/* Forum smileys are inline text content. Keep their sprite box aligned to
+ * the surrounding baseline rather than treating them like ordinary images. */
+.eclipse-forum-post-content .frm_sml {
+    display: inline-block;
+    width: 1.15em;
+    height: 1.15em;
+    max-width: none;
+    margin: 0 .08em;
+    vertical-align: -0.14em;
 }
 
 .eclipse-forum-post-content pre {
@@ -589,4 +604,167 @@
     .eclipse-forum-search {
         grid-template-columns: minmax(0, 1fr) auto;
     }
+}
+
+/* Compact per-post moderation controls. These are intentionally separate from
+ * the full moderation confirmation forms styled in reports.css. */
+.eclipse-forum-post-moderation {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .4rem;
+    margin: 0;
+}
+
+.eclipse-forum-post-moderation select,
+.eclipse-forum-mod-form select {
+    box-sizing: border-box;
+    width: auto;
+    min-width: 12rem;
+    min-height: 2.15rem;
+    padding: .3rem 1.9rem .3rem .55rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .4rem;
+    background-color: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font: inherit;
+    font-size: .78rem;
+}
+
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"] {
+    box-sizing: border-box;
+    width: auto;
+    min-width: 0;
+    min-height: 2.15rem;
+    margin: 0;
+    padding: .3rem .6rem;
+    border: 1px solid var(--eclipse-primary);
+    border-radius: .4rem;
+    background: var(--eclipse-primary);
+    color: #fff;
+    font: inherit;
+    font-size: .76rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-shadow: none;
+    cursor: pointer;
+}
+
+.eclipse-forum-post-moderation select:hover,
+.eclipse-forum-post-moderation select:focus,
+.eclipse-forum-mod-form select:hover,
+.eclipse-forum-mod-form select:focus {
+    border-color: var(--eclipse-primary);
+    background-color: var(--eclipse-surface);
+    color: var(--eclipse-text);
+}
+
+.eclipse-forum-post-moderation select:focus-visible,
+.eclipse-forum-mod-form select:focus-visible,
+.eclipse-forum-post-moderation .eclipse-forum-mod-form input[type="submit"]:focus-visible {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
+
+.eclipse-forum-post-moderation select option,
+.eclipse-forum-mod-form select option {
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+}
+
+/* Keep the author column compact and close to the established Ecologie
+ * Pratique presentation while remaining responsive. */
+@media (min-width: 48rem) {
+    .eclipse-forum-post-layout {
+        grid-template-columns: minmax(10.5rem, 15.5rem) minmax(0, 1fr);
+    }
+
+    .eclipse-forum-post-author {
+        padding: 1.25rem 1rem;
+    }
+
+    .eclipse-forum-post-main {
+        padding: 1.15rem 1.4rem;
+    }
+}
+
+@media (max-width: 47.99rem) {
+    .eclipse-forum-post-moderation,
+    .eclipse-forum-post-moderation .eclipse-forum-mod-form {
+        width: 100%;
+    }
+
+    .eclipse-forum-post-moderation .eclipse-forum-mod-form {
+        justify-content: stretch;
+    }
+
+    .eclipse-forum-post-moderation select {
+        flex: 1 1 12rem;
+        min-width: 0;
+    }
+}
+
+
+/* Preserve readable paragraph rhythm for visual-editor posts that use the
+ * canonical BR+BR separator rather than wrapping every paragraph in <p>. */
+.eclipse-forum-post-content br + br {
+    display: block;
+    content: "";
+    margin-top: .75rem;
+}
+
+.eclipse-forum-post-content p {
+    margin: 0 0 .9rem;
+}
+
+.eclipse-forum-post-content p:last-child {
+    margin-bottom: 0;
+}
+
+.eclipse-forum-post-content ul,
+.eclipse-forum-post-content ol {
+    margin-top: .65rem;
+    margin-bottom: 1.05rem;
+}
+
+.eclipse-forum-post-content ul + p,
+.eclipse-forum-post-content ol + p {
+    margin-top: .15rem;
+}
+
+
+/* Keep Edit and Quote visually aligned as one action group while preserving
+ * their primary/secondary hierarchy. */
+.eclipse-forum-post-actions .uk-button,
+.eclipse-forum-post-actions a.uk-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.55rem;
+    padding: .5rem .8rem;
+    line-height: 1.2;
+}
+
+.eclipse-forum-post-actions .uk-button i,
+.eclipse-forum-post-actions a.uk-button i {
+    line-height: 1;
+}
+
+
+/* Links inside Forum post content must remain visibly identifiable even when
+ * the global theme uses hover-only link decoration. */
+.eclipse-forum-post-content a {
+    text-decoration: underline !important;
+    text-underline-offset: .14em;
+}
+
+.eclipse-forum-post-content a:hover,
+.eclipse-forum-post-content a:focus-visible {
+    text-decoration-thickness: .12em;
 }

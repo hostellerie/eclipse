@@ -1,3 +1,7 @@
 {# begin {templatelocation} #}
-<a class="{class}" style="cursor: {cursor}; " href="{link}">{hoverover}<span class="custom warning"><img class="icon" src="{layout_url}/images/warning.svg" alt="{title}" height="48" width="48"{xhtml}><em>{title}</em>{text}</span></a>
+{!if link}
+<a href="{link}" class="{class} gl-tooltip-warning" style="cursor: {cursor};">{hoverover}<span class="eclipse-tooltip-content" role="tooltip"><strong class="eclipse-tooltip-title">{title}</strong>{text}</span></a>
+{!else}
+<span class="{class} gl-tooltip-warning" style="cursor: {cursor};" tabindex="0">{hoverover}<span class="eclipse-tooltip-content" role="tooltip"><strong class="eclipse-tooltip-title">{title}</strong>{text}</span></span>
+{!endif}
 {# end {templatelocation} #}

@@ -1,0 +1,3 @@
+package_type=geeklog-theme
+theme=eclipse
+format=1

@@ -73,6 +73,17 @@
     text-decoration: none;
 }
 
+.eclipse-forum-centerblock-forum-link:hover,
+.eclipse-forum-centerblock-forum-link:focus-visible,
+.eclipse-forum-centerblock-topic-link:hover,
+.eclipse-forum-centerblock-topic-link:focus-visible,
+.eclipse-forum-centerblock-replies:hover,
+.eclipse-forum-centerblock-replies:focus-visible,
+.eclipse-forum-latestblock-topic:hover,
+.eclipse-forum-latestblock-topic:focus-visible {
+    color: var(--eclipse-link, var(--eclipse-primary));
+}
+
 .eclipse-forum-centerblock-forum-link {
     font-size: .82rem;
     font-weight: 750;
@@ -173,4 +184,9 @@
     .eclipse-forum-latestblock-stats {
         gap: .25rem .55rem;
     }
+}
+
+.eclipse-forum-centerblock a:hover,
+.eclipse-forum-centerblock a:focus-visible {
+    color: var(--eclipse-link, var(--eclipse-primary)) !important;
 }

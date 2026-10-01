@@ -42,3 +42,7 @@ No new Geeklog core template overrides are introduced by the Admin UI isolation 
 # Dashboard information
 
 The Modern workspace dashboard replaces generic group totals with **Needs attention** and **Quick actions**. These links are cloned from Geeklog's current, permission-filtered administration menu. A dedicated `includes/admin-dashboard.php` provider adds bounded recent stories, drafts, comments and Static Pages queries. Each optional panel is omitted when its feature, table or access right is unavailable; Classic Eclipse keeps the native dashboard.
+
+Eclipse 1.2 also consumes provider-owned dashboard capabilities generically. Active plugins may declare `dashboard.summary` through `plugin_getcapabilities_PLUGIN()` and expose a bounded read-only `dashboard_summary` service. Eclipse normalizes provider metrics, alerts and management links without reading provider-private tables or duplicating provider permissions.
+
+Structured summary metrics take precedence over legacy `PLG_getPluginStats()` rows for the same provider to avoid duplicate dashboard statistics. Legacy statistics remain a fallback for plugins that have not adopted the capability contract. Explicit provider alerts and conventional `pending` / `drafts` metrics can be promoted into **Needs attention** when their values require action. A failing or unauthorized provider is skipped so one plugin cannot break the complete dashboard.

@@ -40,7 +40,7 @@ Further deletion of `forum.css`, `blocks.css`, the Forum UIkit bridge, or reques
 
 1. Geeklog and the Forum plugin remain responsible for data, permissions, actions, pagination, moderation, security and POST contracts.
 2. Eclipse owns presentation through `layout/eclipse/forum/` template overrides and dedicated CSS layers.
-3. Functional templates whose contract differs between Forum generations must remain plugin-owned unless a single proven cross-version contract exists.
+3. Functional templates whose contract differs between Forum generations must remain plugin-owned unless a single proven cross-version contract exists. This now includes posting and moderator action forms.
 4. Denim is a compatibility/template fallback only. Eclipse must not depend on undocumented Denim markup or on optional Forum blocks to recognize Forum content.
 5. Version-specific Geeklog differences must not be scattered through CSS or duplicated template trees unless a real incompatibility is demonstrated.
 6. New Eclipse Forum templates use stable `eclipse-forum-*` classes. UIkit classes may remain where native plugin templates still require them, but they are not the primary styling API for migrated screens.
@@ -102,7 +102,9 @@ The following templates are appropriate for semantic Eclipse overrides because t
 - `topic.thtml`;
 - `forum_search.thtml`;
 - footer templates;
-- selected report, preference and moderation templates after compatibility review.
+- selected report and preference templates after compatibility review.
+
+Moderator action forms (`delete.thtml`, `ban.thtml`, `split_move.thtml`) are deliberately plugin-owned. Their hidden fields differ between Forum generations; Eclipse styles the native forms from `reports.css` instead of duplicating their POST contract.
 
 ### Plugin-owned functional templates
 
@@ -144,6 +146,7 @@ Required regression matrix:
 2. Audit `forum.css` public selectors and remove only rules superseded by stable `eclipse-forum-*` templates.
 3. Audit `blocks.css` separately because center/side Forum blocks still use plugin-owned markup.
 4. Keep administration compatibility independent from public Forum cleanup.
+5. Keep moderator action templates plugin-owned; only presentation belongs in Eclipse CSS.
 5. Verify reply, preview, locked-topic and pagination flows on both Geeklog generations before further structural deletions.
 6. Revisit global UIkit loading only after those screens are stable.
 7. Finish with SEO/accessibility QA: heading hierarchy, breadcrumb semantics, keyboard focus, link labels and 320 px overflow.

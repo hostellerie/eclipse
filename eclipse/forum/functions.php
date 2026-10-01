@@ -76,6 +76,18 @@ function eclipse_forum_request_id($name)
  *
  * @return array
  */
+function eclipse_forum_is_full_ui_request()
+{
+    $requestUri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
+    $requestPath = parse_url($requestUri, PHP_URL_PATH);
+    $requestPath = is_string($requestPath) ? strtolower(trim($requestPath, '/')) : '';
+
+    return ($requestPath === 'forum')
+        || (strpos($requestPath, 'forum/') === 0)
+        || ($requestPath === 'admin/plugins/forum')
+        || (strpos($requestPath, 'admin/plugins/forum/') === 0);
+}
+
 function forum_css_eclipse()
 {
     global $_CONF, $LANG_DIRECTION;
@@ -126,50 +138,57 @@ function forum_css_eclipse()
     $version = '?v=' . rawurlencode($cacheVersion);
     $forumRoot = $resourceRoot . '/layout/' . $theme . '/forum/';
 
-    return array(
-        array(
+    $css = array();
+
+    // A Forum block can ask Geeklog to load the theme bridge on an unrelated
+    // page. UIkit must not leak its global selectors into those pages.
+    if (eclipse_forum_is_full_ui_request()) {
+        $css[] = array(
             'name'       => 'uikit',
             'file'       => $uikitFile,
             'attributes' => array('media' => 'all'),
             'priority'   => 80
-        ),
-        array(
-            'name'       => 'eclipse-forum',
-            'file'       => $forumRoot . 'forum.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 320
-        ),
-        array(
-            'name'       => 'eclipse-forum-blocks',
-            'file'       => $forumRoot . 'blocks.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 321
-        ),
-        array(
-            'name'       => 'eclipse-forum-semantic',
-            'file'       => $forumRoot . 'semantic.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 322
-        ),
-        array(
-            'name'       => 'eclipse-forum-editor',
-            'file'       => $forumRoot . 'editor.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 323
-        ),
-        array(
-            'name'       => 'eclipse-forum-reports',
-            'file'       => $forumRoot . 'reports.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 324
-        ),
-        array(
-            'name'       => 'eclipse-forum-footer',
-            'file'       => $forumRoot . 'footer.css' . $version,
-            'attributes' => array('media' => 'all'),
-            'priority'   => 325
-        )
+        );
+    }
+
+    $css[] = array(
+        'name'       => 'eclipse-forum',
+        'file'       => $forumRoot . 'forum.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 320
     );
+    $css[] = array(
+        'name'       => 'eclipse-forum-blocks',
+        'file'       => $forumRoot . 'blocks.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 321
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-semantic',
+        'file'       => $forumRoot . 'semantic.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 322
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-editor',
+        'file'       => $forumRoot . 'editor.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 323
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-reports',
+        'file'       => $forumRoot . 'reports.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 324
+    );
+    $css[] = array(
+        'name'       => 'eclipse-forum-footer',
+        'file'       => $forumRoot . 'footer.css' . $version,
+        'attributes' => array('media' => 'all'),
+        'priority'   => 325
+    );
+
+    return $css;
 }
 
 /**
@@ -180,6 +199,10 @@ function forum_css_eclipse()
  */
 function forum_js_libs_eclipse()
 {
+    if (!eclipse_forum_is_full_ui_request()) {
+        return array();
+    }
+
     $result = array(
         array(
             'library' => 'jquery',
@@ -209,6 +232,10 @@ function forum_js_libs_eclipse()
  */
 function forum_js_files_eclipse()
 {
+    if (!eclipse_forum_is_full_ui_request()) {
+        return array();
+    }
+
     if (!defined('VERSION') || version_compare(VERSION, '2.2.0', '<')) {
         return array(
             array(

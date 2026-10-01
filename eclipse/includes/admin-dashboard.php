@@ -164,6 +164,206 @@ function eclipse_admin_discover_plugin_stats()
     return $rows;
 }
 
+function eclipse_admin_dashboard_capabilities($plugin)
+{
+    $plugin = trim((string) $plugin);
+    if ($plugin === '' || !preg_match('/^[a-z0-9_]+$/i', $plugin)) return array();
+
+    $callback = 'plugin_getcapabilities_' . $plugin;
+    if (!function_exists($callback)) return array();
+
+    $data = call_user_func($callback);
+    if (!is_array($data) || !isset($data['capabilities']) || !is_array($data['capabilities'])) {
+        return array();
+    }
+
+    return $data['capabilities'];
+}
+
+function eclipse_admin_dashboard_safe_url($url)
+{
+    global $_CONF;
+
+    $url = trim((string) $url);
+    if ($url === '') return '';
+    if (strpos($url, '/') === 0) return $url;
+    if (!preg_match('#^https?://#i', $url)) return '';
+
+    $allowed = array();
+    foreach (array('site_url', 'site_admin_url') as $key) {
+        if (empty($_CONF[$key])) continue;
+        $host = parse_url((string) $_CONF[$key], PHP_URL_HOST);
+        if (is_string($host) && $host !== '') $allowed[strtolower($host)] = true;
+    }
+    $host = parse_url($url, PHP_URL_HOST);
+    if (!is_string($host) || $host === '' || !isset($allowed[strtolower($host)])) return '';
+
+    return $url;
+}
+
+function eclipse_admin_discover_dashboard_summaries()
+{
+    global $_PLUGINS;
+
+    $summaries = array();
+    if (!function_exists('PLG_invokeService') || !is_array($_PLUGINS)) return $summaries;
+
+    $ok = defined('PLG_RET_OK') ? PLG_RET_OK : 0;
+    foreach ($_PLUGINS as $plugin) {
+        $plugin = trim((string) $plugin);
+        if ($plugin === '' || !in_array('dashboard.summary', eclipse_admin_dashboard_capabilities($plugin), true)) {
+            continue;
+        }
+
+        $output = array();
+        $svcMsg = array();
+        $status = PLG_invokeService($plugin, 'dashboard_summary', array(), $output, $svcMsg);
+        if ($status !== $ok || !is_array($output)) continue;
+        if (isset($output['schema']) && (int) $output['schema'] !== 1) continue;
+
+        $summaryStatus = isset($output['status'])
+            ? strtolower(trim((string) $output['status'])) : 'ok';
+        if (!in_array($summaryStatus, array('ok', 'warning', 'critical'), true)) {
+            $summaryStatus = 'ok';
+        }
+
+        $metrics = array();
+        if (!empty($output['metrics']) && is_array($output['metrics'])) {
+            foreach ($output['metrics'] as $metric) {
+                if (!is_array($metric) || !isset($metric['id']) || !isset($metric['label']) || !isset($metric['value'])) continue;
+                $id = strtolower(trim((string) $metric['id']));
+                $label = trim(strip_tags((string) $metric['label']));
+                $value = $metric['value'];
+                if ($id === '' || $label === '' || $value === null || !is_scalar($value)) continue;
+                $metrics[] = array('id' => $id, 'label' => $label, 'value' => $value);
+            }
+        }
+
+        $links = array();
+        if (!empty($output['links']) && is_array($output['links'])) {
+            foreach ($output['links'] as $link) {
+                if (!is_array($link) || empty($link['url'])) continue;
+                $url = eclipse_admin_dashboard_safe_url($link['url']);
+                if ($url === '') continue;
+                $label = isset($link['label']) ? trim(strip_tags((string) $link['label'])) : '';
+                $links[] = array('label' => $label !== '' ? $label : $plugin, 'url' => $url);
+            }
+        }
+
+        $alerts = array();
+        if (!empty($output['alerts']) && is_array($output['alerts'])) {
+            foreach ($output['alerts'] as $alert) {
+                if (!is_array($alert)) continue;
+                $label = '';
+                if (isset($alert['label'])) {
+                    $label = trim(strip_tags((string) $alert['label']));
+                } elseif (isset($alert['message'])) {
+                    $label = trim(strip_tags((string) $alert['message']));
+                }
+                $alertStatus = isset($alert['status'])
+                    ? strtolower(trim((string) $alert['status'])) : 'warning';
+                if (!in_array($alertStatus, array('info', 'warning', 'critical'), true)) {
+                    $alertStatus = 'warning';
+                }
+                $count = isset($alert['count']) ? max(0, (int) $alert['count']) : 1;
+                if ($label === '' || $count < 1) continue;
+                $url = !empty($alert['url']) ? eclipse_admin_dashboard_safe_url($alert['url']) : '';
+                $alerts[] = array(
+                    'label' => $label,
+                    'count' => $count,
+                    'url' => $url,
+                    'status' => $alertStatus
+                );
+            }
+        }
+
+        if ($metrics || $alerts || $links) {
+            $providerLabel = !empty($links[0]['label']) ? $links[0]['label'] : ucfirst($plugin);
+            $summaries[$plugin] = array(
+                'label' => $providerLabel,
+                'status' => $summaryStatus,
+                'metrics' => $metrics,
+                'alerts' => $alerts,
+                'links' => $links,
+                'updated' => isset($output['updated']) ? (int) $output['updated'] : 0
+            );
+        }
+    }
+
+    return $summaries;
+}
+
+function eclipse_admin_dashboard_summary_stats($summaries, $fallbackRows)
+{
+    $rows = array();
+    $structured = array();
+
+    if (is_array($summaries)) {
+        foreach ($summaries as $plugin => $summary) {
+            if (!is_array($summary) || empty($summary['metrics']) || !is_array($summary['metrics'])) continue;
+            $structured[(string) $plugin] = true;
+            $url = !empty($summary['links'][0]['url']) ? $summary['links'][0]['url'] : '';
+            foreach ($summary['metrics'] as $metric) {
+                $rows[] = array(
+                    'plugin' => !empty($summary['label']) ? $summary['label'] : (string) $plugin,
+                    'label' => $metric['label'],
+                    'value' => $metric['value'],
+                    'url' => $url
+                );
+            }
+        }
+    }
+
+    if (is_array($fallbackRows)) {
+        foreach ($fallbackRows as $row) {
+            if (!is_array($row) || empty($row['plugin']) || isset($structured[(string) $row['plugin']])) continue;
+            $row['url'] = '';
+            $rows[] = $row;
+        }
+    }
+
+    return $rows;
+}
+
+function eclipse_admin_dashboard_summary_attention($summaries)
+{
+    $entries = array();
+
+    if (!is_array($summaries)) return $entries;
+    foreach ($summaries as $plugin => $summary) {
+        if (!is_array($summary)) continue;
+        $defaultUrl = !empty($summary['links'][0]['url']) ? $summary['links'][0]['url'] : '';
+
+        if (!empty($summary['alerts']) && is_array($summary['alerts'])) {
+            foreach ($summary['alerts'] as $alert) {
+                if (empty($alert['count'])) continue;
+                $entries[] = array(
+                    'label' => (!empty($summary['label']) ? $summary['label'] : ucfirst((string) $plugin)) . ' — ' . $alert['label'],
+                    'count' => (int) $alert['count'],
+                    'url' => !empty($alert['url']) ? $alert['url'] : $defaultUrl,
+                    'draft' => false,
+                    'status' => isset($alert['status']) ? $alert['status'] : 'warning'
+                );
+            }
+        }
+
+        if (empty($summary['metrics']) || !is_array($summary['metrics'])) continue;
+        foreach ($summary['metrics'] as $metric) {
+            if (!in_array($metric['id'], array('pending', 'drafts'), true)) continue;
+            $count = max(0, (int) $metric['value']);
+            if ($count < 1) continue;
+            $entries[] = array(
+                'label' => (!empty($summary['label']) ? $summary['label'] : ucfirst((string) $plugin)) . ' — ' . $metric['label'],
+                'count' => $count,
+                'url' => $defaultUrl,
+                'draft' => $metric['id'] === 'drafts'
+            );
+        }
+    }
+
+    return $entries;
+}
+
 function eclipse_admin_whatsnew_entries($headline, $entry)
 {
     $items = array();
@@ -301,7 +501,7 @@ function eclipse_admin_dashboard_is_main_page()
     return preg_match('#/admin/index\.php$#i', $script) === 1;
 }
 
-function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
+function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments, $pluginAttention)
 {
     global $_CONF;
     $admin = rtrim($_CONF['site_admin_url'], '/');
@@ -327,6 +527,7 @@ function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
         'moderationUrl' => $admin . '/moderation.php',
         'pluginsUrl' => $admin . '/plugins.php',
         'draftsUrl' => '#eclipse-dashboard-drafts',
+        'pluginAttention' => is_array($pluginAttention) ? array_values($pluginAttention) : array(),
         'labels' => eclipse_admin_dashboard_labels()
     );
     $json = json_encode($payload);
@@ -367,7 +568,7 @@ function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments)
 
     $script = '<script>(function(){var data=' . $json . ';'
         . 'function badge(n){var s=document.createElement("span");s.className="eclipse-attention-count";s.textContent=String(n);return s;}'
-        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(data.pluginUpgrades>0)entries.push({label:data.pluginUpgradeLabel,count:data.pluginUpgrades,url:data.pluginsUrl});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);if(data.pluginUpgrades>0&&data.managePluginUpgrades)ensure(/\/plugins\.php(?:[?#]|$)/i,data.managePluginUpgrades,data.pluginsUrl,data.pluginUpgrades,true);return true;}'
+        . 'function enhanceOverview(){var attention=document.querySelector(".eclipse-overview-attention");var actions=document.querySelector(".eclipse-overview-actions ul");if(!attention||!actions)return false;var old=attention.querySelector("ul");if(old)old.remove();var empty=attention.querySelector("p");if(empty)empty.remove();var entries=[];if(data.comments>0)entries.push({label:data.labels.comments,count:data.comments,url:data.commentsUrl});if(data.submissions>0)entries.push({label:data.labels.submissions,count:data.submissions,url:data.moderationUrl});if(data.drafts>0)entries.push({label:data.labels.drafts,count:data.drafts,url:data.draftsUrl,draft:true});if(Array.isArray(data.pluginAttention))data.pluginAttention.forEach(function(e){if(e&&e.count>0)entries.push({label:e.label,count:e.count,url:e.url||data.pluginsUrl,draft:!!e.draft,status:e.status||"warning"});});if(data.pluginUpgrades>0)entries.push({label:data.pluginUpgradeLabel,count:data.pluginUpgrades,url:data.pluginsUrl});if(!entries.length){var p=document.createElement("p");p.textContent=data.labels.empty;attention.appendChild(p);}else{var ul=document.createElement("ul");entries.forEach(function(e){var li=document.createElement("li");if(e.draft)li.className="is-draft";var a=document.createElement("a");a.href=e.url;a.appendChild(document.createTextNode(e.label));a.appendChild(badge(e.count));li.appendChild(a);ul.appendChild(li);});attention.appendChild(ul);}function ensure(re,label,url,count,allowed){var links=Array.prototype.slice.call(actions.querySelectorAll("a"));var link=null;links.some(function(a){if(re.test(a.href)){link=a;return true;}return false;});if(!allowed){if(link&&link.parentNode)link.parentNode.remove();return;}if(!link){var li=document.createElement("li");link=document.createElement("a");link.href=url;link.textContent=label;li.appendChild(link);actions.appendChild(li);}if(count>0&&!link.querySelector(".eclipse-attention-count"))link.appendChild(badge(count));}ensure(/\/admin\/comment\.php/i,data.labels.manage_comments,data.commentsUrl,data.comments,data.hasComments||data.comments>0);ensure(/\/admin\/moderation\.php/i,data.labels.review_submissions,data.moderationUrl,data.submissions,true);if(data.pluginUpgrades>0&&data.managePluginUpgrades)ensure(/\/plugins\.php(?:[?#]|$)/i,data.managePluginUpgrades,data.pluginsUrl,data.pluginUpgrades,true);return true;}'
         . 'function setupModules(){var key="eclipse-dashboard-collapsed-v1",saved=[];try{saved=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(saved))saved=[];}catch(e){saved=[];}function save(){try{localStorage.setItem(key,JSON.stringify(saved));}catch(e){}}Array.prototype.forEach.call(document.querySelectorAll("[data-eclipse-module]"),function(module){var id=module.getAttribute("data-eclipse-module");var button=module.querySelector(".eclipse-dashboard-toggle");if(!button)return;function apply(collapsed){module.classList.toggle("is-collapsed",collapsed);button.setAttribute("aria-expanded",collapsed?"false":"true");button.setAttribute("title",collapsed?data.labels.expand:data.labels.collapse);var icon=button.querySelector("span");if(icon)icon.textContent=collapsed?"+":"−";}apply(saved.indexOf(id)!==-1);button.addEventListener("click",function(){var collapsed=!module.classList.contains("is-collapsed");apply(collapsed);var index=saved.indexOf(id);if(collapsed&&index===-1)saved.push(id);if(!collapsed&&index!==-1)saved.splice(index,1);save();});});function revealHash(){if(!location.hash)return;var target=document.querySelector(location.hash);if(target&&target.hasAttribute("data-eclipse-module")&&target.classList.contains("is-collapsed")){var b=target.querySelector(".eclipse-dashboard-toggle");if(b)b.click();}}window.addEventListener("hashchange",revealHash);revealHash();}'
         . 'function boot(){setupModules();if(!enhanceOverview()){var observer=new MutationObserver(function(){if(enhanceOverview())observer.disconnect();});observer.observe(document.documentElement,{childList:true,subtree:true});setTimeout(function(){observer.disconnect();enhanceOverview();},3000);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();}());</script>';
 
@@ -388,7 +589,9 @@ function eclipse_admin_dashboard_render()
     $topStories = eclipse_admin_get_top_viewed(5);
     $topCommented = $actualCommentCount > 0 ? eclipse_admin_get_top_commented(5) : array();
     $siteStats = eclipse_admin_get_site_stats();
-    $pluginStats = eclipse_admin_discover_plugin_stats();
+    $dashboardSummaries = eclipse_admin_discover_dashboard_summaries();
+    $pluginStats = eclipse_admin_dashboard_summary_stats($dashboardSummaries, eclipse_admin_discover_plugin_stats());
+    $pluginAttention = eclipse_admin_dashboard_summary_attention($dashboardSummaries);
     $pluginNews = eclipse_admin_discover_plugin_whatsnew();
     $feeds = eclipse_admin_discover_feeds();
     $monitorData = function_exists('eclipse_monitor_dashboard_data') ? eclipse_monitor_dashboard_data() : null;
@@ -487,7 +690,11 @@ function eclipse_admin_dashboard_render()
         if ($pluginStats) {
             $html .= '<section class="eclipse-dashboard-stats-section eclipse-dashboard-widget-stats"><h3>' . eclipse_admin_dashboard_h($labels['plugin_stats']) . '</h3><ul>';
             foreach ($pluginStats as $row) {
-                $html .= '<li><div><strong>' . eclipse_admin_dashboard_h($row['label']) . '</strong><small>' . eclipse_admin_dashboard_h($row['plugin']) . '</small></div><span class="eclipse-dashboard-value">' . eclipse_admin_dashboard_h($row['value']) . '</span></li>';
+                $metricLabel = eclipse_admin_dashboard_h($row['label']);
+                if (!empty($row['url'])) {
+                    $metricLabel = '<a href="' . eclipse_admin_dashboard_h($row['url']) . '">' . $metricLabel . '</a>';
+                }
+                $html .= '<li><div><strong>' . $metricLabel . '</strong><small>' . eclipse_admin_dashboard_h($row['plugin']) . '</small></div><span class="eclipse-dashboard-value">' . eclipse_admin_dashboard_h($row['value']) . '</span></li>';
             }
             $html .= '</ul></section>';
         }
@@ -513,5 +720,5 @@ function eclipse_admin_dashboard_render()
         $html .= '</div><a class="eclipse-dashboard-more" href="' . $site . '/stats.php">' . eclipse_admin_dashboard_h($labels['full_stats']) . '</a>' . eclipse_admin_dashboard_module_end();
     }
 
-    return $html . '</section>' . eclipse_admin_dashboard_overview_enhancer($attention, $actualCommentCount > 0);
+    return $html . '</section>' . eclipse_admin_dashboard_overview_enhancer($attention, $actualCommentCount > 0, $pluginAttention);
 }

@@ -330,3 +330,134 @@ body.eclipse-admin-page.eclipse-forum-page .uk-tab > li > a {
         font-size: .88rem;
     }
 }
+
+
+/* MediaGallery legacy browser link: keep the proven browser integration,
+ * but present it as a primary Forum action. */
+body.eclipse-public-page.eclipse-forum-page #mg_browser {
+    display: inline-block;
+    box-sizing: border-box;
+    margin: .5rem 0;
+    padding: .7rem 1.2rem;
+    border: 0;
+    border-radius: .6rem;
+    background: var(--eclipse-primary);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.eclipse-public-page.eclipse-forum-page #mg_browser:hover,
+body.eclipse-public-page.eclipse-forum-page #mg_browser:focus-visible {
+    background: color-mix(in srgb, var(--eclipse-primary) 88%, #000 12%);
+    color: #fff;
+    text-decoration: none;
+}
+
+body.eclipse-public-page.eclipse-forum-page #mg_browser:focus-visible {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
+
+
+/* --- Forum moods --------------------------------------------------------- */
+/* Eclipse owns the complete presentation of Forum moods. The Forum plugin
+ * only emits semantic classes and translated labels; no plugin CSS is
+ * required for the selector or the post badge. */
+body.eclipse-public-page.eclipse-forum-page .forum-mood-field {
+    margin: 0 0 1rem;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: .45rem;
+    max-width: 52rem;
+    padding: .55rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: .65rem;
+    background: color-mix(in srgb, var(--eclipse-primary) 3%, var(--eclipse-surface));
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-choice {
+    position: relative;
+    display: block;
+    margin: 0;
+    cursor: pointer;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-choice input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-choice span {
+    display: block;
+    box-sizing: border-box;
+    min-height: 2.35rem;
+    padding: .5rem .7rem;
+    border: 1px solid var(--eclipse-border);
+    border-radius: 999px;
+    background: var(--eclipse-surface);
+    color: var(--eclipse-text);
+    font-size: .88rem;
+    font-weight: 550;
+    line-height: 1.25;
+    text-align: center;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-choice:hover span {
+    border-color: color-mix(in srgb, var(--eclipse-primary) 40%, var(--eclipse-border));
+    background: color-mix(in srgb, var(--eclipse-primary) 5%, var(--eclipse-surface));
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-choice input:checked + span {
+    border-color: var(--eclipse-primary);
+    background: color-mix(in srgb, var(--eclipse-primary) 10%, var(--eclipse-surface));
+    color: var(--eclipse-primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--eclipse-primary) 16%, transparent);
+    font-weight: 700;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-choice input:focus-visible + span {
+    outline: 2px solid var(--eclipse-primary);
+    outline-offset: 2px;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .28rem;
+    max-width: 100%;
+    margin-top: .45rem;
+    padding: .3rem .58rem;
+    border: 1px solid color-mix(in srgb, var(--eclipse-primary) 15%, var(--eclipse-border));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--eclipse-primary) 6%, var(--eclipse-surface));
+    color: var(--eclipse-text);
+    font-size: .78rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+body.eclipse-public-page.eclipse-forum-page .forum-mood-badge__label {
+    color: var(--eclipse-muted, #687083);
+    font-weight: 500;
+}
+
+@media (max-width: 40rem) {
+    body.eclipse-public-page.eclipse-forum-page .forum-mood-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.eclipse-public-page.eclipse-forum-page .forum-mood-choice span {
+        min-height: 2.7rem;
+        padding: .62rem .55rem;
+    }
+}
+

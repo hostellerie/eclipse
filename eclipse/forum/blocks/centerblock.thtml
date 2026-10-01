@@ -17,7 +17,7 @@
         <a href="{site_url}/forum/index.php?forum={forum_id}" class="eclipse-forum-centerblock-forum-link">{forum_name}</a>
     </header>
     <div class="eclipse-forum-centerblock-topic">
-        <a href="{site_url}/forum/viewtopic.php?showtopic={topic_id}" class="eclipse-forum-centerblock-topic-link" data-uk-tooltip title="{topicinfo}">{topic_subject}</a>
+        <a href="{site_url}/forum/viewtopic.php?showtopic={topic_id}" class="eclipse-forum-centerblock-topic-link" data-uk-tooltip title="{topicinfo_title}">{topic_subject}</a>
         <div class="eclipse-forum-centerblock-meta">
             <span>{topicinfo_short}</span>
             {!!if ($this->get_var('replies') == '0') !!}

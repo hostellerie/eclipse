@@ -6,6 +6,12 @@
   </div>
   <footer id="footer" role="contentinfo">
     <?php
+    $eclipseMenuInclude = rtrim($_CONF['path_layout'], '/\\') . '/includes/menu-navigation.php';
+    if (is_file($eclipseMenuInclude)) require_once $eclipseMenuInclude;
+    $eclipseFooterMenu = function_exists('eclipse_menu_render_slot') ? eclipse_menu_render_slot('footer') : '';
+    if ($eclipseFooterMenu !== '') {
+        echo '<nav class="eclipse-menu-footer-region" aria-label="Footer navigation">' . $eclipseFooterMenu . '</nav>';
+    }
     require_once $_CONF['path_layout'] . 'includes/footer-controls.php';
     echo eclipse_footer_render_links_only();
     echo eclipse_footer_render_above_line();

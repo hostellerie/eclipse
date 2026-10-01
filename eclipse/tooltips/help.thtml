@@ -1,3 +1,7 @@
 {# begin {templatelocation} #}
-<span class="{class}" tabindex="0">{hoverover}<span class="custom help">{text}</span></span>
+{!if link}
+<a href="{link}" class="{class} gl-tooltip-help" style="cursor: {cursor};">{hoverover}<span class="eclipse-tooltip-content" role="tooltip">{text}</span></a>
+{!else}
+<span class="{class} gl-tooltip-help" style="cursor: {cursor};" tabindex="0">{hoverover}<span class="eclipse-tooltip-content" role="tooltip">{text}</span></span>
+{!endif}
 {# end {templatelocation} #}

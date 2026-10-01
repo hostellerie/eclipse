@@ -59,13 +59,6 @@ POST_UPDATE_HELPERS = r'''function eclipse_theme_homepage()
     return isset($ini['theme']['url']) ? (string) $ini['theme']['url'] : '';
 }
 
-function eclipse_asset_cache_token()
-{
-    $stamp = @filemtime(__DIR__ . '/theme.ini');
-    $value = eclipse_theme_version() . ($stamp ? '-' . (string) $stamp : '');
-    return '?v=' . rawurlencode($value);
-}
-
 function eclipse_admin_post_redirect($status)
 {
     global $_CONF;
@@ -152,7 +145,30 @@ def prepare():
     old_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
     if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
     if (!eclipse_copy_tree($sourceTheme, $themeDir, 0755, 0644)) { eclipse_remove_tree($job); return $fail('The update copy failed. Restore the latest persistent Eclipse backup.'); }
+
+    $installedError = eclipse_verify_installed_manifest($themeDir);
+    if ($installedError !== '') {
+        eclipse_remove_tree($job);
+        return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
+    }
+
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($job);
+    $cacheMessage = eclipse_clear_theme_cache()
+        ? ' Geeklog template and generated CSS caches were cleared.'
+        : ' Geeklog template/CSS caches could not be cleared automatically.';
+
+    return array(
+        'success' => true,
+        'message' => 'Eclipse ' . $newVersion
+            . ' installed successfully and verified at ' . $themeDir . '.'
+            . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
+            . ' PHP OPcache entries were invalidated when supported.'
+    );
 """
     new_install = """    $backup = $backupRoot . DIRECTORY_SEPARATOR . 'eclipse-' . date('Ymd-His');
     if (!eclipse_copy_tree($themeDir, $backup, 0750, 0640)) { eclipse_remove_tree($job); return $fail('Unable to create the safety backup. No update was applied.'); }
@@ -186,8 +202,31 @@ def prepare():
             : 'Unable to activate the new Eclipse directory and automatic restoration failed. Restore the latest persistent Eclipse backup.');
     }
 
+    $installedError = eclipse_verify_installed_manifest($themeDir);
+    if ($installedError !== '') {
+        eclipse_remove_tree($retiredTheme);
+        eclipse_remove_tree($job);
+        return $fail($installedError . ' Restore the latest persistent Eclipse backup.');
+    }
+
+    $touchedTemplates = eclipse_touch_installed_templates($themeDir);
+
     eclipse_remove_tree($retiredTheme);
     eclipse_remove_tree($job);
+    $cacheMessage = eclipse_clear_theme_cache()
+        ? ' Geeklog template and generated CSS caches were cleared.'
+        : ' Geeklog template/CSS caches could not be cleared automatically.';
+
+    return array(
+        'success' => true,
+        'message' => 'Eclipse ' . $newVersion
+            . ' installed successfully and verified at ' . $themeDir . '.'
+            . $cacheMessage
+            . ($touchedTemplates === false
+                ? ' Template timestamps could not be refreshed.'
+                : ' Refreshed ' . (int) $touchedTemplates . ' template timestamp(s).')
+            . ' PHP OPcache entries were invalidated when supported.'
+    );
 """
     updater_body = replace_once(updater_body, old_install, new_install, 'exact Eclipse directory replacement')
 
@@ -207,6 +246,10 @@ def prepare():
         fail('Packaged updater does not perform an exact Eclipse directory replacement')
     if 'eclipse_copy_tree($sourceTheme, $themeDir' in updater_text:
         fail('Packaged updater still merges the new theme into the existing Eclipse directory')
+    if "method_exists($zip, 'getFromName')" not in updater_text:
+        fail('Packaged updater does not detect getFromName before using it')
+    if "method_exists($zip, 'getStream')" not in updater_text:
+        fail('Packaged updater does not provide the Geeklog 2.1 getStream fallback')
 
     replacement = "require_once __DIR__ . '/includes/theme-update.php';\n\n"
     functions = functions[:start] + replacement + functions[end:]
@@ -217,11 +260,6 @@ def prepare():
     homepage_line = "        'theme_homepage'         => 'https://github.com/hostellerie/eclipse',"
     functions = replace_once(functions, homepage_line, "        'theme_homepage'         => eclipse_theme_homepage(),", 'theme homepage metadata')
 
-    asset_line = "$version = '?v=' . rawurlencode(eclipse_theme_version());"
-    asset_count = functions.count(asset_line)
-    if asset_count != 2:
-        fail('Expected two Eclipse asset cache token declarations, found ' + str(asset_count))
-    functions = functions.replace(asset_line, '$version = eclipse_asset_cache_token();')
 
     update_message = "            $message = '<p class=\"eclipse-notice ' . ($result['success'] ? 'eclipse-success' : 'eclipse-error') . '\">' . htmlspecialchars($result['message'], ENT_QUOTES, 'UTF-8') . '</p>';"
     update_replacement = "            if (!empty($result['success']) && eclipse_admin_post_redirect('updated')) return '';\n" + update_message
@@ -231,8 +269,8 @@ def prepare():
     rollback_new = "                eclipse_clear_theme_cache();\n                if (eclipse_admin_post_redirect('restored')) return '';\n                $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';"
     functions = replace_once(functions, rollback_old, rollback_new, 'successful rollback redirect')
 
-    message_marker = "    $message = '';\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
-    message_replacement = "    $message = '';\n    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\"eclipse-notice eclipse-success\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
+    message_marker = "    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
+    message_replacement = "    if (isset($_GET['eclipse_update_status'])) {\n        $status = (string) $_GET['eclipse_update_status'];\n        if ($status === 'updated') $message = '<p class=\"eclipse-notice eclipse-success\">Eclipse was updated successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n        elseif ($status === 'restored') $message = '<p class=\"eclipse-notice eclipse-success\">The Eclipse backup was restored successfully. Theme caches were cleared and this page was loaded in a fresh request.</p>';\n    }\n    $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';"
     functions = replace_once(functions, message_marker, message_replacement, 'post-update status message')
 
     functions_path.write_text(functions, encoding='utf-8')
