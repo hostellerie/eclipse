@@ -30,6 +30,27 @@
     var toggle = document.querySelector('.menu-toggle');
     var menu = document.getElementById('navigation_ul') || document.getElementById('eclipse-menu-panel');
     if (menu && menu.id === 'eclipse-menu-panel') {
+        var desktopMenuQuery = window.matchMedia('(min-width: 48rem)');
+        var submenuViewportMargin = 12;
+
+        function viewportHeight() {
+            return window.visualViewport && window.visualViewport.height
+                ? window.visualViewport.height
+                : window.innerHeight;
+        }
+
+        function updateSubmenuViewportHeight(submenu) {
+            if (!desktopMenuQuery.matches || !submenu) return;
+            var rect = submenu.getBoundingClientRect();
+            var available = Math.max(120, Math.floor(viewportHeight() - rect.top - submenuViewportMargin));
+            submenu.style.setProperty('--eclipse-submenu-max-height', available + 'px');
+        }
+
+        function updateOpenSubmenus() {
+            if (!desktopMenuQuery.matches) return;
+            menu.querySelectorAll('li:hover > ul, li:focus-within > ul').forEach(updateSubmenuViewportHeight);
+        }
+
         menu.querySelectorAll('li').forEach(function (item) {
             var submenu = Array.prototype.find.call(item.children, function (child) { return child.tagName === 'UL'; });
             var link = Array.prototype.find.call(item.children, function (child) { return child.tagName === 'A'; });
@@ -37,6 +58,17 @@
             item.classList.add('eclipse-has-submenu');
             link.setAttribute('aria-haspopup', 'true');
             link.setAttribute('aria-expanded', 'false');
+
+            function prepareDesktopSubmenu() {
+                if (!desktopMenuQuery.matches) return;
+                window.requestAnimationFrame(function () {
+                    updateSubmenuViewportHeight(submenu);
+                });
+            }
+
+            item.addEventListener('mouseenter', prepareDesktopSubmenu);
+            item.addEventListener('focusin', prepareDesktopSubmenu);
+
             link.addEventListener('click', function (event) {
                 if (!window.matchMedia('(max-width: 47.99rem)').matches) return;
                 event.preventDefault();
@@ -45,6 +77,12 @@
                 link.setAttribute('aria-expanded', String(open));
             });
         });
+
+        window.addEventListener('resize', updateOpenSubmenus, { passive: true });
+        window.addEventListener('scroll', updateOpenSubmenus, { passive: true });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', updateOpenSubmenus, { passive: true });
+        }
     }
     if (toggle && menu) {
         toggle.addEventListener('click', function () {
