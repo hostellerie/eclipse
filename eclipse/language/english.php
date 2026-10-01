@@ -174,7 +174,7 @@ $LANG_ECLIPSE = array(
     'save_and_verify_help' => 'Apply the settings, then check public and administration pages. Eclipse clears only its theme caches automatically.',
 
     'configuration' => 'Configuration',
-    'search_configuration' => 'Search configuration'
+    'search_configuration' => 'Search configuration',
     'footer_links' => 'Footer links',
     'footer_links_intro' => 'Create up to eight link rows. Data is stored as protected JSON outside Geeklog\'s cache directory and survives theme updates and cache cleaning.',
     'link_row' => 'Link row',
