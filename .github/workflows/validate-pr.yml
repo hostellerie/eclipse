@@ -3,7 +3,7 @@ name: Validate Eclipse pull request
 on:
   push:
     branches:
-      - develop-1.2.0
+      - develop-1.3.0
     paths:
       - 'eclipse/**'
       - '!eclipse/MANIFEST.json'
@@ -34,7 +34,7 @@ jobs:
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
 
-      - name: Validate Eclipse 1.2 release contracts
+      - name: Validate Eclipse 1.3 release contracts
         shell: pwsh
         run: ./quality/validate-eclipse-release.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath (Get-Command node).Source
 
@@ -45,7 +45,7 @@ jobs:
           python3 ./quality/prepare-eclipse-package.py
           version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
           test -n "$version"
-          test "$version" = '1.2.0'
+          test "$version" = '1.3.0'
           test -d .package-stage/eclipse
           test ! -e .package-stage/eclipse/QA-CHECKLIST.md
           test ! -e .package-stage/eclipse/COMPATIBILITY.md
