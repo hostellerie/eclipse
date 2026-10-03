@@ -125,7 +125,7 @@ $eclipseSecondaryMenu = function_exists('eclipse_menu_render_slot')
   </div>
 <?php } ?>
   <div id="wrapper">
-    <div id="eclipse-admin-native-source" hidden><?php if (eclipse_is_admin_request() && function_exists('COM_adminMenu')) echo COM_adminMenu(); ?><?php echo eclipse_translate_theme_studio_html(eclipse_admin_studio_source()); ?></div>
+    <div id="eclipse-admin-native-source" hidden><?php echo eclipse_translate_theme_studio_html(eclipse_admin_native_source()); ?></div>
     <div id="centerblocks">
       <main id="main-content" tabindex="-1">
         <p class="welcome_msg">{welcome_msg}&nbsp;{datetime}</p>
