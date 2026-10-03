@@ -1017,6 +1017,29 @@ function eclipse_admin_studio_source()
     return '<a class="eclipse-native-studio-link" href="' . htmlspecialchars(rtrim($_CONF['site_admin_url'], '/') . '/index.php#eclipse-theme-studio', ENT_QUOTES, 'UTF-8') . '">Theme Studio</a>';
 }
 
+function eclipse_admin_native_source()
+{
+    /*
+     * COM_adminMenu() is only a hidden source used by Eclipse's modern admin
+     * navigation. Radio's YouTube control page already exposes its own complete
+     * plugin navigation, and on Geeklog 2.1.x COM_adminMenu() can terminate the
+     * response while rendering this new plugin endpoint. Do not let an optional
+     * hidden navigation source break the actual administration page.
+     */
+    $path = eclipse_request_path();
+    if (preg_match('#(?:^|/)admin/plugins/radio/youtube\.php$#', $path)) {
+        return eclipse_admin_studio_source();
+    }
+
+    $html = '';
+    if (function_exists('COM_adminMenu')) {
+        $html .= COM_adminMenu();
+    }
+    $html .= eclipse_admin_studio_source();
+
+    return $html;
+}
+
 function eclipse_theme_version()
 {
     static $version;
