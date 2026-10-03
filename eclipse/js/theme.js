@@ -671,7 +671,7 @@
                     while (term && term.tagName !== 'DT') term = term.previousElementSibling;
                     if (term) advancedSeoList.appendChild(term); advancedSeoList.appendChild(definition); movedSeoFields++;
                 }
-                ['#admin-storyeditor_advanced-sid','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(moveAdvancedSeoField);
+                ['#admin-storyeditor_advanced-sid','#admin-storyeditor-page_title','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(moveAdvancedSeoField);
                 if (movedSeoFields) {
                     var seoAssistant = document.createElement('div'); seoAssistant.className = 'eclipse-seo-assistant'; seoAssistant.setAttribute('data-eclipse-seo-assistant','true');
                     seoAssistant.innerHTML = '<h3></h3><div class="eclipse-search-preview"><strong data-seo-preview-title></strong><span data-seo-preview-url></span><p data-seo-preview-description></p></div><ul><li data-seo-check="title"></li><li data-seo-check="description"></li><li data-seo-check="slug"></li><li data-seo-check="content"></li></ul>';
@@ -732,10 +732,10 @@
             var next = dd.nextElementSibling;
             while (next && next.tagName === 'DD') { var current = next; next = next.nextElementSibling; target.appendChild(current); }
         }
-        ['#admin-storyeditor-title','#admin-storyeditor-page_title','[name="topic[]"]','#admin-storyeditor-show_topic_icon'].forEach(function (s) { moveField(s, identity); });
+        ['#admin-storyeditor-title','[name="topic[]"]','#admin-storyeditor-show_topic_icon'].forEach(function (s) { moveField(s, identity); });
         ['#admin-storyeditor-introtext','#admin-storyeditor-bodytext','#admin-storyeditor-postmode'].forEach(function (s) { moveField(s, content); });
         ['#admin-storyeditor-publish_month','#admin-storyeditor-draft_flag','[name="frontpage"]','#cmt_close_flag','#admin-storyeditor-archiveflag','#admin-storyeditor-expire_month','#admin-storyeditor-cachetime'].forEach(function (s) { moveField(s, publish); });
-        ['#admin-storyeditor-sid','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(function (s) { moveField(s, seo); });
+        ['#admin-storyeditor-sid','#admin-storyeditor-page_title','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(function (s) { moveField(s, seo); });
         var remaining = panel(labels.more, 'eclipse-panel-more', side);
         while (source.firstChild) remaining.appendChild(source.firstChild);
         source.remove();
