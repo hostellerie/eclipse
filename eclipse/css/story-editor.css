@@ -1,6 +1,6 @@
 @import url("story-editor-base.css");
 
-/* 1.1 editor polish: align secondary-card headings with Article Content. */
+/* Align secondary-card headings with the Article Content card. */
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fieldset>legend{
     display:flex!important;
     align-items:center;
@@ -42,9 +42,8 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.fo
     grid-column:1 / -1;
 }
 
-/* Toolbar label: final row, left column. */
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="advanced_editor_toolbar_selector"]){
+/* Toolbar row classes are assigned by the editor enhancer from Geeklog's native control. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-label{
     grid-column:1!important;
     grid-row:auto!important;
     order:100!important;
@@ -52,20 +51,14 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.fo
     margin:0!important;
     padding-top:0!important;
 }
-
-/* Toolbar control: final row, right column. Match both id and name for legacy compatibility. */
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#advanced_editor_toolbar_selector),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(select[name="fckeditor_toolbar_selector"]){
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-control{
     grid-column:2!important;
     grid-row:auto!important;
     order:100!important;
     align-self:center;
     margin:0!important;
 }
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #fckeditor_toolbar_selector,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #advanced_editor_toolbar_selector,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor select[name="fckeditor_toolbar_selector"]{
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor .eclipse-toolbar-control select{
     width:auto!important;
     min-width:12.5rem;
     max-width:100%;
@@ -76,11 +69,8 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor selec
     body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block{
         grid-template-columns:1fr!important;
     }
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="advanced_editor_toolbar_selector"]),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#advanced_editor_toolbar_selector),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(select[name="fckeditor_toolbar_selector"]){
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-label,
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-control{
         grid-column:1!important;
     }
 }
