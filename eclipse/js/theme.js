@@ -276,7 +276,7 @@
         var defaults = {
             palette: { color_primary:'#3157d5',color_secondary:'#6750a4',color_link:'#2448bd',color_background:'#f4f6fb',color_surface:'#ffffff',color_text:'#202431' },
             layout: { site_max_width:'1200px',reading_width:'72ch',font_size:'16px',font_family:'humanist',content_link_style:'hover',spacing:'normal',radius:'medium' },
-            appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark',sidebar_position:'right' },
+            appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark' },
             brand: { logo:'images/logo-mark.svg',header_image:'',show_left_sidebar:false,show_right_sidebar:true,mobile_menu:true,editor_hide_sidebars:true },
             social: { share_facebook:false,share_linkedin:false,share_x:false },
             integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',sitemap_path:'' }
@@ -640,6 +640,16 @@
                 advancedBasic.classList.add('eclipse-editor-overview');
                 advancedBasic.setAttribute('data-eclipse-heading', labels.articleDetails);
             }
+
+            var toolbarSelector = form.querySelector('#fckeditor_toolbar_selector,#advanced_editor_toolbar_selector,select[name="fckeditor_toolbar_selector"]');
+            if (toolbarSelector) {
+                var toolbarDefinition = toolbarSelector.closest('dd');
+                var toolbarTerm = toolbarDefinition ? toolbarDefinition.previousElementSibling : null;
+                while (toolbarTerm && toolbarTerm.tagName !== 'DT') toolbarTerm = toolbarTerm.previousElementSibling;
+                if (toolbarDefinition) toolbarDefinition.classList.add('eclipse-toolbar-control');
+                if (toolbarTerm) toolbarTerm.classList.add('eclipse-toolbar-label');
+            }
+
             var nativeIdentity = form.querySelector(':scope > .eclipse-editor-identity');
             if (!nativeIdentity && advancedBasic && titleInput) {
                 var titleDefinition = titleInput.closest('dd');
@@ -648,9 +658,12 @@
                 if (titleDefinition && titleTerm) {
                     var advancedIdentity = document.createElement('section');
                     advancedIdentity.className = 'eclipse-editor-identity';
+                    var identityHeader = document.createElement('header');
+                    identityHeader.className = 'eclipse-editor-card-header';
                     var identityHeading = document.createElement('h2');
-                    identityHeading.textContent = labels.articleTitle;
-                    advancedIdentity.appendChild(identityHeading);
+                    identityHeading.textContent = labels.articleContent;
+                    identityHeader.appendChild(identityHeading);
+                    advancedIdentity.appendChild(identityHeader);
                     var identityList = document.createElement('dl');
                     identityList.className = 'form_block';
                     identityList.appendChild(titleTerm);
@@ -659,6 +672,23 @@
                     form.insertBefore(advancedIdentity, form.firstChild);
                 }
             }
+
+            var identityPanel = form.querySelector(':scope > .eclipse-editor-identity');
+            if (identityPanel) {
+                var cardHeader = identityPanel.querySelector(':scope > .eclipse-editor-card-header');
+                var cardHeading = identityPanel.querySelector(':scope > h2');
+                if (!cardHeader) {
+                    cardHeader = document.createElement('header');
+                    cardHeader.className = 'eclipse-editor-card-header';
+                    identityPanel.insertBefore(cardHeader, identityPanel.firstChild);
+                    if (cardHeading) cardHeader.appendChild(cardHeading);
+                }
+                var safetyTools = form.querySelector(':scope > .eclipse-editor-safety');
+                if (safetyTools) cardHeader.appendChild(safetyTools);
+                var draftRecovery = form.querySelector(':scope > .eclipse-draft-recovery');
+                if (draftRecovery) cardHeader.insertAdjacentElement('afterend', draftRecovery);
+            }
+
             if (advancedBasic && !form.querySelector('.eclipse-advanced-seo-overview')) {
                 var advancedSource = advancedBasic.querySelector(':scope > dl.form_block');
                 var advancedSeo = document.createElement('section'); advancedSeo.className = 'eclipse-editor-panel eclipse-panel-seo eclipse-advanced-seo-overview';
@@ -676,7 +706,6 @@
                     var seoAssistant = document.createElement('div'); seoAssistant.className = 'eclipse-seo-assistant'; seoAssistant.setAttribute('data-eclipse-seo-assistant','true');
                     seoAssistant.innerHTML = '<h3></h3><div class="eclipse-search-preview"><strong data-seo-preview-title></strong><span data-seo-preview-url></span><p data-seo-preview-description></p></div><ul><li data-seo-check="title"></li><li data-seo-check="description"></li><li data-seo-check="slug"></li><li data-seo-check="content"></li></ul>';
                     seoAssistant.querySelector('h3').textContent = labels.seoOverview; advancedSeo.appendChild(seoAssistant);
-                    var identityPanel = form.querySelector(':scope > .eclipse-editor-identity');
                     if (identityPanel) identityPanel.insertAdjacentElement('afterend', advancedSeo); else form.insertBefore(advancedSeo, advancedBasic);
                     setupSeoAssistant(form);
                 }
@@ -688,18 +717,18 @@
                 if (advancedBasic && !form.classList.contains('eclipse-native-story-editor')) form.insertBefore(editor, advancedBasic);
             });
             function syncAdvancedOverview() {
-                if (!advancedBasic) return;
                 var editorActive = editorCanvases.some(function (editor) {
-                    return editor.style.display !== 'none';
+                    return !editor.hidden && window.getComputedStyle(editor).display !== 'none';
                 });
-                advancedBasic.hidden = !editorActive;
+                form.classList.toggle('eclipse-editor-context-hidden', !editorActive);
+                if (advancedBasic) advancedBasic.hidden = !editorActive;
             }
             editorCanvases.forEach(function (editor) {
-                new MutationObserver(syncAdvancedOverview).observe(editor, { attributes: true, attributeFilter: ['style', 'class'] });
+                new MutationObserver(syncAdvancedOverview).observe(editor, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
             });
             var optionPanels = form.querySelectorAll('#se_publish,#se_images,#se_archive,#se_perms,#se_options');
             optionPanels.forEach(function (panel) {
-                new MutationObserver(syncAdvancedOverview).observe(panel, { attributes: true, attributeFilter: ['style', 'class'] });
+                new MutationObserver(syncAdvancedOverview).observe(panel, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
             });
             syncAdvancedOverview();
             var advancedActions = advanced.querySelector('#se_bottom');
