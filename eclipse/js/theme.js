@@ -641,53 +641,14 @@
                 advancedBasic.setAttribute('data-eclipse-heading', labels.articleDetails);
             }
 
-            var toolbarSelector = form.querySelector('#fckeditor_toolbar_selector,#advanced_editor_toolbar_selector,select[name="fckeditor_toolbar_selector"]');
-            if (toolbarSelector) {
-                var toolbarDefinition = toolbarSelector.closest('dd');
-                var toolbarTerm = toolbarDefinition ? toolbarDefinition.previousElementSibling : null;
-                while (toolbarTerm && toolbarTerm.tagName !== 'DT') toolbarTerm = toolbarTerm.previousElementSibling;
-                if (toolbarDefinition) toolbarDefinition.classList.add('eclipse-toolbar-control');
-                if (toolbarTerm) toolbarTerm.classList.add('eclipse-toolbar-label');
-            }
+            var toolbarSelector=form.querySelector('#fckeditor_toolbar_selector,#advanced_editor_toolbar_selector,select[name="fckeditor_toolbar_selector"]');
+            if(toolbarSelector){var toolbarDefinition=toolbarSelector.closest('dd'),toolbarTerm=toolbarDefinition?toolbarDefinition.previousElementSibling:null;while(toolbarTerm&&toolbarTerm.tagName!=='DT')toolbarTerm=toolbarTerm.previousElementSibling;if(toolbarDefinition)toolbarDefinition.classList.add('eclipse-toolbar-control');if(toolbarTerm)toolbarTerm.classList.add('eclipse-toolbar-label');}
 
-            var nativeIdentity = form.querySelector(':scope > .eclipse-editor-identity');
-            if (!nativeIdentity && advancedBasic && titleInput) {
-                var titleDefinition = titleInput.closest('dd');
-                var titleTerm = titleDefinition ? titleDefinition.previousElementSibling : null;
-                while (titleTerm && titleTerm.tagName !== 'DT') titleTerm = titleTerm.previousElementSibling;
-                if (titleDefinition && titleTerm) {
-                    var advancedIdentity = document.createElement('section');
-                    advancedIdentity.className = 'eclipse-editor-identity';
-                    var identityHeader = document.createElement('header');
-                    identityHeader.className = 'eclipse-editor-card-header';
-                    var identityHeading = document.createElement('h2');
-                    identityHeading.textContent = labels.articleContent;
-                    identityHeader.appendChild(identityHeading);
-                    advancedIdentity.appendChild(identityHeader);
-                    var identityList = document.createElement('dl');
-                    identityList.className = 'form_block';
-                    identityList.appendChild(titleTerm);
-                    identityList.appendChild(titleDefinition);
-                    advancedIdentity.appendChild(identityList);
-                    form.insertBefore(advancedIdentity, form.firstChild);
-                }
-            }
+            var nativeIdentity=form.querySelector(':scope > .eclipse-editor-identity');
+            if(!nativeIdentity&&advancedBasic&&titleInput){var titleDefinition=titleInput.closest('dd'),titleTerm=titleDefinition?titleDefinition.previousElementSibling:null;while(titleTerm&&titleTerm.tagName!=='DT')titleTerm=titleTerm.previousElementSibling;if(titleDefinition&&titleTerm){var advancedIdentity=document.createElement('section');advancedIdentity.className='eclipse-editor-identity';var identityHeader=document.createElement('header');identityHeader.className='eclipse-editor-card-header';var identityHeading=document.createElement('h2');identityHeading.textContent=labels.articleContent;identityHeader.appendChild(identityHeading);advancedIdentity.appendChild(identityHeader);var identityList=document.createElement('dl');identityList.className='form_block';identityList.appendChild(titleTerm);identityList.appendChild(titleDefinition);advancedIdentity.appendChild(identityList);form.insertBefore(advancedIdentity,form.firstChild);}}
 
-            var identityPanel = form.querySelector(':scope > .eclipse-editor-identity');
-            if (identityPanel) {
-                var cardHeader = identityPanel.querySelector(':scope > .eclipse-editor-card-header');
-                var cardHeading = identityPanel.querySelector(':scope > h2');
-                if (!cardHeader) {
-                    cardHeader = document.createElement('header');
-                    cardHeader.className = 'eclipse-editor-card-header';
-                    identityPanel.insertBefore(cardHeader, identityPanel.firstChild);
-                    if (cardHeading) cardHeader.appendChild(cardHeading);
-                }
-                var safetyTools = form.querySelector(':scope > .eclipse-editor-safety');
-                if (safetyTools) cardHeader.appendChild(safetyTools);
-                var draftRecovery = form.querySelector(':scope > .eclipse-draft-recovery');
-                if (draftRecovery) cardHeader.insertAdjacentElement('afterend', draftRecovery);
-            }
+            var identityPanel=form.querySelector(':scope > .eclipse-editor-identity');
+            if(identityPanel){var cardHeader=identityPanel.querySelector(':scope > .eclipse-editor-card-header'),cardHeading=identityPanel.querySelector(':scope > h2');if(!cardHeader){cardHeader=document.createElement('header');cardHeader.className='eclipse-editor-card-header';identityPanel.insertBefore(cardHeader,identityPanel.firstChild);if(cardHeading)cardHeader.appendChild(cardHeading);}var safetyTools=form.querySelector(':scope > .eclipse-editor-safety');if(safetyTools)cardHeader.appendChild(safetyTools);var draftRecovery=form.querySelector(':scope > .eclipse-draft-recovery');if(draftRecovery)cardHeader.insertAdjacentElement('afterend',draftRecovery);}
 
             if (advancedBasic && !form.querySelector('.eclipse-advanced-seo-overview')) {
                 var advancedSource = advancedBasic.querySelector(':scope > dl.form_block');
