@@ -1,4 +1,4 @@
-# Eclipse 1.2.0
+# Eclipse 1.3.0
 
 Eclipse is a modern, mobile-first child theme for Geeklog based on Denim. It supports Geeklog 2.1.1 and 2.2.2 while preserving Geeklog's native permissions, URLs, form processing and plugin hooks.
 
@@ -49,7 +49,7 @@ The Modern workspace uses only links and actions already exposed by Geeklog to t
 
 ## Editorial workflow
 
-Eclipse 1.2.0 includes responsive story/article editor presentation, SEO diagnostics, slug assistance, local draft recovery, focus mode and unsaved-change protection while retaining Geeklog's native editor contracts on supported core versions.
+Eclipse 1.3.0 includes responsive story/article editor presentation, SEO diagnostics, slug assistance, local draft recovery, focus mode and unsaved-change protection while retaining Geeklog's native editor contracts on supported core versions.
 
 ## Compatibility and validation
 
@@ -59,4 +59,4 @@ Development documentation and the complete release QA matrix are maintained in t
 
 ## Version
 
-1.2.0
+1.3.0
