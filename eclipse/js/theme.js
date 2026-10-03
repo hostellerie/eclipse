@@ -699,40 +699,34 @@
         var basic = form.querySelector(':scope > .admin_basic');
         var source = basic ? basic.querySelector(':scope > dl.form_block') : null;
         if (!basic || !source || !document.getElementById('admin-storyeditor-title')) return;
-        var workspace = document.createElement('div'); workspace.className = 'eclipse-story-workspace';
-        var main = document.createElement('div'); main.className = 'eclipse-story-main';
-        var side = document.createElement('aside'); side.className = 'eclipse-story-sidebar';
-        workspace.appendChild(main); workspace.appendChild(side); basic.insertBefore(workspace, source);
-        function panel(title, className, parent) {
-            var section = document.createElement('section'); section.className = 'eclipse-editor-panel ' + className;
-            var heading = document.createElement('h2'); heading.textContent = title; section.appendChild(heading);
-            var dl = document.createElement('dl'); dl.className = 'form_block'; section.appendChild(dl); parent.appendChild(section); return dl;
+        form.classList.add('eclipse-simple-story-editor');
+
+        function moveFieldAfter(selector, anchorSelector) {
+            var control = source.querySelector(selector);
+            var anchor = source.querySelector(anchorSelector);
+            if (!control || !anchor) return;
+            var definition = control.closest('dd');
+            var term = definition ? definition.previousElementSibling : null;
+            while (term && term.tagName !== 'DT') term = term.previousElementSibling;
+            var anchorDefinition = anchor.closest('dd');
+            if (!definition || !term || !anchorDefinition) return;
+            var reference = anchorDefinition.nextSibling;
+            source.insertBefore(term, reference);
+            source.insertBefore(definition, reference);
+            var description = definition.nextElementSibling;
+            while (description && description.tagName === 'DD' && description.classList.contains('description')) {
+                var current = description;
+                description = description.nextElementSibling;
+                source.insertBefore(current, reference);
+            }
         }
-        var identity = panel(labels.identity, 'eclipse-panel-identity', main);
-        var content = panel(labels.articleContent, 'eclipse-panel-content', main);
-        var publish = panel(labels.publish, 'eclipse-panel-publish', side);
-        var seo = panel(labels.seo, 'eclipse-panel-seo', side);
-        function moveField(selector, target) {
-            var control = source.querySelector(selector); if (!control) return;
-            var dd = control.closest('dd'); if (!dd) return;
-            var dt = dd.previousElementSibling;
-            while (dt && dt.tagName !== 'DT') dt = dt.previousElementSibling;
-            if (dt) target.appendChild(dt);
-            target.appendChild(dd);
-            var next = dd.nextElementSibling;
-            while (next && next.tagName === 'DD') { var current = next; next = next.nextElementSibling; target.appendChild(current); }
-        }
-        ['#admin-storyeditor-title','[name="topic[]"]','#admin-storyeditor-show_topic_icon'].forEach(function (s) { moveField(s, identity); });
-        ['#admin-storyeditor-introtext','#admin-storyeditor-bodytext','#admin-storyeditor-postmode'].forEach(function (s) { moveField(s, content); });
-        ['#admin-storyeditor-publish_month','#admin-storyeditor-draft_flag','[name="frontpage"]','#cmt_close_flag','#admin-storyeditor-archiveflag','#admin-storyeditor-expire_month','#admin-storyeditor-cachetime'].forEach(function (s) { moveField(s, publish); });
-        ['#admin-storyeditor-sid','#admin-storyeditor-page_title','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(function (s) { moveField(s, seo); });
-        var remaining = panel(labels.more, 'eclipse-panel-more', side);
-        while (source.firstChild) remaining.appendChild(source.firstChild);
-        source.remove();
+
+        moveFieldAfter('#admin-storyeditor-page_title', '#admin-storyeditor-sid');
+
         var access = basic.querySelector(':scope > fieldset');
-        if (access) { access.classList.add('eclipse-editor-access'); var legend = access.querySelector('legend'); if (legend && !legend.textContent.trim()) legend.textContent = labels.access; side.appendChild(access); }
+        if (access) access.classList.add('eclipse-editor-access');
         var actions = basic.querySelector(':scope > .submit');
-        if (actions) { actions.classList.add('eclipse-editor-actions'); basic.appendChild(actions); }
+        if (actions) actions.classList.add('eclipse-editor-actions');
     }
     function setupAdminDashboard() {
         var root = document.querySelector('.eclipse-command-page');
