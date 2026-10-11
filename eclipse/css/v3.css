@@ -103,3 +103,29 @@ body.theme-eclipse .block-left-content .uk-align-left>a>img[src*="/layout/eclips
 body.theme-eclipse img[src*="/layout/eclipse/images/edit.svg"],body.theme-eclipse img[src*="/layout/eclipse/images/copy.svg"],body.theme-eclipse img[src*="/layout/eclipse/images/deleteitem.svg"]{display:inline-block;width:1.2rem;height:1.2rem;min-width:0;min-height:0;max-width:1.2rem;max-height:1.2rem;margin:.1rem .2rem;padding:0;object-fit:contain;vertical-align:middle;background:transparent;border:0;border-radius:0;box-shadow:none}
 
 .eclipse-topic-heading{margin:clamp(1rem,2vw,1.5rem) 0 .8rem;font-size:clamp(1.7rem,3vw,2.4rem)}
+
+
+/* Optional dark editorial strip: retains the editorial layout and spacing. */
+body.theme-eclipse.menu-style-editorial-dark #navigation {
+    background: #20382d;
+    border-bottom-color: #365a44;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation .navigation_content {
+    background: transparent;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li > a,
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li > a:link,
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li > a:visited {
+    color: #f4f8f3;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li > a:hover,
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li > a:focus-visible,
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li.selected > a {
+    color: #d5efba;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul li + li {
+    border-left-color: rgba(255,255,255,.16);
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation_ul > li > a::after {
+    background: #a7d374;
+}
