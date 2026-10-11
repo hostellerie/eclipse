@@ -166,16 +166,30 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
     }
 }
 
-/* In compact mode detach the menu without pulling it over the slogan.
-   Both overlap custom properties must be reset because v3.css applies a
-   separate value at mobile breakpoints. */
+/* Compact header: title and slogan share the same line on wide screens.
+   Restore a modest floating-menu overlap only where that line fits. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) {
-    --eclipse-nav-overlap: 0px;
+    --eclipse-nav-overlap: -.65rem;
     --eclipse-nav-overlap-mobile: 0px;
 }
-body.theme-eclipse.header-density-compact.menu-style-floating:not(.eclipse-admin-page) #navigation,
-body.theme-eclipse.header-density-compact.menu-style-contrast:not(.eclipse-admin-page) #navigation {
-    margin-top: 0 !important;
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 1.5rem;
+    row-gap: .2rem;
+    min-width: 0;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
+    margin: 0;
+}
+@media (max-width: 47.99rem) {
+    body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity > div {
+        display: block;
+    }
+    body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
+        margin-top: .15rem;
+    }
 }
 
 /* Optional compact public header. Standard mode keeps existing dimensions. */
