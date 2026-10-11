@@ -218,7 +218,7 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan 
 /* Optional compact public header. Standard mode keeps existing dimensions. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
     min-height: 0;
-    padding-block: .65rem;
+    padding-block: .95rem;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-logo img {
     max-height: 2.5rem;
@@ -249,5 +249,46 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #wrapper {
     }
     body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_name {
         font-size: 1.5rem;
+    }
+}
+
+
+/* Dark editorial variant. Keep only the top-level strip dark; dropdown panels
+   retain the light surface and normal accessible submenu text styling. */
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu {
+    background: #20382d;
+    border-bottom-color: #365a44;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu .navigation_content {
+    background: transparent;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+    color: #f4f8f3 !important;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a:hover,
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a:focus-visible,
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a[aria-current=page] {
+    color: #d5efba !important;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a::before {
+    background: #a7d374;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul {
+    color: var(--eclipse-text);
+    background: var(--eclipse-surface);
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul a {
+    color: var(--eclipse-text) !important;
+}
+@media (max-width:47.99rem) {
+    body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel {
+        --eclipse-mobile-menu-text: #f4f8f3;
+        --eclipse-mobile-menu-hover: #d5efba;
+    }
+    body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul {
+        background: transparent;
+    }
+    body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul a {
+        color: #f4f8f3 !important;
     }
 }
