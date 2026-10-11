@@ -256,22 +256,23 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #wrapper {
 /* Dark editorial variant. Keep only the top-level strip dark; dropdown panels
    retain the light surface and normal accessible submenu text styling. */
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu {
-    background: #20382d;
-    border-bottom-color: #365a44;
+    background: #24272b;
+    border-top: 0;
+    border-bottom-color: #24272b;
 }
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu .navigation_content {
     background: transparent;
 }
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
-    color: #f4f8f3 !important;
+    color: #f2f3f4 !important;
 }
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a:hover,
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a:focus-visible,
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a[aria-current=page] {
-    color: #d5efba !important;
+    color: #ffffff !important;
 }
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a::before {
-    background: #a7d374;
+    background: var(--eclipse-secondary);
 }
 body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul {
     color: var(--eclipse-text);
@@ -282,13 +283,13 @@ body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #ec
 }
 @media (max-width:47.99rem) {
     body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel {
-        --eclipse-mobile-menu-text: #f4f8f3;
-        --eclipse-mobile-menu-hover: #d5efba;
+        --eclipse-mobile-menu-text: #f2f3f4;
+        --eclipse-mobile-menu-hover: #ffffff;
     }
     body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul {
         background: transparent;
     }
     body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul a {
-        color: #f4f8f3 !important;
+        color: #f2f3f4 !important;
     }
 }
