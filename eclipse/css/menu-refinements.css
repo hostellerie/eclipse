@@ -166,6 +166,12 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
     }
 }
 
+/* Compact headers must not be covered by detached overlapping menus. */
+body.theme-eclipse.header-density-compact.menu-style-floating:not(.eclipse-admin-page) #navigation,
+body.theme-eclipse.header-density-compact.menu-style-contrast:not(.eclipse-admin-page) #navigation {
+    margin-top: 0;
+}
+
 /* Optional compact public header. Standard mode keeps existing dimensions. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
     min-height: 0;
