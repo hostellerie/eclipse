@@ -166,6 +166,16 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
     }
 }
 
+/* Editorial navigation must establish a stacking context above the page columns.
+   v3.css uses position:static here, leaving dropdowns behind side blocks. */
+body.theme-eclipse.menu-style-editorial #navigation {
+    position: relative;
+    z-index: 100;
+}
+body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel {
+    overflow: visible;
+}
+
 /* Balanced compact header: left-aligned brand, right-aligned secondary slogan.
    Retain breathing room above the floating navigation. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) {
