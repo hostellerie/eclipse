@@ -121,11 +121,25 @@ function eclipse_html_language()
 {
     global $_CONF, $LANG_ISO639_1;
     $options = eclipse_theme_options();
-    $configured = isset($options['html_lang']) ? trim($options['html_lang']) : 'auto';
+    $configured = isset($options['html_lang']) ? trim((string) $options['html_lang']) : 'auto';
+    // An explicit Eclipse override takes precedence over automatic detection.
     if ($configured !== 'auto' && preg_match('/^[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*$/', $configured)) {
         return htmlspecialchars($configured, ENT_QUOTES, 'UTF-8');
     }
-    if (!empty($LANG_ISO639_1) && preg_match('/^[a-zA-Z]{2,3}$/', $LANG_ISO639_1)) return strtolower($LANG_ISO639_1);
+
+    // Geeklog stores its configured locale as POSIX syntax (e.g. es_ES,
+    // de_DE.UTF-8). HTML requires a BCP 47 tag, such as es-ES or de-DE.
+    // Only use the configured locale, not the server's runtime locale.
+    $locale = isset($_CONF['locale']) ? trim((string) $_CONF['locale']) : '';
+    if (preg_match('/^([a-zA-Z]{2,3})(?:[_-]([a-zA-Z]{2}))?(?:\\.[a-zA-Z0-9_-]+)?(?:@[a-zA-Z0-9_-]+)?$/', $locale, $parts)) {
+        $tag = strtolower($parts[1]);
+        if (!empty($parts[2])) $tag .= '-' . strtoupper($parts[2]);
+        return $tag;
+    }
+
+    if (!empty($LANG_ISO639_1) && preg_match('/^[a-zA-Z]{2,3}$/', $LANG_ISO639_1)) {
+        return strtolower($LANG_ISO639_1);
+    }
     $language = isset($_CONF['language']) ? strtolower((string) $_CONF['language']) : '';
     $names = array('french' => 'fr', 'english' => 'en', 'german' => 'de', 'spanish' => 'es', 'italian' => 'it', 'dutch' => 'nl', 'portuguese' => 'pt');
     foreach ($names as $name => $code) if (strpos($language, $name) === 0) return $code;
