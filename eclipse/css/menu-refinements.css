@@ -169,7 +169,7 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
 /* Balanced compact header: left-aligned brand, right-aligned secondary slogan.
    Retain breathing room above the floating navigation. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) {
-    --eclipse-nav-overlap: -.55rem;
+    --eclipse-nav-overlap: 0rem;
     --eclipse-nav-overlap-mobile: 0px;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity {
@@ -223,11 +223,11 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan 
     font-size: .9rem;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #navigation .navigation_content {
-    min-height: 2.6rem;
+    min-height: 2.35rem;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul>li>a {
-    min-height: 2.5rem;
-    padding-block: .45rem;
+    min-height: 2.25rem;
+    padding-block: .32rem;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #wrapper {
     padding-block: .8rem;
