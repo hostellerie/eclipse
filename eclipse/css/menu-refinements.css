@@ -166,29 +166,42 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
     }
 }
 
-/* Compact header: title and slogan share the same line on wide screens.
-   Restore a modest floating-menu overlap only where that line fits. */
+/* Balanced compact header: left-aligned brand, right-aligned secondary slogan.
+   Retain breathing room above the floating navigation. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) {
-    --eclipse-nav-overlap: -.65rem;
+    --eclipse-nav-overlap: -.55rem;
     --eclipse-nav-overlap-mobile: 0px;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity {
+    width: 100%;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity > div {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
-    align-items: baseline;
-    column-gap: 1.5rem;
-    row-gap: .2rem;
+    column-gap: 2rem;
+    row-gap: .35rem;
+    width: 100%;
     min-width: 0;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_name {
+    margin: 0;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
     margin: 0;
+    max-width: 45%;
+    text-align: right;
+    opacity: .85;
 }
 @media (max-width: 47.99rem) {
     body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity > div {
         display: block;
     }
     body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
-        margin-top: .15rem;
+        max-width: none;
+        margin-top: .2rem;
+        text-align: left;
     }
 }
 
