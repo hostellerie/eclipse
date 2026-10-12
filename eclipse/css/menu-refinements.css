@@ -293,3 +293,40 @@ body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #ec
         color: #f2f3f4 !important;
     }
 }
+
+
+/* Editorial menus follow the content grid rather than centering short menus.
+   Desktop only: the mobile navigation keeps its existing stacked behavior. */
+@media (min-width:48rem) {
+    body.theme-eclipse.menu-style-editorial #navigation .navigation_content {
+        justify-content: flex-start;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul {
+        justify-content: flex-start;
+        gap: clamp(.8rem, 1.6vw, 1.45rem);
+    }
+    body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.65rem;
+        padding-block: .5rem;
+        line-height: 1.35;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a::before {
+        bottom: .15rem;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation_ul {
+        justify-content: flex-start;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation_ul > li > a {
+        display: flex;
+        align-items: center;
+        min-height: 2.65rem;
+        padding-block: .5rem;
+        line-height: 1.35;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation_ul > li > a::after {
+        bottom: .15rem;
+    }
+}
