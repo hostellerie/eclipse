@@ -35,7 +35,10 @@ $allowedLegacyFailures = @(
     'Installable theme budget exceeded:',
     'Configuration secondary-tab fallback styling is incomplete.',
     'Mobile configuration select-value geometry is incomplete.',
-    'Configuration Manager must retain its native Denim layout and behavior.'
+    'Configuration Manager must retain its native Denim layout and behavior.',
+    # Eclipse 1.3 removed the separate simulated-site Preview tab intentionally.
+    'Professional Studio tab/preview markup is incomplete.',
+    'Studio preview viewport styles are incomplete.'
 )
 
 $legacyFailures = @($legacyOutput | Where-Object { $_ -match '^FAIL:\s*(.+)$' })
@@ -54,6 +57,27 @@ foreach ($failure in $legacyFailures) {
 }
 if ($legacyExitCode -ne 0 -and $legacyFailures.Count -eq 0) {
     Fail "Historical validator exited with code $legacyExitCode without reporting a recognized FAIL line."
+}
+
+
+# The isolated site-preview iframe was retired. Keep the accessible Studio tabs,
+# live palette feedback and contrast checks, but reject the obsolete parallel
+# preview implementation rather than reinstating it to satisfy legacy tests.
+$themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
+$studioCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/studio.css')
+if ($functions -notmatch 'role="tablist"' -or $themeJs -notmatch 'function setupStudioTabs') {
+    Fail 'Accessible Theme Studio tabs are missing.'
+}
+if ($functions -match 'eclipse-panel-preview|eclipse-preview-frame|data-preview-width' -or
+    $themeJs -match 'eclipse-preview-frame|eclipse-isolated-preview|updateLayoutPreview' -or
+    $studioCss -match 'eclipse-isolated-preview|eclipse-preview-toolbar') {
+    Fail 'Retired Studio site-preview markup or scripting has returned.'
+}
+if ($functions -notmatch 'eclipse-palette-preview' -or
+    $functions -notmatch 'eclipse-contrast-report' -or
+    $themeJs -notmatch 'function previewColors' -or
+    $themeJs -notmatch 'function updateContrast') {
+    Fail 'Theme Studio palette feedback or contrast reporting is missing.'
 }
 
 # The maintained roadmap moved to the repository root in the 1.2 cycle so it
