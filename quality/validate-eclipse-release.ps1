@@ -63,6 +63,7 @@ if ($legacyExitCode -ne 0 -and $legacyFailures.Count -eq 0) {
 # The isolated site-preview iframe was retired. Keep the accessible Studio tabs,
 # live palette feedback and contrast checks, but reject the obsolete parallel
 # preview implementation rather than reinstating it to satisfy legacy tests.
+$functions = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
 $studioCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/studio.css')
 if ($functions -notmatch 'role="tablist"' -or $themeJs -notmatch 'function setupStudioTabs') {
