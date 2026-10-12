@@ -216,6 +216,52 @@
             if (!contrastReport) return;
             contrastReport.innerHTML = contrastBadge('Text / cards', colors[5], colors[4]) + contrastBadge('Links / cards', colors[2], colors[4]) + contrastBadge('White / buttons', '#ffffff', colors[2]);
         }
+        function updateLayoutPreview() {
+            var frame = document.getElementById('eclipse-preview-frame');
+            if (!frame || !frame.contentDocument || !frame.contentDocument.documentElement) return;
+            var doc = frame.contentDocument;
+            var root = doc.documentElement;
+            var get = function (key, fallback) {
+                var field = form.querySelector('[name="eclipse[' + key + ']"]');
+                return field ? field.value : fallback;
+            };
+            var set = function (name, value) { root.style.setProperty(name, value); };
+            var compact = get('header_density', 'standard') === 'compact';
+            var fontSize = parseInt(get('font_size', '16'), 10);
+            if (!Number.isFinite(fontSize) || fontSize < 14 || fontSize > 22) fontSize = 16;
+            set('--preview-font-size', fontSize + 'px');
+            var fonts = {
+                system: 'system-ui, sans-serif',
+                serif: 'Georgia, "Times New Roman", serif',
+                humanist: 'Verdana, Geneva, sans-serif'
+            };
+            set('--preview-font', fonts[get('font_family', 'system')] || fonts.system);
+            set('--preview-header-padding', compact ? '.95rem' : '2.2rem');
+            set('--preview-title-size', compact ? '2rem' : 'clamp(1.8rem,5vw,3.2rem)');
+            var hero = doc.querySelector('.hero');
+            if (hero) hero.classList.toggle('compact', compact);
+            var nav = doc.getElementById('preview-navigation');
+            var menu = get('menu_style', 'floating');
+            if (nav) nav.className = menu;
+            set('--preview-nav-height', compact ? '2.65rem' : '3.5rem');
+            var spacing = { compact: '.75rem', normal: '1rem', relaxed: '1.35rem' };
+            var space = spacing[get('spacing', 'normal')] || spacing.normal;
+            set('--preview-gap', space);
+            set('--preview-card-pad', 'calc(' + space + ' * 1.2)');
+            var radius = { none: '0', small: '.35rem', medium: '.75rem', large: '1.25rem' };
+            set('--preview-radius', radius[get('radius', 'medium')] || radius.medium);
+            var width = get('site_max_width', '1200px');
+            if (/^[1-9][0-9]{0,3}(px|rem)$/.test(width)) set('--preview-site-width', width);
+            var reading = get('reading_width', '72ch');
+            if (/^[1-9][0-9]{0,2}ch$/.test(reading) || /^[1-9][0-9]{0,3}(px|rem)$/.test(reading)) set('--preview-reading-width', reading);
+            doc.body.classList.toggle('preview-hide-right', !form.querySelector('[name="eclipse[show_right_sidebar]"]')?.checked);
+            ['flat', 'bordered'].forEach(function (style) {
+                doc.body.classList.toggle('preview-block-' + style, get('block_style', 'card') === style);
+            });
+            ['outline', 'soft'].forEach(function (style) {
+                doc.body.classList.toggle('preview-button-' + style, get('button_style', 'solid') === style);
+            });
+        }
         function previewColors(colors) {
             colors.forEach(function (color, index) { document.documentElement.style.setProperty(variables[index], color); });
             var frame = document.getElementById('eclipse-preview-frame');
@@ -224,6 +270,7 @@
                 colors.forEach(function (color, index) { frame.contentDocument.documentElement.style.setProperty(previewVariables[index], color); });
             }
             updateContrast(colors);
+            updateLayoutPreview();
         }
         function setDirty(value) {
             dirty = value;
@@ -242,7 +289,7 @@
             if (input) input.addEventListener('input', function () { previewColors(currentColors()); identifyPalette(); setDirty(true); });
         });
         form.querySelectorAll('input:not([type="hidden"]),select').forEach(function (control) {
-            if (control !== selector && inputs.indexOf(control) === -1) control.addEventListener('change', function () { setDirty(true); });
+            if (control !== selector && inputs.indexOf(control) === -1) control.addEventListener('change', function () { updateLayoutPreview(); setDirty(true); });
         });
         var footerEditor = form.querySelector('.eclipse-footer-editor');
         var initialFooterHtml = footerEditor ? footerEditor.innerHTML : '';
