@@ -94,3 +94,24 @@ body.theme-eclipse .gl-tooltip-critical>.eclipse-tooltip-content{
         min-width:min(16rem,calc(100vw - 2rem));
     }
 }
+
+/* UIkit legacy buttons used by historical site content. */
+body.theme-eclipse a.uk-button.uk-button-primary,
+body.theme-eclipse a.uk-button.uk-button-primary:link,
+body.theme-eclipse a.uk-button.uk-button-primary:visited {
+    background: var(--eclipse-action, var(--eclipse-link, var(--eclipse-primary))) !important;
+    border-color: var(--eclipse-action, var(--eclipse-link, var(--eclipse-primary))) !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    text-decoration: none !important;
+}
+
+body.theme-eclipse a.uk-button.uk-button-primary:hover,
+body.theme-eclipse a.uk-button.uk-button-primary:focus {
+    background: var(--eclipse-action-hover, var(--eclipse-action, var(--eclipse-link, var(--eclipse-primary)))) !important;
+    border-color: var(--eclipse-action-hover, var(--eclipse-action, var(--eclipse-link, var(--eclipse-primary)))) !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    text-decoration: none !important;
+}
+
