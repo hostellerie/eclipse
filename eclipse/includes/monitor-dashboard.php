@@ -11,7 +11,8 @@ function eclipse_monitor_dashboard_data()
         return null;
     }
 
-    $args = array('include_remote' => true);
+    // Never initiate remote version requests while building admin/index.php.
+    $args = array('include_remote' => false);
     $output = array();
     $svcMsg = array();
     $result = @PLG_invokeService('monitor', 'get_plugins', $args, $output, $svcMsg);
