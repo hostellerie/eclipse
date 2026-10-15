@@ -170,23 +170,6 @@ function eclipse_adsense_header_script()
     return '<!-- Google AdSense -->' . "\n" . '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' . rawurlencode($client) . '" crossorigin="anonymous"></script>' . "\n";
 }
 
-function eclipse_topic_heading()
-{
-    global $_TABLES;
-    $options = eclipse_theme_options();
-    $script = isset($_SERVER['PHP_SELF']) ? basename($_SERVER['PHP_SELF']) : '';
-    if (empty($options['topic_h1_enabled']) || $script !== 'index.php' || empty($_GET['topic'])) return '';
-    $topicId = trim((string) $_GET['topic']);
-    if ($topicId === '' || !preg_match('/^[a-zA-Z0-9_-]+$/', $topicId)) return '';
-    $label = '';
-    if (isset($_TABLES['topics']) && function_exists('DB_getItem')) {
-        $safeId = function_exists('DB_escapeString') ? DB_escapeString($topicId) : addslashes($topicId);
-        $label = (string) DB_getItem($_TABLES['topics'], 'topic', "tid = '" . $safeId . "'");
-    }
-    if ($label === '') $label = ucwords(str_replace(array('-', '_'), ' ', $topicId));
-    return '<h1 class="eclipse-topic-heading">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</h1>';
-}
-
 function eclipse_asset_cache_version($type)
 {
     static $versions = array();
