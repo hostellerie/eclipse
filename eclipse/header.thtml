@@ -141,4 +141,3 @@ $eclipseSecondaryMenu = function_exists('eclipse_menu_render_slot')
       <main id="main-content" tabindex="-1">
         <p class="welcome_msg">{welcome_msg}&nbsp;{datetime}</p>
         {breadcrumb_trail}
-        <?php echo eclipse_topic_heading(); ?>
