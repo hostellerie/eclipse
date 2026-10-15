@@ -333,3 +333,14 @@ body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #ec
         bottom: .15rem;
     }
 }
+
+/* A tighter dark editorial navigation in compact header density. */
+@media (min-width:48rem) {
+    body.theme-eclipse.header-density-compact.menu-style-editorial-dark:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu .navigation_content {
+        min-height:2.6rem;
+    }
+    body.theme-eclipse.header-density-compact.menu-style-editorial-dark:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+        min-height:2.6rem;
+        padding-block:.48rem;
+    }
+}
