@@ -28,7 +28,7 @@
       <dd{hide_meta}><textarea name="meta_keywords" id="admin-storyeditor-metakeywords" style="width:95%" cols="70" rows="2">{meta_keywords}</textarea></dd>
 
       <dt><label for="tid">{lang_topic}</label></dt>
-      <dd class="controls_text">{topic_selection}</dd>
+      <dd class="controls_text eclipse-detail-topic-selection">{topic_selection}</dd>
 
       <dt class="eclipse-detail-label eclipse-detail-topic-icon"><label for="admin-storyeditor_advanced-show_topic_icon">{lang_show_topic_icon}</label></dt>
       <dd class="eclipse-detail-value controls_text"><input type="checkbox" {show_topic_icon_checked} name="show_topic_icon" id="admin-storyeditor_advanced-show_topic_icon"{xhtml}></dd>
@@ -40,7 +40,7 @@
       </dd>        
 
       <dt class="eclipse-detail-label eclipse-detail-cache"><label for="admin-storyeditor_advanced-cachetime">{lang_cachetime}</label></dt>
-      <dd class="eclipse-detail-value"><input type="text" size="8" value="{cache_time}" name="cache_time" id="admin-storyeditor_advanced-cachetime" class="text" aria-describedby="desc-admin-storyeditor_advanced-cachetime"{xhtml}><div class="description" id="desc-admin-storyeditor_advanced-cachetime">{lang_cachetime_desc}</div></dd>
+      <dd class="eclipse-detail-value eclipse-detail-cache-value"><input type="text" size="8" value="{cache_time}" name="cache_time" id="admin-storyeditor_advanced-cachetime" class="text" aria-describedby="desc-admin-storyeditor_advanced-cachetime"{xhtml}><div class="description" id="desc-admin-storyeditor_advanced-cachetime">{lang_cachetime_desc}</div></dd>
 
       <dt class="eclipse-detail-label eclipse-detail-draft"><label for="admin-storyeditor_advanced-draft_flag">{lang_draft}</label></dt>
       <dd class="eclipse-detail-value controls_text"><input type="checkbox" {is_checked} name="draft_flag" id="admin-storyeditor_advanced-draft_flag"{xhtml}></dd>
