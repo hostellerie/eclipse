@@ -10,7 +10,10 @@ require_once __DIR__ . '/includes/custom-css.php';
 function theme_config_eclipse()
 {
     global $_CONF;
-    $minimumThemeVersion = '2.2.2';
+    $minimumThemeVersion = !empty($_CONF['min_theme_gl_version']) ? $_CONF['min_theme_gl_version'] : '2.2.2';
+    if (version_compare($minimumThemeVersion, '2.2.2', '<')) {
+        $minimumThemeVersion = '2.2.2';
+    }
     return array(
         'theme_name'             => 'Eclipse',
         'theme_version'          => eclipse_theme_version(),
