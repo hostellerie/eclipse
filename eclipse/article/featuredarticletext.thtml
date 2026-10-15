@@ -68,7 +68,7 @@
       {!if navi_list}
           <ul class="story_navi">
             {!if page_selector}<li>{page_selector}</li>{!endif}
-            {!if readmore_link}<li>{readmore_link}</li>{!endif}
+            {!if readmore_link}<li>{start_readmore_anchortag}{lang_readmore}{end_readmore_anchortag}</li>{!endif}
             {!if post_comment_link}<li>{post_comment_link}</li>{!endif}
           </ul>
       {!endif}
