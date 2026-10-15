@@ -76,49 +76,39 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor .ecli
 }
 
 
-/* Compact Article details: keep selected label/control pairs on one row.
-   Other editor fields retain their full-width layout. */
-@media (min-width:48rem){
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block{
+/* Geeklog 2.2.2: semantic detail pairs from articleeditor_advanced.thtml.
+   The title is moved separately by Eclipse's article editor enhancement. */
+@media (min-width:48rem) {
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block {
     display:grid!important;
-    grid-template-columns:minmax(10rem,12rem) minmax(0,1fr)!important;
-    column-gap:1rem!important;
-    row-gap:.5rem!important;
+    grid-template-columns:minmax(11rem,14rem) minmax(0,1fr)!important;
+    gap:.6rem 1rem!important;
     align-items:center;
-}
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dd{
-    grid-column:1/-1;
-}
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:first-child,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-show_topic_icon"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-structureddata"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-cachetime"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-draft_flag"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(+dd .story_stats),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="sel_editmode"]){
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt,
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd {
+    grid-column:1 / -1;
+    min-width:0;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt.eclipse-detail-label {
     grid-column:1!important;
     padding:0!important;
     align-self:center;
-}
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:first-child+dd,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-show_topic_icon"])+dd,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-structureddata"])+dd,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-cachetime"])+dd,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="admin-storyeditor_advanced-draft_flag"])+dd,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(+dd .story_stats)+dd,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dt:has(>label[for="sel_editmode"])+dd{
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-value {
     grid-column:2!important;
-    min-width:0;
     align-self:center;
-}
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dd .story_stats{
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-value .story_stats {
     display:inline-block;
     margin-right:1rem;
     white-space:nowrap;
+  }
 }
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor .eclipse-editor-identity dl.form_block>dd :is(select,input[type="text"]){
-    width:auto!important;
-    max-width:100%;
-}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .eclipse-editor-identity dl.form_block > dd,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .eclipse-editor-identity #admin-storyeditor_advanced-title {
+    width:100%!important;
+    max-width:none!important;
+    min-width:0;
+    box-sizing:border-box;
 }
