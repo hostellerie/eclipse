@@ -1,6 +1,6 @@
 # Eclipse 1.3.0
 
-Eclipse is a modern, mobile-first child theme for Geeklog based on Denim. It supports Geeklog 2.1.1 and 2.2.2 while preserving Geeklog's native permissions, URLs, form processing and plugin hooks.
+Eclipse is a modern, mobile-first child theme for Geeklog based on Denim. It requires Geeklog 2.2.2 or later while preserving Geeklog's native permissions, URLs, form processing and plugin hooks.
 
 ## Installation
 
@@ -24,7 +24,7 @@ If the archive is accidentally submitted to Geeklog's plugin uploader, the senti
 
 ## Requirements
 
-- Geeklog 2.1.1 or later.
+- Geeklog 2.2.2 or later.
 - PHP 5.6.0 or later as the parsing compatibility baseline; use a maintained PHP version in production.
 - Denim installed as the parent compatibility theme.
 - Permission to create the protected sibling storage directory `{path_data}-eclipse/`.
@@ -53,7 +53,7 @@ Eclipse 1.3.0 includes responsive story/article editor presentation, SEO diagnos
 
 ## Compatibility and validation
 
-Missing templates are inherited from Denim through Geeklog's child-theme mechanism. Eclipse provides compatibility layers only where Geeklog 2.1.1 and 2.2.2 differ materially.
+Missing templates are inherited from Denim through Geeklog's child-theme mechanism. Eclipse targets Geeklog 2.2.2 and uses its native child-theme template resolution.
 
 Development documentation and the complete release QA matrix are maintained in the repository and deliberately excluded from the installable archive.
 
