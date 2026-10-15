@@ -10,7 +10,7 @@ require_once __DIR__ . '/includes/custom-css.php';
 function theme_config_eclipse()
 {
     global $_CONF;
-    $minimumThemeVersion = !empty($_CONF['min_theme_gl_version']) ? $_CONF['min_theme_gl_version'] : '2.0.0';
+    $minimumThemeVersion = '2.2.2';
     return array(
         'theme_name'             => 'Eclipse',
         'theme_version'          => eclipse_theme_version(),
@@ -95,7 +95,7 @@ function eclipse_is_staticpages_admin()
 
 function eclipse_supports_admin_list()
 {
-    return defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
+    return true;
 }
 
 function eclipse_context_classes()
@@ -285,12 +285,6 @@ function theme_init_eclipse()
 {
     global $_BLOCK_TEMPLATE, $_CONF, $TEMPLATE_OPTIONS;
     $_CONF['left_blocks_in_footer'] = 1;
-    // Geeklog 2.2 resolves child-theme fallbacks through theme_default and
-    // CTL_core_templatePath.  The legacy override would force Denim ahead of
-    // Eclipse in template resolution, so retain it only for Geeklog 2.1.x.
-    if (!defined('VERSION') || version_compare(VERSION, '2.2.0', '<')) {
-        $TEMPLATE_OPTIONS['override'] = 'denim';
-    }
     $_BLOCK_TEMPLATE['_msg_block'] = 'blockheader-message.thtml,blockfooter-message.thtml';
     $_BLOCK_TEMPLATE['configmanager_block'] = 'blockheader-config.thtml,blockfooter-config.thtml';
     $_BLOCK_TEMPLATE['configmanager_subblock'] = 'blockheader-config.thtml,blockfooter-config.thtml';
@@ -298,11 +292,7 @@ function theme_init_eclipse()
     $_BLOCK_TEMPLATE['story_options_block'] = 'blockheader-related.thtml,blockfooter-related.thtml';
     $_BLOCK_TEMPLATE['admin_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';
     $_BLOCK_TEMPLATE['section_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';
-    // Geeklog 2.2 introduced a separate wrapper for administration lists.
-    // Do not register it on 2.1.1: its Denim fallback has no corresponding template.
-    if (eclipse_supports_admin_list()) {
-        $_BLOCK_TEMPLATE['_admin_list'] = 'blockheader-child.thtml,blockfooter.thtml';
-    }
+    $_BLOCK_TEMPLATE['_admin_list'] = 'blockheader-child.thtml,blockfooter.thtml';
     if (!COM_isAnonUser()) {
         $_BLOCK_TEMPLATE['user_block'] = 'blockheader-list.thtml,blockfooter-list.thtml';
     }
@@ -950,7 +940,7 @@ function eclipse_render_customizer()
     $customCss = function_exists('eclipse_custom_css_read') ? eclipse_custom_css_read() : '';
     $customCssNotice = function_exists('eclipse_custom_css_notice') ? eclipse_custom_css_notice() : array();
     $customCssFr = strpos(strtolower((string) eclipse_html_language()), 'fr') === 0;
-    $environmentGeeklog = defined('VERSION') ? VERSION : '2.1.1 reference';
+    $environmentGeeklog = defined('VERSION') ? VERSION : '2.2.2 minimum';
     $environmentDataWritable = eclipse_storage_prepare();
     $environmentHtml = '<dl class="eclipse-environment"><div><dt>Geeklog</dt><dd>' . $h($environmentGeeklog) . '</dd></div><div><dt>PHP</dt><dd>' . $h(PHP_VERSION) . '</dd></div><div><dt>ZIP updates</dt><dd class="' . (class_exists('ZipArchive') ? 'is-ok' : 'is-warning') . '">' . (class_exists('ZipArchive') ? 'Available' : 'ZipArchive missing') . '</dd></div><div><dt>Persistent JSON</dt><dd class="' . ($environmentDataWritable ? 'is-ok' : 'is-warning') . '">' . ($environmentDataWritable ? 'Writable sibling storage' : 'Not writable') . '</dd></div></dl>';
     $select = function ($name, $values) use ($o, $h) {
