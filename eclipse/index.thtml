@@ -84,7 +84,7 @@ $eclipseSecondaryMenu = function_exists('eclipse_menu_render_slot')
         <p class="welcome_msg">{welcome_msg}&nbsp;{datetime}</p>
         {breadcrumb_trail}
         {system_messsages}
-        <?php echo eclipse_topic_heading(); ?>
+
         {content}
         <?php require_once $_CONF['path_layout'] . 'includes/content-bottom.php'; echo eclipse_content_bottom_render(); ?>
       </main>
