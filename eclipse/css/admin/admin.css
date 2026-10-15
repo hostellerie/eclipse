@@ -259,3 +259,32 @@ body.eclipse-admin-page #admin-topiceditor .form_block>dt,
 body.eclipse-admin-page #admin-topiceditor .form_block>dd{grid-column:1}
 body.eclipse-admin-page #admin-topiceditor .form_block>dd.description{margin-top:0}
 }
+
+
+/* Autotags plugin editor: harmonize the native Denim form with Eclipse admin. */
+body.eclipse-admin-page #autotags-autotageditor{max-width:78rem;margin:0 auto 2rem}
+body.eclipse-admin-page #autotags-autotageditor .admin_basic{display:grid;gap:1.2rem;min-width:0}
+body.eclipse-admin-page #autotags-autotageditor .admin_basic>.form_block,
+body.eclipse-admin-page #autotags-autotageditor .admin_basic>fieldset{min-width:0;margin:0;padding:clamp(1rem,2vw,1.5rem);background:var(--eclipse-admin-surface);border:1px solid var(--eclipse-admin-border);border-radius:calc(var(--eclipse-admin-radius)*.8);box-shadow:0 6px 22px rgba(15,23,42,.045)}
+body.eclipse-admin-page #autotags-autotageditor .form_block{display:grid;grid-template-columns:minmax(9rem,12rem) minmax(0,1fr);align-items:start;gap:.75rem 1.25rem}
+body.eclipse-admin-page #autotags-autotageditor .form_block>dt{grid-column:1;min-width:0;margin:0;padding:.55rem 0 0;font-weight:700}
+body.eclipse-admin-page #autotags-autotageditor .form_block>dd{grid-column:2;min-width:0;margin:0}
+body.eclipse-admin-page #autotags-autotageditor .form_block>dd.description{margin-top:-.5rem;color:var(--eclipse-admin-muted);font-size:.83rem;line-height:1.45}
+body.eclipse-admin-page #autotags-autotageditor .form_block input[type=text],
+body.eclipse-admin-page #autotags-autotageditor .form_block select,
+body.eclipse-admin-page #autotags-autotageditor .form_block textarea{box-sizing:border-box;width:100%;max-width:100%;min-height:2.5rem;padding:.55rem .75rem;border-radius:.5rem}
+body.eclipse-admin-page #autotags-autotageditor #autotags-autotageditor-tag{max-width:20rem}
+body.eclipse-admin-page #autotags-autotageditor #autotags-autotageditor-replacement{min-height:16rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9rem;line-height:1.55;resize:vertical}
+body.eclipse-admin-page #autotags-autotageditor .form_block .controls_text{line-height:1.55}
+body.eclipse-admin-page #autotags-autotageditor .form_block .controls_text input[type=checkbox]{vertical-align:middle}
+body.eclipse-admin-page #autotags-autotageditor .admin_basic>fieldset>legend{padding:0 .45rem;font-size:1rem}
+body.eclipse-admin-page #autotags-autotageditor #admin-permissions{width:100%;max-width:36rem;margin:.4rem 0;border-collapse:collapse;text-align:center}
+body.eclipse-admin-page #autotags-autotageditor #admin-permissions :is(th,td){padding:.65rem;border:1px solid var(--eclipse-admin-border);text-align:center}
+body.eclipse-admin-page #autotags-autotageditor #admin-permissions th{background:color-mix(in srgb,var(--eclipse-admin-primary) 7%,var(--eclipse-admin-surface));font-size:.82rem}
+body.eclipse-admin-page #autotags-autotageditor .admin_basic>.submit{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem;margin:0}
+@media(max-width:47.99rem){
+body.eclipse-admin-page #autotags-autotageditor .form_block{grid-template-columns:minmax(0,1fr);row-gap:.45rem}
+body.eclipse-admin-page #autotags-autotageditor .form_block>dt,
+body.eclipse-admin-page #autotags-autotageditor .form_block>dd{grid-column:1}
+body.eclipse-admin-page #autotags-autotageditor .form_block>dd.description{margin-top:0}
+}
