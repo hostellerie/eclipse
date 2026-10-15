@@ -217,8 +217,9 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan 
 
 /* Optional compact public header. Standard mode keeps existing dimensions. */
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
-    min-height: 0;
-    padding-block: .95rem;
+    min-height: 6rem;
+    padding-block: 1.25rem;
+    box-sizing: border-box;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-logo img {
     max-height: 2.5rem;
@@ -245,7 +246,7 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #wrapper {
 @media (max-width: 47.99rem) {
     body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
         min-height: 0;
-        padding-block: .6rem;
+        padding-block: .85rem;
     }
     body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_name {
         font-size: 1.5rem;
