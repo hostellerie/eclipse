@@ -219,6 +219,7 @@ body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan 
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
     min-height: 82px;
     padding-block: 1rem;
+    padding-inline: 0;
     box-sizing: border-box;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-logo img {
