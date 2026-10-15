@@ -3,6 +3,7 @@
   "algorithm": "sha256",
   "files": {
     "ADMIN-UI.md": "e6c426d6c3187f3eb52036bbeb1c127d1c2e1b1bae3e00d3a3d51f56ee5e9aef",
+    "admin/article/articleeditor_advanced.thtml": "b6f843203f9377db80eb857650ddb9ddae5dbeedf81cb4c6667a658430255192",
     "admin/commandcontrol.thtml": "1a1d9672547aac77c6a647c93d30b45c6734afc6c22da3f0f2702ea47e3706c2",
     "admin/config/config_element_2.thtml": "74874bda497c6714f658b7670287910b8e17a6bb957bd748f18bbb2fe9985647",
     "admin/config/config_element.thtml": "74874bda497c6714f658b7670287910b8e17a6bb957bd748f18bbb2fe9985647",
@@ -37,7 +38,7 @@
     "css/responsive.css": "d0ede53f508e61aeece6e595245d9e7766598b2df1757671cf420c13bb629ff4",
     "css/staticpages-editor.css": "1038944e20a6d3f207efcea79e95d2802fc3777ff58155abd24f704700465197",
     "css/story-editor-base.css": "a3820b235a0f9f772cc327ca4ff1300eddbe2d1ef633436b5b839fae720ae590",
-    "css/story-editor.css": "20f43248cc10363e3cb021c0cf8ce01495cc329f1c6bfe78afbba36968568272",
+    "css/story-editor.css": "aaba5984140f36d30ea2cfb653eb567b8e5d0446ff3c43b87f40171b478e11c4",
     "css/studio.css": "ed3a9f1f2ee048f5f0143984894a88578ee97618cc65e1de84d53b3f801585cd",
     "css/ui-fixes.css": "12ba13b0634b7c2b506b81fb834590e42f64ea9d31eebec681f303184cff080a",
     "css/v3.css": "a72e22c243de128825bed3e993c71a70a426a6730e9578b06bce49e8da68d169",
