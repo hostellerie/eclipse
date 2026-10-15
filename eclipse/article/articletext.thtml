@@ -69,14 +69,14 @@
         <ul class="story_navi">
           {!if page_selector}<li>{page_selector}</li>{!endif}
           {!if readmore_link}<li>{start_readmore_anchortag}{lang_readmore}{end_readmore_anchortag}</li>{!endif}
-          {!if post_comment_link}<li>{post_comment_link}</li>{!endif}
+          {!!if {display_type} == 'n' !!}{!if post_comment_link}<li>{post_comment_link}</li>{!endif}{!endif}
         </ul>
     {!endif}
 
     {!if feedback_list}
         <ul class="feedback">
           {!if plugin_itemdisplay}<li>{plugin_itemdisplay}</li>{!endif}
-          {!if comments_with_count}<li>{comments_with_count}</li>{!endif}
+          {!!if {display_type} == 'n' !!}{!if comments_with_count}<li>{comments_with_count}</li>{!endif}{!endif}
           {!if trackbacks_with_count}<li>{trackbacks_with_count}</li>{!endif}
         </ul>
     {!endif}
