@@ -195,8 +195,7 @@ function theme_css_eclipse()
     // Geeklog 2.2.x validates query strings as part of a local filesystem path.
     // A same-origin absolute URL follows its external-resource branch instead,
     // preserving a real browser cache key even when Resource cache is disabled.
-    $modernResource = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
-    $resourceRoot = $modernResource && !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
+    $resourceRoot = !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
     $version = '?v=' . rawurlencode(eclipse_asset_cache_version('css'));
     $requestPath = eclipse_request_path();
     $isAdmin = eclipse_is_admin_request();
@@ -254,8 +253,7 @@ function theme_js_libs_eclipse()
 function theme_js_files_eclipse()
 {
     global $_CONF;
-    $modernResource = defined('VERSION') && version_compare(VERSION, '2.2.0', '>=');
-    $resourceRoot = $modernResource && !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
+    $resourceRoot = !empty($_CONF['site_url']) ? rtrim($_CONF['site_url'], '/') : '';
     $version = '?v=' . rawurlencode(eclipse_asset_cache_version('js'));
     $files = array(array('file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/js/theme.js' . $version, 'footer' => true, 'priority' => 100));
     if (eclipse_is_admin_request()) {
