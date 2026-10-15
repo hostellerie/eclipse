@@ -17,7 +17,7 @@ body.theme-eclipse.menu-style-floating #navigation,body.theme-eclipse.menu-style
 
 /* 1. Floating glass: detached navigation island overlapping the hero. */
 body.theme-eclipse.menu-style-floating #navigation{width:min(calc(100% - 2rem),var(--eclipse-max));margin-right:auto;margin-left:auto;background:transparent;border:0;box-shadow:none;backdrop-filter:none}
-body.theme-eclipse.menu-style-floating .navigation_content{width:max-content;max-width:100%;min-height:3.5rem;padding:.42rem;margin-inline:auto;background:color-mix(in srgb,var(--eclipse-surface) 86%,transparent);border:1px solid color-mix(in srgb,var(--eclipse-border) 72%,transparent);border-radius:1.15rem;box-shadow:0 18px 48px rgba(22,30,50,.15);backdrop-filter:blur(18px)}
+body.theme-eclipse.menu-style-floating .navigation_content{width:max-content;max-width:100%;min-height:3.5rem;padding:.42rem;margin-inline:0;background:color-mix(in srgb,var(--eclipse-surface) 86%,transparent);border:1px solid color-mix(in srgb,var(--eclipse-border) 72%,transparent);border-radius:1.15rem;box-shadow:0 18px 48px rgba(22,30,50,.15);backdrop-filter:blur(18px)}
 body.theme-eclipse.menu-style-floating #navigation_ul{gap:.2rem}
 body.theme-eclipse.menu-style-floating #navigation_ul a{padding:.72rem 1.2rem;border-radius:.75rem;background:transparent}
 body.theme-eclipse.menu-style-floating #navigation_ul a:hover,body.theme-eclipse.menu-style-floating #navigation_ul .selected a{color:#fff;background:linear-gradient(135deg,var(--eclipse-primary),var(--eclipse-secondary));box-shadow:0 8px 20px color-mix(in srgb,var(--eclipse-primary) 22%,transparent)}
