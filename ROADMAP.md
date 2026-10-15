@@ -70,3 +70,15 @@ Implementation status: release-candidate work started in 1.0.0-rc1. Static acces
 - Keep release archive construction, manifest synchronization and package validation automated on `develop-1.2.0`.
 
 Implementation status: feature work is integrated on `develop-1.2.0`. Automated branch package builds are passing. Final PR review and manual Geeklog 2.1.1 / 2.2.2 release smoke tests remain before the stable `v1.2.0` tag.
+
+## 1.3 — resource efficiency and CSS consolidation (planned)
+
+Geeklog 2.2.2 is the minimum supported CMS version. Keep PHP 5.6.40 syntax compatibility. First audit native Geeklog 2.2.2 asset handling and CSS/JS registration; prefer native resource bundling/minification over extra Eclipse-specific mechanisms.
+
+- **Public CSS:** currently ~79.4 KB against the 1.3 validation ceiling of 80 KB. Target **under 70 KB** by removing redundant rules and loading page-specific styles only where required.
+- **CSS `!important`:** currently **528** occurrences against the 1.3 ceiling of **600**. Target **under 400** through a documented specificity/cascade audit, retaining rules actually required for Geeklog/Denim/plugin interoperability. Never remove them mechanically.
+- **Theme package size:** currently ~**923 KB** uncompressed against the 1.3 ceiling of **950 KB**. Target **under 850 KB**, after identifying large assets, duplicate templates and unneeded bundled content; preserve useful features and compatibility.
+- Track baseline and progress with repeatable measurements and visual/function regression checks on public, admin, Theme Studio and plugin pages.
+- **These are optimization targets, not new release-blocking limits.** Keep the existing 1.3 validator ceilings (80 KB / 600 / 950 KB) until changes are tested and approved; historic 60 KB / 300 / 410 KB limits remain superseded.
+
+Status: planned; optimization work must not block rebuilding the current 1.3.0 ZIP once its independent release validation is passing.
