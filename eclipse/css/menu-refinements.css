@@ -176,11 +176,11 @@ body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse
     overflow: visible;
 }
 
-/* Balanced compact header: left-aligned brand, right-aligned secondary slogan.
-   Retain breathing room above the floating navigation. */
-body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) {
-    --eclipse-nav-overlap: 0rem;
-    --eclipse-nav-overlap-mobile: 0px;
+/* Compact header: let detached navigation cross the hero seam without
+   changing the normal-density layout or the other menu styles. */
+body.theme-eclipse.header-density-compact.menu-style-floating:not(.eclipse-admin-page) {
+    --eclipse-nav-overlap: -1.25rem;
+    --eclipse-nav-overlap-mobile: -.75rem;
 }
 body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity {
     width: 100%;
