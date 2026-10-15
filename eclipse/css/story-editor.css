@@ -82,7 +82,7 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor .ecli
   body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block {
     display:grid!important;
     grid-template-columns:minmax(11rem,14rem) minmax(0,1fr)!important;
-    gap:.6rem 1rem!important;
+    gap:.45rem 1rem!important;
     align-items:center;
   }
   body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt,
@@ -98,6 +98,25 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor .ecli
   body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-value {
     grid-column:2!important;
     align-self:center;
+  }
+  /* Align Cache Time with the input, not with the explanatory paragraph. */
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt.eclipse-detail-cache {
+    align-self:start;
+    padding-top:.65rem!important;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-cache-value .description {
+    display:block;
+    margin-top:.45rem;
+    line-height:1.45;
+  }
+  /* Topic assignment remains a full-width control, but needs less height. */
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-topic-selection select[multiple] {
+    height:6.25rem!important;
+    min-height:6.25rem!important;
+    max-height:6.25rem!important;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-topic-selection {
+    line-height:1.4;
   }
   body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-value .story_stats {
     display:inline-block;
