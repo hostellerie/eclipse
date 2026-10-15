@@ -21,8 +21,21 @@
   <header id="header" role="banner" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
     <div id="header-content"<?php $eclipseHeader = eclipse_theme_asset('header_image'); if ($eclipseHeader !== '') { ?> style="--eclipse-header-image:url('{layout_url}/<?php echo $eclipseHeader; ?>')"<?php } ?>>
       <div class="site-identity">
-<?php $eclipseLogo = eclipse_theme_asset('logo'); if ($eclipseLogo !== '') { ?>
-        <a class="site-logo" href="{site_url}" itemprop="url"><img src="{layout_url}/<?php echo $eclipseLogo; ?>" alt="{site_name}"{xhtml}></a>
+<?php $eclipseLogo = !empty(eclipse_theme_options()['show_logo']) ? eclipse_theme_asset('logo') : '';
+      $eclipseLogoPath = $eclipseLogo !== '' ? rtrim($_CONF['path_layout'], '/\\') . '/' . $eclipseLogo : '';
+      if ($eclipseLogoPath !== '' && is_file($eclipseLogoPath)) { ?>
+        <a class="site-logo" href="{site_url}" itemprop="url" aria-label="{site_name}">
+<?php if (ltrim($eclipseLogo, '/') === 'images/logo-mark.svg' || $eclipseLogo === 'logo-mark.svg') { ?>
+          <svg class="eclipse-brand-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <defs><linearGradient id="eclipse-brand-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--eclipse-primary)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--eclipse-primary) 75%,white)"/></linearGradient></defs>
+            <circle cx="32" cy="32" r="28" fill="url(#eclipse-brand-gradient)"/>
+            <circle cx="39" cy="24" r="22" fill="#fff" opacity=".96"/>
+            <circle cx="32" cy="32" r="28" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2"/>
+          </svg>
+<?php } else { ?>
+          <img src="{layout_url}/<?php echo $eclipseLogo; ?>" alt="{site_name}"{xhtml}>
+<?php } ?>
+        </a>
 <?php } ?>
         <div><p class="site_name" itemprop="name"><a href="{site_url}" itemprop="url">{site_name}</a></p><p class="site_slogan">{site_slogan}</p></div>
       </div>
