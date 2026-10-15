@@ -4,8 +4,8 @@ This matrix distinguishes declared requirements, static validation and staging t
 
 ## Server baseline
 
-- Geeklog 2.1.1 is the reference installation and minimum declared Geeklog version.
-- Geeklog 2.1.1 itself advertised PHP 5.2.0 as its historical minimum. Eclipse 1.0 supports PHP 5.6 through 8.1.
+- Geeklog 2.2.2 is the minimum supported Geeklog version. Geeklog 2.1.1 is no longer supported by Eclipse 1.3.0.
+- PHP 5.6.40 remains the syntax-compatibility baseline for Eclipse 1.3.0; maintained PHP versions are recommended.
 - Production PHP must still be a maintained version supported by the hosting environment and by the chosen Geeklog core release. The historical minimum is a parsing baseline, not a security recommendation.
 - Denim must remain installed because Eclipse inherits templates and its compatibility stylesheet.
 - Because Eclipse declares Geeklog's standard `image_type = png`, it ships the complete Denim PNG compatibility image set under `images/` and `images/icons/`; Eclipse-specific UI can still use SVG assets independently.
