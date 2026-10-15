@@ -79,7 +79,9 @@ $eclipseForumBodyClass = preg_match('#(?:^|/)forum(?:/|$)#', $eclipseForumPath) 
   <header id="header" role="banner">
     <div id="header-content"<?php $eclipseHeader = eclipse_theme_asset('header_image'); if ($eclipseHeader !== '') { ?> style="--eclipse-header-image:url('{layout_url}/<?php echo $eclipseHeader; ?>')"<?php } ?>>
       <div class="site-identity">
-<?php if ($eclipseLogo = eclipse_theme_asset('logo')) { ?>
+<?php $eclipseLogo = eclipse_theme_asset('logo');
+      $eclipseLogoPath = $eclipseLogo !== '' ? rtrim($_CONF['path_layout'], '/\\') . '/' . $eclipseLogo : '';
+      if ($eclipseLogoPath !== '' && is_file($eclipseLogoPath)) { ?>
         <a class="site-logo" href="{site_url}"><img src="{layout_url}/<?php echo $eclipseLogo; ?>" alt="{site_name}"{xhtml}></a>
 <?php } ?>
         <div><p class="site_name"><a href="{site_url}">{site_name}</a></p><p class="site_slogan">{site_slogan}</p></div>
