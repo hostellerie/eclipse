@@ -16,13 +16,13 @@ This matrix distinguishes declared requirements, static validation and staging t
 
 | Component | Declared baseline | Validation status |
 | --- | --- | --- |
-| Geeklog | 2.1.1 | Active reference site; final page matrix pending |
-| PHP | 5.6.0 through 8.1 | Runtime version must be recorded during staging sign-off |
+| Geeklog | 2.2.2 | Minimum supported version; final page matrix pending |
+| PHP | 5.6.40 syntax baseline | Test on deployed PHP runtime before release |
 | Denim | Installed and selected as `theme_default` | Enforced by package configuration and template checks |
 | ZipArchive | Optional except for Studio updates | Reported by Studio environment diagnostic |
 | Writable sibling JSON storage | Required for settings/footer/palettes/history | Reported by Studio environment diagnostic |
 
-The Admin UI contract is shared by Geeklog 2.1.1 and 2.2.2. Modern workspace progressively builds its navigation from links already emitted by Geeklog, while Classic Eclipse skips the modern shell. The public chrome and source navigation are hidden only after successful enhancement, so either core retains a usable fallback. Source inspection confirmed the 2.2.2 `_admin_list` mapping and its renamed `admin/article/articleeditor*.thtml` editor path. The generic validator cannot compare the legacy Eclipse story override to that renamed 2.2.2 template, and no PHP 5.6 or PHP 8.1 runtime is exposed in the workspace, so both targets still require the manual matrix in `QA-CHECKLIST.md` before a production release.
+Eclipse 1.3.0 targets Geeklog 2.2.2 only. Confirm the theme and Denim template lookup paths against Geeklog 2.2.2 before removing overrides. Run the manual matrix in `QA-CHECKLIST.md` before production release.
 
 ## Browser baseline
 
