@@ -444,6 +444,7 @@ function eclipse_admin_plugin_submission_attention($summaries)
     if (empty($_PLUGINS) || !is_array($_PLUGINS)) return $entries;
     $admin = isset($_CONF['site_admin_url']) ? rtrim($_CONF['site_admin_url'], '/') : '';
     if ($admin === '') return $entries;
+    $labels = eclipse_admin_dashboard_labels();
 
     foreach ($_PLUGINS as $plugin) {
         $plugin = (string) $plugin;
@@ -468,7 +469,7 @@ function eclipse_admin_plugin_submission_attention($summaries)
         $count = max(0, (int) call_user_func($callback));
         if ($count === 0) continue;
         $entries[] = array(
-            'label' => ucfirst($plugin) . ' — ' . (function_exists('eclipse_admin_dashboard_labels') ? eclipse_admin_dashboard_labels()['submissions'] : 'Submissions awaiting review'),
+            'label' => ucfirst($plugin) . ' — ' . $labels['submissions'],
             'count' => $count,
             'url' => $admin . '/moderation.php',
             'draft' => false,
