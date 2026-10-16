@@ -433,6 +433,51 @@ function eclipse_admin_attention_data($draftCount)
     return $data;
 }
 
+/**
+ * Discover plugin moderation queues through Geeklog's native submission hooks.
+ * Plugins enforce their own moderator permission in plugin_submissioncount_*().
+ */
+function eclipse_admin_plugin_submission_attention($summaries)
+{
+    global $_PLUGINS, $_CONF;
+    $entries = array();
+    if (empty($_PLUGINS) || !is_array($_PLUGINS)) return $entries;
+    $admin = isset($_CONF['site_admin_url']) ? rtrim($_CONF['site_admin_url'], '/') : '';
+    if ($admin === '') return $entries;
+
+    foreach ($_PLUGINS as $plugin) {
+        $plugin = (string) $plugin;
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $plugin)) continue;
+        // Structured dashboard summaries already provide their own alerts.
+        if (is_array($summaries) && isset($summaries[$plugin])) {
+            $summary = $summaries[$plugin];
+            if (!empty($summary['alerts'])) continue;
+            if (!empty($summary['metrics'])) {
+                $covered = false;
+                foreach ($summary['metrics'] as $metric) {
+                    if (isset($metric['id']) && $metric['id'] === 'pending') {
+                        $covered = true;
+                        break;
+                    }
+                }
+                if ($covered) continue;
+            }
+        }
+        $callback = 'plugin_submissioncount_' . $plugin;
+        if (!function_exists($callback)) continue;
+        $count = max(0, (int) call_user_func($callback));
+        if ($count === 0) continue;
+        $entries[] = array(
+            'label' => ucfirst($plugin) . ' — ' . (function_exists('eclipse_admin_dashboard_labels') ? eclipse_admin_dashboard_labels()['submissions'] : 'Submissions awaiting review'),
+            'count' => $count,
+            'url' => $admin . '/moderation.php',
+            'draft' => false,
+            'status' => 'warning'
+        );
+    }
+    return $entries;
+}
+
 function eclipse_admin_dashboard_date($value)
 {
     $time = strtotime((string) $value);
@@ -596,6 +641,7 @@ function eclipse_admin_dashboard_render()
     $dashboardSummaries = eclipse_admin_discover_dashboard_summaries();
     $pluginStats = eclipse_admin_dashboard_summary_stats($dashboardSummaries, eclipse_admin_discover_plugin_stats());
     $pluginAttention = eclipse_admin_dashboard_summary_attention($dashboardSummaries);
+    $pluginAttention = array_merge($pluginAttention, eclipse_admin_plugin_submission_attention($dashboardSummaries));
     $pluginNews = eclipse_admin_discover_plugin_whatsnew();
     $feeds = eclipse_admin_discover_feeds();
     $monitorData = function_exists('eclipse_monitor_dashboard_data') ? eclipse_monitor_dashboard_data() : null;
