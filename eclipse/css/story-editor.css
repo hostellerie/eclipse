@@ -1,6 +1,6 @@
 @import url("story-editor-base.css");
 
-/* 1.1 editor polish: align secondary-card headings with Article Content. */
+/* Align secondary-card headings with the Article Content card. */
 body.theme-eclipse.eclipse-story-editor-page #advanced_editor #se_options fieldset>legend{
     display:flex!important;
     align-items:center;
@@ -42,9 +42,8 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.fo
     grid-column:1 / -1;
 }
 
-/* Toolbar label: final row, left column. */
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="advanced_editor_toolbar_selector"]){
+/* Toolbar row classes are assigned by the editor enhancer from Geeklog's native control. */
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-label{
     grid-column:1!important;
     grid-row:auto!important;
     order:100!important;
@@ -52,20 +51,14 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.fo
     margin:0!important;
     padding-top:0!important;
 }
-
-/* Toolbar control: final row, right column. Match both id and name for legacy compatibility. */
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#advanced_editor_toolbar_selector),
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(select[name="fckeditor_toolbar_selector"]){
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-control{
     grid-column:2!important;
     grid-row:auto!important;
     order:100!important;
     align-self:center;
     margin:0!important;
 }
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #fckeditor_toolbar_selector,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor #advanced_editor_toolbar_selector,
-body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor select[name="fckeditor_toolbar_selector"]{
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor .eclipse-toolbar-control select{
     width:auto!important;
     min-width:12.5rem;
     max-width:100%;
@@ -76,11 +69,65 @@ body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor selec
     body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block{
         grid-template-columns:1fr!important;
     }
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="fckeditor_toolbar_selector"]),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dt:has(label[for="advanced_editor_toolbar_selector"]),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#fckeditor_toolbar_selector),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(#advanced_editor_toolbar_selector),
-    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>dd:has(select[name="fckeditor_toolbar_selector"]){
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-label,
+    body.theme-eclipse.eclipse-story-editor-page #advanced_editor #html_editor dl.form_block>.eclipse-toolbar-control{
         grid-column:1!important;
     }
+}
+
+
+/* Geeklog 2.2.2: semantic detail pairs from articleeditor_advanced.thtml.
+   The title is moved separately by Eclipse's article editor enhancement. */
+@media (min-width:48rem) {
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block {
+    display:grid!important;
+    grid-template-columns:minmax(11rem,14rem) minmax(0,1fr)!important;
+    gap:.45rem 1rem!important;
+    align-items:center;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt,
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd {
+    grid-column:1 / -1;
+    min-width:0;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt.eclipse-detail-label {
+    grid-column:1!important;
+    padding:0!important;
+    align-self:center;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-value {
+    grid-column:2!important;
+    align-self:center;
+  }
+  /* Align Cache Time with the input, not with the explanatory paragraph. */
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dt.eclipse-detail-cache {
+    align-self:start;
+    padding-top:.65rem!important;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-cache-value .description {
+    display:block;
+    margin-top:.45rem;
+    line-height:1.45;
+  }
+  /* Topic assignment remains a full-width control, but needs less height. */
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-topic-selection select[multiple] {
+    height:6.25rem!important;
+    min-height:6.25rem!important;
+    max-height:6.25rem!important;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-topic-selection {
+    line-height:1.4;
+  }
+  body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .admin_basic > dl.form_block > dd.eclipse-detail-value .story_stats {
+    display:inline-block;
+    margin-right:1rem;
+    white-space:nowrap;
+  }
+}
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .eclipse-editor-identity dl.form_block > dd,
+body.theme-eclipse.eclipse-story-editor-page #advanced_editor #frmstory > .eclipse-editor-identity #admin-storyeditor_advanced-title {
+    width:100%!important;
+    max-width:none!important;
+    min-width:0;
+    box-sizing:border-box;
 }

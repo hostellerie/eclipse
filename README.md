@@ -4,7 +4,7 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 
 ![Eclipse Template](docs/geeklog-eclipse-template-available.png)
 
-> **Release candidate 1.2.0:** supports Geeklog 2.1.1 and 2.2.2 on PHP 5.6 through 8.1. The 1.2 branch adds richer Menu integration, a capability-driven administration dashboard, and safer update/package handling while preserving Classic Eclipse compatibility. Back up the site before installation or update.
+ > **Eclipse 1.3.0 development:** Geeklog 2.2.2 minimum, PHP 5.6 parsing compatibility retained.
 
 ## Highlights
 
@@ -17,11 +17,11 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 - SEO and editorial helpers, local draft recovery and configurable social sharing.
 - Settings, footer links, palettes and history stored as protected JSON in `{path_data}-eclipse/`.
 - Local ZIP updates with integrity validation, safety backup and targeted Geeklog template-cache clearing.
-- Compatibility layers for Geeklog 2.1.1 and 2.2.2 while retaining Denim as the parent theme.
+- Geeklog 2.2.2 integration with Denim as the parent theme.
 
 ## Requirements
 
-- Geeklog 2.1.1 or later.
+- Geeklog 2.2.2 or later.
 - The `denim` theme must remain installed because Eclipse inherits compatibility templates from it.
 - PHP 5.6 is the supported parsing baseline; a currently maintained PHP version is strongly recommended.
 - Permission to create the protected sibling `{path_data}-eclipse/`; writable temporary storage is also required for ZIP updates.
@@ -42,7 +42,7 @@ Existing Eclipse installations can upload the release ZIP from **Command and Con
 
 ## Validation and feedback
 
-Eclipse 1.2.0 is in release-candidate preparation. Automated release-contract checks cover PHP syntax, Menu integration contracts, manifest synchronization, runtime package construction, archive layout and size. Final manual smoke testing on Geeklog 2.1.1 and Geeklog 2.2.2 remains required before the stable tag.
+Eclipse 1.2.0 is in release-candidate preparation. Automated release-contract checks cover PHP syntax, Menu integration contracts, manifest synchronization, runtime package construction, archive layout and size. Final manual smoke testing on Geeklog 2.2.2 remains required before the stable tag.
 
 For additional site-specific testing, check 360, 768, 1024 and 1440 CSS pixels where possible. The highest-value checks are:
 

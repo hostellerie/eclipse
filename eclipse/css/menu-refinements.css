@@ -165,3 +165,182 @@ body.theme-eclipse.menu-style-capsule #navigation.eclipse-plugin-menu #eclipse-m
         box-shadow: none;
     }
 }
+
+/* Editorial navigation must establish a stacking context above the page columns.
+   v3.css uses position:static here, leaving dropdowns behind side blocks. */
+body.theme-eclipse.menu-style-editorial #navigation {
+    position: relative;
+    z-index: 100;
+}
+body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel {
+    overflow: visible;
+}
+
+/* Compact header: let detached navigation cross the hero seam without
+   changing the normal-density layout or the other menu styles. */
+body.theme-eclipse.header-density-compact.menu-style-floating:not(.eclipse-admin-page) {
+    --eclipse-nav-overlap: -1.25rem;
+    --eclipse-nav-overlap-mobile: -.75rem;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity {
+    width: 100%;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    row-gap: .35rem;
+    width: 100%;
+    min-width: 0;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_name {
+    margin: 0;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
+    margin: 0;
+    max-width: 45%;
+    text-align: right;
+    opacity: .85;
+}
+@media (max-width: 47.99rem) {
+    body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-identity > div {
+        display: block;
+    }
+    body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
+        max-width: none;
+        margin-top: .2rem;
+        text-align: left;
+    }
+}
+
+/* Optional compact public header. Standard mode keeps existing dimensions. */
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
+    min-height: 82px;
+    padding-block: 1rem;
+    box-sizing: border-box;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-logo img,
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site-logo .eclipse-brand-mark {
+    width: 2rem;
+    height: 2rem;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_name {
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -.025em;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_slogan {
+    margin-top: .1rem;
+    font-size: .9rem;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #navigation .navigation_content {
+    min-height: 2.35rem;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu>ul>li>a {
+    min-height: 2.25rem;
+    padding-block: .32rem;
+}
+body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #wrapper {
+    padding-block: .8rem;
+}
+@media (max-width: 47.99rem) {
+    body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) #header-content {
+        min-height: 0;
+        padding-block: .85rem;
+    }
+    body.theme-eclipse.header-density-compact:not(.eclipse-admin-page) .site_name {
+        font-size: 1.5rem;
+    }
+}
+
+
+/* Dark editorial variant. Keep only the top-level strip dark; dropdown panels
+   retain the light surface and normal accessible submenu text styling. */
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu {
+    background: #24272b;
+    border-top: 0;
+    border-bottom-color: #24272b;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu .navigation_content {
+    background: transparent;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+    color: #f2f3f4 !important;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a:hover,
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a:focus-visible,
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a[aria-current=page] {
+    color: #ffffff !important;
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a::before {
+    background: var(--eclipse-secondary);
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul {
+    color: var(--eclipse-text);
+    background: var(--eclipse-surface);
+}
+body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul a {
+    color: var(--eclipse-text) !important;
+}
+@media (max-width:47.99rem) {
+    body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel {
+        --eclipse-mobile-menu-text: #f2f3f4;
+        --eclipse-mobile-menu-hover: #ffffff;
+    }
+    body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul {
+        background: transparent;
+    }
+    body.theme-eclipse.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel ul ul a {
+        color: #f2f3f4 !important;
+    }
+}
+
+
+/* Editorial menus follow the content grid rather than centering short menus.
+   Desktop only: the mobile navigation keeps its existing stacked behavior. */
+@media (min-width:48rem) {
+    body.theme-eclipse.menu-style-editorial #navigation .navigation_content {
+        justify-content: flex-start;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul {
+        justify-content: flex-start;
+        gap: clamp(.8rem, 1.6vw, 1.45rem);
+    }
+    body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.65rem;
+        padding-block: .5rem;
+        line-height: 1.35;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a::before {
+        bottom: .15rem;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation_ul {
+        justify-content: flex-start;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation_ul > li > a {
+        display: flex;
+        align-items: center;
+        min-height: 2.65rem;
+        padding-block: .5rem;
+        line-height: 1.35;
+    }
+    body.theme-eclipse.menu-style-editorial #navigation_ul > li > a::after {
+        bottom: .15rem;
+    }
+}
+
+/* A tighter dark editorial navigation in compact header density. */
+@media (min-width:48rem) {
+    body.theme-eclipse.header-density-compact.menu-style-editorial-dark:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu .navigation_content {
+        min-height:2.6rem;
+    }
+    body.theme-eclipse.header-density-compact.menu-style-editorial-dark:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+        min-height:2.6rem;
+        padding-block:.48rem;
+    }
+}

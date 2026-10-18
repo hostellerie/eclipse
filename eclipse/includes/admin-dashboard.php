@@ -85,11 +85,11 @@ function eclipse_admin_get_actual_comment_count()
     return !empty($_TABLES['comments']) ? eclipse_admin_dashboard_count($_TABLES['comments'], '') : 0;
 }
 
-function eclipse_admin_get_recent_comments()
+function eclipse_admin_get_recent_comments($knownCount = null)
 {
     global $_TABLES;
     if (!function_exists('SEC_hasRights') || !SEC_hasRights('comment.moderate') || empty($_TABLES['comments'])) return array();
-    if (eclipse_admin_get_actual_comment_count() < 1) return array();
+    if (($knownCount === null ? eclipse_admin_get_actual_comment_count() : (int) $knownCount) < 1) return array();
     $users = !empty($_TABLES['users']) ? $_TABLES['users'] : '';
     $join = $users !== '' ? " LEFT JOIN {$users} u ON u.uid=c.uid" : '';
     $username = $users !== '' ? ',u.username' : ",'' AS username";
@@ -119,10 +119,10 @@ function eclipse_admin_get_top_viewed($limit)
     return eclipse_admin_dashboard_rows($sql, $limit);
 }
 
-function eclipse_admin_get_top_commented($limit)
+function eclipse_admin_get_top_commented($limit, $knownCount = null)
 {
     global $_TABLES;
-    if (empty($_TABLES['stories']) || empty($_TABLES['comments']) || eclipse_admin_get_actual_comment_count() < 1) return array();
+    if (empty($_TABLES['stories']) || empty($_TABLES['comments']) || ($knownCount === null ? eclipse_admin_get_actual_comment_count() : (int) $knownCount) < 1) return array();
     $sql = "SELECT s.sid,s.title,COUNT(DISTINCT c.cid) AS metric FROM {$_TABLES['stories']} s INNER JOIN {$_TABLES['comments']} c ON c.sid=s.sid AND c.type='article'";
     if (!empty($_TABLES['topic_assignments'])) $sql .= ", {$_TABLES['topic_assignments']} ta WHERE ta.type='article' AND ta.id=s.sid";
     else $sql .= ' WHERE 1=1';
@@ -133,13 +133,13 @@ function eclipse_admin_get_top_commented($limit)
     return eclipse_admin_dashboard_rows($sql, $limit);
 }
 
-function eclipse_admin_get_site_stats()
+function eclipse_admin_get_site_stats($knownCommentCount = null)
 {
     global $_TABLES;
     $stats = array();
     if (!empty($_TABLES['vars']) && function_exists('DB_getItem')) $stats['hits'] = (int) DB_getItem($_TABLES['vars'], 'value', "name='totalhits'");
     if (!empty($_TABLES['stories'])) $stats['stories'] = eclipse_admin_dashboard_count($_TABLES['stories'], 'draft_flag=0 AND date<=NOW()');
-    $commentCount = eclipse_admin_get_actual_comment_count();
+    $commentCount = $knownCommentCount === null ? eclipse_admin_get_actual_comment_count() : (int) $knownCommentCount;
     if ($commentCount > 0) $stats['comments'] = $commentCount;
     if (!empty($_TABLES['users'])) $stats['users'] = max(0, eclipse_admin_dashboard_count($_TABLES['users'], 'status=3') - 1);
     return $stats;
@@ -433,6 +433,52 @@ function eclipse_admin_attention_data($draftCount)
     return $data;
 }
 
+/**
+ * Discover plugin moderation queues through Geeklog's native submission hooks.
+ * Plugins enforce their own moderator permission in plugin_submissioncount_*().
+ */
+function eclipse_admin_plugin_submission_attention($summaries)
+{
+    global $_PLUGINS, $_CONF;
+    $entries = array();
+    if (empty($_PLUGINS) || !is_array($_PLUGINS)) return $entries;
+    $admin = isset($_CONF['site_admin_url']) ? rtrim($_CONF['site_admin_url'], '/') : '';
+    if ($admin === '') return $entries;
+    $labels = eclipse_admin_dashboard_labels();
+
+    foreach ($_PLUGINS as $plugin) {
+        $plugin = (string) $plugin;
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $plugin)) continue;
+        // Structured dashboard summaries already provide their own alerts.
+        if (is_array($summaries) && isset($summaries[$plugin])) {
+            $summary = $summaries[$plugin];
+            if (!empty($summary['alerts'])) continue;
+            if (!empty($summary['metrics'])) {
+                $covered = false;
+                foreach ($summary['metrics'] as $metric) {
+                    if (isset($metric['id']) && $metric['id'] === 'pending') {
+                        $covered = true;
+                        break;
+                    }
+                }
+                if ($covered) continue;
+            }
+        }
+        $callback = 'plugin_submissioncount_' . $plugin;
+        if (!function_exists($callback)) continue;
+        $count = max(0, (int) call_user_func($callback));
+        if ($count === 0) continue;
+        $entries[] = array(
+            'label' => ucfirst($plugin) . ' — ' . $labels['submissions'],
+            'count' => $count,
+            'url' => $admin . '/moderation.php',
+            'draft' => false,
+            'status' => 'warning'
+        );
+    }
+    return $entries;
+}
+
 function eclipse_admin_dashboard_date($value)
 {
     $time = strtotime((string) $value);
@@ -580,18 +626,23 @@ function eclipse_admin_dashboard_render()
     global $_CONF;
     if (!eclipse_admin_dashboard_is_main_page()) return '';
 
+    $eclipseProfile = defined('ECLIPSE_DASHBOARD_PROFILE') && ECLIPSE_DASHBOARD_PROFILE;
+    $eclipseProfileStart = $eclipseProfile ? microtime(true) : 0;
     $stories = eclipse_admin_get_recent_stories(false);
     $drafts = eclipse_admin_get_recent_stories(true);
     $draftCount = eclipse_admin_get_draft_count();
     $actualCommentCount = eclipse_admin_get_actual_comment_count();
-    $comments = $actualCommentCount > 0 ? eclipse_admin_get_recent_comments() : array();
+    $comments = $actualCommentCount > 0 ? eclipse_admin_get_recent_comments($actualCommentCount) : array();
     $pages = eclipse_admin_get_recent_staticpages();
     $topStories = eclipse_admin_get_top_viewed(5);
-    $topCommented = $actualCommentCount > 0 ? eclipse_admin_get_top_commented(5) : array();
-    $siteStats = eclipse_admin_get_site_stats();
+    $topCommented = $actualCommentCount > 0 ? eclipse_admin_get_top_commented(5, $actualCommentCount) : array();
+    $siteStats = eclipse_admin_get_site_stats($actualCommentCount);
+    if ($eclipseProfile) error_log('[Eclipse dashboard] SQL: ' . round((microtime(true) - $eclipseProfileStart) * 1000, 1) . ' ms');
+    $eclipseProfilePlugins = $eclipseProfile ? microtime(true) : 0;
     $dashboardSummaries = eclipse_admin_discover_dashboard_summaries();
     $pluginStats = eclipse_admin_dashboard_summary_stats($dashboardSummaries, eclipse_admin_discover_plugin_stats());
     $pluginAttention = eclipse_admin_dashboard_summary_attention($dashboardSummaries);
+    $pluginAttention = array_merge($pluginAttention, eclipse_admin_plugin_submission_attention($dashboardSummaries));
     $pluginNews = eclipse_admin_discover_plugin_whatsnew();
     $feeds = eclipse_admin_discover_feeds();
     $monitorData = function_exists('eclipse_monitor_dashboard_data') ? eclipse_monitor_dashboard_data() : null;
@@ -599,6 +650,7 @@ function eclipse_admin_dashboard_render()
     if (is_array($monitorData) && function_exists('eclipse_monitor_dashboard_upgrade_count')) {
         $attention['plugin_upgrades'] = eclipse_monitor_dashboard_upgrade_count($monitorData);
     }
+    if ($eclipseProfile) error_log('[Eclipse dashboard] plugins: ' . round((microtime(true) - $eclipseProfilePlugins) * 1000, 1) . ' ms');
     $labels = eclipse_admin_dashboard_labels();
     $admin = rtrim($_CONF['site_admin_url'], '/');
     $site = rtrim($_CONF['site_url'], '/');
@@ -720,5 +772,6 @@ function eclipse_admin_dashboard_render()
         $html .= '</div><a class="eclipse-dashboard-more" href="' . $site . '/stats.php">' . eclipse_admin_dashboard_h($labels['full_stats']) . '</a>' . eclipse_admin_dashboard_module_end();
     }
 
+    if ($eclipseProfile) error_log('[Eclipse dashboard] total: ' . round((microtime(true) - $eclipseProfileStart) * 1000, 1) . ' ms');
     return $html . '</section>' . eclipse_admin_dashboard_overview_enhancer($attention, $actualCommentCount > 0, $pluginAttention);
 }

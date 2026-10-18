@@ -1,0 +1,19 @@
+{# begin {templatelocation} #}
+
+{!if topic_id}
+<?php if (!empty(eclipse_theme_options()['topic_h1_enabled'])) { ?>
+<h1 class="eclipse-topic-heading">{topic_title}
+{!if edit_icon}
+    <span class="story_icon">
+        <a title="{lang_edit_text}" href="{edit_url}" class="uk-icon-hover uk-icon-pencil" rel="nofollow" aria-label="{lang_edit_text}"></a>
+    </span>
+{!endif}
+</h1>
+<?php } ?>
+{!endif}
+
+{topic_content}
+
+{page_navigation}
+
+{# end {templatelocation} #}

@@ -150,7 +150,7 @@
                 if (panel) panel.hidden = !selected;
             });
             if (studioActions) {
-                var showActions = ['eclipse-panel-design','eclipse-panel-preview'].indexOf(tab.getAttribute('aria-controls')) !== -1;
+                var showActions = ['eclipse-panel-design'].indexOf(tab.getAttribute('aria-controls')) !== -1;
                 studioActions.hidden = !showActions;
                 studioActions.style.display = showActions ? '' : 'none';
             }
@@ -165,13 +165,7 @@
                 if (next >= 0) { event.preventDefault(); activate(tabs[next], true); }
             });
         });
-        var preview = document.querySelector('.eclipse-isolated-preview');
-        document.querySelectorAll('[data-preview-width]').forEach(function (button) {
-            button.addEventListener('click', function () {
-                if (preview) preview.setAttribute('data-width', button.getAttribute('data-preview-width'));
-                document.querySelectorAll('[data-preview-width]').forEach(function (item) { item.setAttribute('aria-pressed', item === button ? 'true' : 'false'); });
-            });
-        });
+
     }
 
     function setupPalettePreview() {
@@ -218,11 +212,6 @@
         }
         function previewColors(colors) {
             colors.forEach(function (color, index) { document.documentElement.style.setProperty(variables[index], color); });
-            var frame = document.getElementById('eclipse-preview-frame');
-            if (frame && frame.contentDocument) {
-                var previewVariables = ['--p', '--s', '--l', '--bg', '--surface', '--text'];
-                colors.forEach(function (color, index) { frame.contentDocument.documentElement.style.setProperty(previewVariables[index], color); });
-            }
             updateContrast(colors);
         }
         function setDirty(value) {
@@ -276,7 +265,7 @@
         var defaults = {
             palette: { color_primary:'#3157d5',color_secondary:'#6750a4',color_link:'#2448bd',color_background:'#f4f6fb',color_surface:'#ffffff',color_text:'#202431' },
             layout: { site_max_width:'1200px',reading_width:'72ch',font_size:'16px',font_family:'humanist',content_link_style:'hover',spacing:'normal',radius:'medium' },
-            appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark',sidebar_position:'right' },
+            appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark' },
             brand: { logo:'images/logo-mark.svg',header_image:'',show_left_sidebar:false,show_right_sidebar:true,mobile_menu:true,editor_hide_sidebars:true },
             social: { share_facebook:false,share_linkedin:false,share_x:false },
             integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',sitemap_path:'' }
@@ -413,15 +402,6 @@
         });
         form.addEventListener('submit', function () { setDirty(false); });
         window.addEventListener('beforeunload', function (event) { if (!dirty) return; event.preventDefault(); event.returnValue = ''; });
-        var frame = document.getElementById('eclipse-preview-frame');
-        if (frame) {
-            frame.addEventListener('load', function () { previewColors(currentColors()); });
-            if (!frame.getAttribute('sandbox')) {
-                var previewSource = frame.getAttribute('srcdoc');
-                frame.setAttribute('sandbox', 'allow-same-origin');
-                frame.setAttribute('srcdoc', previewSource);
-            }
-        }
         identifyPalette();
         previewColors(initialColors);
     }
@@ -640,25 +620,16 @@
                 advancedBasic.classList.add('eclipse-editor-overview');
                 advancedBasic.setAttribute('data-eclipse-heading', labels.articleDetails);
             }
-            var nativeIdentity = form.querySelector(':scope > .eclipse-editor-identity');
-            if (!nativeIdentity && advancedBasic && titleInput) {
-                var titleDefinition = titleInput.closest('dd');
-                var titleTerm = titleDefinition ? titleDefinition.previousElementSibling : null;
-                while (titleTerm && titleTerm.tagName !== 'DT') titleTerm = titleTerm.previousElementSibling;
-                if (titleDefinition && titleTerm) {
-                    var advancedIdentity = document.createElement('section');
-                    advancedIdentity.className = 'eclipse-editor-identity';
-                    var identityHeading = document.createElement('h2');
-                    identityHeading.textContent = labels.articleTitle;
-                    advancedIdentity.appendChild(identityHeading);
-                    var identityList = document.createElement('dl');
-                    identityList.className = 'form_block';
-                    identityList.appendChild(titleTerm);
-                    identityList.appendChild(titleDefinition);
-                    advancedIdentity.appendChild(identityList);
-                    form.insertBefore(advancedIdentity, form.firstChild);
-                }
-            }
+
+            var toolbarSelector=form.querySelector('#fckeditor_toolbar_selector,#advanced_editor_toolbar_selector,select[name="fckeditor_toolbar_selector"]');
+            if(toolbarSelector){var toolbarDefinition=toolbarSelector.closest('dd'),toolbarTerm=toolbarDefinition?toolbarDefinition.previousElementSibling:null;while(toolbarTerm&&toolbarTerm.tagName!=='DT')toolbarTerm=toolbarTerm.previousElementSibling;if(toolbarDefinition)toolbarDefinition.classList.add('eclipse-toolbar-control');if(toolbarTerm)toolbarTerm.classList.add('eclipse-toolbar-label');}
+
+            var nativeIdentity=form.querySelector(':scope > .eclipse-editor-identity');
+            if(!nativeIdentity&&advancedBasic&&titleInput){var titleDefinition=titleInput.closest('dd'),titleTerm=titleDefinition?titleDefinition.previousElementSibling:null;while(titleTerm&&titleTerm.tagName!=='DT')titleTerm=titleTerm.previousElementSibling;if(titleDefinition&&titleTerm){var advancedIdentity=document.createElement('section');advancedIdentity.className='eclipse-editor-identity';var identityHeader=document.createElement('header');identityHeader.className='eclipse-editor-card-header';var identityHeading=document.createElement('h2');identityHeading.textContent=labels.articleContent;identityHeader.appendChild(identityHeading);advancedIdentity.appendChild(identityHeader);var identityList=document.createElement('dl');identityList.className='form_block';identityList.appendChild(titleTerm);identityList.appendChild(titleDefinition);advancedIdentity.appendChild(identityList);form.insertBefore(advancedIdentity,form.firstChild);}}
+
+            var identityPanel=form.querySelector(':scope > .eclipse-editor-identity');
+            if(identityPanel){var cardHeader=identityPanel.querySelector(':scope > .eclipse-editor-card-header'),cardHeading=identityPanel.querySelector(':scope > h2');if(!cardHeader){cardHeader=document.createElement('header');cardHeader.className='eclipse-editor-card-header';identityPanel.insertBefore(cardHeader,identityPanel.firstChild);if(cardHeading)cardHeader.appendChild(cardHeading);}var safetyTools=form.querySelector(':scope > .eclipse-editor-safety');if(safetyTools)cardHeader.appendChild(safetyTools);var draftRecovery=form.querySelector(':scope > .eclipse-draft-recovery');if(draftRecovery)cardHeader.insertAdjacentElement('afterend',draftRecovery);}
+
             if (advancedBasic && !form.querySelector('.eclipse-advanced-seo-overview')) {
                 var advancedSource = advancedBasic.querySelector(':scope > dl.form_block');
                 var advancedSeo = document.createElement('section'); advancedSeo.className = 'eclipse-editor-panel eclipse-panel-seo eclipse-advanced-seo-overview';
@@ -671,12 +642,11 @@
                     while (term && term.tagName !== 'DT') term = term.previousElementSibling;
                     if (term) advancedSeoList.appendChild(term); advancedSeoList.appendChild(definition); movedSeoFields++;
                 }
-                ['#admin-storyeditor_advanced-sid','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(moveAdvancedSeoField);
+                ['#admin-storyeditor_advanced-sid','#admin-storyeditor-page_title','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(moveAdvancedSeoField);
                 if (movedSeoFields) {
                     var seoAssistant = document.createElement('div'); seoAssistant.className = 'eclipse-seo-assistant'; seoAssistant.setAttribute('data-eclipse-seo-assistant','true');
                     seoAssistant.innerHTML = '<h3></h3><div class="eclipse-search-preview"><strong data-seo-preview-title></strong><span data-seo-preview-url></span><p data-seo-preview-description></p></div><ul><li data-seo-check="title"></li><li data-seo-check="description"></li><li data-seo-check="slug"></li><li data-seo-check="content"></li></ul>';
                     seoAssistant.querySelector('h3').textContent = labels.seoOverview; advancedSeo.appendChild(seoAssistant);
-                    var identityPanel = form.querySelector(':scope > .eclipse-editor-identity');
                     if (identityPanel) identityPanel.insertAdjacentElement('afterend', advancedSeo); else form.insertBefore(advancedSeo, advancedBasic);
                     setupSeoAssistant(form);
                 }
@@ -688,18 +658,18 @@
                 if (advancedBasic && !form.classList.contains('eclipse-native-story-editor')) form.insertBefore(editor, advancedBasic);
             });
             function syncAdvancedOverview() {
-                if (!advancedBasic) return;
                 var editorActive = editorCanvases.some(function (editor) {
-                    return editor.style.display !== 'none';
+                    return !editor.hidden && window.getComputedStyle(editor).display !== 'none';
                 });
-                advancedBasic.hidden = !editorActive;
+                form.classList.toggle('eclipse-editor-context-hidden', !editorActive);
+                if (advancedBasic) advancedBasic.hidden = !editorActive;
             }
             editorCanvases.forEach(function (editor) {
-                new MutationObserver(syncAdvancedOverview).observe(editor, { attributes: true, attributeFilter: ['style', 'class'] });
+                new MutationObserver(syncAdvancedOverview).observe(editor, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
             });
             var optionPanels = form.querySelectorAll('#se_publish,#se_images,#se_archive,#se_perms,#se_options');
             optionPanels.forEach(function (panel) {
-                new MutationObserver(syncAdvancedOverview).observe(panel, { attributes: true, attributeFilter: ['style', 'class'] });
+                new MutationObserver(syncAdvancedOverview).observe(panel, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
             });
             syncAdvancedOverview();
             var advancedActions = advanced.querySelector('#se_bottom');
@@ -709,40 +679,34 @@
         var basic = form.querySelector(':scope > .admin_basic');
         var source = basic ? basic.querySelector(':scope > dl.form_block') : null;
         if (!basic || !source || !document.getElementById('admin-storyeditor-title')) return;
-        var workspace = document.createElement('div'); workspace.className = 'eclipse-story-workspace';
-        var main = document.createElement('div'); main.className = 'eclipse-story-main';
-        var side = document.createElement('aside'); side.className = 'eclipse-story-sidebar';
-        workspace.appendChild(main); workspace.appendChild(side); basic.insertBefore(workspace, source);
-        function panel(title, className, parent) {
-            var section = document.createElement('section'); section.className = 'eclipse-editor-panel ' + className;
-            var heading = document.createElement('h2'); heading.textContent = title; section.appendChild(heading);
-            var dl = document.createElement('dl'); dl.className = 'form_block'; section.appendChild(dl); parent.appendChild(section); return dl;
+        form.classList.add('eclipse-simple-story-editor');
+
+        function moveFieldAfter(selector, anchorSelector) {
+            var control = source.querySelector(selector);
+            var anchor = source.querySelector(anchorSelector);
+            if (!control || !anchor) return;
+            var definition = control.closest('dd');
+            var term = definition ? definition.previousElementSibling : null;
+            while (term && term.tagName !== 'DT') term = term.previousElementSibling;
+            var anchorDefinition = anchor.closest('dd');
+            if (!definition || !term || !anchorDefinition) return;
+            var reference = anchorDefinition.nextSibling;
+            source.insertBefore(term, reference);
+            source.insertBefore(definition, reference);
+            var description = definition.nextElementSibling;
+            while (description && description.tagName === 'DD' && description.classList.contains('description')) {
+                var current = description;
+                description = description.nextElementSibling;
+                source.insertBefore(current, reference);
+            }
         }
-        var identity = panel(labels.identity, 'eclipse-panel-identity', main);
-        var content = panel(labels.articleContent, 'eclipse-panel-content', main);
-        var publish = panel(labels.publish, 'eclipse-panel-publish', side);
-        var seo = panel(labels.seo, 'eclipse-panel-seo', side);
-        function moveField(selector, target) {
-            var control = source.querySelector(selector); if (!control) return;
-            var dd = control.closest('dd'); if (!dd) return;
-            var dt = dd.previousElementSibling;
-            while (dt && dt.tagName !== 'DT') dt = dt.previousElementSibling;
-            if (dt) target.appendChild(dt);
-            target.appendChild(dd);
-            var next = dd.nextElementSibling;
-            while (next && next.tagName === 'DD') { var current = next; next = next.nextElementSibling; target.appendChild(current); }
-        }
-        ['#admin-storyeditor-title','#admin-storyeditor-page_title','[name="topic[]"]','#admin-storyeditor-show_topic_icon'].forEach(function (s) { moveField(s, identity); });
-        ['#admin-storyeditor-introtext','#admin-storyeditor-bodytext','#admin-storyeditor-postmode'].forEach(function (s) { moveField(s, content); });
-        ['#admin-storyeditor-publish_month','#admin-storyeditor-draft_flag','[name="frontpage"]','#cmt_close_flag','#admin-storyeditor-archiveflag','#admin-storyeditor-expire_month','#admin-storyeditor-cachetime'].forEach(function (s) { moveField(s, publish); });
-        ['#admin-storyeditor-sid','#admin-storyeditor-metadescription','#admin-storyeditor-metakeywords'].forEach(function (s) { moveField(s, seo); });
-        var remaining = panel(labels.more, 'eclipse-panel-more', side);
-        while (source.firstChild) remaining.appendChild(source.firstChild);
-        source.remove();
+
+        moveFieldAfter('#admin-storyeditor-page_title', '#admin-storyeditor-sid');
+
         var access = basic.querySelector(':scope > fieldset');
-        if (access) { access.classList.add('eclipse-editor-access'); var legend = access.querySelector('legend'); if (legend && !legend.textContent.trim()) legend.textContent = labels.access; side.appendChild(access); }
+        if (access) access.classList.add('eclipse-editor-access');
         var actions = basic.querySelector(':scope > .submit');
-        if (actions) { actions.classList.add('eclipse-editor-actions'); basic.appendChild(actions); }
+        if (actions) actions.classList.add('eclipse-editor-actions');
     }
     function setupAdminDashboard() {
         var root = document.querySelector('.eclipse-command-page');

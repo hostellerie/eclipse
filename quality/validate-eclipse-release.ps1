@@ -12,7 +12,7 @@ $errors = [System.Collections.Generic.List[string]]::new()
 function Fail([string]$Message) { $errors.Add($Message) }
 
 # Keep the comprehensive historical validator and ignore only contracts that
-# Eclipse 1.2.0 intentionally supersedes. Run it in a child PowerShell process
+# Eclipse 1.3.0 intentionally supersedes. Run it in a child PowerShell process
 # because the historical script uses `exit 1` when it finds any failure.
 $legacyArgs = @('-NoProfile', '-File', $legacyValidator, '-ThemePath', $theme, '-ParentThemePath', $ParentThemePath)
 if ($NodePath -ne '') {
@@ -28,14 +28,17 @@ $legacyExitCode = $LASTEXITCODE
 $allowedLegacyFailures = @(
     'Missing file: ROADMAP.md',
     'Story editor wrapper override must be isolated from Modern workspace.',
-    'Asset version does not match 1.2.0.',
+    'Asset version does not match 1.3.0.',
     'Asset version does not match 1.1.0.',
     'CSS compatibility override ceiling exceeded:',
     'Public Eclipse CSS budget exceeded:',
     'Installable theme budget exceeded:',
     'Configuration secondary-tab fallback styling is incomplete.',
     'Mobile configuration select-value geometry is incomplete.',
-    'Configuration Manager must retain its native Denim layout and behavior.'
+    'Configuration Manager must retain its native Denim layout and behavior.',
+    # Eclipse 1.3 removed the separate simulated-site Preview tab intentionally.
+    'Professional Studio tab/preview markup is incomplete.',
+    'Studio preview viewport styles are incomplete.'
 )
 
 $legacyFailures = @($legacyOutput | Where-Object { $_ -match '^FAIL:\s*(.+)$' })
@@ -56,6 +59,28 @@ if ($legacyExitCode -ne 0 -and $legacyFailures.Count -eq 0) {
     Fail "Historical validator exited with code $legacyExitCode without reporting a recognized FAIL line."
 }
 
+
+# The isolated site-preview iframe was retired. Keep the accessible Studio tabs,
+# live palette feedback and contrast checks, but reject the obsolete parallel
+# preview implementation rather than reinstating it to satisfy legacy tests.
+$functions = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
+$themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
+$studioCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/studio.css')
+if ($functions -notmatch 'role="tablist"' -or $themeJs -notmatch 'function setupStudioTabs') {
+    Fail 'Accessible Theme Studio tabs are missing.'
+}
+if ($functions -match 'eclipse-panel-preview|eclipse-preview-frame|data-preview-width' -or
+    $themeJs -match 'eclipse-preview-frame|eclipse-isolated-preview|updateLayoutPreview' -or
+    $studioCss -match 'eclipse-isolated-preview|eclipse-preview-toolbar') {
+    Fail 'Retired Studio site-preview markup or scripting has returned.'
+}
+if ($functions -notmatch 'eclipse-palette-preview' -or
+    $functions -notmatch 'eclipse-contrast-report' -or
+    $themeJs -notmatch 'function previewColors' -or
+    $themeJs -notmatch 'function updateContrast') {
+    Fail 'Theme Studio palette feedback or contrast reporting is missing.'
+}
+
 # The maintained roadmap moved to the repository root in the 1.2 cycle so it
 # remains visible as development documentation and stays outside the installable
 # theme package. The historical validator still expects eclipse/ROADMAP.md.
@@ -65,7 +90,7 @@ if (-not (Test-Path -LiteralPath $roadmapPath -PathType Leaf)) {
     Fail 'Repository-level ROADMAP.md is missing.'
 }
 
-# 1.2.0 editor contract: the wrapper rule moved to story-editor-base.css because
+# 1.3.0 editor contract: the wrapper rule moved to story-editor-base.css because
 # story-editor.css imports the shared base layer.
 $storyEditorBase = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/story-editor-base.css')
 if ($storyEditorBase -notmatch 'eclipse-story-editor-page\.admin-ui-mode-classic\.editor-sidebars-hidden #wrapper') {
@@ -75,7 +100,7 @@ if ($storyEditorBase -match 'eclipse-story-editor-page\.editor-sidebars-hidden #
     Fail 'Story editor wrapper override leaks into Modern workspace.'
 }
 
-# 1.2.0 asset contract: one canonical cache token combines the release version
+# 1.3.0 asset contract: one canonical cache token combines the release version
 # with the newest shipped asset mtime. CSS and JavaScript each use that helper,
 # so updates invalidate browser caches without random query strings.
 $functions = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
@@ -92,7 +117,7 @@ if ($functions -notmatch '\.css''\s*\.\s*\$version' -or $functions -notmatch 'th
     Fail 'Version-derived cache key is not applied to both CSS and JavaScript assets.'
 }
 
-# 1.2.0 resource budgets. These limits reflect the expanded administration,
+# 1.3.0 resource budgets. These limits reflect the expanded administration,
 # editor, Forum and compatibility scope while retaining a bounded regression
 # guard for future releases.
 $importantCount = 0
@@ -100,17 +125,17 @@ Get-ChildItem -LiteralPath (Join-Path $theme 'css') -Filter '*.css' | ForEach-Ob
     $importantCount += [regex]::Matches((Get-Content -Raw -LiteralPath $_.FullName), '!important').Count
 }
 if ($importantCount -gt 600) {
-    Fail "CSS compatibility override ceiling exceeded for 1.2.0: $importantCount (maximum 600)."
+    Fail "CSS compatibility override ceiling exceeded for 1.3.0: $importantCount (maximum 600)."
 }
 
 $publicCssNames = @('variables.css','base.css','layout.css','components.css','forms.css','plugins.css','responsive.css','modern.css','ui-fixes.css','v3.css')
 $publicCssBytes = ($publicCssNames | ForEach-Object { (Get-Item -LiteralPath (Join-Path $theme "css/$_")).Length } | Measure-Object -Sum).Sum
 $themeBytes = (Get-ChildItem -LiteralPath $theme -Recurse -File | Measure-Object Length -Sum).Sum
 if ($publicCssBytes -gt 80000) {
-    Fail "Public Eclipse CSS budget exceeded for 1.2.0: $publicCssBytes bytes (maximum 80000)."
+    Fail "Public Eclipse CSS budget exceeded for 1.3.0: $publicCssBytes bytes (maximum 80000)."
 }
 if ($themeBytes -gt 950000) {
-    Fail "Installable theme budget exceeded for 1.2.0: $themeBytes bytes (maximum 950000)."
+    Fail "Installable theme budget exceeded for 1.3.0: $themeBytes bytes (maximum 950000)."
 }
 
 # Static Pages editor compatibility: Geeklog 2.1.1 does not expose the
@@ -171,7 +196,7 @@ if ($configCss -notmatch 'eclipse-config-help\s+:is\(a\.tooltip,\.gl-tooltip\)\s
     Fail 'Configuration help does not restore the native COM_getTooltip() trigger size.'
 }
 
-# Configuration search result targeting is an Eclipse 1.2 usability contract.
+# Configuration search result targeting is an Eclipse 1.3 usability contract.
 # Geeklog supplies URLs such as ?tab-20#advanced_editor; Eclipse must turn the
 # stable parameter hash into a real row anchor, scroll to it and highlight it.
 $adminJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/admin.js')
@@ -223,5 +248,5 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Host 'Eclipse 1.2 release validation passed. Historical checks retained; 1.2 contracts applied.'
+Write-Host 'Eclipse 1.3 release validation passed. Historical checks retained; 1.3 contracts applied.'
 exit 0
