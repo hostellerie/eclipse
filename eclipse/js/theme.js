@@ -443,16 +443,19 @@
         function refresh() {
             var titleValue = (title && title.value.trim()) || (storyTitle && storyTitle.value.trim()) || '';
             var descriptionValue = description ? description.value.trim() : '';
+            var siteName = document.body.getAttribute('data-eclipse-site-name') || '';
+            var withSite = document.body.getAttribute('data-eclipse-title-mode') === 'title_and_site';
+            var effectiveTitle = titleValue + (withSite && titleValue && siteName ? ' - ' + siteName : '');
             var slugValue = slug ? slug.value.trim() : '';
             var words = text(content.map(function (field) { return field.value; }).join(' ')).split(/\s+/).filter(Boolean).length;
             var base = window.geeklog && geeklog.site_url ? geeklog.site_url.replace(/\/$/, '') : window.location.origin;
             var previewTitle = assistant.querySelector('[data-seo-preview-title]');
             var previewUrl = assistant.querySelector('[data-seo-preview-url]');
             var previewDescription = assistant.querySelector('[data-seo-preview-description]');
-            if (previewTitle) previewTitle.textContent = titleValue || 'Article title';
+            if (previewTitle) previewTitle.textContent = effectiveTitle || 'Article title';
             if (previewUrl) previewUrl.textContent = base + '/article.php/' + (slugValue || 'article-slug');
             if (previewDescription) previewDescription.textContent = descriptionValue || text(content.map(function (field) { return field.value; }).join(' ')).slice(0, 160) || 'The search description will appear here.';
-            check('title', titleValue.length >= 30 && titleValue.length <= 60, 'Title: ' + titleValue.length + ' characters (recommended 30–60).');
+            check('title', effectiveTitle.length >= 30 && effectiveTitle.length <= 60, 'Title: ' + effectiveTitle.length + ' characters (recommended 30–60)' + (withSite && siteName ? '; includes separator and site name (' + (siteName.length + 3) + ' characters).' : '.'));
             check('description', descriptionValue.length >= 120 && descriptionValue.length <= 160, descriptionValue ? 'Meta description: ' + descriptionValue.length + ' characters (recommended 120–160).' : 'Meta description: missing; the preview currently uses an automatic content excerpt.');
             check('slug', /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue), 'Slug: ' + (slugValue ? 'format ' + (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue) ? 'ready; uniqueness is verified when saving.' : 'should use lowercase words and hyphens.') : 'missing.'));
             check('content', words >= 300, 'Content: approximately ' + words + ' words' + (words >= 300 ? '.' : ' (300 or more recommended for substantial articles).'));
