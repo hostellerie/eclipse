@@ -143,12 +143,16 @@ if ($themeBytes -gt 950000) {
 # other SEO settings. Both Geeklog template variables must remain literal in
 # header.thtml so the template engine resolves the selected branch correctly.
 $headerTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'header.thtml')
+$indexTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'index.thtml')
 if ($functions -notmatch "'page_title_mode'\s*=>\s*'title_only'" -or
     $functions -notmatch "'page_title_mode'\s*=>\s*array\('title_only',\s*'title_and_site'\)" -or
     $functions -notmatch 'select\(''page_title_mode''' -or
     $headerTemplate -notmatch '<title>\{page_title\}</title>' -or
     $headerTemplate -notmatch '<title>\{page_title_and_site_name\}</title>' -or
-    $headerTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]") {
+    $headerTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]" -or
+    $indexTemplate -notmatch '<title>\{page_title\}</title>' -or
+    $indexTemplate -notmatch '<title>\{page_title_and_site_name\}</title>' -or
+    $indexTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]") {
     Fail 'Configurable page title format contract is incomplete.'
 }
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
