@@ -120,6 +120,21 @@ function eclipse_context_classes()
     return $classes;
 }
 
+function eclipse_welcome_message()
+{
+    global $_CONF, $LANG01;
+
+    // Keep Geeklog's localized welcome text but omit its anonymous username.
+    // Logged-in visitors retain the native Geeklog welcome message.
+    if (function_exists('COM_isAnonUser') && COM_isAnonUser()) {
+        $welcome = rtrim(isset($LANG01[67]) ? (string) $LANG01[67] : '') . ' '
+            . (isset($_CONF['site_name']) ? (string) $_CONF['site_name'] : '');
+        return htmlspecialchars(trim($welcome), ENT_QUOTES, 'UTF-8');
+    }
+
+    return null;
+}
+
 function eclipse_html_language()
 {
     global $_CONF, $LANG_ISO639_1;
