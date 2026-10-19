@@ -261,6 +261,8 @@
         sortAdminList(list);
         function fitDesktopSubmenu() {
             if (!window.matchMedia('(min-width:52.01rem)').matches) {
+                list.style.removeProperty('position');
+                list.style.removeProperty('left');
                 list.style.removeProperty('top');
                 list.style.removeProperty('max-height');
                 list.style.removeProperty('overflow-y');
@@ -282,7 +284,7 @@
             window.requestAnimationFrame(function () {
                 var height = Math.min(list.scrollHeight, maxHeight);
                 var viewportTop = Math.max(viewportPadding, Math.min(sectionTop, window.innerHeight - viewportPadding - height));
-                list.style.top = (viewportTop - sectionTop) + 'px';
+                list.style.top = viewportTop + 'px';
             });
         }
         sectionButton.setAttribute('aria-expanded', 'false');
