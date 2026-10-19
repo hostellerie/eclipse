@@ -3,7 +3,7 @@
 <head>
 <meta charset="{charset}"{xhtml}>
 <meta name="viewport" content="width=device-width, initial-scale=1"{xhtml}>
-<?php if (eclipse_theme_options()['page_title_mode'] === 'title_and_site' || (function_exists('COM_onFrontpage') && COM_onFrontpage())) { ?>
+<?php if (eclipse_title_includes_site_name()) { ?>
 <title>{page_title_and_site_name}</title>
 <?php } else { ?>
 <title>{page_title}</title>
