@@ -269,9 +269,12 @@
                 return;
             }
             var viewportPadding = 8;
-            var sectionTop = section.getBoundingClientRect().top;
+            var sectionRect = section.getBoundingClientRect();
+            var sectionTop = sectionRect.top;
             var maxHeight = Math.max(160, window.innerHeight - (viewportPadding * 2));
-            list.style.top = '0px';
+            list.style.position = 'fixed';
+            list.style.left = sectionRect.right + 'px';
+            list.style.top = Math.max(viewportPadding, Math.min(sectionTop, window.innerHeight - 160)) + 'px';
             list.style.maxHeight = maxHeight + 'px';
             list.style.overflowY = 'auto';
             list.style.overscrollBehavior = 'contain';
@@ -368,8 +371,8 @@
     collapseButton.setAttribute('aria-controls', 'eclipse-admin-sidebar'); collapseButton.setAttribute('aria-label', 'Collapse navigation'); collapseButton.title = 'Collapse navigation'; collapseButton.innerHTML = '<span aria-hidden="true">&#x2039;</span>';
     sidebar.appendChild(collapseButton); wrapper.insertBefore(sidebar, main.parentNode);
     function updateSidebarFit() {
+        // Desktop navigation now scrolls within the sticky sidebar.
         sidebar.classList.remove('is-tall');
-        if (sidebar.scrollHeight > Math.max(320, window.innerHeight - 58)) sidebar.classList.add('is-tall');
     }
     var storageKey = 'eclipse-admin-sidebar-collapsed'; var desktop = window.matchMedia('(min-width:52.01rem)');
     var storedCollapsed = false;
