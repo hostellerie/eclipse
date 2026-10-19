@@ -268,7 +268,7 @@
             appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark' },
             brand: { logo:'images/logo-mark.svg',header_image:'',show_left_sidebar:false,show_right_sidebar:true,mobile_menu:true,editor_hide_sidebars:true },
             social: { share_facebook:false,share_linkedin:false,share_x:false },
-            integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',sitemap_path:'' }
+            integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',page_title_mode:'title_only',sitemap_path:'' }
         };
         form.querySelectorAll('[data-reset-section]').forEach(function (button) {
             button.addEventListener('click', function () {
