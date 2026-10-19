@@ -160,14 +160,13 @@ if ($themeJs -notmatch "page_title_mode:'title_only'") {
     Fail 'Theme Studio reset must default to page title only.'
 }
 
-# Static Pages editor compatibility: Geeklog 2.1.1 does not expose the
-# per-page Search control added in later Static Pages versions. Eclipse keeps
-# the newer editor markup but must render Search only when the provider supplies
-# search_options. Likes already follows the same capability-style guard.
+# Static Pages editor contract: render the optional Search control only when
+# Geeklog supplies search_options. Preserve defensive template rendering across
+# plugin configurations without maintaining a Geeklog 2.1.1 compatibility test.
 $staticEditor = Get-Content -Raw -LiteralPath (Join-Path $theme 'staticpages/admin/editor.thtml')
 $staticAdvancedEditor = Get-Content -Raw -LiteralPath (Join-Path $theme 'staticpages/admin/editor_advanced.thtml')
 if ($staticEditor -notmatch '\{!if search_options\}.*?name="search".*?\{!endif\}') {
-    Fail 'Static Pages basic editor does not guard the newer Search control for Geeklog 2.1.1.'
+    Fail 'Static Pages basic editor does not guard the optional Search control.'
 }
 if ($staticAdvancedEditor -notmatch '\{!if search_options\}.*?name="search".*?\{!endif\}') {
     Fail 'Static Pages advanced editor does not guard the newer Search control for Geeklog 2.1.1.'
