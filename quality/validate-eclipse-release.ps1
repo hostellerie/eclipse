@@ -145,7 +145,7 @@ if ($themeBytes -gt 950000) {
 $headerTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'header.thtml')
 if ($functions -notmatch "'page_title_mode'\s*=>\s*'title_only'" -or
     $functions -notmatch "'page_title_mode'\s*=>\s*array\('title_only',\s*'title_and_site'\)" -or
-    $functions -notmatch "\$select\('page_title_mode'" -or
+    $functions -notmatch 'select\(''page_title_mode''' -or
     $headerTemplate -notmatch '<title>\{page_title\}</title>' -or
     $headerTemplate -notmatch '<title>\{page_title_and_site_name\}</title>' -or
     $headerTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]") {
