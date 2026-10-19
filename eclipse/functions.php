@@ -282,6 +282,16 @@ function theme_init_eclipse()
     }
 }
 
+function eclipse_title_includes_site_name()
+{
+    if (eclipse_theme_options()['page_title_mode'] === 'title_and_site') return true;
+    if (function_exists('COM_onFrontpage') && COM_onFrontpage()) return true;
+    // Geeklog's native utility endpoints use the site name for context;
+    // editorial pages retain their individually optimized titles.
+    $script = isset($_SERVER['SCRIPT_NAME']) ? basename((string) $_SERVER['SCRIPT_NAME']) : '';
+    return in_array($script, array('search.php', 'users.php', 'usersettings.php', 'profiles.php', 'preferences.php', 'directory.php', 'submit.php', 'stats.php'), true);
+}
+
 function eclipse_theme_options()
 {
     static $options;
