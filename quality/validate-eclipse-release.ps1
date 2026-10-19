@@ -12,7 +12,7 @@ $errors = [System.Collections.Generic.List[string]]::new()
 function Fail([string]$Message) { $errors.Add($Message) }
 
 # Keep the comprehensive historical validator and ignore only contracts that
-# Eclipse 1.3.0 intentionally supersedes. Run it in a child PowerShell process
+# Eclipse 1.4.0 intentionally supersedes. Run it in a child PowerShell process
 # because the historical script uses `exit 1` when it finds any failure.
 $legacyArgs = @('-NoProfile', '-File', $legacyValidator, '-ThemePath', $theme, '-ParentThemePath', $ParentThemePath)
 if ($NodePath -ne '') {
@@ -28,6 +28,7 @@ $legacyExitCode = $LASTEXITCODE
 $allowedLegacyFailures = @(
     'Missing file: ROADMAP.md',
     'Story editor wrapper override must be isolated from Modern workspace.',
+    'Asset version does not match 1.4.0.',
     'Asset version does not match 1.3.0.',
     'Asset version does not match 1.1.0.',
     'CSS compatibility override ceiling exceeded:',
@@ -248,5 +249,5 @@ if ($errors.Count -gt 0) {
     exit 1
 }
 
-Write-Host 'Eclipse 1.3 release validation passed. Historical checks retained; 1.3 contracts applied.'
+Write-Host 'Eclipse 1.4 release validation passed. Historical checks retained; modern contracts applied.'
 exit 0
