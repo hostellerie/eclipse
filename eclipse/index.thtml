@@ -85,7 +85,7 @@ $eclipseSecondaryMenu = function_exists('eclipse_menu_render_slot')
     <div id="eclipse-admin-native-source" hidden><?php if (eclipse_is_admin_request() && function_exists('COM_adminMenu')) echo COM_adminMenu(); ?><?php echo eclipse_admin_studio_source(); ?></div>
     <div id="centerblocks">
       <main id="main-content" tabindex="-1" itemscope="itemscope" itemprop="mainContentOfPage" itemtype="https://schema.org/WebPageElement">
-        <p class="welcome_msg"><?php $eclipseWelcome = eclipse_welcome_message(); if ($eclipseWelcome !== null) { echo $eclipseWelcome; } else { ?>{welcome_msg}<?php } ?>&nbsp;{datetime}</p>
+        <p class="welcome_msg"><?php echo eclipse_welcome_message(); ?>&nbsp;{datetime}</p>
         {breadcrumb_trail}
         {system_messsages}
 
