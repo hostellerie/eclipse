@@ -65,6 +65,17 @@ if ($legacyExitCode -ne 0 -and $legacyFailures.Count -eq 0) {
 # live palette feedback and contrast checks, but reject the obsolete parallel
 # preview implementation rather than reinstating it to satisfy legacy tests.
 $functions = Get-Content -Raw -LiteralPath (Join-Path $theme 'functions.php')
+# Guest welcome: preserve Geeklog localization and logged-in identity while
+# excluding the anonymous account name from the public header.
+if ($functions -notmatch 'function eclipse_welcome_message\(' -or
+    $functions -notmatch 'COM_isAnonUser\(\)' -or
+    $functions -notmatch '\$LANG01\[67\]' -or
+    $indexTemplate -notmatch 'eclipse_welcome_message\(\)' -or
+    $headerTemplate -notmatch 'eclipse_welcome_message\(\)' -or
+    $indexTemplate -notmatch '\{welcome_msg\}' -or
+    $headerTemplate -notmatch '\{welcome_msg\}') {
+    Fail 'Localized anonymous welcome message contract is incomplete.'
+}
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
 $studioCss = Get-Content -Raw -LiteralPath (Join-Path $theme 'css/studio.css')
 if ($functions -notmatch 'role="tablist"' -or $themeJs -notmatch 'function setupStudioTabs') {
