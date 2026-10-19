@@ -72,8 +72,9 @@ if ($functions -notmatch 'function eclipse_welcome_message\(' -or
     $functions -notmatch '\$LANG01\[67\]' -or
     $indexTemplate -notmatch 'eclipse_welcome_message\(\)' -or
     $headerTemplate -notmatch 'eclipse_welcome_message\(\)' -or
-    $indexTemplate -notmatch '\{welcome_msg\}' -or
-    $headerTemplate -notmatch '\{welcome_msg\}') {
+    $indexTemplate -match '\{welcome_msg\}' -or
+    $headerTemplate -match '\{welcome_msg\}' -or
+    $functions -notmatch 'COM_getDisplayName\(') {
     Fail 'Localized anonymous welcome message contract is incomplete.'
 }
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
