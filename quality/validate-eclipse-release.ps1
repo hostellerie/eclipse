@@ -152,7 +152,9 @@ if ($functions -notmatch "'page_title_mode'\s*=>\s*'title_only'" -or
     $headerTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]" -or
     $indexTemplate -notmatch '<title>\{page_title\}</title>' -or
     $indexTemplate -notmatch '<title>\{page_title_and_site_name\}</title>' -or
-    $indexTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]") {
+    $indexTemplate -notmatch "eclipse_theme_options\(\)\['page_title_mode'\]" -or
+    $indexTemplate -notmatch 'COM_onFrontpage\(\)' -or
+    $headerTemplate -notmatch 'COM_onFrontpage\(\)') {
     Fail 'Configurable page title format contract is incomplete.'
 }
 $themeJs = Get-Content -Raw -LiteralPath (Join-Path $theme 'js/theme.js')
