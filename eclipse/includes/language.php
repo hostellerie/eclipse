@@ -210,6 +210,7 @@ function eclipse_translate_theme_studio_html($html)
         'Menu composition' => 'menu_composition',
         'Back to dashboard' => 'back_to_dashboard',
         'Social sharing' => 'social_sharing',
+        'Page title format' => 'page_title_format',
         'HTML language' => 'html_language',
         'Import or export' => 'import_or_export',
         'Saved snapshot' => 'saved_snapshot',
