@@ -135,8 +135,8 @@ $themeBytes = (Get-ChildItem -LiteralPath $theme -Recurse -File | Measure-Object
 if ($publicCssBytes -gt 80000) {
     Fail "Public Eclipse CSS budget exceeded for 1.3.0: $publicCssBytes bytes (maximum 80000)."
 }
-if ($themeBytes -gt 950000) {
-    Fail "Installable theme budget exceeded for 1.3.0: $themeBytes bytes (maximum 950000)."
+if ($themeBytes -gt 1000000) {
+    Fail "Installable theme budget exceeded for 1.4.0: $themeBytes bytes (maximum 1000000)."
 }
 
 # Page titles are configured through the same validated Theme Studio options as
