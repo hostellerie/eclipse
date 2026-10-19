@@ -143,6 +143,7 @@ if ($themeBytes -gt 1000000) {
 # other SEO settings. Both Geeklog template variables must remain literal in
 # header.thtml so the template engine resolves the selected branch correctly.
 $headerTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'header.thtml')
+$indexTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'index.thtml')
 # Guest welcome: preserve Geeklog localization and logged-in identity while
 # excluding the anonymous account name from the public header.
 if ($functions -notmatch 'function eclipse_welcome_message\(' -or
@@ -156,7 +157,7 @@ if ($functions -notmatch 'function eclipse_welcome_message\(' -or
     Fail 'Localized anonymous welcome message contract is incomplete.'
 }
 
-$indexTemplate = Get-Content -Raw -LiteralPath (Join-Path $theme 'index.thtml')
+
 if ($functions -notmatch "'page_title_mode'\s*=>\s*'title_only'" -or
     $functions -notmatch "'page_title_mode'\s*=>\s*array\('title_only',\s*'title_and_site'\)" -or
     $functions -notmatch 'select\(''page_title_mode''' -or
