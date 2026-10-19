@@ -122,17 +122,19 @@ function eclipse_context_classes()
 
 function eclipse_welcome_message()
 {
-    global $_CONF, $LANG01;
+    global $_CONF, $_USER, $LANG01;
 
-    // Keep Geeklog's localized welcome text but omit its anonymous username.
-    // Logged-in visitors retain the native Geeklog welcome message.
-    if (function_exists('COM_isAnonUser') && COM_isAnonUser()) {
-        $welcome = rtrim(isset($LANG01[67]) ? (string) $LANG01[67] : '') . ' '
-            . (isset($_CONF['site_name']) ? (string) $_CONF['site_name'] : '');
-        return htmlspecialchars(trim($welcome), ENT_QUOTES, 'UTF-8');
+    // Match Geeklog's localized welcome text without naming anonymous visitors.
+    $welcome = rtrim(isset($LANG01[67]) ? (string) $LANG01[67] : '') . ' '
+        . (isset($_CONF['site_name']) ? (string) $_CONF['site_name'] : '');
+    if (!COM_isAnonUser() && !empty($_USER['username'])) {
+        $welcome .= ', ' . COM_getDisplayName(
+            $_USER['uid'],
+            $_USER['username'],
+            isset($_USER['fullname']) ? $_USER['fullname'] : ''
+        );
     }
-
-    return null;
+    return htmlspecialchars(trim($welcome), ENT_QUOTES, 'UTF-8');
 }
 
 function eclipse_html_language()
