@@ -1,0 +1,54 @@
+{# start {templatelocation} #}
+<form action="{site_url}/search.php" method="get" id="advsearchform" class="compact uk-form eclipse-search-form">
+  <p class="form_message">{search_intro}</p>
+  <div class="eclipse-search-grid">
+    <div class="eclipse-search-field eclipse-search-keywords">
+      <label for="advsearchform-query">{lang_keywords}</label>
+      <div class="eclipse-search-query-row">
+        <input type="text" maxlength="35" value="{query}" name="query" id="advsearchform-query"{xhtml}>
+        <select name="keyType" title="{lang_keytype}" id="advsearchform-keyType">
+          <option value="phrase" {key_phrase_selected}>{lang_exact_phrase}</option>
+          <option value="all" {key_all_selected}>{lang_all_words}</option>
+          <option value="any" {key_any_selected}>{lang_any_word}</option>
+        </select>
+      </div>
+      <label class="eclipse-search-check"><input type="checkbox" value="true" name="title"{title_checked}{xhtml}> {lang_titles}</label>
+    </div>
+    <div class="eclipse-search-field">
+      <label for="advsearchform-datestart">{lang_date}</label>
+      <div class="eclipse-search-date-row">
+        <input type="text" maxlength="10" name="datestart" value="{datestart}" id="advsearchform-datestart" placeholder="YYYY-MM-DD"{xhtml}>
+        <span>{lang_to}</span>
+        <input type="text" maxlength="10" name="dateend" value="{dateend}" id="advsearchform-dateend" placeholder="YYYY-MM-DD"{xhtml}>
+      </div>
+      <small class="description">{date_format}</small>
+    </div>
+    <div class="eclipse-search-field">
+      <label for="advsearchform-topic">{lang_topic}</label>
+      <select name="topic" id="advsearchform-topic">{topic_option_list}</select>
+    </div>
+    <div class="eclipse-search-field">
+      <label for="advsearchform-type">{lang_type}</label>
+      <select name="type" id="advsearchform-type">{plugin_types}</select>
+    </div>
+    <div class="eclipse-search-author-slot">{author_form_element}</div>
+    <div class="eclipse-search-field eclipse-search-results">
+      <label for="advsearchform-results">{lang_results}</label>
+      <div class="eclipse-search-results-row"><select name="results" id="advsearchform-results">{search_limits}</select><span>{lang_per_page}</span></div>
+    </div>
+  </div>
+  <div class="eclipse-search-actions">
+    <input type="hidden" name="mode" value="search"{xhtml}>
+    <button type="submit" value="{lang_search}" class="uk-button uk-button-primary">{lang_search}</button>
+  </div>
+</form>
+<!-- BEGIN author_form_element -->
+<div class="eclipse-search-field">
+  <label for="advsearchform-author">{lang_authors}</label>
+  <select name="author" id="advsearchform-author"><option selected="selected" value="0">{lang_all}</option>{author_option_list}</select>
+</div>
+<!-- END author_form_element -->
+<!-- BEGIN author_form_element_disabled -->
+<input type="hidden" name="author" value="0"{xhtml}>
+<!-- END author_form_element_disabled -->
+{# end {templatelocation} #}
