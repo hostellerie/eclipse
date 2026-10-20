@@ -18,12 +18,22 @@ $legacyArgs = @('-NoProfile', '-File', $legacyValidator, '-ThemePath', $theme, '
 if ($NodePath -ne '') {
     $legacyArgs += @('-NodePath', $NodePath)
 }
-$legacyOutput = @(& pwsh @legacyArgs 2>&1 | ForEach-Object {
-    $line = [string] $_
-    Write-Host $line
-    $line
-})
-$legacyExitCode = $LASTEXITCODE
+# The historical validator deliberately writes failing assertions to stderr.
+# Capture these as diagnostic data, not terminating PowerShell errors: the
+# release validator below classifies expected 1.3-era failures and rejects
+# all unexpected failures. Preserve the child's actual exit status.
+$previousErrorActionPreference = $ErrorActionPreference
+try {
+    $ErrorActionPreference = 'Continue'
+    $legacyOutput = @(& pwsh @legacyArgs 2>&1 | ForEach-Object {
+        $line = [string] $_
+        Write-Host $line
+        $line
+    })
+    $legacyExitCode = $LASTEXITCODE
+} finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+}
 
 $allowedLegacyFailures = @(
     'Missing file: ROADMAP.md',
