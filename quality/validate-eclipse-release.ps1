@@ -142,8 +142,12 @@ if ($importantCount -gt 600) {
 $publicCssNames = @('variables.css','base.css','layout.css','components.css','forms.css','plugins.css','responsive.css','modern.css','ui-fixes.css','v3.css')
 $publicCssBytes = ($publicCssNames | ForEach-Object { (Get-Item -LiteralPath (Join-Path $theme "css/$_")).Length } | Measure-Object -Sum).Sum
 $themeBytes = (Get-ChildItem -LiteralPath $theme -Recurse -File | Measure-Object Length -Sum).Sum
-if ($publicCssBytes -gt 80000) {
-    Fail "Public Eclipse CSS budget exceeded for 1.3.0: $publicCssBytes bytes (maximum 80000)."
+# Eclipse 1.4 adds the dedicated public search form and related UI styles.
+# Retain a strict finite CSS budget, adjusted for the measured 1.4 baseline
+# (82,809 bytes), rather than applying the obsolete 1.3 threshold.
+$publicCssBudget = 85000
+if ($publicCssBytes -gt $publicCssBudget) {
+    Fail "Public Eclipse CSS budget exceeded for 1.4.0: $publicCssBytes bytes (maximum $publicCssBudget)."
 }
 if ($themeBytes -gt 1000000) {
     Fail "Installable theme budget exceeded for 1.4.0: $themeBytes bytes (maximum 1000000)."
