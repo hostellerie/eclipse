@@ -129,4 +129,4 @@ Record the tested Geeklog version, PHP version, browser versions and any third-p
 - [ ] Recent Static Pages is hidden when the plugin is inactive or the user lacks `staticpages.edit`.
 - [ ] Classic Eclipse retains the native Command & Control page.
 
-- Public advanced search (`/search.php`): responsive two-column/one-column layout, every filter retains its GET name and selected value, disabled author placeholder is not visible, and enabled author selection remains usable.
+- Public advanced search (`/search.php`): keyword field and submit button remain immediately accessible; native details panel is collapsed initially and exposes all optional GET filters; responsive layout, selected values, disabled-author display and enabled author selection are regression-tested.
