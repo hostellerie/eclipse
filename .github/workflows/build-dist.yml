@@ -61,6 +61,7 @@ jobs:
               | xargs -0 -n1 php -l
 
             php ./quality/menu-navigation-test.php
+          php ./quality/custom-css-test.php
 
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
             pwsh ./quality/validate-eclipse-release.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath "$(command -v node)"
