@@ -19,6 +19,14 @@
 - [x] Wired the new regression suite into **both** `build-dist.yml` and `validate-pr.yml`; updated the latter's 1.4 validation label.
 - [ ] Record passing GitHub Actions runs; commits pushed do not independently prove CI execution or successful runtime installation.
 
+## Storage hardening — 2026-10-21 (follow-up)
+
+- [x] Reviewed the existing source for `eclipse_storage_root()`, `eclipse_storage_normalize()`, `eclipse_storage_write_raw()` and `eclipse_data_json()`: protected sibling `path_data-eclipse` root, allowlisted JSON filenames, named palettes capped at 50, history capped at 20 records, backup fallback, advisory file locking and staging/rename already exist.
+- [x] Fixed a potential **JSON persistence boundary failure**: the 5 MiB size check previously excluded the newline added to the on-disk JSON. It now measures the actual persisted payload and verifies a byte-for-byte match before replacing the primary file.
+- [ ] Verify PHP lint / CI against this change, and test actual write / read / backup recovery, permissions, concurrent writes, failed rename behavior, storage migrations and multisite directory isolation on Geeklog 2.2.2 staging.
+- [ ] Review consistency of the final rename and backup restoration paths under simulated filesystem errors before release.
+- [ ] Do not extract or rename the storage engine for Builder before these tests pass.
+
 ## Next verification steps
 
 - [ ] Capture latest Build/Validate action run conclusions and inspect any failing job; verify archive matches current tree and list SHA-256/size.
