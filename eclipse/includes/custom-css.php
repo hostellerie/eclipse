@@ -31,7 +31,15 @@ function eclipse_custom_css_validate($css, &$error = '')
         $error = 'style_close';
         return false;
     }
-    return rtrim($css) . ($css === '' ? '' : "\n");
+    $normalized = rtrim($css) . ($css === '' ? '' : "\n");
+    // The persisted content includes the final newline. Check its actual
+    // byte length, otherwise a 64 KiB input can become 64 KiB + 1 byte and
+    // fail the post-write verification despite passing initial validation.
+    if (strlen($normalized) > 65536) {
+        $error = 'too_large';
+        return false;
+    }
+    return $normalized;
 }
 
 function eclipse_custom_css_read()
