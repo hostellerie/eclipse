@@ -100,14 +100,15 @@ Status: planned; optimization work must not block rebuilding the current 1.3.0 Z
 
 - [ ] Inventory exact sources of truth for every setting, palette, named palette, custom footer and layout option; document the current persisted JSON schema, migration and backup behavior.
 - [ ] Validate saving/reopening the Theme Studio state, named palettes, import/export, history restore and multi-site storage isolation.
-- [ ] Test `eclipse/includes/custom-css.php` as-is: private CSS file read/write, validation, maximum 64 KiB, atomic save, backup and theme cache invalidation. Do not refactor it for Builder yet.
+- [x] Add focused Custom CSS 64 KiB normalization regression tests and fix the persisted-content boundary error (code and CI wiring committed; latest CI success to confirm).
+- [ ] Staging-test `eclipse/includes/custom-css.php`: private CSS file read/write, validation, atomic save, backup and theme cache invalidation. Do not refactor it for Builder yet.
 - [ ] Document CSS tokens, light/dark palettes, contrast controls, asset cache keys, Denim dependency and public/admin stylesheet loading.
 - [ ] Define the future shared versioned design-engine contract **without moving runtime code or making the free Eclipse theme depend on Builder**.
 
 ### S2 — Geeklog pages and presentation quality
 
 - [ ] Test keyword-first `searchform.thtml`: visible query + submit button, closed-by-default native `details` filters, actual query filtering, mobile and keyboard use.
-- [ ] Investigate Geeklog `author_form_element_disabled` output at its source; do not rely on invisible text or `font-size: 0` to mask invalid template output.
+- [ ] Validate the anticipated upstream Geeklog author-block fix in the next Core release; then remove the obsolete Eclipse `font-size: 0` masking after confirming correct output. Do not introduce another theme-side workaround.
 - [ ] Test title-only and title-plus-site modes, home-page titles, technical pages, anonymous welcome localization, and Static Pages title/meta description counters.
 - [ ] Regression-check public and admin forms, configuration manager, content pages, menus, CSS breakpoints, accessibility, browser consoles, PHP logs, and Geeklog plugin integrations.
 - [ ] Verify behavior with `cache_resource=0/1`, language variants and clean/primed caches.
