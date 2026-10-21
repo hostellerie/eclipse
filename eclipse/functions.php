@@ -525,17 +525,23 @@ function eclipse_storage_write_raw($name, $value)
     $value = eclipse_storage_normalize($name, $value);
     if ($value === false) return false;
     $json = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    if ($json === false || strlen($json) > 5242880) return false;
+    // Validate the complete on-disk payload, including its final newline.
+    // A JSON string at the exact 5 MiB limit must not pass here only to fail
+    // verification after it has been written.
+    if ($json === false) return false;
+    $payload = $json . "\n";
+    if (strlen($payload) > 5242880) return false;
     $root = eclipse_storage_root(); $path = $root . DIRECTORY_SEPARATOR . $name;
     $lock = @fopen($path . '.lock', 'c');
     if ($lock) @chmod($path . '.lock', 0640);
     if (!$lock || !@flock($lock, LOCK_EX)) { if ($lock) fclose($lock); return false; }
     $temp = $root . DIRECTORY_SEPARATOR . '.' . $name . '.' . getmypid() . '.' . str_replace('.', '', uniqid('', true)) . '.tmp';
-    $ok = @file_put_contents($temp, $json . "\n", LOCK_EX) !== false;
+    $ok = @file_put_contents($temp, $payload, LOCK_EX) !== false;
     if ($ok) {
         @chmod($temp, 0640);
         $verify = @file_get_contents($temp, false, null, 0, 5242881);
-        $ok = is_string($verify) && strlen($verify) <= 5242880
+        $ok = is_string($verify) && strlen($verify) === strlen($payload)
+            && hash_equals($payload, $verify)
             && eclipse_storage_normalize($name, json_decode($verify, true)) !== false;
     }
     if ($ok && is_file($path)) {
