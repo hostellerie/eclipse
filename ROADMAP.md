@@ -82,3 +82,40 @@ Geeklog 2.2.2 is the minimum supported CMS version. Keep PHP 5.6.40 syntax compa
 - **These are optimization targets, not new release-blocking limits.** Keep the existing 1.3 validator ceilings (80 KB / 600 / 950 KB) until changes are tested and approved; historic 60 KB / 300 / 410 KB limits remain superseded.
 
 Status: planned; optimization work must not block rebuilding the current 1.3.0 ZIP once its independent release validation is passing.
+
+## 1.4.0 — stability gate before independent Eclipse Builder (21 October 2026)
+
+**Status: stabilization started, not signed off.** The branch is `develo-1.4.0`. The packaging workflow generated `dist/eclipse-1.4.0.zip` at commit `ca114de7a09ef76a4eabbab709598d1cf3ce5ac5` on 20 October 2026, after the CI validation corrections; this proves archive generation, **not** staging/production compatibility.
+
+### S0 — build, release and package reliability
+
+- [x] Confirm an archive-generation commit exists after the search-template changes and CI validator corrections.
+- [ ] Re-run latest CI and record outcome, checksum, archive size, root directory, PHP lint, package integrity and committed manifest consistency.
+- [ ] Review 1.4 release validator and historical 1.3 exception handling: remove obsolete checks only after replacement with focused 1.4 tests; ensure new failures cannot be silently ignored.
+- [ ] Review the public CSS budget (currently 85,000 bytes; observed baseline 82,809) and compatibility overrides against measured output; **reduce unnecessary CSS rather than repeatedly raising limits**.
+- [ ] Verify update/rollback using the installable archive in Geeklog 2.2.2 on test infrastructure (backups, permissions, assets, cache invalidation).
+- [ ] Test workflow concurrency and bot-push behavior with rapid commits, proving the published ZIP matches the final source head.
+
+### S1 — native Theme Studio and design-engine baseline
+
+- [ ] Inventory exact sources of truth for every setting, palette, named palette, custom footer and layout option; document the current persisted JSON schema, migration and backup behavior.
+- [ ] Validate saving/reopening the Theme Studio state, named palettes, import/export, history restore and multi-site storage isolation.
+- [ ] Test `eclipse/includes/custom-css.php` as-is: private CSS file read/write, validation, maximum 64 KiB, atomic save, backup and theme cache invalidation. Do not refactor it for Builder yet.
+- [ ] Document CSS tokens, light/dark palettes, contrast controls, asset cache keys, Denim dependency and public/admin stylesheet loading.
+- [ ] Define the future shared versioned design-engine contract **without moving runtime code or making the free Eclipse theme depend on Builder**.
+
+### S2 — Geeklog pages and presentation quality
+
+- [ ] Test keyword-first `searchform.thtml`: visible query + submit button, closed-by-default native `details` filters, actual query filtering, mobile and keyboard use.
+- [ ] Investigate Geeklog `author_form_element_disabled` output at its source; do not rely on invisible text or `font-size: 0` to mask invalid template output.
+- [ ] Test title-only and title-plus-site modes, home-page titles, technical pages, anonymous welcome localization, and Static Pages title/meta description counters.
+- [ ] Regression-check public and admin forms, configuration manager, content pages, menus, CSS breakpoints, accessibility, browser consoles, PHP logs, and Geeklog plugin integrations.
+- [ ] Verify behavior with `cache_resource=0/1`, language variants and clean/primed caches.
+
+### S3 — release decision
+
+- [ ] Publish a dated QA report listing CI, tested Geeklog/PHP environments, visual and functional checks, unresolved defects and explicit sign-off.
+- [ ] Release 1.4.0 only after the QA gate is satisfied; carry remaining improvements into 1.4.x maintenance or independently prioritized follow-up issues.
+- [ ] After stabilization, greenlight Builder M0 design-engine feasibility and only then the independent plugin's implementation.
+
+**Related:** [Eclipse Builder roadmap](https://github.com/hostellerie/eclipsebuilder/blob/main/ROADMAP.md) · [central priorities](https://github.com/hostellerie/todo/blob/main/ROADMAP.md). This gate does not supersede the current absolute LibreOffice priority.
