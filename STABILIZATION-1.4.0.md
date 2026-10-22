@@ -27,6 +27,13 @@
 - [ ] Review consistency of the final rename and backup restoration paths under simulated filesystem errors before release.
 - [ ] Do not extract or rename the storage engine for Builder before these tests pass.
 
+## Navigation overlap on authentication-required admin pages (2026-10-23)
+
+- [x] The captured `<body>` of `admin/index.php` has `eclipse-admin-page eclipse-admin-index`, `header-density-standard` and `menu-style-floating`. Therefore this is **not** a Modern Workspace detection issue or compact-header issue.
+- [x] Root cause in `eclipse/css/v3.css`: the floating/contrast navigation's negative hero-overlap margin applied to **all** pages, including authenticated or login-required admin routes.
+- [x] Fix the existing desktop and mobile selectors so the hero overlap is limited to `body.theme-eclipse:not(.eclipse-admin-page)`; keep shared menu positioning/styling for public and admin. No extra override, no Modern Workspace dependency.
+- [ ] Visually validate `admin/index.php` requiring login, authenticated admin pages, public floating/contrast navigation and mobile layouts after the generated ZIP is updated. Check browser computed margin and cache version.
+
 ## Next verification steps
 
 - [ ] Capture latest Build/Validate action run conclusions and inspect any failing job; verify archive matches current tree and list SHA-256/size.
