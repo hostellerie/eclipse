@@ -68,13 +68,49 @@ try {
     if (file_get_contents($path) !== "body{color:blue;}\n") {
         throw new RuntimeException('invalid input modified persisted CSS');
     }
+    // A missing/unwritable storage root must fail without changing Site A.
+    $GLOBALS['eclipse_css_test_root'] = $testRoot . DIRECTORY_SEPARATOR . 'unavailable';
+    $error = '';
+    if (eclipse_custom_css_write('body{color:green;}', $error) !== false || $error !== 'storage') {
+        throw new RuntimeException('unavailable storage did not fail safely');
+    }
+    $GLOBALS['eclipse_css_test_root'] = $testRoot;
+    if (file_get_contents($path) !== "body{color:blue;}\n") {
+        throw new RuntimeException('storage failure modified Site A');
+    }
+
+    // Simulate a second site's protected storage without requiring Geeklog.
+    $otherRoot = $testRoot . DIRECTORY_SEPARATOR . 'site-b';
+    if (!mkdir($otherRoot, 0700)) {
+        throw new RuntimeException('unable to create Site B storage');
+    }
+    $GLOBALS['eclipse_css_test_root'] = $otherRoot;
+    $error = '';
+    if (eclipse_custom_css_read() !== '') {
+        throw new RuntimeException('Site B can read Site A stylesheet');
+    }
+    if (!eclipse_custom_css_write('body{color:green;}', $error) || $error !== '') {
+        throw new RuntimeException('Site B save failed: ' . $error);
+    }
+    if (eclipse_custom_css_read() !== "body{color:green;}\n") {
+        throw new RuntimeException('Site B content mismatch');
+    }
+    $GLOBALS['eclipse_css_test_root'] = $testRoot;
+    if (eclipse_custom_css_read() !== "body{color:blue;}\n") {
+        throw new RuntimeException('Site B save modified Site A');
+    }
 } catch (Exception $exception) {
     fwrite(STDERR, 'FAIL CSS persistence: ' . $exception->getMessage() . PHP_EOL);
     exit(1);
 } finally {
-    foreach (array($path, $path . '.bak', $path . '.lock') as $file) {
-        if (is_file($file)) unlink($file);
+    $GLOBALS['eclipse_css_test_root'] = $testRoot;
+    foreach (array($testRoot, $testRoot . DIRECTORY_SEPARATOR . 'site-b') as $root) {
+        foreach (array('eclipse-custom.css', 'eclipse-custom.css.bak', 'eclipse-custom.css.lock') as $name) {
+            $file = $root . DIRECTORY_SEPARATOR . $name;
+            if (is_file($file)) unlink($file);
+        }
     }
+    if (is_dir($testRoot . DIRECTORY_SEPARATOR . 'site-b')) rmdir($testRoot . DIRECTORY_SEPARATOR . 'site-b');
     rmdir($testRoot);
 }
 
