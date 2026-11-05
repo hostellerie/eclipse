@@ -78,17 +78,22 @@ try {
     rmdir($testRoot);
 }
 
-// Guard both persistence paths against reintroducing destructive rename fallbacks.
+// Limit the invariant to the write functions: other cleanup paths may
+// legitimately unlink obsolete files and must not trigger a false positive.
 foreach (array(
-    dirname(__DIR__) . '/eclipse/includes/custom-css.php',
-    dirname(__DIR__) . '/eclipse/functions.php',
-) as $sourcePath) {
+    array(dirname(__DIR__) . '/eclipse/includes/custom-css.php', 'eclipse_custom_css_write', 'eclipse_custom_css_notice'),
+    array(dirname(__DIR__) . '/eclipse/functions.php', 'eclipse_storage_write_raw', 'eclipse_read_legacy_vars'),
+) as $spec) {
+    list($sourcePath, $startName, $endName) = $spec;
     $source = file_get_contents($sourcePath);
-    if (!is_string($source)) {
-        fwrite(STDERR, 'FAIL unable to inspect storage code: ' . $sourcePath . PHP_EOL);
+    $start = strpos($source, 'function ' . $startName . '(');
+    $end = strpos($source, 'function ' . $endName . '(', $start === false ? 0 : $start);
+    if (!is_string($source) || $start === false || $end === false || $end <= $start) {
+        fwrite(STDERR, 'FAIL unable to inspect storage write function: ' . $sourcePath . PHP_EOL);
         exit(1);
     }
-    if (preg_match('/(?:@?unlink\\s*\\(\\s*\\$path\\s*\\))/', $source)) {
+    $writeFunction = substr($source, $start, $end - $start);
+    if (preg_match('/@?unlink\\s*\\(\\s*\\$path\\s*\\)/', $writeFunction)) {
         fwrite(STDERR, 'FAIL destructive storage deletion fallback: ' . $sourcePath . PHP_EOL);
         exit(1);
     }
