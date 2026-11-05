@@ -85,17 +85,36 @@
         }
     }
     if (toggle && menu) {
+        function closeMobileMenu(restoreFocus) {
+            toggle.setAttribute('aria-expanded', 'false');
+            menu.classList.remove('is-open');
+            menu.querySelectorAll('.eclipse-has-submenu.is-submenu-open').forEach(function (item) {
+                item.classList.remove('is-submenu-open');
+                var link = item.querySelector('a[aria-expanded]');
+                if (link) link.setAttribute('aria-expanded', 'false');
+            });
+            if (restoreFocus) toggle.focus();
+        }
         toggle.addEventListener('click', function () {
             var open = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', String(!open));
-            menu.classList.toggle('is-open', !open);
+            if (open) closeMobileMenu(false);
+            else {
+                toggle.setAttribute('aria-expanded', 'true');
+                menu.classList.add('is-open');
+            }
         });
         menu.addEventListener('click', function (event) {
             var clickedLink = event.target.closest('a');
             var clickedItem = clickedLink && clickedLink.parentElement;
             if (clickedLink && (!clickedItem || !clickedItem.classList.contains('eclipse-has-submenu')) && window.matchMedia('(max-width: 47.99rem)').matches) {
-                toggle.setAttribute('aria-expanded', 'false');
-                menu.classList.remove('is-open');
+                closeMobileMenu(false);
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key !== 'Escape' || !window.matchMedia('(max-width: 47.99rem)').matches) return;
+            if (menu.classList.contains('is-open')) {
+                event.preventDefault();
+                closeMobileMenu(true);
             }
         });
     }
