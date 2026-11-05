@@ -50,6 +50,12 @@ jobs:
         shell: bash
         run: php ./quality/admin-css-test.php
 
+      - name: Test mobile menu accessibility
+        shell: bash
+        run: |
+          node --check eclipse/js/theme.js
+          node quality/mobile-navigation-test.cjs
+
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
