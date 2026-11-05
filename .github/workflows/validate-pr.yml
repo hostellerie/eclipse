@@ -42,6 +42,10 @@ jobs:
         shell: bash
         run: php ./quality/theme-studio-restore-test.php
 
+      - name: Test theme cache isolation
+        shell: bash
+        run: php ./quality/theme-cache-test.php
+
       - name: Test Geeklog search form compatibility
         shell: bash
         run: php ./quality/search-form-test.php
