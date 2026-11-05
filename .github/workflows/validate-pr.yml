@@ -42,6 +42,10 @@ jobs:
         shell: bash
         run: php ./quality/theme-studio-restore-test.php
 
+      - name: Test Geeklog search form compatibility
+        shell: bash
+        run: php ./quality/search-form-test.php
+
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
