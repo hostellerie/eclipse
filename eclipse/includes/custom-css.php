@@ -93,10 +93,9 @@ function eclipse_custom_css_write($css, &$error = '')
         if ($ok) @chmod($temp, 0640);
     }
     if ($ok) {
-        if (!@rename($temp, $path)) {
-            if (is_file($path)) @unlink($path);
-            $ok = @rename($temp, $path);
-        }
+        // Never unlink the previously saved CSS when atomic replacement fails.
+        // A failed rename must leave the original stylesheet intact.
+        $ok = @rename($temp, $path);
         if ($ok) @chmod($path, 0640);
     }
     if (is_file($temp)) @unlink($temp);
