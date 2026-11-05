@@ -61,8 +61,9 @@ jobs:
               | xargs -0 -n1 php -l
 
             php ./quality/menu-navigation-test.php
-          php ./quality/custom-css-test.php
-          php ./quality/theme-studio-restore-test.php
+            php ./quality/custom-css-test.php
+            php ./quality/theme-studio-restore-test.php
+            php ./quality/theme-cache-test.php
             php ./quality/search-form-test.php
             php ./quality/admin-css-test.php
             node --check eclipse/js/theme.js
