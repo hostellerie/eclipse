@@ -556,7 +556,8 @@ function eclipse_storage_write_raw($name, $value)
         }
     }
     if ($ok) {
-        if (!@rename($temp, $path)) { if (is_file($path)) @unlink($path); $ok = @rename($temp, $path); }
+        // An unsuccessful atomic replacement must never delete the existing settings.
+        $ok = @rename($temp, $path);
         if ($ok) @chmod($path, 0640);
     }
     if (is_file($temp)) @unlink($temp);
