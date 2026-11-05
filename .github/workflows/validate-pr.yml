@@ -46,6 +46,10 @@ jobs:
         shell: bash
         run: php ./quality/search-form-test.php
 
+      - name: Check administration responsive CSS
+        shell: bash
+        run: php ./quality/admin-css-test.php
+
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
