@@ -34,6 +34,10 @@ jobs:
         shell: bash
         run: php ./quality/custom-css-test.php
 
+      - name: Test menu navigation regression
+        shell: bash
+        run: php ./quality/menu-navigation-test.php
+
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
