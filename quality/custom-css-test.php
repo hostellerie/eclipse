@@ -26,4 +26,56 @@ assertCss('oversize rejected', str_repeat('a', 65537), false, 'too_large');
 assertCss('control characters rejected', "a{color:red;}\x00", false, 'control_chars');
 assertCss('embedded style closing tag rejected', "x{} </STYLE  >", false, 'style_close');
 
+// Exercise storage persistence without a running Geeklog installation.
+function eclipse_storage_root()
+{
+    return $GLOBALS['eclipse_css_test_root'];
+}
+
+function eclipse_storage_prepare()
+{
+    return is_dir($GLOBALS['eclipse_css_test_root']) && is_writable($GLOBALS['eclipse_css_test_root']);
+}
+
+$testRoot = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'eclipse-css-test-' . uniqid('', true);
+if (!mkdir($testRoot, 0700)) {
+    fwrite(STDERR, "FAIL could not create temporary CSS storage" . PHP_EOL);
+    exit(1);
+}
+$GLOBALS['eclipse_css_test_root'] = $testRoot;
+$path = $testRoot . DIRECTORY_SEPARATOR . 'eclipse-custom.css';
+
+try {
+    $error = '';
+    if (!eclipse_custom_css_write('body{color:red;}', $error) || $error !== '') {
+        throw new RuntimeException('initial write failed: ' . $error);
+    }
+    if (file_get_contents($path) !== "body{color:red;}\n") {
+        throw new RuntimeException('initial persisted content mismatch');
+    }
+    if (!eclipse_custom_css_write('body{color:blue;}', $error)) {
+        throw new RuntimeException('update failed: ' . $error);
+    }
+    if (file_get_contents($path . '.bak') !== "body{color:red;}\n") {
+        throw new RuntimeException('backup does not match previous version');
+    }
+    if (eclipse_custom_css_read() !== "body{color:blue;}\n") {
+        throw new RuntimeException('readback mismatch');
+    }
+    if (eclipse_custom_css_write("body{}\0", $error) !== false || $error !== 'control_chars') {
+        throw new RuntimeException('invalid input was not rejected');
+    }
+    if (file_get_contents($path) !== "body{color:blue;}\n") {
+        throw new RuntimeException('invalid input modified persisted CSS');
+    }
+} catch (Exception $exception) {
+    fwrite(STDERR, 'FAIL CSS persistence: ' . $exception->getMessage() . PHP_EOL);
+    exit(1);
+} finally {
+    foreach (array($path, $path . '.bak', $path . '.lock') as $file) {
+        if (is_file($file)) unlink($file);
+    }
+    rmdir($testRoot);
+}
+
 echo "Eclipse Custom CSS validation tests passed" . PHP_EOL;
