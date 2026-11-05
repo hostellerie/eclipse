@@ -78,4 +78,20 @@ try {
     rmdir($testRoot);
 }
 
+// Guard both persistence paths against reintroducing destructive rename fallbacks.
+foreach (array(
+    dirname(__DIR__) . '/eclipse/includes/custom-css.php',
+    dirname(__DIR__) . '/eclipse/functions.php',
+) as $sourcePath) {
+    $source = file_get_contents($sourcePath);
+    if (!is_string($source)) {
+        fwrite(STDERR, 'FAIL unable to inspect storage code: ' . $sourcePath . PHP_EOL);
+        exit(1);
+    }
+    if (preg_match('/(?:@?unlink\\s*\\(\\s*\\$path\\s*\\))/', $source)) {
+        fwrite(STDERR, 'FAIL destructive storage deletion fallback: ' . $sourcePath . PHP_EOL);
+        exit(1);
+    }
+}
+
 echo "Eclipse Custom CSS validation tests passed" . PHP_EOL;
