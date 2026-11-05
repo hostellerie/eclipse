@@ -65,6 +65,8 @@ jobs:
           php ./quality/theme-studio-restore-test.php
             php ./quality/search-form-test.php
             php ./quality/admin-css-test.php
+            node --check eclipse/js/theme.js
+            node quality/mobile-navigation-test.cjs
 
             pwsh ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
             pwsh ./quality/validate-eclipse-release.ps1 -ParentThemePath ./quality/fixtures/denim -NodePath "$(command -v node)"
