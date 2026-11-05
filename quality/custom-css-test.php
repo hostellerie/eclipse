@@ -135,4 +135,18 @@ foreach (array(
     }
 }
 
+// Keep the JSON persistence readback contract visible to CI. The final
+// stylesheet test above exercises actual I/O; this check prevents removing
+// the corresponding on-disk verification from Theme Studio JSON storage.
+$functionsSource = file_get_contents(dirname(__DIR__) . '/eclipse/functions.php');
+$writeStart = strpos($functionsSource, 'function eclipse_storage_write_raw(');
+$writeEnd = strpos($functionsSource, 'function eclipse_read_legacy_vars(', $writeStart === false ? 0 : $writeStart);
+$jsonWriter = $writeStart !== false && $writeEnd !== false
+    ? substr($functionsSource, $writeStart, $writeEnd - $writeStart) : '';
+if (strpos($jsonWriter, 'clearstatcache(true, $path)') === false
+    || strpos($jsonWriter, 'hash_equals($payload, $stored)') === false) {
+    fwrite(STDERR, 'FAIL JSON storage final readback contract missing' . PHP_EOL);
+    exit(1);
+}
+
 echo "Eclipse Custom CSS validation tests passed" . PHP_EOL;
