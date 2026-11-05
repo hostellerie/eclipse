@@ -38,6 +38,10 @@ jobs:
         shell: bash
         run: php ./quality/menu-navigation-test.php
 
+      - name: Test Theme Studio restore rollback
+        shell: bash
+        run: php ./quality/theme-studio-restore-test.php
+
       - name: Rebuild integrity manifest
         shell: pwsh
         run: ./quality/build-eclipse-manifest.ps1 -ThemePath ./eclipse
