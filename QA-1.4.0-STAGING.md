@@ -55,6 +55,12 @@
 - [ ] Confirm failed saves (when safely reproducible) display errors rather than claiming success; never force filesystem permission failures in production.
 - [ ] Check clean and primed cache behavior and multilingual labels if available.
 
+## Manual feedback — 2026-11-05
+
+- Reporter confirmed the initial Eclipse archive installation and initial smoke checks worked without reported defects (exact environment/version and individual checklist evidence still to be recorded).
+- **PASS (reported):** with the menu open at a mobile-width viewport, pressing Escape closes the menu. The reporter explicitly confirmed this behavior works.
+- Focus restoration, submenu reset, distinct browser/device testing, rollback and full visual/accessibility sign-off are **not independently verified** by this report.
+
 ## Evidence and go/no-go
 
 Record: date/time, Geeklog version, PHP version, theme archive SHA, browser, Menu plugin version, list of other tested plugins, passed/failed/not tested checkboxes, screenshots for visible defects, and short excerpts from relevant PHP/console logs (redact credentials, private URLs and personal data).
