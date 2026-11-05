@@ -558,7 +558,15 @@ function eclipse_storage_write_raw($name, $value)
     if ($ok) {
         // An unsuccessful atomic replacement must never delete the existing settings.
         $ok = @rename($temp, $path);
-        if ($ok) @chmod($path, 0640);
+        if ($ok) {
+            @chmod($path, 0640);
+            // Verify the committed file, not just the temporary candidate.
+            // Never report a successful save when the final readback differs.
+            clearstatcache(true, $path);
+            $stored = @file_get_contents($path, false, null, 0, 5242881);
+            $ok = is_string($stored) && strlen($stored) === strlen($payload)
+                && hash_equals($payload, $stored);
+        }
     }
     if (is_file($temp)) @unlink($temp);
     @flock($lock, LOCK_UN); fclose($lock);
