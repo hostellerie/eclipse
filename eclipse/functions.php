@@ -795,7 +795,8 @@ function eclipse_record_settings_history($label)
 
 function eclipse_write_complete_state($state)
 {
-    if (!is_array($state) || !isset($state['settings'], $state['footer'], $state['palettes'])) return false;
+    if (!is_array($state) || !isset($state['settings'], $state['footer'], $state['palettes'])
+        || !is_array($state['settings']) || !is_array($state['footer']) || !is_array($state['palettes'])) return false;
     $documents = array(
         'eclipse-settings.json' => eclipse_sanitize_options($state['settings']),
         'eclipse-footer.json' => eclipse_sanitize_footer_data($state['footer']),
