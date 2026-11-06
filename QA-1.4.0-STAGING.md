@@ -69,6 +69,14 @@
 - **PASS (reported, 2026-11-06):** Tester confirmed the final requested checks as successful: palette-specific restoration, footer restoration, and rollback of a theme update on staging. These results are based on the tester's confirmation; archive SHA, exact starting version and screenshots/logs were not supplied.
 - Detailed browser/device, authorization, production-like environment and release-candidate evidence are still to be documented before calling this a fully audited release.
 
+## Confirmed staging environment — 2026-11-06
+
+- Geeklog: **2.2.2** (reported by tester).
+- PHP: **8.3.36** (reported by tester).
+- Browser: **Google Chrome** (exact browser version not supplied).
+- ZIP source: `develo-1.4.0/dist/eclipse-1.4.0.zip`; exact installed archive commit/hash not supplied.
+- The previously reported successful checks apply to this test environment as confirmed by the tester. Device-specific and multi-browser acceptance remain unverified.
+
 ## Evidence and go/no-go
 
 Record: date/time, Geeklog version, PHP version, theme archive SHA, browser, Menu plugin version, list of other tested plugins, passed/failed/not tested checkboxes, screenshots for visible defects, and short excerpts from relevant PHP/console logs (redact credentials, private URLs and personal data).
