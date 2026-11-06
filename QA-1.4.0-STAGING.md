@@ -73,6 +73,7 @@
 
 - Geeklog: **2.2.2** (reported by tester).
 - PHP: **8.3.36** (reported by tester).
+- Additional compatibility test: **PHP 5.6.40 — PASS (reported 2026-11-06)**. The tester did not specify whether this test used the same Geeklog version, browser, or complete set of scenarios; do not infer those details.
 - Browser: **Google Chrome** (exact browser version not supplied).
 - ZIP source: `develo-1.4.0/dist/eclipse-1.4.0.zip`; exact installed archive commit/hash not supplied.
 - The previously reported successful checks apply to this test environment as confirmed by the tester. Device-specific and multi-browser acceptance remain unverified.
