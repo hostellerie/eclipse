@@ -15,6 +15,8 @@
 
 The tester reported successful initial installation, mobile Escape behavior, cache clearing, Theme Studio settings/history restoration, Static Pages, Downloads and Menu checks, palette and footer restoration, and theme-update rollback. These are user-reported staging outcomes rather than independent reproduction of every browser, permissions and hosting scenario.
 
+The reported staging environment was **Geeklog 2.2.2, PHP 8.3.36 and Google Chrome** (browser version not specified). The exact installed ZIP commit/hash is still to be recorded.
+
 ## Remaining release sign-off
 
 - Record the exact Geeklog/PHP versions, browser(s), plugin versions and tested ZIP commit.
