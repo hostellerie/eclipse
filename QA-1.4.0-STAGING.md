@@ -61,6 +61,11 @@
 - **PASS (reported):** with the menu open at a mobile-width viewport, pressing Escape closes the menu. The reporter explicitly confirmed this behavior works.
 - Focus restoration, submenu reset, distinct browser/device testing, rollback and full visual/accessibility sign-off are **not independently verified** by this report.
 
+## Manual feedback — 2026-11-06
+
+- **PASS (reported):** Geeklog cache clearing test validated by the tester after the Eclipse 1.4.0 staging installation. This follows the requested Theme Studio setting persistence/cache check; exact saved values, environment versions, and logs were not supplied.
+- Theme Studio history/palette restoration and update rollback remain pending separate manual verification.
+
 ## Evidence and go/no-go
 
 Record: date/time, Geeklog version, PHP version, theme archive SHA, browser, Menu plugin version, list of other tested plugins, passed/failed/not tested checkboxes, screenshots for visible defects, and short excerpts from relevant PHP/console logs (redact credentials, private URLs and personal data).
