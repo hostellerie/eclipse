@@ -1,6 +1,6 @@
-# Eclipse 1.4.0 — release candidate notes (unreleased)
+# Eclipse 1.4.0 — stable release (6 November 2026)
 
-**Status:** development branch `develo-1.4.0`; not yet tagged or published as a stable release. The current installable archive is `dist/eclipse-1.4.0.zip`. See [QA-1.4.0-STAGING.md](QA-1.4.0-STAGING.md) for the acceptance checklist and reported manual results.
+**Status:** [v1.4.0](https://github.com/hostellerie/eclipse/releases/tag/v1.4.0) published from `main` following merged [PR #10](https://github.com/hostellerie/eclipse/pull/10). Download the official attached installable `eclipse-1.4.0.zip` (319,139 bytes reported by GitHub). See [QA-1.4.0-STAGING.md](QA-1.4.0-STAGING.md) for the test checklist and reported manual outcomes. The published ZIP's checksum and exact source-to-asset equivalence have not been independently documented.
 
 ## Changes and fixes
 
@@ -17,11 +17,11 @@ The tester reported successful initial installation, mobile Escape behavior, cac
 
 The reported staging environment was **Geeklog 2.2.2, PHP 8.3.36 and Google Chrome** (browser version not specified). The tester additionally confirmed successful compatibility testing with **PHP 5.6.40**; the exact Geeklog and browser versions for that additional environment were not specified. The exact installed ZIP commit/hash is still to be recorded.
 
-## Remaining release sign-off
+## Post-release maintenance and follow-up evidence
 
-- Record the exact Geeklog/PHP versions, browser(s), plugin versions and tested ZIP commit.
-- Review release packaging and regression checks against the final release candidate.
-- Resolve any newly reported critical issues before tagging or publishing the stable 1.4.0 release.
+- The user-reported acceptance confirms the environments above, but the exact Chrome version, plugin versions and tested ZIP commit/hash were not recorded.
+- An independent published-asset checksum/reproducibility audit and broader browser, accessibility and multisite testing remain follow-up work; they are not prerequisites falsely claimed as passed.
+- Keep Eclipse 1.4.1 focused on confirmed defects, security and compatibility improvements, and documentation/package corrections. New design-platform features belong in the separate Eclipse Builder roadmap.
 
 ---
 
