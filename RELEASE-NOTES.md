@@ -1,3 +1,30 @@
+# Eclipse 1.4.0 — release candidate notes (unreleased)
+
+**Status:** development branch `develo-1.4.0`; not yet tagged or published as a stable release. The current installable archive is `dist/eclipse-1.4.0.zip`. See [QA-1.4.0-STAGING.md](QA-1.4.0-STAGING.md) for the acceptance checklist and reported manual results.
+
+## Changes and fixes
+
+- Refined public advanced search form with immediately accessible query and submit button, optional filters, and responsive layouts.
+- Improved mobile navigation keyboard behavior: Escape closes an open mobile menu, resets nested menu state and returns focus to the menu toggle.
+- Corrected an administration list filter CSS selector that contained a literal escaped newline.
+- Hardened Theme Studio persistence: safe atomic replacement for custom CSS and JSON configuration, and verification of the final stored content.
+- Added automated tests for Custom CSS storage isolation, Theme Studio restoration and rollback, cache path isolation, navigation, search form and administration responsive CSS.
+- Kept the versioned theme ZIP and integrity checks in the GitHub Actions build.
+
+## Reported staging acceptance
+
+The tester reported successful initial installation, mobile Escape behavior, cache clearing, Theme Studio settings/history restoration, Static Pages, Downloads and Menu checks, palette and footer restoration, and theme-update rollback. These are user-reported staging outcomes rather than independent reproduction of every browser, permissions and hosting scenario.
+
+The reported staging environment was **Geeklog 2.2.2, PHP 8.3.36 and Google Chrome** (browser version not specified). The tester additionally confirmed successful compatibility testing with **PHP 5.6.40**; the exact Geeklog and browser versions for that additional environment were not specified. The exact installed ZIP commit/hash is still to be recorded.
+
+## Remaining release sign-off
+
+- Record the exact Geeklog/PHP versions, browser(s), plugin versions and tested ZIP commit.
+- Review release packaging and regression checks against the final release candidate.
+- Resolve any newly reported critical issues before tagging or publishing the stable 1.4.0 release.
+
+---
+
 ## Upgrade compatibility note
 
 Sites running **Eclipse 1.1.0** can upgrade directly to the current 1.2.x archive. The 1.1.0 updater uses the Geeklog-compatible `getStream()` ZIP API.

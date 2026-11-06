@@ -104,11 +104,69 @@
         });
     }
 
+    function setupSeoTitleCounter(form) {
+        var pageTitle = form.querySelector('input[name="sp_page_title"]');
+        var title = form.querySelector('input[name="sp_title"]');
+        var field = pageTitle || title;
+        if (!field || !title) return;
+        var note = document.createElement('p');
+        note.className = 'description eclipse-seo-title-count';
+        note.setAttribute('role', 'status');
+        note.setAttribute('aria-live', 'polite');
+        field.parentNode.appendChild(note);
+        function refresh() {
+            var value = (pageTitle && pageTitle.value.trim()) || title.value.trim();
+            var siteName = document.body.getAttribute('data-eclipse-site-name') || '';
+            var includeSite = document.body.getAttribute('data-eclipse-title-mode') === 'title_and_site' && value && siteName;
+            var suffix = includeSite ? ' - ' + siteName : '';
+            var length = (value + suffix).length;
+            var fr = isFrench();
+            note.textContent = (fr ? 'Titre SEO : ' : 'SEO title: ') + length
+                + (fr ? ' caractères (30 à 60 conseillés)' : ' characters (30–60 recommended)')
+                + (includeSite ? (fr ? ', dont ' : ', including ') + suffix.length
+                    + (fr ? ' pour « - » et le nom du site.' : ' for the separator and site name.') : '.');
+            note.classList.toggle('is-warning', length < 30 || length > 60);
+        }
+        title.addEventListener('input', refresh);
+        if (pageTitle) pageTitle.addEventListener('input', refresh);
+        refresh();
+    }
+
+    function setupSeoDescriptionCounter(form) {
+        var description = form.querySelector('textarea[name="meta_description"]');
+        if (!description || !description.parentNode) return;
+
+        var note = document.createElement('p');
+        note.className = 'description eclipse-seo-description-count';
+        note.setAttribute('role', 'status');
+        note.setAttribute('aria-live', 'polite');
+        description.parentNode.appendChild(note);
+
+        function refresh() {
+            var length = Array.from(description.value.trim()).length;
+            var fr = isFrench();
+            var guidance = length < 120
+                ? (fr ? 'description courte' : 'short description')
+                : length > 160
+                    ? (fr ? 'risque de troncature' : 'may be truncated')
+                    : (fr ? 'longueur conseillée' : 'recommended length');
+            note.textContent = (fr ? 'Meta description : ' : 'Meta description: ') + length
+                + (fr ? ' caractères (120 à 160 conseillés) — ' : ' characters (120–160 recommended) — ')
+                + guidance + '.';
+            note.classList.toggle('is-warning', length < 120 || length > 160);
+        }
+
+        description.addEventListener('input', refresh);
+        refresh();
+    }
+
     function enhance(form) {
         if (!form || form.dataset.eclipseStaticpageEnhanced === '1') return;
         form.dataset.eclipseStaticpageEnhanced = '1';
         setupTabs(form);
         setupIdProtection(form);
+        setupSeoTitleCounter(form);
+        setupSeoDescriptionCounter(form);
     }
 
     function init() {

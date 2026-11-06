@@ -31,7 +31,15 @@ function eclipse_custom_css_validate($css, &$error = '')
         $error = 'style_close';
         return false;
     }
-    return rtrim($css) . ($css === '' ? '' : "\n");
+    $normalized = rtrim($css) . ($css === '' ? '' : "\n");
+    // The persisted content includes the final newline. Check its actual
+    // byte length, otherwise a 64 KiB input can become 64 KiB + 1 byte and
+    // fail the post-write verification despite passing initial validation.
+    if (strlen($normalized) > 65536) {
+        $error = 'too_large';
+        return false;
+    }
+    return $normalized;
 }
 
 function eclipse_custom_css_read()
@@ -85,10 +93,9 @@ function eclipse_custom_css_write($css, &$error = '')
         if ($ok) @chmod($temp, 0640);
     }
     if ($ok) {
-        if (!@rename($temp, $path)) {
-            if (is_file($path)) @unlink($path);
-            $ok = @rename($temp, $path);
-        }
+        // Never unlink the previously saved CSS when atomic replacement fails.
+        // A failed rename must leave the original stylesheet intact.
+        $ok = @rename($temp, $path);
         if ($ok) @chmod($path, 0640);
     }
     if (is_file($temp)) @unlink($temp);

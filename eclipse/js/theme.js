@@ -85,17 +85,36 @@
         }
     }
     if (toggle && menu) {
+        function closeMobileMenu(restoreFocus) {
+            toggle.setAttribute('aria-expanded', 'false');
+            menu.classList.remove('is-open');
+            menu.querySelectorAll('.eclipse-has-submenu.is-submenu-open').forEach(function (item) {
+                item.classList.remove('is-submenu-open');
+                var link = item.querySelector('a[aria-expanded]');
+                if (link) link.setAttribute('aria-expanded', 'false');
+            });
+            if (restoreFocus) toggle.focus();
+        }
         toggle.addEventListener('click', function () {
             var open = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', String(!open));
-            menu.classList.toggle('is-open', !open);
+            if (open) closeMobileMenu(false);
+            else {
+                toggle.setAttribute('aria-expanded', 'true');
+                menu.classList.add('is-open');
+            }
         });
         menu.addEventListener('click', function (event) {
             var clickedLink = event.target.closest('a');
             var clickedItem = clickedLink && clickedLink.parentElement;
             if (clickedLink && (!clickedItem || !clickedItem.classList.contains('eclipse-has-submenu')) && window.matchMedia('(max-width: 47.99rem)').matches) {
-                toggle.setAttribute('aria-expanded', 'false');
-                menu.classList.remove('is-open');
+                closeMobileMenu(false);
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key !== 'Escape' || !window.matchMedia('(max-width: 47.99rem)').matches) return;
+            if (menu.classList.contains('is-open')) {
+                event.preventDefault();
+                closeMobileMenu(true);
             }
         });
     }
@@ -268,7 +287,7 @@
             appearance: { color_scheme:'light',admin_ui_mode:'modern',admin_navigation_source:'both',menu_style:'floating',block_style:'card',button_style:'solid',header_style:'gradient',footer_style:'dark' },
             brand: { logo:'images/logo-mark.svg',header_image:'',show_left_sidebar:false,show_right_sidebar:true,mobile_menu:true,editor_hide_sidebars:true },
             social: { share_facebook:false,share_linkedin:false,share_x:false },
-            integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',sitemap_path:'' }
+            integrations: { adsense_enabled:false,adsense_client:'',topic_h1_enabled:false,html_lang:'auto',page_title_mode:'title_only',sitemap_path:'' }
         };
         form.querySelectorAll('[data-reset-section]').forEach(function (button) {
             button.addEventListener('click', function () {
@@ -443,16 +462,19 @@
         function refresh() {
             var titleValue = (title && title.value.trim()) || (storyTitle && storyTitle.value.trim()) || '';
             var descriptionValue = description ? description.value.trim() : '';
+            var siteName = document.body.getAttribute('data-eclipse-site-name') || '';
+            var withSite = document.body.getAttribute('data-eclipse-title-mode') === 'title_and_site';
+            var effectiveTitle = titleValue + (withSite && titleValue && siteName ? ' - ' + siteName : '');
             var slugValue = slug ? slug.value.trim() : '';
             var words = text(content.map(function (field) { return field.value; }).join(' ')).split(/\s+/).filter(Boolean).length;
             var base = window.geeklog && geeklog.site_url ? geeklog.site_url.replace(/\/$/, '') : window.location.origin;
             var previewTitle = assistant.querySelector('[data-seo-preview-title]');
             var previewUrl = assistant.querySelector('[data-seo-preview-url]');
             var previewDescription = assistant.querySelector('[data-seo-preview-description]');
-            if (previewTitle) previewTitle.textContent = titleValue || 'Article title';
+            if (previewTitle) previewTitle.textContent = effectiveTitle || 'Article title';
             if (previewUrl) previewUrl.textContent = base + '/article.php/' + (slugValue || 'article-slug');
             if (previewDescription) previewDescription.textContent = descriptionValue || text(content.map(function (field) { return field.value; }).join(' ')).slice(0, 160) || 'The search description will appear here.';
-            check('title', titleValue.length >= 30 && titleValue.length <= 60, 'Title: ' + titleValue.length + ' characters (recommended 30–60).');
+            check('title', effectiveTitle.length >= 30 && effectiveTitle.length <= 60, 'Title: ' + effectiveTitle.length + ' characters (recommended 30–60)' + (withSite && siteName ? '; includes separator and site name (' + (siteName.length + 3) + ' characters).' : '.'));
             check('description', descriptionValue.length >= 120 && descriptionValue.length <= 160, descriptionValue ? 'Meta description: ' + descriptionValue.length + ' characters (recommended 120–160).' : 'Meta description: missing; the preview currently uses an automatic content excerpt.');
             check('slug', /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue), 'Slug: ' + (slugValue ? 'format ' + (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue) ? 'ready; uniqueness is verified when saving.' : 'should use lowercase words and hyphens.') : 'missing.'));
             check('content', words >= 300, 'Content: approximately ' + words + ' words' + (words >= 300 ? '.' : ' (300 or more recommended for substantial articles).'));

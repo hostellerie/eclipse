@@ -120,6 +120,23 @@ function eclipse_context_classes()
     return $classes;
 }
 
+function eclipse_welcome_message()
+{
+    global $_CONF, $_USER, $LANG01;
+
+    // Match Geeklog's localized welcome text without naming anonymous visitors.
+    $welcome = rtrim(isset($LANG01[67]) ? (string) $LANG01[67] : '') . ' '
+        . (isset($_CONF['site_name']) ? (string) $_CONF['site_name'] : '');
+    if (!COM_isAnonUser() && !empty($_USER['username'])) {
+        $welcome .= ', ' . COM_getDisplayName(
+            $_USER['uid'],
+            $_USER['username'],
+            isset($_USER['fullname']) ? $_USER['fullname'] : ''
+        );
+    }
+    return htmlspecialchars(trim($welcome), ENT_QUOTES, 'UTF-8');
+}
+
 function eclipse_html_language()
 {
     global $_CONF, $LANG_ISO639_1;
@@ -282,6 +299,16 @@ function theme_init_eclipse()
     }
 }
 
+function eclipse_title_includes_site_name()
+{
+    if (eclipse_theme_options()['page_title_mode'] === 'title_and_site') return true;
+    if (function_exists('COM_onFrontpage') && COM_onFrontpage()) return true;
+    // Geeklog's native utility endpoints use the site name for context;
+    // editorial pages retain their individually optimized titles.
+    $script = isset($_SERVER['SCRIPT_NAME']) ? basename((string) $_SERVER['SCRIPT_NAME']) : '';
+    return in_array($script, array('search.php', 'users.php', 'usersettings.php', 'profiles.php', 'preferences.php', 'directory.php', 'submit.php', 'stats.php'), true);
+}
+
 function eclipse_theme_options()
 {
     static $options;
@@ -296,7 +323,7 @@ function eclipse_theme_options()
         'show_left_sidebar' => false, 'show_right_sidebar' => true, 'button_style' => 'solid', 'menu_style' => 'floating',
         'block_style' => 'card', 'header_style' => 'gradient', 'header_density' => 'standard', 'footer_style' => 'dark',
         'color_scheme' => 'light', 'admin_ui_mode' => 'modern', 'admin_navigation_source' => 'both', 'mobile_menu' => true, 'menu_primary' => 'navigation', 'menu_secondary' => '', 'menu_footer' => '', 'editor_hide_sidebars' => true, 'share_facebook' => false, 'share_linkedin' => false, 'share_x' => false,
-        'adsense_enabled' => false, 'adsense_client' => '', 'topic_h1_enabled' => false, 'html_lang' => 'auto', 'sitemap_path' => '', 'show_logo' => false, 'logo' => 'images/logo-mark.svg', 'header_image' => '',
+        'adsense_enabled' => false, 'adsense_client' => '', 'topic_h1_enabled' => false, 'html_lang' => 'auto', 'page_title_mode' => 'title_only', 'sitemap_path' => '', 'show_logo' => false, 'logo' => 'images/logo-mark.svg', 'header_image' => '',
     );
     $file = __DIR__ . '/themeconfig.php';
     $custom = is_file($file) ? include $file : array();
@@ -319,6 +346,7 @@ function eclipse_sanitize_options($input)
         'header_style' => array('gradient', 'solid', 'minimal'), 'header_density' => array('standard', 'compact'), 'footer_style' => array('dark', 'light', 'minimal'),
         'color_scheme' => array('light', 'dark', 'auto'), 'admin_ui_mode' => array('modern', 'classic'), 'admin_navigation_source' => array('left', 'right', 'both'),
         'content_link_style' => array('underline', 'hover', 'none'),
+        'page_title_mode' => array('title_only', 'title_and_site'),
     );
     foreach ($choices as $key => $allowed) if (isset($input[$key]) && in_array($input[$key], $allowed, true)) $clean[$key] = $input[$key];
     foreach (array('site_max_width', 'reading_width') as $key) if (isset($input[$key]) && preg_match('/^(?:[1-9][0-9]{0,3}(?:px|rem)|[1-9][0-9]{0,2}ch)$/', $input[$key])) $clean[$key] = $input[$key];
@@ -497,17 +525,23 @@ function eclipse_storage_write_raw($name, $value)
     $value = eclipse_storage_normalize($name, $value);
     if ($value === false) return false;
     $json = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    if ($json === false || strlen($json) > 5242880) return false;
+    // Validate the complete on-disk payload, including its final newline.
+    // A JSON string at the exact 5 MiB limit must not pass here only to fail
+    // verification after it has been written.
+    if ($json === false) return false;
+    $payload = $json . "\n";
+    if (strlen($payload) > 5242880) return false;
     $root = eclipse_storage_root(); $path = $root . DIRECTORY_SEPARATOR . $name;
     $lock = @fopen($path . '.lock', 'c');
     if ($lock) @chmod($path . '.lock', 0640);
     if (!$lock || !@flock($lock, LOCK_EX)) { if ($lock) fclose($lock); return false; }
     $temp = $root . DIRECTORY_SEPARATOR . '.' . $name . '.' . getmypid() . '.' . str_replace('.', '', uniqid('', true)) . '.tmp';
-    $ok = @file_put_contents($temp, $json . "\n", LOCK_EX) !== false;
+    $ok = @file_put_contents($temp, $payload, LOCK_EX) !== false;
     if ($ok) {
         @chmod($temp, 0640);
         $verify = @file_get_contents($temp, false, null, 0, 5242881);
-        $ok = is_string($verify) && strlen($verify) <= 5242880
+        $ok = is_string($verify) && strlen($verify) === strlen($payload)
+            && hash_equals($payload, $verify)
             && eclipse_storage_normalize($name, json_decode($verify, true)) !== false;
     }
     if ($ok && is_file($path)) {
@@ -522,8 +556,17 @@ function eclipse_storage_write_raw($name, $value)
         }
     }
     if ($ok) {
-        if (!@rename($temp, $path)) { if (is_file($path)) @unlink($path); $ok = @rename($temp, $path); }
-        if ($ok) @chmod($path, 0640);
+        // An unsuccessful atomic replacement must never delete the existing settings.
+        $ok = @rename($temp, $path);
+        if ($ok) {
+            @chmod($path, 0640);
+            // Verify the committed file, not just the temporary candidate.
+            // Never report a successful save when the final readback differs.
+            clearstatcache(true, $path);
+            $stored = @file_get_contents($path, false, null, 0, 5242881);
+            $ok = is_string($stored) && strlen($stored) === strlen($payload)
+                && hash_equals($payload, $stored);
+        }
     }
     if (is_file($temp)) @unlink($temp);
     @flock($lock, LOCK_UN); fclose($lock);
@@ -752,7 +795,8 @@ function eclipse_record_settings_history($label)
 
 function eclipse_write_complete_state($state)
 {
-    if (!is_array($state) || !isset($state['settings'], $state['footer'], $state['palettes'])) return false;
+    if (!is_array($state) || !isset($state['settings'], $state['footer'], $state['palettes'])
+        || !is_array($state['settings']) || !is_array($state['footer']) || !is_array($state['palettes'])) return false;
     $documents = array(
         'eclipse-settings.json' => eclipse_sanitize_options($state['settings']),
         'eclipse-footer.json' => eclipse_sanitize_footer_data($state['footer']),
@@ -950,7 +994,7 @@ function eclipse_render_customizer()
     foreach (array('show_logo' => 'Afficher le logo', 'show_left_sidebar' => 'Left sidebar', 'show_right_sidebar' => 'Right sidebar', 'mobile_menu' => 'Mobile menu', 'editor_hide_sidebars' => 'Hide sidebars in story editor') as $key => $label) $html .= '<label><input type="checkbox" name="eclipse[' . $key . ']" value="1"' . (!empty($o[$key]) ? ' checked' : '') . '> ' . $label . '</label>';
     $html .= '</div></fieldset><fieldset data-studio-section="social" class="eclipse-social-sharing"><legend>Social sharing</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="social">Reset section</button></div><p class="eclipse-section-intro">Choose the share links displayed on full article pages. No third-party script or request is loaded before a visitor clicks a link.</p><div class="eclipse-checks">';
     foreach (array('share_facebook' => 'Facebook', 'share_linkedin' => 'LinkedIn', 'share_x' => 'X') as $key => $label) $html .= '<label><input type="checkbox" name="eclipse[' . $key . ']" value="1"' . (!empty($o[$key]) ? ' checked' : '') . '> ' . $label . '</label>';
-    $html .= '</div></fieldset><fieldset data-studio-section="integrations"><legend>SEO and integrations</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="integrations">Reset section</button></div><p class="eclipse-section-intro">Leave Sitemap path empty to use Geeklog <code>sitemap_file</code>. Use <code>auto</code> for the active Geeklog language. Public SEO metadata and advertising are omitted from administration pages.</p><div class="eclipse-field-grid"><label><span>HTML language</span><input name="eclipse[html_lang]" value="' . $h($o['html_lang']) . '" placeholder="auto or fr-FR" pattern="auto|[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*"></label><label><span>Sitemap URL or relative path</span><input name="eclipse[sitemap_path]" value="' . $h($o['sitemap_path']) . '" placeholder="sitemap.xml"></label><label><span>Google AdSense client</span><input name="eclipse[adsense_client]" value="' . $h($o['adsense_client']) . '" placeholder="ca-pub-0000000000000000" pattern="ca-pub-[0-9]{10,20}"></label></div><div class="eclipse-checks">';
+    $html .= '</div></fieldset><fieldset data-studio-section="integrations"><legend>SEO and integrations</legend><div class="eclipse-section-heading"><button type="button" class="eclipse-section-reset" data-reset-section="integrations">Reset section</button></div><p class="eclipse-section-intro">Leave Sitemap path empty to use Geeklog <code>sitemap_file</code>. Use <code>auto</code> for the active Geeklog language. Public SEO metadata and advertising are omitted from administration pages.</p><div class="eclipse-field-grid"><label><span>Page title format</span>' . $select('page_title_mode', array('title_only' => eclipse_lang('page_title_only'), 'title_and_site' => eclipse_lang('page_title_and_site'))) . '</label><label><span>HTML language</span><input name="eclipse[html_lang]" value="' . $h($o['html_lang']) . '" placeholder="auto or fr-FR" pattern="auto|[a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})*"></label><label><span>Sitemap URL or relative path</span><input name="eclipse[sitemap_path]" value="' . $h($o['sitemap_path']) . '" placeholder="sitemap.xml"></label><label><span>Google AdSense client</span><input name="eclipse[adsense_client]" value="' . $h($o['adsense_client']) . '" placeholder="ca-pub-0000000000000000" pattern="ca-pub-[0-9]{10,20}"></label></div><div class="eclipse-checks">';
     foreach (array('adsense_enabled' => 'Load the Google AdSense script', 'topic_h1_enabled' => 'Display the Geeklog topic name as an H1 on topic index pages') as $key => $label) $html .= '<label><input type="checkbox" name="eclipse[' . $key . ']" value="1"' . (!empty($o[$key]) ? ' checked' : '') . '> ' . $label . '</label>';
     $html .= '</div></fieldset>' . eclipse_footer_editor($footerData) . '<fieldset class="eclipse-portability"><legend>Portability and history</legend><div class="eclipse-portability-grid"><div><h3>Import or export</h3><p>Import a complete versioned draft containing settings, footer links and palettes. Review it, then save.</p><input type="file" id="eclipse-settings-import" accept="application/json,.json"><button type="button" id="eclipse-settings-export">Export complete Eclipse state</button></div><div><h3>Complete state history</h3><label><span>Saved snapshot</span><select id="eclipse-history-select" name="eclipse_history_id"><option value="">Select a snapshot</option>';
     foreach ($settingsHistory as $historyEntry) if (isset($historyEntry['id'], $historyEntry['date'])) $html .= '<option value="' . $h($historyEntry['id']) . '">' . $h(substr($historyEntry['date'], 0, 19) . ' -- ' . (isset($historyEntry['label']) ? $historyEntry['label'] : 'Settings')) . '</option>';

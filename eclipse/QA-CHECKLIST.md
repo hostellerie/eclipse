@@ -17,6 +17,7 @@ This checklist must be completed on both Geeklog 2.1.1 / PHP 5.6 and Geeklog 2.2
 ## Editorial workflow
 
 - SEO diagnostics update while editing title, description, slug and article content.
+- Static Pages simple and advanced editors show a live, non-blocking meta description counter (120–160 character guidance) in French and English.
 - The URL preview uses the configured Geeklog site URL and the current slug.
 - Modified story fields create a browser-local draft within fifteen seconds.
 - Advanced-editor Show Topic Icon and Draft checkboxes align with their labels.
@@ -127,3 +128,5 @@ Record the tested Geeklog version, PHP version, browser versions and any third-p
 - [ ] Recent comments is hidden without `comment.moderate`.
 - [ ] Recent Static Pages is hidden when the plugin is inactive or the user lacks `staticpages.edit`.
 - [ ] Classic Eclipse retains the native Command & Control page.
+
+- Public advanced search (`/search.php`): keyword field and submit button remain immediately accessible; native details panel is collapsed initially and exposes all optional GET filters; responsive layout, selected values, disabled-author display and enabled author selection are regression-tested.

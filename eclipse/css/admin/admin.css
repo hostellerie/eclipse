@@ -24,7 +24,8 @@ body.eclipse-admin-page #centerblocks{min-width:0;container-type:inline-size;con
 /* Semantic administration search panel. Structure is defined by admin/lists/searchmenu.thtml. */
 body.eclipse-admin-page .eclipse-admin-list-search{display:grid;grid-template-columns:max-content max-content minmax(0,1fr);grid-template-rows:auto auto auto;align-items:center;justify-content:start;gap:.65rem 1.25rem;width:100%;max-width:100%;box-sizing:border-box;margin:.85rem 0 1rem;padding:.9rem 1rem;background:var(--eclipse-admin-surface);border:1px solid var(--eclipse-admin-border);border-radius:calc(var(--eclipse-admin-radius)*.65);box-shadow:0 5px 16px rgba(15,23,42,.035);font-size:.78rem;line-height:1.25}
 body.eclipse-admin-page .eclipse-admin-list-search-main{grid-column:1/-1;grid-row:1;display:grid;grid-template-columns:max-content minmax(0,1fr);align-items:center;justify-self:stretch;gap:.7rem;min-width:0;width:100%;text-align:left}
-body.eclipse-admin-page .eclipse-admin-list-search-label{margin:0;color:var(--eclipse-admin-text);font-size:.9rem;font-weight:800;line-height:1.2;text-align:left}\nbody.eclipse-admin-page .eclipse-admin-list-filter-primary label,body.eclipse-admin-page .eclipse-admin-list-filter-limit{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:700;line-height:1.25}
+body.eclipse-admin-page .eclipse-admin-list-search-label{margin:0;color:var(--eclipse-admin-text);font-size:.9rem;font-weight:800;line-height:1.2;text-align:left}
+body.eclipse-admin-page .eclipse-admin-list-filter-primary label,body.eclipse-admin-page .eclipse-admin-list-filter-limit{margin:0;color:var(--eclipse-admin-text);font-size:.78rem;font-weight:700;line-height:1.25}
 body.eclipse-admin-page .eclipse-admin-list-search-field{display:grid;grid-template-columns:minmax(12rem,1fr) auto;align-items:stretch;gap:.45rem;min-width:0;width:100%}
 body.eclipse-admin-page .eclipse-admin-list-search-field input[type=search]{width:100%;min-width:0;min-height:2.25rem;height:2.25rem}
 body.eclipse-admin-page .eclipse-admin-list-search-field button{min-width:5.75rem;min-height:2.25rem;height:2.25rem;font-weight:750}
@@ -119,7 +120,12 @@ body.eclipse-admin-page .eclipse-admin-brand{display:grid;grid-template-columns:
 body.eclipse-admin-page .eclipse-admin-brand>span{display:grid;grid-row:1/3;place-items:center;width:2.5rem;height:2.5rem;color:#fff;background:linear-gradient(135deg,var(--eclipse-primary),var(--eclipse-secondary));border-radius:.7rem;font-size:1.15rem;font-weight:900}
 body.eclipse-admin-page .eclipse-admin-brand b{align-self:end;font-size:1rem}.eclipse-admin-brand small{align-self:start;color:#94a3b8;font-size:.68rem}
 body.eclipse-admin-page .eclipse-admin-sidebar-shell nav{flex:1 1 auto;min-height:0;overflow:visible}body.eclipse-admin-page .eclipse-admin-sidebar-shell section{position:relative;margin:0 0 .35rem}
-body.eclipse-admin-page .eclipse-admin-sidebar-shell.is-tall{position:relative;top:0;height:auto}
+/* Keep the desktop sidebar sticky even when its navigation exceeds the viewport. */
+@media(min-width:52.01rem){
+body.eclipse-admin-page.admin-ui-mode-modern.eclipse-admin-enhanced .eclipse-admin-sidebar-shell{height:calc(100dvh - 3.65rem);min-height:0}
+body.eclipse-admin-page.admin-ui-mode-modern.eclipse-admin-enhanced .eclipse-admin-sidebar-shell nav{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin}
+body.eclipse-admin-page.admin-ui-mode-modern.eclipse-admin-enhanced .eclipse-admin-sidebar-shell section>ul{position:fixed;left:auto;top:auto}
+}
 body.eclipse-admin-page .eclipse-admin-section-toggle{display:flex;align-items:center;gap:.55rem;width:100%;min-height:2.45rem;margin:0;padding:.35rem .45rem;color:#cbd5e1;background:transparent;border:0;border-radius:.42rem;box-shadow:none;font:inherit;font-size:.68rem;font-weight:850;letter-spacing:.08em;text-align:left;text-transform:uppercase}
 body.eclipse-admin-page .eclipse-admin-section-toggle b{flex:1 1 auto;min-width:0;overflow:hidden;text-align:left;text-overflow:ellipsis;white-space:nowrap}.eclipse-admin-section-icon{display:grid;flex:0 0 1.8rem;place-items:center;width:1.8rem;height:1.8rem;color:#e2e8f0;background:#334155;border:1px solid #475569;border-radius:.42rem}.eclipse-admin-section-icon svg{display:block;width:1rem;height:1rem}
 body.eclipse-admin-page .eclipse-admin-section-toggle:hover,body.eclipse-admin-page .eclipse-admin-section-toggle:focus-visible{color:#fff;background:#263247}

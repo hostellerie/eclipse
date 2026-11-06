@@ -4,8 +4,8 @@ This matrix distinguishes declared requirements, static validation and staging t
 
 ## Server baseline
 
-- Geeklog 2.2.2 is the minimum supported Geeklog version. Geeklog 2.1.1 is no longer supported by Eclipse 1.3.0.
-- PHP 5.6.40 remains the syntax-compatibility baseline for Eclipse 1.3.0; maintained PHP versions are recommended.
+- Geeklog 2.2.2 is the minimum supported Geeklog version. Geeklog 2.1.1 is no longer supported by Eclipse 1.4.0.
+- PHP 5.6.40 remains the syntax-compatibility baseline for Eclipse 1.4.0; maintained PHP versions are recommended.
 - Production PHP must still be a maintained version supported by the hosting environment and by the chosen Geeklog core release. The historical minimum is a parsing baseline, not a security recommendation.
 - Denim must remain installed because Eclipse inherits templates and its compatibility stylesheet.
 - Because Eclipse declares Geeklog's standard `image_type = png`, it ships the complete Denim PNG compatibility image set under `images/` and `images/icons/`; Eclipse-specific UI can still use SVG assets independently.
@@ -22,7 +22,7 @@ This matrix distinguishes declared requirements, static validation and staging t
 | ZipArchive | Optional except for Studio updates | Reported by Studio environment diagnostic |
 | Writable sibling JSON storage | Required for settings/footer/palettes/history | Reported by Studio environment diagnostic |
 
-Eclipse 1.3.0 targets Geeklog 2.2.2 only. Confirm the theme and Denim template lookup paths against Geeklog 2.2.2 before removing overrides. Run the manual matrix in `QA-CHECKLIST.md` before production release.
+Eclipse 1.4.0 targets Geeklog 2.2.2 only. Confirm the theme and Denim template lookup paths against Geeklog 2.2.2 before removing overrides. Run the manual matrix in `QA-CHECKLIST.md` before production release.
 
 ## Browser baseline
 
@@ -48,7 +48,7 @@ Third-party Geeklog plugins are supported on a best-effort basis until their tem
 
 ## Administration compatibility
 
-| Feature | Classification | 2.1.1 fallback | 2.2.2 behavior |
+| Feature | Classification | Historical behavior (unsupported) | 2.2.2 behavior |
 | --- | --- | --- | --- |
 | Scoped admin tokens, forms and tables | SAFE | Existing `_admin_block` markup | Same markup plus `_admin_list` |
 | Responsive admin navigation | COMPATIBILITY LAYER REQUIRED | Enhances Geeklog's permission-filtered admin block; block remains usable without JavaScript | Same progressive enhancement |
