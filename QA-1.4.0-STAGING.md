@@ -64,7 +64,8 @@
 ## Manual feedback — 2026-11-06
 
 - **PASS (reported):** Geeklog cache clearing test validated by the tester after the Eclipse 1.4.0 staging installation. This follows the requested Theme Studio setting persistence/cache check; exact saved values, environment versions, and logs were not supplied.
-- Theme Studio history/palette restoration and update rollback remain pending separate manual verification.
+- **PASS (reported, 2026-11-06):** Theme Studio settings/history restoration succeeded on the staging installation after the prior save-and-restore test.
+- Palette-specific restoration, footer restoration and update rollback remain pending separate manual verification; no detailed results have been supplied for those scenarios.
 
 ## Evidence and go/no-go
 
