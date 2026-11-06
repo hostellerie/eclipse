@@ -66,7 +66,8 @@
 - **PASS (reported):** Geeklog cache clearing test validated by the tester after the Eclipse 1.4.0 staging installation. This follows the requested Theme Studio setting persistence/cache check; exact saved values, environment versions, and logs were not supplied.
 - **PASS (reported, 2026-11-06):** Theme Studio settings/history restoration succeeded on the staging installation after the prior save-and-restore test.
 - **PASS (reported, 2026-11-06):** Static Pages, Downloads and Menu plugin compatibility checks completed successfully on the Eclipse staging installation. The reporter did not itemize separate desktop, mobile, admin or permission scenarios, so those finer-grained checks remain unverified.
-- Palette-specific restoration, footer restoration and update rollback remain pending separate manual verification; no detailed results have been supplied for those scenarios.
+- **PASS (reported, 2026-11-06):** Tester confirmed the final requested checks as successful: palette-specific restoration, footer restoration, and rollback of a theme update on staging. These results are based on the tester's confirmation; archive SHA, exact starting version and screenshots/logs were not supplied.
+- Detailed browser/device, authorization, production-like environment and release-candidate evidence are still to be documented before calling this a fully audited release.
 
 ## Evidence and go/no-go
 
