@@ -3,7 +3,7 @@ name: Build installable Eclipse archive
 on:
   push:
     branches:
-      - develo-1.4.0
+      - develop-1.5
     paths-ignore:
       - 'dist/**'
       - 'eclipse/MANIFEST.json'
@@ -15,7 +15,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: eclipse-build-dist-develo-1.4.0
+  group: eclipse-build-dist-develop-1.5
   cancel-in-progress: true
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v5
         with:
-          ref: develo-1.4.0
+          ref: develop-1.5
           fetch-depth: 0
 
       - name: Build and publish latest archive
@@ -42,8 +42,8 @@ jobs:
           for attempt in 1 2 3 4; do
             echo "Archive publication attempt $attempt"
 
-            git fetch origin develo-1.4.0
-            git reset --hard origin/develo-1.4.0
+            git fetch origin develop-1.5
+            git reset --hard origin/develop-1.5
             source_head=$(git rev-parse HEAD)
 
             version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
@@ -51,8 +51,8 @@ jobs:
               echo "Unable to read Eclipse version from eclipse/theme.ini" >&2
               exit 1
             fi
-            if [ "$version" != "1.4.0" ]; then
-              echo "Expected Eclipse version 1.4.0 on develo-1.4.0; found $version" >&2
+            if [ "$version" != "1.5.0" ]; then
+              echo "Expected Eclipse version 1.5.0 on develop-1.5; found $version" >&2
               exit 1
             fi
 
@@ -66,6 +66,8 @@ jobs:
             php ./quality/theme-cache-test.php
             php ./quality/search-form-test.php
             php ./quality/admin-css-test.php
+            php ./quality/profile-settings-test.php
+            node quality/check-assets.cjs
             node --check eclipse/js/theme.js
             node quality/mobile-navigation-test.cjs
 
@@ -119,6 +121,10 @@ jobs:
               echo "Invalid _admin_block override detected in Eclipse archive." >&2
               exit 1
             fi
+            if ! unzip -Z1 "$archive" | grep -Fxq 'eclipse/images/tooltips/tooltip.png'; then
+              echo "Native Geeklog tooltip PNG missing from package." >&2
+              exit 1
+            fi
             archive_size=$(stat -c '%s' "$archive")
             echo "Archive size: $archive_size bytes"
             if [ "$archive_size" -ge 1900000 ]; then
@@ -135,20 +141,20 @@ jobs:
               exit 0
             fi
 
-            git commit -m "Build Eclipse 1.4.0 installable archive"
+            git commit -m "Build Eclipse 1.5.0 installable archive"
 
-            git fetch origin develo-1.4.0
-            remote_head=$(git rev-parse origin/develo-1.4.0)
+            git fetch origin develop-1.5
+            remote_head=$(git rev-parse origin/develop-1.5)
             if [ "$remote_head" != "$source_head" ]; then
               echo "Branch advanced from $source_head to $remote_head; rebuilding latest source."
               continue
             fi
 
-            if git push origin HEAD:develo-1.4.0; then
+            if git push origin HEAD:develop-1.5; then
               published_head=$(git rev-parse HEAD)
-              echo "Published Eclipse 1.4.0 archive for $source_head as $published_head."
+              echo "Published Eclipse 1.5.0 archive for $source_head as $published_head."
               echo "Dispatching release validation for generated branch head."
-              gh workflow run validate-pr.yml --ref develo-1.4.0
+              gh workflow run validate-pr.yml --ref develop-1.5
               exit 0
             fi
 
