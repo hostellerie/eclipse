@@ -35,6 +35,7 @@ jobs:
           php quality/custom-css-test.php
           php quality/theme-studio-restore-test.php
           php quality/theme-cache-test.php
+          php quality/header-density-test.php
           php quality/search-form-test.php
           php quality/admin-css-test.php
           php quality/profile-settings-test.php
