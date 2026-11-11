@@ -89,3 +89,38 @@ body.theme-eclipse .eclipse-search-results-row select{width:auto;min-width:5rem}
 body.theme-eclipse .eclipse-search-author-slot{min-width:0;font-size:0;line-height:0}
 body.theme-eclipse .eclipse-search-author-slot>.eclipse-search-field{font-size:1rem;line-height:normal}
 @media(max-width:45rem){body.theme-eclipse .eclipse-search-grid{grid-template-columns:minmax(0,1fr);gap:1rem}body.theme-eclipse .eclipse-search-primary-row{flex-direction:column}body.theme-eclipse .eclipse-search-primary-row button{width:100%}body.theme-eclipse .eclipse-search-options{padding:.75rem}}
+
+
+/* Native Geeklog profile editor: readable two-column layout without changing
+   the server-rendered fields, tab handlers or form submission semantics. */
+body.theme-eclipse.eclipse-user-settings #main-content{min-width:0}
+body.theme-eclipse.eclipse-user-settings #profile{min-width:0}
+body.theme-eclipse.eclipse-user-settings #profile fieldset{min-width:0;margin:0 0 1rem;padding:clamp(.8rem,2vw,1.4rem);background:var(--eclipse-surface)}
+body.theme-eclipse.eclipse-user-settings #profile fieldset>legend{max-width:100%;padding:0 .45rem;color:var(--eclipse-text);font-size:1rem;font-weight:750}
+body.theme-eclipse.eclipse-user-settings #profile .form_block{display:grid;grid-template-columns:minmax(10rem,32%) minmax(0,1fr);gap:.35rem 1rem;align-items:start;margin:0}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dt,
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dd{float:none;clear:none;width:auto;min-width:0;max-width:100%;margin:0;padding:0}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dt{grid-column:1;align-self:center;padding-top:.35rem}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dd{grid-column:2}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dd.description{margin:-.15rem 0 .75rem;color:var(--eclipse-muted);font-size:.82rem;line-height:1.5}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dd:not(.description){margin-bottom:.2rem}
+body.theme-eclipse.eclipse-user-settings #profile .form_block input:not([type=checkbox]):not([type=radio]),
+body.theme-eclipse.eclipse-user-settings #profile .form_block select,
+body.theme-eclipse.eclipse-user-settings #profile .form_block textarea{box-sizing:border-box;width:100%;min-width:0;max-width:38rem}
+body.theme-eclipse.eclipse-user-settings #profile .profile_notes{box-sizing:border-box;max-width:100%;margin:0 0 1rem;padding:.85rem 1rem;border:1px solid var(--eclipse-border);border-radius:.65rem;background:color-mix(in srgb,var(--eclipse-primary) 4%,var(--eclipse-surface));line-height:1.5}
+body.theme-eclipse.eclipse-user-settings #profile .profile_notes .uk-panel-title{margin-bottom:.35rem;font-weight:750}
+body.theme-eclipse.eclipse-user-settings #profile .controls_text label{display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+body.theme-eclipse.eclipse-user-settings #profile #save_button{position:relative;flex-wrap:wrap}
+body.theme-eclipse.eclipse-user-settings #profile #save_button .uk-button{min-width:9rem}
+body.theme-eclipse.eclipse-user-settings .gl-tooltip-icon{display:inline-block;width:1.05rem;height:1.05rem;max-width:1.05rem;vertical-align:middle;object-fit:contain}
+body.theme-eclipse.eclipse-user-settings .gl-tooltip{position:relative;display:inline-flex;align-items:center;vertical-align:middle}
+body.theme-eclipse.eclipse-user-settings .gl-tooltip:focus-visible{outline:2px solid var(--eclipse-primary);outline-offset:3px}
+@media(max-width:43rem){
+body.theme-eclipse.eclipse-user-settings #profile .form_block{grid-template-columns:minmax(0,1fr);gap:.2rem}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dt,
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dd{grid-column:1}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dt{margin-top:.75rem;padding-top:0}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dt:first-child{margin-top:0}
+body.theme-eclipse.eclipse-user-settings #profile .form_block>dd.description{margin-bottom:.55rem}
+body.theme-eclipse.eclipse-user-settings #profile #save_button .uk-button{flex:1 1 9rem}
+}
