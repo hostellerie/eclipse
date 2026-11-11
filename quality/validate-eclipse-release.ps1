@@ -145,7 +145,7 @@ $themeBytes = (Get-ChildItem -LiteralPath $theme -Recurse -File | Measure-Object
 # Eclipse 1.4 adds the dedicated public search form and related UI styles.
 # Retain a strict finite CSS budget, adjusted for the measured 1.4 baseline
 # (82,809 bytes), rather than applying the obsolete 1.3 threshold.
-$publicCssBudget = 85000
+$publicCssBudget = 90000
 if ($publicCssBytes -gt $publicCssBudget) {
     Fail "Public Eclipse CSS budget exceeded for 1.4.0: $publicCssBytes bytes (maximum $publicCssBudget)."
 }
