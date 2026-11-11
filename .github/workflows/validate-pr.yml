@@ -3,7 +3,7 @@ name: Validate Eclipse pull request
 on:
   push:
     branches:
-      - develo-1.4.0
+      - develop-1.5
     paths:
       - 'eclipse/**'
       - '!eclipse/MANIFEST.json'
@@ -50,9 +50,12 @@ jobs:
         shell: bash
         run: php ./quality/search-form-test.php
 
-      - name: Check administration responsive CSS
+      - name: Check administration responsive CSS and profile
         shell: bash
-        run: php ./quality/admin-css-test.php
+        run: |
+          php ./quality/admin-css-test.php
+          php ./quality/profile-settings-test.php
+          node quality/check-assets.cjs
 
       - name: Test mobile menu accessibility
         shell: bash
@@ -75,7 +78,7 @@ jobs:
           python3 ./quality/prepare-eclipse-package.py
           version=$(awk -F '"' '/^version = / { print $2; exit }' eclipse/theme.ini)
           test -n "$version"
-          test "$version" = '1.4.0'
+          test "$version" = '1.5.0'
           test -d .package-stage/eclipse
           test ! -e .package-stage/eclipse/QA-CHECKLIST.md
           test ! -e .package-stage/eclipse/COMPATIBILITY.md
