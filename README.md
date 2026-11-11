@@ -4,7 +4,7 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 
 ![Eclipse Template](docs/geeklog-eclipse-template-available.png)
 
- > **Eclipse 1.4.0 development:** Geeklog 2.2.2 minimum, PHP 5.6 parsing compatibility retained.
+ > **Eclipse 1.5.0 development:** Geeklog 2.2.2 minimum, PHP 5.6 parsing compatibility retained.
 
 ## Highlights
 
@@ -28,6 +28,10 @@ Eclipse is a modern, responsive and customizable theme for Geeklog CMS. It focus
 - PHP `ZipArchive` only when using Theme Studio's local update installer.
 
 See [COMPATIBILITY.md](eclipse/COMPATIBILITY.md) for the detailed compatibility status.
+
+## Development archive for Eclipse 1.5.0
+
+On `develop-1.5`, GitHub Actions **Build installable Eclipse archive** builds and validates `dist/eclipse-1.5.0.zip` automatically after source changes. The ZIP contains the `eclipse/` installable theme root, including the Geeklog compatibility icon `images/tooltips/tooltip.png`, and is intended for staging. The automated checks include native profile settings layout and tooltip asset presence. To rebuild manually, open Actions, select **Build installable Eclipse archive**, choose `develop-1.5`, and use **Run workflow**. Do not install the GitHub-generated source ZIP: use the packaged ZIP from `dist/` once the workflow succeeds.
 
 ## Install Eclipse
 
