@@ -21,6 +21,8 @@ body.theme-eclipse.header-density-compact .site_name {
     line-height:1.2;
     letter-spacing:-.025em;
 }
+/* A missing slogan must not reserve height beneath the site title. */
+body.theme-eclipse.header-density-compact .site_slogan:empty {display:none}
 body.theme-eclipse.header-density-compact .site_slogan {
     margin:.1rem 0 0;
     max-width:45%;
