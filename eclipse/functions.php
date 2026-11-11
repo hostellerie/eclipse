@@ -259,6 +259,9 @@ function theme_css_eclipse()
         $cssFiles[] = array('name' => 'eclipse-menu', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/menu.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 315);
         $cssFiles[] = array('name' => 'eclipse-menu-refinements', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/menu-refinements.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 316);
     }
+    // Header density must work with and without the optional Menu plugin,
+    // including Geeklog administration pages. Load after menu overrides.
+    $cssFiles[] = array('name' => 'eclipse-header-density', 'file' => $resourceRoot . '/layout/' . $_CONF['theme'] . '/css/header-density.css' . $version, 'attributes' => array('media' => 'all'), 'priority' => 320);
     return $cssFiles;
 }
 
