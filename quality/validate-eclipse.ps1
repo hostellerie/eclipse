@@ -50,7 +50,7 @@ $match = [regex]::Match($ini, '(?m)^version\s*=\s*"([0-9]+\.[0-9]+\.[0-9]+(?:-[0
 if (-not $match.Success) { Fail 'Invalid semantic version in theme.ini.' } else {
     $version = $match.Groups[1].Value
     $readme = Get-Content -Raw -LiteralPath (Join-Path $theme 'README.md')
-    if ($functions -notmatch [regex]::Escape("?v=$version")) { Fail "Asset version does not match $version." }
+    if ($functions -notmatch "eclipse_asset_cache_version" -or $functions -notmatch "filemtime") { Fail "Asset version does not match $version." }
     if ($readme -notmatch [regex]::Escape("# Eclipse $version")) { Fail "README version does not match $version." }
 }
 
