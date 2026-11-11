@@ -1,4 +1,4 @@
-# Eclipse 1.4.0
+# Eclipse 1.5.0
 
 Eclipse is a modern, mobile-first child theme for Geeklog based on Denim. It requires Geeklog 2.2.2 or later while preserving Geeklog's native permissions, URLs, form processing and plugin hooks.
 
