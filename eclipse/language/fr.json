@@ -1,0 +1,16 @@
+{
+  "sp_unlock_id": "Déverrouiller l’ID",
+  "sp_lock_id": "Reverrouiller",
+  "sp_id_protected": "ID protégé. Cet identifiant fait partie de l’URL publique. Déverrouillez-le uniquement si vous souhaitez modifier cette URL.",
+  "sp_id_change_warning": "Modifier cet ID changera l’URL de la page statique et peut casser des liens existants. Continuer ?",
+  "sp_id_save_warning": "L’ID a été modifié. L’URL publique de cette page changera après enregistrement. Confirmer la modification ?",
+  "seo_title_label": "Titre SEO : ",
+  "seo_title_recommended": " caractères (30 à 60 conseillés)",
+  "seo_title_including": ", dont ",
+  "seo_title_site_suffix": " pour le séparateur et le nom du site.",
+  "seo_description_label": "Meta description : ",
+  "seo_description_recommended": " caractères (120 à 160 conseillés) — ",
+  "seo_description_short": "description courte",
+  "seo_description_long": "risque de troncature",
+  "seo_description_good": "longueur conseillée"
+}
