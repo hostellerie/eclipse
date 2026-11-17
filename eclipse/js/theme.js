@@ -1,26 +1,22 @@
 (function () {
     'use strict';
-    var translations = {
-        en: {
-            deleteConfirm: 'Delete this?', sendConfirm: 'Send this?', articleDetails: 'Article details', articleTitle: 'Article title', articleContent: 'Article content',
-            identity: 'Title and classification', publish: 'Publishing', seo: 'Search and identifiers', seoOverview: 'SEO overview', more: 'Additional options', access: 'Access and permissions',
-            draftFound: 'A newer local draft is available in this browser.', restoreDraft: 'Restore draft', discardDraft: 'Discard', autosaved: 'Local draft saved', focusMode: 'Focus mode', exitFocus: 'Exit focus mode', shareArticle: 'Share this article', shareOn: 'Share on'
-        },
-        fr: {
-            deleteConfirm: 'Supprimer cet élément ?', sendConfirm: 'Envoyer cet élément ?', articleDetails: 'Détails de l’article', articleTitle: 'Titre de l’article', articleContent: 'Contenu de l’article',
-            identity: 'Titre et classement', publish: 'Publication', seo: 'Référencement et identifiants', seoOverview: 'Vue d’ensemble SEO', more: 'Options complémentaires', access: 'Accès et permissions',
-            draftFound: 'Un brouillon local plus recent est disponible dans ce navigateur.', restoreDraft: 'Restaurer', discardDraft: 'Ignorer', autosaved: 'Brouillon local enregistre', focusMode: 'Mode redaction', exitFocus: 'Quitter le mode redaction', shareArticle: 'Partager cet article', shareOn: 'Partager sur'
-        }
+    var translationKeys = {
+        deleteConfirm: 'delete_confirm', sendConfirm: 'send_confirm', articleDetails: 'article_details',
+        articleTitle: 'article_title', articleContent: 'article_content', identity: 'editor_identity',
+        publish: 'editor_publish', seo: 'editor_seo', seoOverview: 'seo_overview',
+        more: 'editor_more', access: 'editor_access', draftFound: 'draft_found',
+        restoreDraft: 'restore_draft', discardDraft: 'discard_draft', autosaved: 'autosaved',
+        focusMode: 'focus_mode', exitFocus: 'exit_focus_mode',
+        shareArticle: 'share_article', shareOn: 'share_on'
     };
-    function interfaceLanguage(context) {
-        if (window.geeklog && geeklog.lang && /^fr\b/i.test(geeklog.lang.iso639Code || '')) return 'fr';
-        if (window.geeklog && geeklog.lang && /^en\b/i.test(geeklog.lang.iso639Code || '')) return 'en';
-        var text = context ? context.textContent || '' : '';
-        if (/\b(titre|auteur|contenu|rubrique|enregistrer|aperçu)\b/i.test(text)) return 'fr';
-        if (/\b(title|author|content|topic|save|preview)\b/i.test(text)) return 'en';
-        return /^fr\b/i.test(document.documentElement.lang || '') ? 'fr' : 'en';
+    function strings() {
+        var dictionary = window.ECLIPSE_LANG || {};
+        var output = {};
+        Object.keys(translationKeys).forEach(function (key) {
+            output[key] = dictionary[translationKeys[key]] || translationKeys[key];
+        });
+        return output;
     }
-    function strings(context) { return translations[interfaceLanguage(context)]; }
     if (/(?:^|\/)admin(?:\/|$)/.test(window.location.pathname)) {
         document.body.classList.add('eclipse-admin-page');
     }
