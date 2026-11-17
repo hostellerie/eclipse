@@ -24,3 +24,14 @@ body.eclipse-admin-page .allowed_autotags .gl-tooltip>span.custom.info>em{displa
 .eclipse-staticpage-navigation-next{margin-inline-start:auto;text-align:end}
 .eclipse-staticpage-navigation-arrow{flex:none;font-size:1.15em}
 @media(max-width:40rem){.eclipse-staticpage-navigation{flex-direction:column}.eclipse-staticpage-navigation-link{width:100%;box-sizing:border-box}.eclipse-staticpage-navigation-next{margin-inline-start:0;justify-content:flex-end}}
+
+/* Reading layout for French Portfolio education pages only. */
+.eclipse-staticpage-content[data-page-id^="portfolio-"]{max-width:52rem;margin:0 auto;padding:clamp(1.25rem,3vw,2.75rem);border:1px solid var(--eclipse-border);border-radius:1rem;background:var(--eclipse-surface);box-shadow:0 9px 35px rgba(23,32,49,.06);font-size:clamp(1rem,.3vw + .96rem,1.1rem);line-height:1.8}
+.eclipse-staticpage-content[data-page-id^="portfolio-"]>h1:first-child{font-size:clamp(1.7rem,3.3vw,2.5rem);letter-spacing:-.025em;line-height:1.18;margin:0 0 1.2rem;color:var(--eclipse-text)}
+.eclipse-staticpage-content[data-page-id^="portfolio-"] h2{margin:2rem 0 1rem;padding:.65rem .85rem;border-inline-start:4px solid var(--eclipse-primary);border-radius:0 .45rem .45rem 0;background:color-mix(in srgb,var(--eclipse-primary) 7%,var(--eclipse-surface));font-size:clamp(1.17rem,2vw,1.42rem);line-height:1.35}
+.eclipse-staticpage-content[data-page-id^="portfolio-"] p{margin:0 0 1rem;max-width:72ch}
+.eclipse-staticpage-content[data-page-id^="portfolio-"] :is(ul,ol){margin:1.2rem 0 1.5rem;padding:1rem 1.25rem 1rem 2.6rem;border:1px solid var(--eclipse-border);border-radius:.75rem;background:color-mix(in srgb,var(--eclipse-primary) 3%,var(--eclipse-surface))}
+.eclipse-staticpage-content[data-page-id^="portfolio-"] li{padding-inline-start:.3rem;margin:.3rem 0}
+.eclipse-staticpage-content[data-page-id^="portfolio-"] strong{font-weight:720}
+.eclipse-staticpage-content[data-page-id^="portfolio-"] blockquote{margin:1.25rem 0;padding:1rem 1.25rem;border-inline-start:4px solid var(--eclipse-primary);background:color-mix(in srgb,var(--eclipse-primary) 6%,var(--eclipse-surface));border-radius:.5rem}
+@media(max-width:40rem){.eclipse-staticpage-content[data-page-id^="portfolio-"]{padding:1.1rem;border-radius:.65rem}.eclipse-staticpage-content[data-page-id^="portfolio-"] :is(ul,ol){padding-inline-start:2rem}}
