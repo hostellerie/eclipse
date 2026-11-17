@@ -48,10 +48,10 @@ body.theme-eclipse.header-density-compact #navigation.eclipse-plugin-menu #eclip
 }
 /* Compact dark-editorial menu adjustments belong to the global density layer. */
 @media (min-width:48rem) {
-    body.theme-eclipse.header-density-compact.menu-style-editorial-dark:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu .navigation_content {
+    body.theme-eclipse.header-density-compact.menu-style-editorial-dark #navigation.eclipse-plugin-menu .navigation_content {
         min-height:2.6rem;
     }
-    body.theme-eclipse.header-density-compact.menu-style-editorial-dark:not(.eclipse-admin-page) #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
+    body.theme-eclipse.header-density-compact.menu-style-editorial-dark #navigation.eclipse-plugin-menu #eclipse-menu-panel .eclipse-menu > ul > li > a {
         min-height:2.6rem;
         padding-block:.48rem;
     }
