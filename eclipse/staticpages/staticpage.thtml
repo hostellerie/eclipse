@@ -6,6 +6,12 @@
 {content}
 </div>
 {block_end}
+{!if sp_prev_url}<nav class="eclipse-staticpage-navigation" aria-label="Navigation">
+    <a class="eclipse-staticpage-navigation-link eclipse-staticpage-navigation-prev" href="{sp_prev_url}" rel="prev"><span class="eclipse-staticpage-navigation-arrow" aria-hidden="true">&#8592;</span><span>{sp_prev_title}</span></a>
+    {!if sp_next_url}<a class="eclipse-staticpage-navigation-link eclipse-staticpage-navigation-next" href="{sp_next_url}" rel="next"><span>{sp_next_title}</span><span class="eclipse-staticpage-navigation-arrow" aria-hidden="true">&#8594;</span></a>{!endif}
+</nav>{!else}{!if sp_next_url}<nav class="eclipse-staticpage-navigation" aria-label="Navigation">
+    <a class="eclipse-staticpage-navigation-link eclipse-staticpage-navigation-next" href="{sp_next_url}" rel="next"><span>{sp_next_title}</span><span class="eclipse-staticpage-navigation-arrow" aria-hidden="true">&#8594;</span></a>
+</nav>{!endif}{!endif}
 {!if likes_control}<p class="uk-text-center">{likes_control}</p>{!endif}
 <div class="eclipse-staticpage-meta">
     {!if lastupdate}<span class="eclipse-staticpage-meta-item">{lastupdate}</span>{!if hits}<span class="eclipse-staticpage-meta-separator" aria-hidden="true">|</span>{!endif}{!endif}
