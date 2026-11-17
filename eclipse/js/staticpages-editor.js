@@ -1,8 +1,9 @@
 (function () {
     'use strict';
 
-    function isFrench() {
-        return (document.documentElement.lang || '').toLowerCase().indexOf('fr') === 0;
+    function tr(key) {
+        var dictionary = window.ECLIPSE_LANG || {};
+        return Object.prototype.hasOwnProperty.call(dictionary, key) ? dictionary[key] : key;
     }
 
     function setupTabs(form) {
@@ -55,15 +56,12 @@
 
         detachTitleToId(form);
 
-        var fr = isFrench();
         var originalId = idInput.value;
         unlock.hidden = false;
-        unlock.textContent = fr ? 'Déverrouiller l’ID' : 'Unlock ID';
+        unlock.textContent = tr('sp_unlock_id');
         unlock.setAttribute('aria-controls', idInput.id || '');
         note.hidden = false;
-        note.innerHTML = fr
-            ? '<strong>ID protégé.</strong> Cet identifiant fait partie de l’URL publique. Déverrouillez-le uniquement si vous souhaitez modifier directement l’URL.'
-            : '<strong>Protected ID.</strong> This identifier is part of the public URL. Unlock it only when you intend to edit the URL directly.';
+        note.textContent = tr('sp_id_protected');
 
         idInput.readOnly = true;
         idInput.classList.add('eclipse-staticpage-id-locked');
@@ -71,21 +69,19 @@
 
         unlock.addEventListener('click', function () {
             if (idInput.readOnly) {
-                var warning = fr
-                    ? 'Modifier cet ID changera l’URL de la page statique et peut casser des liens existants. Continuer ?'
-                    : 'Changing this ID changes the Static Page URL and may break existing links. Continue?';
+                var warning = tr('sp_id_change_warning');
                 if (!window.confirm(warning)) return;
                 detachTitleToId(form);
                 idInput.readOnly = false;
                 idInput.classList.remove('eclipse-staticpage-id-locked');
                 idInput.removeAttribute('aria-readonly');
-                unlock.textContent = fr ? 'Reverrouiller' : 'Lock again';
+                unlock.textContent = tr('sp_lock_id');
                 idInput.focus();
             } else {
                 idInput.readOnly = true;
                 idInput.classList.add('eclipse-staticpage-id-locked');
                 idInput.setAttribute('aria-readonly', 'true');
-                unlock.textContent = fr ? 'Déverrouiller l’ID' : 'Unlock ID';
+                unlock.textContent = tr('sp_unlock_id');
             }
         });
 
@@ -94,9 +90,7 @@
             if (current === originalId) return;
             var submitter = event.submitter;
             if (submitter && submitter.name === 'mode' && /cancel|annuler/i.test(submitter.value || '')) return;
-            var warning = fr
-                ? 'L’ID a été modifié. L’URL publique de cette page changera après enregistrement. Confirmer la modification ?'
-                : 'The ID was changed. This page’s public URL will change after saving. Confirm the change?';
+            var warning = tr('sp_id_save_warning');
             if (!window.confirm(warning)) {
                 event.preventDefault();
                 idInput.focus();
@@ -120,11 +114,9 @@
             var includeSite = document.body.getAttribute('data-eclipse-title-mode') === 'title_and_site' && value && siteName;
             var suffix = includeSite ? ' - ' + siteName : '';
             var length = (value + suffix).length;
-            var fr = isFrench();
-            note.textContent = (fr ? 'Titre SEO : ' : 'SEO title: ') + length
-                + (fr ? ' caractères (30 à 60 conseillés)' : ' characters (30–60 recommended)')
-                + (includeSite ? (fr ? ', dont ' : ', including ') + suffix.length
-                    + (fr ? ' pour « - » et le nom du site.' : ' for the separator and site name.') : '.');
+            note.textContent = tr('seo_title_label') + length + tr('seo_title_recommended')
+                + (includeSite ? tr('seo_title_including') + suffix.length
+                    + tr('seo_title_site_suffix') : '.');
             note.classList.toggle('is-warning', length < 30 || length > 60);
         }
         title.addEventListener('input', refresh);
@@ -144,14 +136,13 @@
 
         function refresh() {
             var length = Array.from(description.value.trim()).length;
-            var fr = isFrench();
             var guidance = length < 120
-                ? (fr ? 'description courte' : 'short description')
+                ? tr('seo_description_short')
                 : length > 160
-                    ? (fr ? 'risque de troncature' : 'may be truncated')
-                    : (fr ? 'longueur conseillée' : 'recommended length');
-            note.textContent = (fr ? 'Meta description : ' : 'Meta description: ') + length
-                + (fr ? ' caractères (120 à 160 conseillés) — ' : ' characters (120–160 recommended) — ')
+                    ? tr('seo_description_long')
+                    : tr('seo_description_good');
+            note.textContent = tr('seo_description_label') + length
+                + tr('seo_description_recommended')
                 + guidance + '.';
             note.classList.toggle('is-warning', length < 120 || length > 160);
         }
