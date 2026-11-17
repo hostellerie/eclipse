@@ -227,7 +227,7 @@ if ($functionsPhp -notmatch 'eclipse-user-settings') {
     Fail 'User settings page context class is missing.'
 }
 if ($formsCss -notmatch 'eclipse-user-settings #pe_navbar' -or
-    $formsCss -notmatch '\.a-navlist#current') {
+    $formsCss -notmatch '#navlist>li>a#current') {
     Fail 'User settings tab presentation contract is incomplete.'
 }
 
