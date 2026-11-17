@@ -47,12 +47,13 @@ if ($eclipseSiteFavicon !== '' && is_file($eclipseSiteFavicon)) {
 <?php echo eclipse_adsense_header_script(); ?>
 <style><?php echo eclipse_theme_css_variables(); ?></style>
 <?php if (function_exists('eclipse_custom_css_tag')) echo eclipse_custom_css_tag(); ?>
+<?php // Make localized labels available to every Eclipse script, including plugin editors. ?>
+<script>window.ECLIPSE_LANG=<?php echo eclipse_lang_js(); ?>;</script>
 <?php if (eclipse_is_admin_request()) { ?>
 <?php
 $eclipseAdminI18nPath = rtrim($_CONF['path_layout'], '/\\') . '/js/admin-i18n.js';
 $eclipseAdminI18nVersion = is_file($eclipseAdminI18nPath) ? (string) @filemtime($eclipseAdminI18nPath) : eclipse_theme_version();
 ?>
-<script>window.ECLIPSE_LANG=<?php echo eclipse_lang_js(); ?>;</script>
 <script src="{layout_url}/js/admin-i18n.js?v=<?php echo rawurlencode($eclipseAdminI18nVersion); ?>"></script>
 <?php } ?>
 </head>
