@@ -6,15 +6,31 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'language.php') !== false) {
 
 function eclipse_language_file_name()
 {
-    global $_CONF, $LANG_ISO639_1;
+    global $_CONF, $_USER, $LANG_ISO639_1;
 
-    $language = isset($_CONF['language']) ? strtolower((string) $_CONF['language']) : '';
-    $language = preg_replace('/\.php$/', '', $language);
+    // Geeklog's active language can differ from the site's default language.
+    $candidate = !empty($_USER['language']) ? $_USER['language'] : (isset($_CONF['language']) ? $_CONF['language'] : '');
+    $candidate = strtolower(preg_replace('/\.php$/i', '', (string) $candidate));
+    $aliases = array('fr' => 'french', 'en' => 'english');
+    $code = !empty($LANG_ISO639_1) ? strtolower((string) $LANG_ISO639_1) : '';
+    $names = array($candidate);
+    if ($code !== '') $names[] = $code;
 
-    if (strpos($language, 'french') === 0 || (!empty($LANG_ISO639_1) && strtolower($LANG_ISO639_1) === 'fr')) {
-        return 'french';
+    foreach ($names as $name) {
+        $name = str_replace('-', '_', $name);
+        $possibilities = array($name);
+        $prefix = $name;
+        while (strpos($prefix, '_') !== false) {
+            $prefix = substr($prefix, 0, strrpos($prefix, '_'));
+            $possibilities[] = $prefix;
+        }
+        if (isset($aliases[$name])) $possibilities[] = $aliases[$name];
+        foreach ($possibilities as $file) {
+            if (preg_match('/^[a-z][a-z0-9_]*$/', $file) && is_file(dirname(__DIR__) . '/language/' . $file . '.php')) {
+                return $file;
+            }
+        }
     }
-
     return 'english';
 }
 
@@ -117,7 +133,15 @@ function eclipse_lang_js()
         'quick_actions', 'no_quick_action', 'write_article', 'create_static_page',
         'manage_comments', 'review_submissions', 'add_block', 'add_user',
         'commands', 'close_command_palette', 'administration_commands',
-        'search_commands', 'search_administration_commands'
+        'search_commands', 'search_administration_commands',
+        'delete_confirm', 'send_confirm', 'article_details', 'article_title', 'article_content',
+        'editor_identity', 'editor_publish', 'editor_seo', 'seo_overview', 'editor_more', 'editor_access',
+        'draft_found', 'restore_draft', 'discard_draft', 'autosaved', 'focus_mode', 'exit_focus_mode',
+        'share_article', 'share_on', 'sp_unlock_id', 'sp_lock_id', 'sp_id_protected',
+        'sp_id_change_warning', 'sp_id_save_warning', 'seo_title_label', 'seo_title_recommended',
+        'seo_title_including', 'seo_title_site_suffix', 'seo_description_label',
+        'seo_description_recommended', 'seo_description_short', 'seo_description_long',
+        'seo_description_good'
     );
     $output = array();
     foreach ($keys as $key) {
