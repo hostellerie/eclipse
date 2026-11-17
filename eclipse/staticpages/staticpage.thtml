@@ -2,7 +2,7 @@
 
 {breadcrumb_trail}
 {block_start}
-<div class="eclipse-staticpage-content">
+<div class="eclipse-staticpage-content" data-page-id="{sp_id}">
 {content}
 </div>
 {block_end}
