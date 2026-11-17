@@ -1,9 +1,40 @@
 (function () {
     'use strict';
 
+    function hasTranslations() {
+        return window.ECLIPSE_LANG && typeof window.ECLIPSE_LANG.seo_title_label === 'string'
+            && typeof window.ECLIPSE_LANG.seo_title_recommended === 'string'
+            && typeof window.ECLIPSE_LANG.sp_unlock_id === 'string';
+    }
+
+    function loadTranslations() {
+        if (hasTranslations()) return Promise.resolve(true);
+        var script = document.querySelector('script[src*="/js/staticpages-editor.js"]');
+        if (!script || typeof window.fetch !== 'function') return Promise.resolve(false);
+        var language = (window.geeklog && window.geeklog.lang && window.geeklog.lang.iso639Code)
+            || document.documentElement.lang || 'en';
+        language = language.toLowerCase().split(/[-_]/)[0];
+        if (!/^[a-z]{2,3}$/.test(language)) language = 'en';
+
+        function fetchDictionary(code) {
+            var url = new URL('../language/' + code + '.json', script.src);
+            return window.fetch(url.toString(), { credentials: 'same-origin' }).then(function (response) {
+                if (!response.ok) throw new Error('Translation file unavailable');
+                return response.json();
+            }).then(function (dictionary) {
+                window.ECLIPSE_LANG = Object.assign({}, window.ECLIPSE_LANG || {}, dictionary);
+                return hasTranslations();
+            });
+        }
+
+        return fetchDictionary(language).catch(function () {
+            return language !== 'en' ? fetchDictionary('en').catch(function () { return false; }) : false;
+        });
+    }
+
     function tr(key) {
         var dictionary = window.ECLIPSE_LANG || {};
-        return Object.prototype.hasOwnProperty.call(dictionary, key) ? dictionary[key] : key;
+        return Object.prototype.hasOwnProperty.call(dictionary, key) ? dictionary[key] : '';
     }
 
     function setupTabs(form) {
@@ -161,8 +192,13 @@
     }
 
     function init() {
-        enhance(document.getElementById('sp-editor'));
-        enhance(document.getElementById('sp-advanced_editor'));
+        loadTranslations().then(function (loaded) {
+            [document.getElementById('sp-editor'), document.getElementById('sp-advanced_editor')].forEach(function (form) {
+                if (!form) return;
+                if (loaded) enhance(form);
+                else setupTabs(form); // Keep editing usable if locale assets are unavailable.
+            });
+        });
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
