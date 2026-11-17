@@ -829,13 +829,8 @@ function eclipse_render_customizer()
         eclipse_custom_css_handle_request();
     }
     $message = '';
-    $language = isset($_CONF['language']) ? strtolower((string) $_CONF['language']) : '';
-    $eclipseArchiveNameError = strpos($language, 'french') === 0
-        ? 'Le nom du fichier ne contient pas le mot « eclipse ».'
-        : 'The file name does not contain the word "eclipse".';
-    $eclipseArchiveHelp = strpos($language, 'french') === 0
-        ? 'Le nom du fichier ZIP doit contenir le mot eclipse.'
-        : 'The ZIP filename must contain the word eclipse.';
+    $eclipseArchiveNameError = eclipse_lang('archive_filename_error');
+    $eclipseArchiveHelp = eclipse_lang('archive_filename_help');
     $tokenName = defined('CSRF_TOKEN') ? CSRF_TOKEN : 'token';
     if (isset($_POST['eclipse_update'])) {
         if (!function_exists('SEC_checkToken') || !SEC_checkToken()) {
