@@ -258,6 +258,8 @@ $LANG_ECLIPSE = array(
     'restore_draft' => 'Restaurer', 'discard_draft' => 'Ignorer', 'autosaved' => 'Brouillon local enregistré',
     'focus_mode' => 'Mode rédaction', 'exit_focus_mode' => 'Quitter le mode rédaction',
     'share_article' => 'Partager cet article', 'share_on' => 'Partager sur',
+    'sp_tab_publishing' => 'Publication', 'sp_tab_seo' => 'SEO et affichage',
+    'sp_tab_advanced' => 'Avancé', 'sp_tab_access' => 'Accès',
     'sp_unlock_id' => 'Déverrouiller l’ID', 'sp_lock_id' => 'Reverrouiller',
     'sp_id_protected' => 'ID protégé. Cet identifiant fait partie de l’URL publique. Déverrouillez-le uniquement si vous souhaitez modifier cette URL.',
     'sp_id_change_warning' => 'Modifier cet ID changera l’URL de la page statique et peut casser des liens existants. Continuer ?',
