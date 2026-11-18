@@ -137,7 +137,7 @@ function eclipse_lang_js()
         'delete_confirm', 'send_confirm', 'article_details', 'article_title', 'article_content',
         'editor_identity', 'editor_publish', 'editor_seo', 'seo_overview', 'editor_more', 'editor_access',
         'draft_found', 'restore_draft', 'discard_draft', 'autosaved', 'focus_mode', 'exit_focus_mode',
-        'share_article', 'share_on', 'sp_unlock_id', 'sp_lock_id', 'sp_id_protected',
+        'share_article', 'share_on', 'sp_tab_publishing', 'sp_tab_seo', 'sp_tab_advanced', 'sp_tab_access', 'sp_unlock_id', 'sp_lock_id', 'sp_id_protected',
         'sp_id_change_warning', 'sp_id_save_warning', 'seo_title_label', 'seo_title_recommended',
         'seo_title_including', 'seo_title_site_suffix', 'seo_description_label',
         'seo_description_recommended', 'seo_description_short', 'seo_description_long',
