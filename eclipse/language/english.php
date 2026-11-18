@@ -258,6 +258,8 @@ $LANG_ECLIPSE = array(
     'restore_draft' => 'Restore draft', 'discard_draft' => 'Discard', 'autosaved' => 'Local draft saved',
     'focus_mode' => 'Focus mode', 'exit_focus_mode' => 'Exit focus mode',
     'share_article' => 'Share this article', 'share_on' => 'Share on',
+    'sp_tab_publishing' => 'Publishing', 'sp_tab_seo' => 'SEO & display',
+    'sp_tab_advanced' => 'Advanced', 'sp_tab_access' => 'Access',
     'sp_unlock_id' => 'Unlock ID', 'sp_lock_id' => 'Lock again',
     'sp_id_protected' => 'Protected ID. This identifier is part of the public URL. Unlock it only if you intend to change the URL.',
     'sp_id_change_warning' => 'Changing this ID changes the Static Page URL and may break existing links. Continue?',
