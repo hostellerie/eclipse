@@ -1,4 +1,8 @@
 {
+  "sp_tab_publishing": "Publishing",
+  "sp_tab_seo": "SEO & display",
+  "sp_tab_advanced": "Advanced",
+  "sp_tab_access": "Access",
   "sp_unlock_id": "Unlock ID",
   "sp_lock_id": "Lock again",
   "sp_id_protected": "Protected ID. This identifier is part of the public URL. Unlock it only if you intend to change the URL.",
