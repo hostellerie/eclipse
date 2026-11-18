@@ -4,7 +4,8 @@
     function hasTranslations() {
         return window.ECLIPSE_LANG && typeof window.ECLIPSE_LANG.seo_title_label === 'string'
             && typeof window.ECLIPSE_LANG.seo_title_recommended === 'string'
-            && typeof window.ECLIPSE_LANG.sp_unlock_id === 'string';
+            && typeof window.ECLIPSE_LANG.sp_unlock_id === 'string'
+            && typeof window.ECLIPSE_LANG.sp_tab_publishing === 'string';
     }
 
     function loadTranslations() {
@@ -40,6 +41,17 @@
     function setupTabs(form) {
         var tabs = Array.prototype.slice.call(form.querySelectorAll('.eclipse-sp-tabs [role="tab"]'));
         if (!tabs.length) return;
+
+        var labels = {
+            'eclipse-sp-tab-publishing': 'sp_tab_publishing',
+            'eclipse-sp-tab-seo': 'sp_tab_seo',
+            'eclipse-sp-tab-advanced': 'sp_tab_advanced',
+            'eclipse-sp-tab-access': 'sp_tab_access'
+        };
+        tabs.forEach(function (tab) {
+            var key = labels[tab.id];
+            if (key && tr(key)) tab.textContent = tr(key);
+        });
 
         function activate(tab, focus) {
             tabs.forEach(function (item) {
