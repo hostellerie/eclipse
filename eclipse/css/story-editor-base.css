@@ -233,8 +233,8 @@ body.theme-eclipse.eclipse-story-editor-page.eclipse-focus-writing .eclipse-edit
 }
 
 /* Keep the article save action filled even with outline/soft button themes. */
-body.theme-eclipse.eclipse-story-editor-page #se_bottom .submit .uk-button.uk-button-primary{background:var(--eclipse-action,var(--eclipse-primary));border-color:var(--eclipse-action,var(--eclipse-primary));color:#fff}
-body.theme-eclipse.eclipse-story-editor-page #se_bottom .submit .uk-button.uk-button-primary:hover,body.theme-eclipse.eclipse-story-editor-page #se_bottom .submit .uk-button.uk-button-primary:focus-visible{background:var(--eclipse-action-hover,var(--eclipse-action,var(--eclipse-primary)));border-color:var(--eclipse-action-hover,var(--eclipse-action,var(--eclipse-primary)));color:#fff}
+#se_bottom.eclipse-editor-actions .submit button.uk-button.uk-button-primary{background:var(--eclipse-action,var(--eclipse-primary))!important;border-color:var(--eclipse-action,var(--eclipse-primary))!important;color:#fff!important}
+#se_bottom.eclipse-editor-actions .submit button.uk-button.uk-button-primary:hover,#se_bottom.eclipse-editor-actions .submit button.uk-button.uk-button-primary:focus-visible{background:var(--eclipse-action-hover,var(--eclipse-action,var(--eclipse-primary)))!important;border-color:var(--eclipse-action-hover,var(--eclipse-action,var(--eclipse-primary)))!important;color:#fff!important}
 
 /* Keep primary administrative actions readable on dark buttons. */
 body.theme-eclipse.eclipse-admin-page #main-content a.uk-button-primary:hover,
