@@ -124,3 +124,6 @@ body.theme-eclipse.eclipse-user-settings #profile .form_block>dt:first-child{mar
 body.theme-eclipse.eclipse-user-settings #profile .form_block>dd.description{margin-bottom:.55rem}
 body.theme-eclipse.eclipse-user-settings #profile #save_button .uk-button{flex:1 1 9rem}
 }
+
+/* Separate login recovery links from the submit action. */
+body.theme-eclipse #userloginform .submit>div.uk-margin-small-bottom{margin-top:.75rem}
