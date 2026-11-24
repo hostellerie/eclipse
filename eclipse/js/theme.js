@@ -262,7 +262,7 @@
         function contrastBadge(label, first, second) {
             var ratio = contrast(first, second);
             var level = ratio >= 7 ? 'AAA' : ratio >= 4.5 ? 'AA' : 'Fail';
-            return '<span class="eclipse-contrast-badge eclipse-contrast-' + level.toLowerCase() + '"><b>' + label + '</b><em>' + ratio.toFixed(2) + ':1 · ' + level + '</em></span>';
+            return '<span class="eclipse-contrast-badge eclipse-contrast-' + level.toLowerCase() + '"><b>' + label + '</b><em>' + ratio.toFixed(2) + ':1 \u00b7 ' + level + '</em></span>';
         }
         function updateContrast(colors) {
             if (!contrastReport) return;
@@ -513,8 +513,8 @@
             if (previewTitle) previewTitle.textContent = effectiveTitle || 'Article title';
             if (previewUrl) previewUrl.textContent = base + '/article.php/' + (slugValue || 'article-slug');
             if (previewDescription) previewDescription.textContent = descriptionValue || text(content.map(function (field) { return field.value; }).join(' ')).slice(0, 160) || 'The search description will appear here.';
-            check('title', effectiveTitle.length >= 30 && effectiveTitle.length <= 60, 'Title: ' + effectiveTitle.length + ' characters (recommended 30–60)' + (withSite && siteName ? '; includes separator and site name (' + (siteName.length + 3) + ' characters).' : '.'));
-            check('description', descriptionValue.length >= 120 && descriptionValue.length <= 160, descriptionValue ? 'Meta description: ' + descriptionValue.length + ' characters (recommended 120–160).' : 'Meta description: missing; the preview currently uses an automatic content excerpt.');
+            check('title', effectiveTitle.length >= 30 && effectiveTitle.length <= 60, 'Title: ' + effectiveTitle.length + ' characters (recommended 30\u201360)' + (withSite && siteName ? '; includes separator and site name (' + (siteName.length + 3) + ' characters).' : '.'));
+            check('description', descriptionValue.length >= 120 && descriptionValue.length <= 160, descriptionValue ? 'Meta description: ' + descriptionValue.length + ' characters (recommended 120\u2013160).' : 'Meta description: missing; the preview currently uses an automatic content excerpt.');
             check('slug', /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue), 'Slug: ' + (slugValue ? 'format ' + (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slugValue) ? 'ready; uniqueness is verified when saving.' : 'should use lowercase words and hyphens.') : 'missing.'));
             check('content', words >= 300, 'Content: approximately ' + words + ' words' + (words >= 300 ? '.' : ' (300 or more recommended for substantial articles).'));
         }
@@ -551,14 +551,14 @@
             dirty = true;
         }
         var tools = document.createElement('div'); tools.className = 'eclipse-editor-safety';
-        var status = document.createElement('span'); status.className = 'eclipse-autosave-status'; status.setAttribute('role','status'); status.textContent = labels.autosaved + ': —';
+        var status = document.createElement('span'); status.className = 'eclipse-autosave-status'; status.setAttribute('role','status'); status.textContent = labels.autosaved + ': \u2014';
         var focus = document.createElement('button'); focus.type = 'button'; focus.className = 'eclipse-focus-toggle'; focus.textContent = labels.focusMode; focus.setAttribute('aria-pressed','false');
         focus.addEventListener('click', function () { var active = document.body.classList.toggle('eclipse-focus-writing'); focus.textContent = active ? labels.exitFocus : labels.focusMode; focus.setAttribute('aria-pressed', active ? 'true' : 'false'); });
         tools.appendChild(status); tools.appendChild(focus); form.insertBefore(tools, form.firstChild);
         function saveDraft() {
             if (!dirty) return;
             var values = snapshot(), serialized = signature(values); if (serialized === lastSaved) return;
-            try { localStorage.setItem(storageKey, JSON.stringify({ savedAt:Date.now(), values:values })); lastSaved = serialized; status.textContent = labels.autosaved + ' · ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }); }
+            try { localStorage.setItem(storageKey, JSON.stringify({ savedAt:Date.now(), values:values })); lastSaved = serialized; status.textContent = labels.autosaved + ' \u00b7 ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }); }
             catch (error) { status.textContent = 'Local autosave unavailable'; }
         }
         var initial = signature(snapshot()); lastObserved = initial;
@@ -832,9 +832,9 @@
         var backdrop=document.createElement('button');backdrop.type='button';backdrop.className='eclipse-command-backdrop';backdrop.setAttribute('aria-label','Close command palette');
         var dialog=document.createElement('section');dialog.className='eclipse-command-dialog';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','eclipse-command-title');
         var title=document.createElement('h2');title.id='eclipse-command-title';title.textContent='Administration commands';
-        var input=document.createElement('input');input.type='search';input.id='eclipse-command-search';input.className='eclipse-command-search';input.placeholder='Search commands…';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');
+        var input=document.createElement('input');input.type='search';input.id='eclipse-command-search';input.className='eclipse-command-search';input.placeholder='Search commands\u2026';input.setAttribute('aria-label','Search administration commands');input.setAttribute('autocomplete','off');
         var results=document.createElement('ul');results.className='eclipse-command-results';results.setAttribute('role','listbox');
-        var help=document.createElement('p');help.className='eclipse-command-help';help.textContent='↑ ↓ Navigate · Enter Open · Esc Close';
+        var help=document.createElement('p');help.className='eclipse-command-help';help.textContent='\u2191 \u2193 Navigate \u00b7 Enter Open \u00b7 Esc Close';
         dialog.appendChild(title);dialog.appendChild(input);dialog.appendChild(results);dialog.appendChild(help);palette.appendChild(backdrop);palette.appendChild(dialog);document.body.appendChild(palette);
         var visible=[];var active=0;var previousFocus=null;
         function selectResult(index){active=index;Array.prototype.forEach.call(results.querySelectorAll('[role="option"]'),function(item,itemIndex){item.setAttribute('aria-selected',itemIndex===active?'true':'false');});}

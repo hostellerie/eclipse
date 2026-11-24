@@ -14,7 +14,7 @@
         'Administration commands': lang.administration_commands,
         'Search administration commands': lang.search_administration_commands,
         'Close command palette': lang.close_command_palette,
-        'Search commands…': lang.search_commands,
+        'Search commands\u2026': lang.search_commands,
         'Theme Studio': lang.theme_studio,
         'CMS overview': lang.cms_overview,
         'Needs attention': lang.needs_attention,

@@ -9,7 +9,7 @@ body.theme-eclipse .admin-commandcontrol li:nth-child(4n+4) .eclipse-command-ico
 body.theme-eclipse #leftblocks li,body.theme-eclipse #rightblocks li,body.theme-eclipse #leftblocks .sideoption,body.theme-eclipse #rightblocks .sideoption{list-style:none!important;background-image:none!important}
 body.theme-eclipse #leftblocks .sideoption a::before,body.theme-eclipse #rightblocks .sideoption a::before{content:none!important;display:none!important}
 body.theme-eclipse #leftblocks .sideoption a,body.theme-eclipse #rightblocks .sideoption a,body.theme-eclipse #leftblocks .sideoption a:link,body.theme-eclipse #rightblocks .sideoption a:link,body.theme-eclipse #leftblocks .sideoption a:visited,body.theme-eclipse #rightblocks .sideoption a:visited{position:relative;display:flex!important;align-items:center;width:100%;padding:.62rem 1.45rem .62rem .25rem!important;background:none!important;background-image:none!important;text-indent:0!important}
-body.theme-eclipse #leftblocks .sideoption a::after,body.theme-eclipse #rightblocks .sideoption a::after{content:"›";position:absolute;right:.25rem;top:50%;color:var(--eclipse-muted);font-size:1.15rem;transform:translateY(-50%)}
+body.theme-eclipse #leftblocks .sideoption a::after,body.theme-eclipse #rightblocks .sideoption a::after{content:"\00203a";position:absolute;right:.25rem;top:50%;color:var(--eclipse-muted);font-size:1.15rem;transform:translateY(-50%)}
 body.theme-eclipse #leftblocks .sideoption a:hover::after,body.theme-eclipse #rightblocks .sideoption a:hover::after{color:var(--eclipse-primary);transform:translate(.15rem,-50%)}
 
 /* Shared seam overlap for detached navigation styles. */

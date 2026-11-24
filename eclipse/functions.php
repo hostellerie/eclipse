@@ -394,7 +394,7 @@ function eclipse_menu_slot_choices()
 {
     global $_CONF;
 
-    $choices = array('' => '— None —');
+    $choices = array('' => '- None -');
     if (!function_exists('eclipse_menu_plugin_active') || !eclipse_menu_plugin_active()) {
         return $choices;
     }
