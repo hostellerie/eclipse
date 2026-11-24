@@ -9,13 +9,56 @@
         focusMode: 'focus_mode', exitFocus: 'exit_focus_mode',
         shareArticle: 'share_article', shareOn: 'share_on'
     };
+    var englishFallback = {
+        "delete_confirm": "Delete this?",
+        "send_confirm": "Send this?",
+        "article_details": "Article details",
+        "article_title": "Article title",
+        "article_content": "Article content",
+        "editor_identity": "Title and classification",
+        "editor_publish": "Publishing",
+        "editor_seo": "Search and identifiers",
+        "seo_overview": "SEO overview",
+        "editor_more": "Additional options",
+        "editor_access": "Access and permissions",
+        "draft_found": "A newer local draft is available in this browser.",
+        "restore_draft": "Restore draft",
+        "discard_draft": "Discard",
+        "autosaved": "Local draft saved",
+        "focus_mode": "Focus mode",
+        "exit_focus_mode": "Exit focus mode",
+        "share_article": "Share this article",
+        "share_on": "Share on"
+    };
     function strings() {
         var dictionary = window.ECLIPSE_LANG || {};
         var output = {};
         Object.keys(translationKeys).forEach(function (key) {
-            output[key] = dictionary[translationKeys[key]] || translationKeys[key];
+            var name = translationKeys[key];
+            output[key] = dictionary[name] || englishFallback[name];
         });
         return output;
+    }
+    function loadEditorialTranslations() {
+        var dictionary = window.ECLIPSE_LANG || {};
+        if (Object.keys(translationKeys).every(function (key) {
+            return typeof dictionary[translationKeys[key]] === 'string' && dictionary[translationKeys[key]];
+        })) return Promise.resolve();
+        var script = document.querySelector('script[src*="/js/theme.js"]');
+        if (!script || typeof window.fetch !== 'function') return Promise.resolve();
+        var language = (window.geeklog && window.geeklog.lang && window.geeklog.lang.iso639Code)
+            || document.documentElement.lang || 'en';
+        language = language.toLowerCase().split(/[-_]/)[0];
+        if (!/^[a-z]{2,3}$/.test(language)) language = 'en';
+        var url = new URL('../language/' + language + '.json', script.src);
+        var version = new URL(script.src).searchParams.get('v');
+        if (version) url.searchParams.set('v', version);
+        return window.fetch(url.toString(), { credentials: 'same-origin' }).then(function (response) {
+            if (!response.ok) throw new Error('Translation file unavailable');
+            return response.json();
+        }).then(function (fallback) {
+            window.ECLIPSE_LANG = Object.assign({}, fallback, window.ECLIPSE_LANG || {});
+        }).catch(function () {});
     }
     if (/(?:^|\/)admin(?:\/|$)/.test(window.location.pathname)) {
         document.body.classList.add('eclipse-admin-page');
@@ -811,6 +854,9 @@
         if (document.body.classList.contains('eclipse-admin-page') && !document.body.classList.contains('admin-ui-mode-modern')) return;
         setupAdminDashboard(); setupAdminCommandPalette(); setupAdminLists(); enhanceStoryEditor();
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupEditorialAdministration, { once: true });
-    else setupEditorialAdministration();
+    function startEditorialAdministration() {
+        loadEditorialTranslations().then(setupEditorialAdministration);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startEditorialAdministration, { once: true });
+    else startEditorialAdministration();
 }());
