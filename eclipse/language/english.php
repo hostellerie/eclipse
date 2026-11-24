@@ -122,6 +122,9 @@ $LANG_ECLIPSE = array(
     'right' => 'Right',
     'left' => 'Left',
 
+    'brand_identity' => 'Brand identity',
+    'sidebars' => 'Sidebars',
+    'show_logo' => 'Show logo',
     'brand_and_regions' => 'Brand and regions',
     'logo_path' => 'Logo path',
     'header_image' => 'Header image',
