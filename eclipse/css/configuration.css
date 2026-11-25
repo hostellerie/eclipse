@@ -99,7 +99,15 @@ body.theme-eclipse.eclipse-admin-configuration #config_menu .configoption_off{pa
 
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-content{min-width:0;width:100%!important;max-width:none!important;padding:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-main{min-width:0;width:100%;padding:0;background:transparent}
-body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message{margin:0 0 1rem;padding:.9rem 1.1rem;background:color-mix(in srgb,var(--eclipse-primary) 6%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-left:4px solid var(--eclipse-primary);border-radius:.6rem}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message{margin:0 0 1rem;padding:.9rem 1.1rem;color:var(--eclipse-text);background:color-mix(in srgb,var(--eclipse-primary) 6%,var(--eclipse-surface));border:1px solid var(--eclipse-border);border-left:4px solid var(--eclipse-primary);border-radius:.6rem}
+/* Keep validation feedback readable independently of the selected palette. */
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message a{color:var(--eclipse-link);text-decoration:underline}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message.error_validation{color:#8b1d19;background:#fdf0ef;border-color:#e4b4b0;border-left-color:#b42318}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message.error_validation a,
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message.error_validation a:visited{color:#8b1d19;text-decoration:underline;font-weight:700}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message.error_validation a:hover{color:#64120f}
+body.theme-eclipse.eclipse-admin-configuration .eclipse-config-message.error_validation a:focus-visible{outline:2px solid #8b1d19;outline-offset:3px}
+
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-form{width:100%;margin:0}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-title{margin-bottom:.85rem}
 body.theme-eclipse.eclipse-admin-configuration .eclipse-config-field[id],
