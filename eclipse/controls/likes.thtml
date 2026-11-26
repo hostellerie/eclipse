@@ -2,23 +2,22 @@
 {# Eclipse uses inline SVG instead of Denim's UIkit icon font. Keep Geeklog's native vote hooks. #}
 <span class="gl-likes" id="likes-{item_type}-{item_sub_type}-{item_id}">
     {!if action_enabled}
-    <a href="{site_url}/likes.php?type={item_type}&amp;subtype={item_sub_type}&amp;id={item_id}{!if user_liked}&amp;action=3" class="gl-like-btn gl-unlike-action"{!else}&amp;action=1" class="gl-like-btn gl-like-action"{!endif} rel="nofollow" data-type="{item_type}" data-subtype="{item_sub_type}" data-id="{item_id}" title="{lang_like_action}" aria-label="{lang_like_action}" style="display:inline-block;padding:.3em">
+    <a href="{site_url}/likes.php?type={item_type}&amp;subtype={item_sub_type}&amp;id={item_id}{!if user_liked}&amp;action=3" class="gl-like-btn gl-unlike-action"{!else}&amp;action=1" class="gl-like-btn gl-like-action"{!endif} rel="nofollow" data-type="{item_type}" data-subtype="{item_sub_type}" data-id="{item_id}" title="{lang_like_action}" aria-label="{lang_like_action}">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="vertical-align:middle" fill="{!if user_liked}currentColor{!else}none{!endif}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg>
     </a>
     {!else}
-    <span title="{lang_like_action}" role="img" aria-label="{lang_like_action}" style="display:inline-block;padding:.3em">
+    <span class="eclipse-like-icon" title="{lang_like_action}" role="img" aria-label="{lang_like_action}">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="vertical-align:middle" fill="{!if user_liked}currentColor{!else}none{!endif}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg>
     </span>
     {!endif}
     <span class="gl-like-num" title="{lang_num_of_likes}">{num_of_likes}</span>
     {!if dislike_enabled}
-    &nbsp;&nbsp;
     {!if action_enabled}
-    <a href="{site_url}/likes.php?type={item_type}&amp;subtype={item_sub_type}&amp;id={item_id}{!if user_disliked}&amp;action=4" class="gl-dislike-btn gl-undislike-action"{!else}&amp;action=2" class="gl-dislike-btn gl-dislike-action"{!endif} rel="nofollow" data-type="{item_type}" data-subtype="{item_sub_type}" data-id="{item_id}" title="{lang_dislike_action}" aria-label="{lang_dislike_action}" style="display:inline-block;padding:.3em">
+    <a href="{site_url}/likes.php?type={item_type}&amp;subtype={item_sub_type}&amp;id={item_id}{!if user_disliked}&amp;action=4" class="gl-dislike-btn gl-undislike-action"{!else}&amp;action=2" class="gl-dislike-btn gl-dislike-action"{!endif} rel="nofollow" data-type="{item_type}" data-subtype="{item_sub_type}" data-id="{item_id}" title="{lang_dislike_action}" aria-label="{lang_dislike_action}">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="vertical-align:middle" fill="{!if user_disliked}currentColor{!else}none{!endif}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g transform="rotate(180 12 12)"><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg>
     </a>
     {!else}
-    <span title="{lang_dislike_action}" role="img" aria-label="{lang_dislike_action}" style="display:inline-block;padding:.3em">
+    <span class="eclipse-dislike-icon" title="{lang_dislike_action}" role="img" aria-label="{lang_dislike_action}">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="vertical-align:middle" fill="{!if user_disliked}currentColor{!else}none{!endif}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g transform="rotate(180 12 12)"><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg>
     </span>
     {!endif}
