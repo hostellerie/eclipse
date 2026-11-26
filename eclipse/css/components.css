@@ -129,3 +129,19 @@ body.theme-eclipse:not(.eclipse-admin-page) #centerblocks h1 {
         font-size:clamp(1.55rem,5vw,1.9rem);
     }
 }
+
+/* Native Geeklog voting and popular items, independent of UIkit. */
+body.theme-eclipse .gl-likes{display:inline-flex;align-items:center;flex-wrap:wrap;gap:.2rem;vertical-align:middle}
+body.theme-eclipse .gl-likes :is(.gl-like-btn,.gl-dislike-btn,.eclipse-like-icon,.eclipse-dislike-icon){display:inline-flex;align-items:center;justify-content:center;min-width:1.65rem;min-height:1.65rem;padding:.15rem;border-radius:.35rem;box-sizing:border-box}
+body.theme-eclipse .gl-likes :is(.gl-dislike-btn,.eclipse-dislike-icon){margin-inline-start:.4rem}
+body.theme-eclipse .gl-likes :is(.gl-like-btn,.gl-dislike-btn):is(:hover,:focus-visible){background:color-mix(in srgb,var(--eclipse-link) 12%,transparent);text-decoration:none}
+body.theme-eclipse .gl-likes :is(.gl-like-btn,.gl-dislike-btn):focus-visible{outline:2px solid var(--eclipse-link);outline-offset:2px}
+body.theme-eclipse .gl-likes-message:empty{display:none}
+body.theme-eclipse .eclipse-popular-period{font-size:.85em;color:var(--eclipse-muted);margin-block:0 .7rem}
+body.theme-eclipse .eclipse-popular ul{list-style:none;padding:0;margin:0}
+body.theme-eclipse .eclipse-popular-item{margin-block:.45rem;padding:0;min-width:0}
+body.theme-eclipse .eclipse-popular-item>a{white-space:normal;overflow-wrap:anywhere;text-decoration:none}
+body.theme-eclipse .eclipse-popular-item>a:is(:hover,:focus-visible){text-decoration:underline}
+body.theme-eclipse .eclipse-popular-votes{display:inline-flex;align-items:center;flex-wrap:wrap;gap:.65rem;font-size:.85em;color:var(--eclipse-muted);margin-inline-start:.4rem}
+body.theme-eclipse .eclipse-popular-votes-newline{display:flex;margin-inline-start:0;margin-block-start:.25rem;justify-content:flex-start}
+body.theme-eclipse .eclipse-popular-vote{display:inline-flex;align-items:center;gap:.25rem}
