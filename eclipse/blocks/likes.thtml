@@ -1,7 +1,8 @@
 {# begin {templatelocation} #}
 
+<div class="eclipse-popular">
 {!if lang_action_time_span}
-<p>{lang_action_time_span}</p>
+<p class="eclipse-popular-period">{lang_action_time_span}</p>
 {!endif}
 
 {!if lang_no_items}
@@ -12,18 +13,24 @@
 </ul>
 {!endif}
 
+</div>
+
 <!-- BEGIN item -->
-<li class="listitem">
- <a href="{item-link}" title="{item-title}">{item-title-trimmed}</a>
+<li class="listitem eclipse-popular-item">
+ <a href="{item-link}" title="{item-title}">{item-title}</a>
  {!if likes-new-line}
- <div style="text-align:center">
+ <div class="eclipse-popular-votes eclipse-popular-votes-newline">
+ {!else}
+ <span class="eclipse-popular-votes">
  {!endif}
- {!!if {item-likes} >= 0 !!}&nbsp;&nbsp;<span title="{lang_num_of_likes_in_time_limit}" role="img" aria-label="{lang_num_of_likes_in_time_limit}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="vertical-align:middle" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg></span>&nbsp;{item-likes}
+ {!!if {item-likes} >= 0 !!}<span class="eclipse-popular-vote" title="{lang_num_of_likes_in_time_limit}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="vertical-align:middle" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg><span>{item-likes}</span></span>
  {!endif}
- {!!if {item-dislikes} >= 0 !!}&nbsp;&nbsp;<span title="{lang_num_of_dislikes_in_time_limit}" role="img" aria-label="{lang_num_of_dislikes_in_time_limit}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="vertical-align:middle" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g transform="rotate(180 12 12)"><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg></span>&nbsp;{item-dislikes}
+ {!!if {item-dislikes} >= 0 !!}<span class="eclipse-popular-vote" title="{lang_num_of_dislikes_in_time_limit}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="vertical-align:middle" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><g transform="rotate(180 12 12)"><path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3Zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 1.96 2.4l-1.4 7A2 2 0 0 1 18.1 20H7"/></g></svg><span>{item-dislikes}</span></span>
  {!endif}
  {!if likes-new-line}
  </div>
+ {!else}
+ </span>
  {!endif}
 </li>
 <!-- END item -->
