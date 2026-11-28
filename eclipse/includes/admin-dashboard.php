@@ -581,9 +581,8 @@ function eclipse_admin_dashboard_overview_enhancer($attention, $hasComments, $pl
 
     $style = '<style>'
         . 'body.eclipse-admin-page .eclipse-dashboard-widget-stats .eclipse-dashboard-value{font-size:.68rem!important;font-weight:650!important;line-height:1.2!important;color:#64748b!important;font-variant-numeric:tabular-nums}'
-        . 'body.eclipse-admin-page .eclipse-dashboard-count,body.eclipse-admin-page .eclipse-attention-count{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;min-width:1.15rem;height:1.15rem;margin-left:.28rem;padding:0 .28rem;border-radius:999px;background:#b42318;color:#fff;font-size:.62rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}'
+        . 'body.eclipse-admin-page .eclipse-dashboard-count,body.eclipse-admin-page .eclipse-attention-count{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;min-width:1.15rem;height:1.15rem;margin-left:.28rem;padding:0 .28rem;border-radius:999px;background:#2563a6;color:#fff;font-size:.62rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}'
         . 'body.eclipse-admin-page .eclipse-overview-attention li a,body.eclipse-admin-page .eclipse-overview-actions li a{display:inline-flex;align-items:center;justify-content:flex-start;gap:.25rem}'
-        . 'body.eclipse-admin-page .eclipse-overview-attention li.is-draft .eclipse-attention-count,body.eclipse-admin-page .eclipse-dashboard-count{background:#9a6700}'
         . 'body.eclipse-admin-page .eclipse-dashboard-widget-header{display:flex;align-items:center;justify-content:space-between;gap:.55rem;margin:0 0 .6rem}'
         . 'body.eclipse-admin-page .eclipse-dashboard-widget-header h2{margin:0!important}'
         . 'body.eclipse-admin-page .eclipse-dashboard-toggle{display:inline-grid;place-items:center;flex:0 0 auto;width:1.35rem;height:1.35rem;margin:0;padding:0;border:1px solid #e6eaf0;border-radius:.32rem;background:#fff;color:#7a8699;font-size:.72rem;font-weight:750;line-height:1;cursor:pointer;box-shadow:none}'
